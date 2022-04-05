@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LIDL-ös pizza tier list</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="/index/style.css" />
+		<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+	</head>
+	<body>
+		<script>
+			fetch("/index/topbar.html")
+				.then(response => response.text())
+				.then(text => document.body.innerHTML = text + document.body.innerHTML)
+		</script>
+		<center>
+			<img src="pizzatierlist.jpg" alt="tier list" />
+		</center>
+	</body>
+</html>

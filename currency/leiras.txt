@@ -1,0 +1,8 @@
+API key = 1d50e0bfa62cccb16e59
+
+
+https://free.currconv.com/api/v7/convert?q=CHF_HUF&compact=ultra&apiKey=1d50e0bfa62cccb16e59
+https://free.currconv.com/api/v7/convert?q=CHF_HUF,USD_HUF&compact=ultra&apiKey=1d50e0bfa62cccb16e59
+https://free.currconv.com/api/v7/convert?q=CHF_HUF&compact=ultra&date=2022-03-27&endDate=2022-04-04&apiKey=1d50e0bfa62cccb16e59
+(max 2 conversion egy query-ben)
+https://www.currencyconverterapi.com/docs

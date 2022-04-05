@@ -1,0 +1,50 @@
+body {
+	background-image: url("/erettsegiszamlalo/ErettsegiWallpaper.jpg");
+	background-size: auto 100%;
+	font-family: Snell Roundhand, cursive;
+	background-repeat: no-repeat;
+}
+
+body, html {
+	height: 100%;
+}
+.container{
+	width: 100%;
+	position: absolute;
+	top: 30%;
+	left: 0%;
+	transform: translate("-25% -25%");
+	text-align: center;
+	color: white;
+}
+.container h1{
+	text-transform: uppercase;
+	font-size: 60px;
+	letter-spacing: 10px;
+	text-shadow: 2px 2px #000000;
+}
+.container h2{
+	font-size: 20px;
+	font-style: italic;
+	font-weight: 500px;
+	text-shadow: 2px 2px #000000;
+}
+.szamlalo{
+	font-style:bold;
+}
+.szamlaloosszes{
+	display: inline-block;
+	width: 130px;
+	height: 130px;
+	border: 5px solid;
+	margin: 30px 0;
+	font-size:15px;
+	border-radius: 50%;
+	overflow: hidden;
+	text-shadow: 2px 2px #000000;
+}
+.szamlalo span{
+	display: block;
+	font-size:26px;
+	margin-top:25px;
+}

@@ -1,0 +1,78 @@
+body {
+    background-color: darkgreen;
+}
+
+/* menük */
+
+div {
+    background-color: white;
+    border: 5px solid brown;
+    border-radius: 30px;
+    position: absolute;
+    left: 25%;
+    top: 10%;
+    width: 50%;
+}
+
+
+
+.almenu {
+    width: 40%;
+    top: 15%;
+    left: 30%;
+}
+
+#kezdes {
+    z-index: -1;
+}
+
+#jatek {
+    z-index: 0;
+}
+
+#beallitasok {
+    z-index: 1;
+}
+
+#eredmenyhirdetes {
+    z-index: 2;
+}
+
+/* gombok */
+
+button {
+    background-color: white;
+    border: 2px solid brown;
+    border-radius: 30px;
+}
+
+button:hover {
+    background-color: rgb(92,148,73);
+}
+
+.bezargomb {
+    right: 2%;
+    top: 2%;
+    position: absolute;
+}
+
+/* szövegek */
+
+h1 {
+    color: brown;
+}
+
+.nagyszoveg {
+    font-size: 20px;
+    color: brown;
+}
+
+.szurke {
+    color: gray;
+}
+
+.barna {
+    color: brown;
+}
+
+

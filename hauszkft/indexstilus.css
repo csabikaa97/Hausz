@@ -1,0 +1,39 @@
+h1{text-align: center;
+text-decoration: underline overline;
+text-decoration-color: 	#33cc00;
+font-size: 50px;}
+h2{text-align: center;
+  color: #FFFFFF;
+font-size: 30px;}
+p{margin-left: 30%;
+margin-right: 30%;
+margin-top: auto;
+margin-bottom: auto;
+text-align: justify;
+font-size: 20px;
+color: #FFFFFF;
+}
+a{text-decoration: none;
+color: #cc00cc;}
+body{background-image: url("hatter.gif")};
+ol{margin-left: 30%;
+margin-right: 30%;
+margin-top: auto;
+margin-bottom: auto;
+text-align: justify;
+font-size: 20px;
+color: #FFFFFF;
+}
+li{margin-left: 30%;
+margin-right: 30%;
+margin-top: auto;
+margin-bottom: auto;
+text-align: justify;
+font-size: 20px;
+color: #FFFFFF;
+}
+iframe{
+    width:40%;
+    display:block;
+  }
+footer{background-color: #F500F9;}

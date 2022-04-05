@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="hu">
+	<head>
+		<title>Hausz</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="/index/style.css" />
+		<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+	</head>
+	<body>
+		<script>
+			fetch("/index/topbar.html")
+				.then(response => response.text())
+				.then(text => document.body.innerHTML = text + document.body.innerHTML)
+		</script>
+		<center>
+			<div class="FuggolegesCenter FullDoboz">
+				<img src="/index/hausz.svg" alt="Hausz logo">
+				<br>
+				<br>
+				<form action="https://www.google.com/search" class="searchform" method="get" name="searchform">
+					<input value="" autocomplete="off" class="InputSzoveg" name="q" placeholder="Mit szeretnél megtalálni more?" required="required" type="text">
+					<br>
+					<br>
+					<button class="Gombok" type="submit">Keressed more</button>
+					<button class="Gombok" onclick="alert('Az jó he!')">Jó napom van more</button>
+				</form>
+			</div>
+		</center>
+	</body>
+</html>

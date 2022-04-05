@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hausz Minecraft!</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="/index/style.css" />
+		<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+	</head>
+	<body>
+		<script>
+			fetch("/index/topbar.html")
+				.then(response => response.text())
+				.then(text => document.body.innerHTML = text + document.body.innerHTML)
+		</script>
+		<div class="FuggolegesCenter FullDoboz">
+			<center>
+				<a class="link" href="/minecraft/TLauncher.exe" download><button class="Gombok ReteknagyGombok ZoldHatter">TLauncher</button></a>
+				<br>
+				<a class="link" href="/minecraft/Java.exe" download><button class="Gombok ReteknagyGombok KekHatter">Java 32-bit</button></a>
+				<br>
+				<a class="link" href="/minecraft/Java64.exe" download><button class="Gombok ReteknagyGombok KekHatter">Java 64-bit</button></a>
+				<br>
+				<a class="link" href="/minecraft/CiganyzeneMod.zip" download><button class="Gombok ReteknagyGombok KekHatter">Cigányzene mod</button></a>
+				<br>
+				<a class="link" href="/minecraft/Sandorpack.zip" download><button class="Gombok ReteknagyGombok KekHatter">Sándor pack</button></a>
+			</center>
+		</div>
+	</body>
+</html>
