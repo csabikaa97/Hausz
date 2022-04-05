@@ -136,3 +136,8 @@ video {
     text-align: center;
     font-size: 100%;
 }
+
+iframe {
+    width: 100%;
+    height: 90%;
+}
