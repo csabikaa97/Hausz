@@ -16,7 +16,7 @@
             }
         </style>
         <script>
-			fetch("/index/topbar.html")
+			fetch("https://hausz.stream/index/topbar.html")
 				.then(response => response.text())
 				.then(text => document.body.innerHTML = text + document.body.innerHTML)
 		</script>
@@ -37,14 +37,7 @@
             }
 
             function showLogin($reason) {
-                printLn("<!DOCTYPE html>");
-                printLn("<html>");
-                printLn("<head>");
-                printLn("<title>Login</title>");
-                printLn("<link rel='stylesheet' href='style.css' type='text/css'>");
-                printLn("</head>");
-                printLn("<body>");
-                printLn("<div class='container'>");
+                printLn("<center><div class='container'>");
                 printLn("<p>".$reason."</p>");
                 printLn("<div class='login'>");
                 printLn("<form action='feltoltes.php' method='post'>");
@@ -54,16 +47,14 @@
                 printLn("<button type='submit'>Bejelentkezés</button>");
                 printLn("</form>");
                 printLn("</div>");
-                printLn("</div>");
-                printLn("</body>");
-                printLn("</html>");
+                printLn("</div></center>");
             }
 
             function debug($data) {
                 echo "<script>console.log('Debug: " . $data . "' );</script>";
             }
 
-            printLn('<h1>Hausz megosztó</h1>');
+            printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
 
             session_start();
             if($_SESSION['loggedin'] == false) {
@@ -99,17 +90,17 @@
             }
 
             if($_SESSION['loggedin'] == true) {
-                printLn('<form action="feltoltes.php" method="post" enctype="multipart/form-data">');
-                printLn('<p>Válassz ki egy fájlt a feltöltéshez</p>');
+                printLn('<center><form action="feltoltes.php" method="post" enctype="multipart/form-data">');
+                printLn('<h3 style="font-weight: normal;">Válassz ki, vagy húzz ide egy fájlt a feltöltéshez</h3>');
                 printLn('<input class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload">');
                 printLn('<button class="Gombok KekHatter" name="submit" type="submit" value="Kimenet" id="SubmitGomb">Feltöltés</button>');
-                printLn('</form>');
+                printLn('</form></center>');
             }
 
             $target_file = "/var/www/html/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]);
             debug("/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]));
 
-            if($_GET['delete'] == '1') {
+            if($_GET['delete'] == '1' && $_SESSION['loggedin'] == true) {
                 $query = "SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id'];
                 $result = $conn->query($query);
                 if($result) {
@@ -128,7 +119,7 @@
                 }
             }
 
-            if(isset($_POST["submit"])) {
+            if(isset($_POST["submit"]) && $_SESSION['loggedin'] == true) {
                 $goforupload = false;
                 $query_del = 'USE hausz_megoszto;';
                 $query_check = 'SELECT files.filename, files.user_id, users.username FROM files LEFT OUTER JOIN users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
@@ -184,12 +175,12 @@
                 unset($_POST["submit"]);
             }
 		
-            print("<table>");
+            print('<br><center><table class="InputSzoveg">');
             print("<tr>");
             print("<th>Fájlnév</th>");
             print("<th>Dátum</th>");
             print("<th>Feltöltő</th>");
-            print("<th>Törlés</th>");
+            print("<th></th>");
             print("</tr>");
 
             $query = "SELECT files.id as 'id', filename, added, username FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
@@ -197,14 +188,25 @@
             if($result) {
                 if($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
+                        $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
+                        //var_dump($kiterjesztes);
                         print("<tr>");
-                        print('<td><a href="/uploads/fajlok/'.$row['filename'].'">'.$row['filename']."</a></td>");
-                        print('<td>'.$row['added'].'</td>');
+                        print('<td>');
+                        //print('<img src="/uploads/');
+                        //$thumbnail_path = "none.jpg";
+                        //if($kiterjesztes == 'img') { $thumbnail_path = "img.jpg"; }
+                        //print('" alt="thumbnail" />');
+                        print('<a href="/uploads/fajlok/'.$row['filename'].'">'.$row['filename']."</a></td>");
+                        $datum_sajat_formatum = preg_replace('/\-/', '.', $row['added']);
+                        $datum_sajat_formatum = preg_replace('/ /', ' - ', $datum_sajat_formatum);
+                        $datum_sajat_formatum = preg_replace('/([0-9]?[0-9]:[0-9][0-9]):[0-9][0-9]/', '$1', $datum_sajat_formatum);
+                        
+                        print('<td>'.$datum_sajat_formatum.'</td>');
                         print('<td>'.$row['username'].'</td>');
                         if( strtolower($_SESSION['username']) != strtolower($row['username']) ) {
                             print('<td></td>');
                         } else {
-                            print('<td><a href="/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'">X</a></td>');
+                            print('<td><a href="/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'">Törlés</a></td>');
                         }
                         print("</tr>");
                     }
@@ -224,6 +226,8 @@
                 printLn('<a href="feltoltes.php?logout=1"><button id="kilepesgomb">Kilépés</button></a>');
                 printLn('</div>');
             }
+
+            print('</table></center>');
         ?>
     </body>
 </html>
