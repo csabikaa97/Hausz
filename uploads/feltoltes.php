@@ -115,7 +115,7 @@
                 if($result) {
                     if($result->num_rows > 0) {
                         $row = $result->fetch_assoc();
-                        if($_GET['file'] == $row['filename'] && $_SESSION['username'] == $row['username'] && $_GET['file_id'] == $row['id']) {
+                        if($_GET['file'] == $row['filename'] && strtolower($_SESSION['username']) == strtolower($row['username']) && $_GET['file_id'] == $row['id']) {
                             shell_exec('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
                             //echo('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
                             echo '<h1>"'.$_GET['file'].'" törölve.</h1>';
@@ -129,26 +129,58 @@
             }
 
             if(isset($_POST["submit"])) {
-                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                    $query_del = 'USE hausz_megoszto;';
-                    $query_overwrite = 'DELETE FROM files WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
-                    
-                    $query_del2 = 'INSERT INTO `files` (filename, added, user_id) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"));';
-                    //var_dump($query_del);
-                    //var_dump($query_del2);
-                    $result_overwrite = $conn->query($query_overwrite);
-                    $result_del = $conn->query($query_del);
-                    $result_del2 = $conn->query($query_del2);
-                    //var_dump($result_del);
-                    //var_dump($result_del2);
-                    echo '<h1>A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
-                    //echo "<a href='uploads/fajlok" . basename( $_FILES["fileToUpload"]["name"] ) . "'>uploads/fajlok/" . basename( $_FILES["fileToUpload"]["name"] ) . "</a>";
-                    unset($_FILES["fileToUpload"]);
-                    unset($_FILES["fileToUpload"]["tmp_name"]);
+                $goforupload = false;
+                $query_del = 'USE hausz_megoszto;';
+                $query_check = 'SELECT files.filename, files.user_id, users.username FROM files LEFT OUTER JOIN users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
+                $result_check = $conn->query($query_check);
+                if($result_check) {
+                    if($result_check->num_rows > 0) {
+                        $row = $result_check->fetch_assoc();
+                        debug('Már van egy ilyen nevű fájl a szerveren.');
+
+                        if( strtolower($row['username']) == strtolower($_SESSION['username']) ) {
+                            $query_overwrite = 'DELETE FROM files WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
+                            $result_overwrite = $conn->query($query_overwrite);
+                            if(!$result_overwrite) {
+                                printLn('Korábbi azonos fájl törlése sikertelen');
+                            } else {
+                                $goforupload = true;
+                            }
+                        } else {
+                            debug('Nem egyezik a felhasználónév, ezért a felülírás nem lehetséges.');
+                            echo '<h1>Már létezik egy "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl, amely nem a tiéd, ezért a feltöltés nem lehetséges.</h1>';
+                            $goforupload = false;
+                        }
+                    } else {
+                        debug('Nincs azonos nevű fájl. OK');
+                        $goforupload = true;
+                    }
                 } else {
-                    echo '<h1>Sikertelen volt a fájl feltöltése.</h1>';
-                    var_dump($_FILES["fileToUpload"]["tmp_name"]);
+                    debug('Query hiba: '.$query_check);
+                    printLn('Query hiba: '.$query_check);
+                    $goforupload = false;
                 }
+                if($goforupload == true) {
+                    if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                        echo '<h1>Sikertelen volt a fájl feltöltése.</h1>';
+                        //var_dump($_FILES["fileToUpload"]["tmp_name"]);
+                    } else {
+                        $query_del2 = 'INSERT INTO `files` (filename, added, user_id) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"));';
+                        $result_del2 = $conn->query($query_del2);
+                        echo '<h1>A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
+                        //echo "<a href='uploads/fajlok" . basename( $_FILES["fileToUpload"]["name"] ) . "'>uploads/fajlok/" . basename( $_FILES["fileToUpload"]["name"] ) . "</a>";
+                    }
+                }
+
+                //var_dump($query_del);
+                //var_dump($query_del2);
+                
+                $result_del = $conn->query($query_del);
+                //var_dump($result_del);
+                //var_dump($result_del2);
+                
+                unset($_FILES["fileToUpload"]);
+                unset($_FILES["fileToUpload"]["tmp_name"]);
                 unset($_POST["submit"]);
             }
 		
@@ -169,7 +201,7 @@
                         print('<td><a href="/uploads/fajlok/'.$row['filename'].'">'.$row['filename']."</a></td>");
                         print('<td>'.$row['added'].'</td>');
                         print('<td>'.$row['username'].'</td>');
-                        if( $_SESSION['username'] != $row['username'] ) {
+                        if( strtolower($_SESSION['username']) != strtolower($row['username']) ) {
                             print('<td></td>');
                         } else {
                             print('<td><a href="/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'">X</a></td>');
@@ -188,6 +220,7 @@
 
             if($_SESSION['loggedin'] == true) {
                 printLn('<div id="top_right_corner_div">');
+                printLn('Belépve mint: "'.$_SESSION['username'].'"');
                 printLn('<a href="feltoltes.php?logout=1"><button id="kilepesgomb">Kilépés</button></a>');
                 printLn('</div>');
             }
