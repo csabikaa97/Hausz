@@ -14,6 +14,16 @@
                 left: 5px;
                 margin: 0px;
             }
+
+            #bottom_left_corner_div {
+                padding: 10px;
+                position: fixed;
+                bottom: 5px;
+                left: 5px;
+                margin: 0px;
+                border: solid rgb(240, 240, 240) 1px;
+                border-radius: 5px;
+            }
         </style>
         <script>
 			fetch("https://hausz.stream/index/topbar.html")
@@ -37,7 +47,7 @@
             }
 
             function showLogin($reason) {
-                printLn("<center><div class='container'>");
+                printLn("<center><div class='container' id='bottom_left_corner_div'>");
                 printLn("<p>".$reason."</p>");
                 printLn("<div class='login'>");
                 printLn("<form action='feltoltes.php' method='post'>");
@@ -89,13 +99,11 @@
                 exit();
             }
 
-            if($_SESSION['loggedin'] == true) {
-                printLn('<center><form action="feltoltes.php" method="post" enctype="multipart/form-data">');
-                printLn('<h3 style="font-weight: normal;">Válassz ki, vagy húzz ide egy fájlt a feltöltéshez</h3>');
-                printLn('<input class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload">');
-                printLn('<button class="Gombok KekHatter" name="submit" type="submit" value="Kimenet" id="SubmitGomb">Feltöltés</button>');
-                printLn('</form></center>');
-            }
+            printLn('<center><form action="feltoltes.php" method="post" enctype="multipart/form-data">');
+            printLn('<h3 style="font-weight: normal;">Válassz ki, vagy húzz ide egy fájlt a feltöltéshez</h3>');
+            printLn('<input class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload">');
+            printLn('<br><br><button class="Gombok KekHatter" name="submit" type="submit" value="Kimenet" id="SubmitGomb">Feltöltés</button>');
+            printLn('</form></center>');
 
             $target_file = "/var/www/html/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]);
             debug("/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]));
@@ -106,7 +114,7 @@
                 if($result) {
                     if($result->num_rows > 0) {
                         $row = $result->fetch_assoc();
-                        if($_GET['file'] == $row['filename'] && strtolower($_SESSION['username']) == strtolower($row['username']) && $_GET['file_id'] == $row['id']) {
+                        if($_GET['file'] == $row['filename'] && strtolower($_SESSION['username']) == strtolower($row['username']) or strtolower($row['username']) == "ismeretlen" && $_GET['file_id'] == $row['id']) {
                             shell_exec('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
                             //echo('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
                             echo '<h1>"'.$_GET['file'].'" törölve.</h1>';
@@ -119,7 +127,17 @@
                 }
             }
 
-            if(isset($_POST["submit"]) && $_SESSION['loggedin'] == true) {
+            if($_GET['claim'] == '1' && $_SESSION['loggedin'] == true) {
+                $query = "UPDATE files SET user_id = (SELECT id FROM users WHERE username = '".$_SESSION['username']."') WHERE id = ".$_GET['file_id'];
+                $result = $conn->query($query);
+                if($result) {
+                    echo '<h1>A "' . $_GET['file'] . '" nevű fájl sikeresen hozzá lett rendelve a fiókodhoz.</h1>';
+                } else {
+                    die('Fatal error: '.$query);
+                }
+            }
+
+            if(isset($_POST["submit"])) {
                 $goforupload = false;
                 $query_del = 'USE hausz_megoszto;';
                 $query_check = 'SELECT files.filename, files.user_id, users.username FROM files LEFT OUTER JOIN users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
@@ -152,15 +170,26 @@
                     $goforupload = false;
                 }
                 if($goforupload == true) {
-                    if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                        echo '<h1>Sikertelen volt a fájl feltöltése.</h1>';
-                        //var_dump($_FILES["fileToUpload"]["tmp_name"]);
+                    if( $_FILES["fileToUpload"]['size'] < 25*1024*1024 ) {
+                        if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                            echo '<h1>Sikertelen volt a fájl feltöltése.</h1>';
+                            //var_dump($_FILES["fileToUpload"]["tmp_name"]);
+                        } else {
+                            if($_SESSION['loggedin'] == true) {
+                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), '.$_FILES["fileToUpload"]["size"].');';
+                                $result_del2 = $conn->query($query_del2);
+                            } else {
+                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", 0, '.$_FILES["fileToUpload"]["size"].')';
+                                $result_del2 = $conn->query($query_del2);
+                            }
+                            
+                            echo '<h1>A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
+                            //echo "<a href='uploads/fajlok" . basename( $_FILES["fileToUpload"]["name"] ) . "'>uploads/fajlok/" . basename( $_FILES["fileToUpload"]["name"] ) . "</a>";
+                        }
                     } else {
-                        $query_del2 = 'INSERT INTO `files` (filename, added, user_id) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"));';
-                        $result_del2 = $conn->query($query_del2);
-                        echo '<h1>A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
-                        //echo "<a href='uploads/fajlok" . basename( $_FILES["fileToUpload"]["name"] ) . "'>uploads/fajlok/" . basename( $_FILES["fileToUpload"]["name"] ) . "</a>";
+                        echo '<h1>A feltöltés sikertelen. A kiválasztott fájl meghaladja a 25 MB-os méretlimitet.</h1>';
                     }
+                    
                 }
 
                 //var_dump($query_del);
@@ -179,11 +208,13 @@
             print("<tr>");
             print("<th>Fájlnév</th>");
             print("<th>Dátum</th>");
+            print("<th>Méret</th>");
             print("<th>Feltöltő</th>");
+            print("<th></th>");
             print("<th></th>");
             print("</tr>");
 
-            $query = "SELECT files.id as 'id', filename, added, username FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
+            $query = "SELECT files.id as 'id', files.size, filename, added, username FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
             $result = $conn->query($query);
             if($result) {
                 if($result->num_rows > 0) {
@@ -202,12 +233,26 @@
                         $datum_sajat_formatum = preg_replace('/([0-9]?[0-9]:[0-9][0-9]):[0-9][0-9]/', '$1', $datum_sajat_formatum);
                         
                         print('<td>'.$datum_sajat_formatum.'</td>');
+
+                        $size = " B";
+                        if($row['size'] <= 1024) { $size = $row['size']." B"; }
+                        if($row['size'] > 1024) { $size = round($row['size']/(1024), 2)." KB"; }
+                        if($row['size'] > 1024 * 1024) { $size = round($row['size']/(1024*1024), 2)." MB"; }
+                        if($row['size'] > 1024 * 1024 * 1024) { $size = round($row['size']/(1024*1024*1024), 2)." GB"; }
+                        
+                        print('<td>'.$size.'</td>');
                         print('<td>'.$row['username'].'</td>');
-                        if( strtolower($_SESSION['username']) != strtolower($row['username']) ) {
-                            print('<td></td>');
-                        } else {
+                        if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == true) or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == true)) {
                             print('<td><a href="/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'">Törlés</a></td>');
+                        } else {
+                            print('<td></td>');
                         }
+                        if( strtolower($row['username'] == "ismeretlen") && $_SESSION['loggedin'] == true ) {
+                            print('<td><a href="/uploads/feltoltes.php?claim=1&file='.$row['filename'].'&file_id='.$row['id'].'">Claimelés</a></td>');
+                        } else {
+                            print('<td></td>');
+                        }
+                        
                         print("</tr>");
                     }
                 } else {
@@ -221,9 +266,9 @@
             }
 
             if($_SESSION['loggedin'] == true) {
-                printLn('<div id="top_right_corner_div">');
+                printLn("<div class='container' id='bottom_left_corner_div'>");
                 printLn('Belépve mint: "'.$_SESSION['username'].'"');
-                printLn('<a href="feltoltes.php?logout=1"><button id="kilepesgomb">Kilépés</button></a>');
+                printLn('<br><a href="feltoltes.php?logout=1"><button id="kilepesgomb">Kilépés</button></a>');
                 printLn('</div>');
             }
 
