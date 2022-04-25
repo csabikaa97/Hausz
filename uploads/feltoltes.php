@@ -56,6 +56,7 @@
                 printLn("<input type='hidden' name='login' value='yes'>");
                 printLn("<button type='submit'>Bejelentkezés</button>");
                 printLn("</form>");
+                printLn('<a href="/uploads/register.php"><button>Regisztráció</button></a>');
                 printLn("</div>");
                 printLn("</div></center>");
             }
