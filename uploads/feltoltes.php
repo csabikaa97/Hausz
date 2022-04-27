@@ -23,13 +23,66 @@
                 margin: 0px;
                 border: solid rgb(240, 240, 240) 1px;
                 border-radius: 5px;
+                background-color: white;
+            }
+
+            #preview_box {
+                padding: 10px;
+                position: fixed;
+                left: 20%;
+                top: 25%;
+                width: 60%;
+                height: 50%;
+                border: solid rgb(240, 240, 240) 1px;
+                border-radius: 5px;
+                background-color: white;
+                z-index: 2;
+            }
+            #elonezet_bezaras_gomb {
+                position: fixed;
+                top: 10%;
+                right: 10%;
+                font-size: 30px;
+            }
+            #darken_background {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+                background-color: black;
+                opacity: 75%;
             }
         </style>
         <script>
+            function elonezet(hivatkozas, tipus) {
+                if(tipus == "image") {
+                    document.getElementById('preview_box').innerHTML = '<img style="max-width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
+                    document.getElementById('preview_box').style.height = "50%";
+                } else {
+                    document.getElementById('preview_box').innerHTML = '<iframe style="width: 100%; height: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                    document.getElementById('preview_box').style.height = "70%";
+                }
+                document.getElementById('preview_box').hidden = false;
+                document.getElementById('darken_background').hidden = false;
+                document.getElementById('elonezet_bezaras_gomb').hidden = false;
+            }
+
+            function elonezet_bezaras() {
+                document.getElementById('preview_box').hidden = true;
+                document.getElementById('darken_background').hidden = true;
+                document.getElementById('elonezet_bezaras_gomb').hidden = true;
+            }
+
 			fetch("https://hausz.stream/index/topbar.html")
 				.then(response => response.text())
 				.then(text => document.body.innerHTML = text + document.body.innerHTML)
 		</script>
+
+        
+        <div id='preview_box' hidden></div>
+        <div id='darken_background' hidden> </div>
+        <button hidden id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()">X</button>
 
         <?php
             $servername = "127.0.0.1";
@@ -213,6 +266,8 @@
             print("<th>Feltöltő</th>");
             print("<th></th>");
             print("<th></th>");
+            print("<th></th>");
+            print("<th></th>");
             print("</tr>");
 
             $query = "SELECT files.id as 'id', files.size, filename, added, username FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
@@ -221,18 +276,15 @@
                 if($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
                         $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
-                        //var_dump($kiterjesztes);
                         print("<tr>");
-                        print('<td>');
-                        //print('<img src="/uploads/');
-                        //$thumbnail_path = "none.jpg";
-                        //if($kiterjesztes == 'img') { $thumbnail_path = "img.jpg"; }
-                        //print('" alt="thumbnail" />');
-                        print('<a href="/uploads/fajlok/'.$row['filename'].'">'.$row['filename']."</a></td>");
+
+                        //print('<td><a href="/uploads/fajlok/'.$row['filename'].'">'.$row['filename']."</a></td>");
+                        print('<td>'.$row['filename'].'</td>');
+                        
+                            
                         $datum_sajat_formatum = preg_replace('/\-/', '.', $row['added']);
                         $datum_sajat_formatum = preg_replace('/ /', ' - ', $datum_sajat_formatum);
                         $datum_sajat_formatum = preg_replace('/([0-9]?[0-9]:[0-9][0-9]):[0-9][0-9]/', '$1', $datum_sajat_formatum);
-                        
                         print('<td>'.$datum_sajat_formatum.'</td>');
 
                         $size = " B";
@@ -240,6 +292,12 @@
                         if($row['size'] > 1024) { $size = round($row['size']/(1024), 2)." KB"; }
                         if($row['size'] > 1024 * 1024) { $size = round($row['size']/(1024*1024), 2)." MB"; }
                         if($row['size'] > 1024 * 1024 * 1024) { $size = round($row['size']/(1024*1024*1024), 2)." GB"; }
+
+                        $size = preg_replace('/^([0-9][0-9][0-9][0-9])\.(.*) (.*)/', '$1 $3', $size);
+                        $size = preg_replace('/^([0-9][0-9][0-9])\.([0-9])(.*) (.*)/', '$1 $4', $size);
+                        $size = preg_replace('/^([0-9][0-9])\.([0-9])(.*) (.*)/', '$1.$2 $4', $size);
+                        $size = preg_replace('/^([0-9])\.([0-9][0-9])(.*) (.*)/', '$1.$2 $4', $size);
+                        $size = preg_replace('/(.*)\.0 (.*)/', '$1 $2', $size);
                         
                         print('<td>'.$size.'</td>');
                         print('<td>'.$row['username'].'</td>');
@@ -253,6 +311,21 @@
                         } else {
                             print('<td></td>');
                         }
+
+                        if( 
+                            preg_match('/jpg$/', $row['filename']) or
+                            preg_match('/png$/', $row['filename']) or
+                            preg_match('/jpeg$/', $row['filename']) or
+                            preg_match('/bmp$/', $row['filename']) or
+                            preg_match('/webp$/', $row['filename']) or
+                            preg_match('/gif$/', $row['filename'])
+                        ) {
+                            print('<td><a onclick=\'elonezet("/uploads/fajlok/'.$row['filename'].'", "image")\'>&#128064;</a></td>');
+                        } else {
+                            print('<td><a onclick=\'elonezet("/uploads/fajlok/'.$row['filename'].'", "other")\'>&#128064;</a></td>');
+                        }
+
+                        print('<td><a href="/uploads/fajlok/'.$row['filename'].'" download>&#128190;</a></td>');
                         
                         print("</tr>");
                     }
