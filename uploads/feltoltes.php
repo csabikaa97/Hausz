@@ -4,7 +4,7 @@
 		<title>Hausz megosztó</title>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
-		<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
 	</head>
     <body>
         <style>
@@ -32,7 +32,6 @@
                 left: 20%;
                 top: 25%;
                 width: 60%;
-                height: 50%;
                 border: solid rgb(240, 240, 240) 1px;
                 border-radius: 5px;
                 background-color: white;
@@ -55,17 +54,30 @@
             }
         </style>
         <script>
-            function elonezet(hivatkozas, tipus) {
-                if(tipus == "image") {
-                    document.getElementById('preview_box').innerHTML = '<img style="max-width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
-                    document.getElementById('preview_box').style.height = "50%";
-                } else {
-                    document.getElementById('preview_box').innerHTML = '<iframe style="width: 100%; height: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
-                    document.getElementById('preview_box').style.height = "70%";
+            function torles(link, fajlnev) {
+                if( confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?') ) {
+                    window.location.assign(link);
                 }
-                document.getElementById('preview_box').hidden = false;
-                document.getElementById('darken_background').hidden = false;
-                document.getElementById('elonezet_bezaras_gomb').hidden = false;
+            }
+
+            function elonezet(hivatkozas, tipus, meret) {
+                var caller = event.target;
+                if(caller.outerHTML.match(/^<td/) ) {
+                    if(meret > 1024*1024*2) {
+                        alert('A fájl mérete nagyobb mint 2MB, ezért az előnézetet nem lehet hozzá betölteni.');
+                    } else {
+                        if(tipus == "image") {
+                            document.getElementById('preview_box').innerHTML = '<img style="max-width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
+                            document.getElementById('preview_box').style.height = "50%";
+                        } else {
+                            document.getElementById('preview_box').innerHTML = '<iframe style="width: 100%; height: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                            document.getElementById('preview_box').style.height = "70%";
+                        }
+                        document.getElementById('preview_box').hidden = false;
+                        document.getElementById('darken_background').hidden = false;
+                        document.getElementById('elonezet_bezaras_gomb').hidden = false;
+                    }
+                }
             }
 
             function elonezet_bezaras() {
@@ -74,14 +86,24 @@
                 document.getElementById('elonezet_bezaras_gomb').hidden = true;
             }
 
-			fetch("https://hausz.stream/index/topbar.html")
+            function $(id) { return document.getElementById(id); }
+
+            window.onload = function() {
+                document.addEventListener("keyup", function(event) {
+                    if (event.key == "Escape") {
+                        elonezet_bezaras();
+                    }
+                });
+
+                fetch("https://hausz.stream/index/topbar.html")
 				.then(response => response.text())
 				.then(text => document.body.innerHTML = text + document.body.innerHTML)
+            }
 		</script>
 
         
         <div id='preview_box' hidden></div>
-        <div id='darken_background' hidden> </div>
+        <div id='darken_background' hidden onclick="elonezet_bezaras()"> </div>
         <button hidden id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()">X</button>
 
         <?php
@@ -121,6 +143,14 @@
             printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
 
             session_start();
+
+            if( !empty($_GET['logout']) ) {
+                $_SESSION['loggedin'] = false;
+                $_SESSION['username'] = '';
+                
+                header("Location: feltoltes.php");
+            }
+
             if($_SESSION['loggedin'] == false) {
                 if($_POST['login']=="yes") {
                     $query = "SELECT * FROM users WHERE username='".$_POST['username']."'";
@@ -145,18 +175,13 @@
                 }
             }
 
-            if( !empty($_GET['logout']) ) {
-                $_SESSION['loggedin'] = false;
-                $_SESSION['username'] = '';
-                
-                header("Location: feltoltes.php");
-                exit();
-            }
-
             printLn('<center><form action="feltoltes.php" method="post" enctype="multipart/form-data">');
             printLn('<h3 style="font-weight: normal;">Válassz ki, vagy húzz ide egy fájlt a feltöltéshez</h3>');
-            printLn('<input class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload">');
-            printLn('<br><br><button class="Gombok KekHatter" name="submit" type="submit" value="Kimenet" id="SubmitGomb">Feltöltés</button>');
+            printLn('<input class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
+            if($_SESSION['loggedin'] == true) { 
+                printLn('<input type="checkbox" name="private" type="private" id="private" />Fájl privát tárolása<br><br>');
+            }
+            printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb">Feltöltés</button>');
             printLn('</form></center>');
 
             $target_file = "/var/www/html/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]);
@@ -171,7 +196,7 @@
                         if($_GET['file'] == $row['filename'] && strtolower($_SESSION['username']) == strtolower($row['username']) or strtolower($row['username']) == "ismeretlen" && $_GET['file_id'] == $row['id']) {
                             shell_exec('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
                             //echo('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
-                            echo '<h1>"'.$_GET['file'].'" törölve.</h1>';
+                            echo '<h1 style="text-align: center">"'.$_GET['file'].'" törölve.</h1>';
                             $query_del = "DELETE FROM files WHERE filename = '".$_GET['file']."' AND user_id = '".$row['user_id']."' AND id = ".$_GET['file_id'];
                             $result_del = $conn->query($query_del);
                         }
@@ -224,20 +249,27 @@
                     $goforupload = false;
                 }
                 if($goforupload == true) {
-                    if( $_FILES["fileToUpload"]['size'] < 25*1024*1024 ) {
+                    if( $_FILES["fileToUpload"]['size'] < 250*1024*1024 ) {
                         if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                             echo '<h1>Sikertelen volt a fájl feltöltése.</h1>';
                             //var_dump($_FILES["fileToUpload"]["tmp_name"]);
                         } else {
                             if($_SESSION['loggedin'] == true) {
-                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), '.$_FILES["fileToUpload"]["size"].');';
+                                if($_POST['private'] == "on") { $_POST['private'] = "1"; } else { $_POST['private'] = "0"; }
+                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), '.$_FILES["fileToUpload"]["size"].', '.$_POST['private'].');';
                                 $result_del2 = $conn->query($query_del2);
+                                if(!$result_del2) {
+                                    var_dump($result_del2);
+                                    var_dump($conn->error);
+                                    var_dump($query_del2);
+                                    die();
+                                }
                             } else {
-                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", 0, '.$_FILES["fileToUpload"]["size"].')';
+                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", 0, '.$_FILES["fileToUpload"]["size"].', 0)';
                                 $result_del2 = $conn->query($query_del2);
                             }
                             
-                            echo '<h1>A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
+                            echo '<h1 style="text-align: center">A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
                             //echo "<a href='uploads/fajlok" . basename( $_FILES["fileToUpload"]["name"] ) . "'>uploads/fajlok/" . basename( $_FILES["fileToUpload"]["name"] ) . "</a>";
                         }
                     } else {
@@ -270,17 +302,33 @@
             print("<th></th>");
             print("</tr>");
 
-            $query = "SELECT files.id as 'id', files.size, filename, added, username FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
+            $query = "SELECT files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
             $result = $conn->query($query);
             if($result) {
                 if($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
-                        $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
-                        print("<tr>");
+                        if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username'])) or ($_SESSION['loggedin'] != true && $row['private'] == '1') )
+                            continue;
 
-                        //print('<td><a href="/uploads/fajlok/'.$row['filename'].'">'.$row['filename']."</a></td>");
-                        print('<td>'.$row['filename'].'</td>');
-                        
+                        $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
+                        $preview_type = "";
+                        if( 
+                            preg_match('/jpg$/', $row['filename']) or
+                            preg_match('/png$/', $row['filename']) or
+                            preg_match('/jpeg$/', $row['filename']) or
+                            preg_match('/bmp$/', $row['filename']) or
+                            preg_match('/webp$/', $row['filename']) or
+                            preg_match('/svg$/', $row['filename']) or
+                            preg_match('/gif$/', $row['filename'])
+                        ) { $preview_type = "image"; } else { $preview_type = "other"; }
+
+                        print('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
+
+                        print('<td>');
+                        if( $row['private'] == '1') {
+                            print('<font style="color:red">PRIVÁT</font> ');
+                        }
+                        print($row['filename'].'</td>');
                             
                         $datum_sajat_formatum = preg_replace('/\-/', '.', $row['added']);
                         $datum_sajat_formatum = preg_replace('/ /', ' - ', $datum_sajat_formatum);
@@ -301,31 +349,21 @@
                         
                         print('<td>'.$size.'</td>');
                         print('<td>'.$row['username'].'</td>');
-                        if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == true) or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == true)) {
-                            print('<td><a href="/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'">Törlés</a></td>');
-                        } else {
-                            print('<td></td>');
-                        }
                         if( strtolower($row['username'] == "ismeretlen") && $_SESSION['loggedin'] == true ) {
                             print('<td><a href="/uploads/feltoltes.php?claim=1&file='.$row['filename'].'&file_id='.$row['id'].'">Claimelés</a></td>');
                         } else {
                             print('<td></td>');
                         }
-
-                        if( 
-                            preg_match('/jpg$/', $row['filename']) or
-                            preg_match('/png$/', $row['filename']) or
-                            preg_match('/jpeg$/', $row['filename']) or
-                            preg_match('/bmp$/', $row['filename']) or
-                            preg_match('/webp$/', $row['filename']) or
-                            preg_match('/gif$/', $row['filename'])
-                        ) {
-                            print('<td><a onclick=\'elonezet("/uploads/fajlok/'.$row['filename'].'", "image")\'>&#128064;</a></td>');
+                        if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == true) or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == true)) {
+                            print('<td><a style="text-decoration: none" onclick=\'torles("/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'", "'.$row['filename'].'")\'>&#10060;</a></td>');
                         } else {
-                            print('<td><a onclick=\'elonezet("/uploads/fajlok/'.$row['filename'].'", "other")\'>&#128064;</a></td>');
+                            print('<td></td>');
                         }
 
-                        print('<td><a href="/uploads/fajlok/'.$row['filename'].'" download>&#128190;</a></td>');
+                        //print('<td><a onclick=\'elonezet("/uploads/fajlok/'.$row['filename'].'", "'.$preview_type.'", '.$row['size'].')\'>&#128064;</a></td>');
+                        print('<td></td>');
+
+                        print('<td><a href="/uploads/request.php?file_id='.$row['id'].'" download>&#128190;</a></td>');
                         
                         print("</tr>");
                     }

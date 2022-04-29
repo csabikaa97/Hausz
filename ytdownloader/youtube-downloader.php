@@ -13,7 +13,7 @@
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="/index/style.css" />
-        <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+        <link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <title id="title">Hausz YouTube letöltő Alpha xdddáű</title>
     </head>
     <body>

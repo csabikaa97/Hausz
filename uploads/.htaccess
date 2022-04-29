@@ -1,0 +1,19 @@
+Order deny,allow
+Deny from all
+
+XSendFile on
+
+<Files feltoltes.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+<Files register.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+<Files request.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
