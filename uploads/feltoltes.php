@@ -64,18 +64,27 @@
                 var caller = event.target;
                 if(caller.outerHTML.match(/^<td/) ) {
                     if(meret > 1024*1024*2) {
-                        alert('A fájl mérete nagyobb mint 2MB, ezért az előnézetet nem lehet hozzá betölteni.');
+                        alert('A fájl mérete nagyobb mint 2MB, ezért az előnézetet nem lehet hozzá betölteni. Amúgy eskü azért mert egy fizikai limitáció, és véletlenül sem azért mert spórolni akarok az elküldött adatmennyiség költségén xddddáű');
                     } else {
-                        if(tipus == "image") {
-                            document.getElementById('preview_box').innerHTML = '<img style="max-width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
-                            document.getElementById('preview_box').style.height = "50%";
-                        } else {
-                            document.getElementById('preview_box').innerHTML = '<iframe style="width: 100%; height: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
-                            document.getElementById('preview_box').style.height = "70%";
-                        }
+
                         document.getElementById('preview_box').hidden = false;
                         document.getElementById('darken_background').hidden = false;
                         document.getElementById('elonezet_bezaras_gomb').hidden = false;
+
+                        
+                        if(tipus == "image") {
+                            document.getElementById('preview_box').innerHTML = '<img style="max-width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
+                            document.getElementById('preview_box').style.height = "50%";
+                            return;
+                        }
+                        if(tipus == "audio") {
+                            document.getElementById('preview_box').innerHTML = '<audio controls><source src="'+hivatkozas +'" type="audio/mpeg"></audio>';
+                            document.getElementById('preview_box').style.height = "50%";
+                            return;
+                        }
+
+                        document.getElementById('preview_box').innerHTML = '<iframe style="width: 100%; height: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                        document.getElementById('preview_box').style.height = "70%";
                     }
                 }
             }
@@ -84,20 +93,22 @@
                 document.getElementById('preview_box').hidden = true;
                 document.getElementById('darken_background').hidden = true;
                 document.getElementById('elonezet_bezaras_gomb').hidden = true;
+                document.getElementById('preview_box').innerHTML = "";
             }
 
             function $(id) { return document.getElementById(id); }
 
             window.onload = function() {
                 document.addEventListener("keyup", function(event) {
-                    if (event.key == "Escape") {
-                        elonezet_bezaras();
+                        if (event.key == "Escape") {
+                            elonezet_bezaras();
+                        }
                     }
-                });
+                );
 
                 fetch("https://hausz.stream/index/topbar.html")
-				.then(response => response.text())
-				.then(text => document.body.innerHTML = text + document.body.innerHTML)
+                    .then(response => response.text())
+                    .then(text => document.body.innerHTML = text + document.body.innerHTML)
             }
 		</script>
 
@@ -107,23 +118,13 @@
         <button hidden id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()">X</button>
 
         <?php
-            $servername = "127.0.0.1";
-            $username = "root";
-            $password = "root";
-            $dbname = "hausz_megoszto";
-            $conn = new mysqli($servername, $username, $password, $dbname);
-            $conn->set_charset("utf8mb4");
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
+            include '../include/adatbazis.php';
 
-            function printLn($string) {
-                echo $string . "\n";
-            }
+            function printLn($string) { echo $string . "\n"; }
 
             function showLogin($reason) {
                 printLn("<center><div class='container' id='bottom_left_corner_div'>");
-                printLn("<p>".$reason."</p>");
+                if( strlen($reason) > 0 ) { printLn("<p>".$reason."</p>"); }
                 printLn("<div class='login'>");
                 printLn("<form action='feltoltes.php' method='post'>");
                 printLn("<input type='text' name='username' placeholder='Felhasználónév'><br>");
@@ -136,18 +137,15 @@
                 printLn("</div></center>");
             }
 
-            function debug($data) {
-                echo "<script>console.log('Debug: " . $data . "' );</script>";
-            }
-
-            printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
+            function debug($data) { echo "<script>console.log('Debug: " . $data . "' );</script>"; }
 
             session_start();
+            
+            printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
 
-            if( !empty($_GET['logout']) ) {
+            if( $_GET['logout'] == "igen" ) {
                 $_SESSION['loggedin'] = false;
                 $_SESSION['username'] = '';
-                
                 header("Location: feltoltes.php");
             }
 
@@ -195,7 +193,6 @@
                         $row = $result->fetch_assoc();
                         if($_GET['file'] == $row['filename'] && strtolower($_SESSION['username']) == strtolower($row['username']) or strtolower($row['username']) == "ismeretlen" && $_GET['file_id'] == $row['id']) {
                             shell_exec('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
-                            //echo('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
                             echo '<h1 style="text-align: center">"'.$_GET['file'].'" törölve.</h1>';
                             $query_del = "DELETE FROM files WHERE filename = '".$_GET['file']."' AND user_id = '".$row['user_id']."' AND id = ".$_GET['file_id'];
                             $result_del = $conn->query($query_del);
@@ -249,10 +246,9 @@
                     $goforupload = false;
                 }
                 if($goforupload == true) {
-                    if( $_FILES["fileToUpload"]['size'] < 250*1024*1024 ) {
+                    if( $_FILES["fileToUpload"]['size'] < 25000*1024*1024 ) {
                         if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                             echo '<h1>Sikertelen volt a fájl feltöltése.</h1>';
-                            //var_dump($_FILES["fileToUpload"]["tmp_name"]);
                         } else {
                             if($_SESSION['loggedin'] == true) {
                                 if($_POST['private'] == "on") { $_POST['private'] = "1"; } else { $_POST['private'] = "0"; }
@@ -270,20 +266,14 @@
                             }
                             
                             echo '<h1 style="text-align: center">A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.</h1>';
-                            //echo "<a href='uploads/fajlok" . basename( $_FILES["fileToUpload"]["name"] ) . "'>uploads/fajlok/" . basename( $_FILES["fileToUpload"]["name"] ) . "</a>";
                         }
                     } else {
                         echo '<h1>A feltöltés sikertelen. A kiválasztott fájl meghaladja a 25 MB-os méretlimitet.</h1>';
                     }
                     
                 }
-
-                //var_dump($query_del);
-                //var_dump($query_del2);
                 
                 $result_del = $conn->query($query_del);
-                //var_dump($result_del);
-                //var_dump($result_del2);
                 
                 unset($_FILES["fileToUpload"]);
                 unset($_FILES["fileToUpload"]["tmp_name"]);
@@ -311,16 +301,15 @@
                             continue;
 
                         $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
-                        $preview_type = "";
-                        if( 
-                            preg_match('/jpg$/', $row['filename']) or
-                            preg_match('/png$/', $row['filename']) or
-                            preg_match('/jpeg$/', $row['filename']) or
-                            preg_match('/bmp$/', $row['filename']) or
-                            preg_match('/webp$/', $row['filename']) or
-                            preg_match('/svg$/', $row['filename']) or
-                            preg_match('/gif$/', $row['filename'])
-                        ) { $preview_type = "image"; } else { $preview_type = "other"; }
+                        $preview_type = "other"; 
+                        if(preg_match('/jpg$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/png$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/jpeg$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/bmp$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/webp$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/svg$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/gif$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/mp3$/', $row['filename'])) { $preview_type = "audio"; }
 
                         print('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
 
@@ -360,11 +349,8 @@
                             print('<td></td>');
                         }
 
-                        //print('<td><a onclick=\'elonezet("/uploads/fajlok/'.$row['filename'].'", "'.$preview_type.'", '.$row['size'].')\'>&#128064;</a></td>');
                         print('<td></td>');
-
                         print('<td><a href="/uploads/request.php?file_id='.$row['id'].'" download>&#128190;</a></td>');
-                        
                         print("</tr>");
                     }
                 } else {
@@ -380,7 +366,7 @@
             if($_SESSION['loggedin'] == true) {
                 printLn("<div class='container' id='bottom_left_corner_div'>");
                 printLn('Belépve mint: "'.$_SESSION['username'].'"');
-                printLn('<br><a href="feltoltes.php?logout=1"><button id="kilepesgomb">Kilépés</button></a>');
+                printLn('<br><a href="feltoltes.php?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
                 printLn('</div>');
             }
 

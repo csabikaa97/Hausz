@@ -49,15 +49,7 @@
         die();
     }
 
-    $servername = "127.0.0.1";
-    $username = "root";
-    $password = "root";
-    $dbname = "hausz_megoszto";
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    $conn->set_charset("utf8mb4");
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    include '../include/adatbazis.php';
 
     $query = "select * from files left outer join users on users.id = files.user_id where files.id = ".$_GET['file_id'];
     $result = $conn->query($query);
