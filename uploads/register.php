@@ -51,10 +51,10 @@
                 printLn("<center>");
                 printLn("<p>".$reason."</p>");
                 printLn("<div class='register'>");
-                printLn("<form action='register.php' method='post'>");
+                printLn("<form id='register' action='register.php' method='post'>");
                 printLn("<input type='text' name='register_username' placeholder='Felhasználónév'><br>");
-                printLn("<input type='password' name='register_password' placeholder='Jelszó'><br>");
-                printLn("<input type='password' name='register_password_confirm' placeholder='Jelszó megerősítése'><br>");
+                printLn("<input autocomplete='password' id='password' type='password' name='register_password' placeholder='Jelszó'><br>");
+                printLn("<input autocomplete='password' id='password' type='password' name='register_password_confirm' placeholder='Jelszó megerősítése'><br>");
                 printLn("<input type='text' name='register_email' placeholder='E-mail cím (opcionális)'><br>");
                 printLn("<input type='hidden' name='register' value='yes'>");
                 printLn("<button type='submit'>Regisztráció</button>");
