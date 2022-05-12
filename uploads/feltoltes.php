@@ -8,57 +8,6 @@
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
 	</head>
     <body>
-        <style>
-            #top_right_corner_div {
-                position: absolute;
-                bottom: 5px;
-                left: 5px;
-                margin: 0px;
-            }
-
-            #bottom_left_corner_div {
-                padding: 10px;
-                position: fixed;
-                bottom: 5px;
-                left: 5px;
-                margin: 0px;
-                border: solid rgb(240, 240, 240) 1px;
-                border-radius: 5px;
-                background-color: white;
-            }
-
-            #preview_box {
-                padding: 10px;
-                position: fixed;
-                left: 20%;
-                top: 25%;
-                width: fit-content;
-                height: 75%;
-                border: solid rgb(240, 240, 240) 1px;
-                border-radius: 5px;
-                background-color: white;
-                z-index: 2;
-            }
-            #elonezet_bezaras_gomb {
-                position: fixed;
-                top: 10%;
-                right: 10%;
-                font-size: 30px;
-            }
-            #darken_background {
-                position: fixed;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                height: 100%;
-                background-color: black;
-                opacity: 75%;
-            }
-            #elonezet_iframe {
-                max-width: 100%;
-                max-height: 100%;
-            }
-        </style>
         <script>
             function torles(link, fajlnev) {
                 if( confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?') ) {
@@ -86,7 +35,9 @@
                             return;
                         }
 
-                        document.getElementById('preview_box').innerHTML = '<iframe id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                        document.getElementById('preview_box').innerHTML = '<iframe style="height: 100%; width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                        document.getElementById('preview_box').style.height = '100%'
+                        document.getElementById('preview_box').style.width = '80%'
                     }
                 }
             }
@@ -121,8 +72,7 @@
 
         <?php
             include '../include/adatbazis.php';
-
-            function printLn($string) { echo $string . "\n"; }
+            include '../include/alap_fuggvenyek.php';
 
             function ujratoltes($szoveg) { 
                 $_SESSION['ujratoltes_szoveg'] = $szoveg;
@@ -145,7 +95,7 @@
                 printLn("</div></center>");
             }
 
-            function debug($data) { echo "<script>console.log('Debug: " . $data . "' );</script>"; }
+            
             
             if( $_GET['logout'] == "igen" ) {
                 $_SESSION['loggedin'] = false;
@@ -161,7 +111,7 @@
                 $du_eredmeny = exec("du -b /var/www/html/uploads/fajlok/");
                 $du_eredmeny = preg_replace("/[^0-9]/", "", $du_eredmeny);
 
-                $query_statisztika_mentes = "INSERT INTO hausz_megoszto.tarhely_statisztika (datum, szabad, foglalt) values ('".date("Y-m-d h:i")."', '".$df_eredmeny."', '".$du_eredmeny."')";
+                $query_statisztika_mentes = "INSERT INTO hausz_megoszto.tarhely_statisztika (datum, szabad, foglalt) values ('".date("Y-m-d h:i:s")."', '".$df_eredmeny."', '".$du_eredmeny."')";
                 $result_statisztika_mentes = $conn->query($query_statisztika_mentes);
                 if(!$result_statisztika_mentes) {
                     var_dump($conn->error);

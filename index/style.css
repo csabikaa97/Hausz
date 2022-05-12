@@ -1,18 +1,80 @@
-* { font-family: Arial, Helvetica, sans-serif; }
-.SzovegBalra { text-align: left; }
-.SzovegJobbra { text-align: right; }
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#top_right_corner_div {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    margin: 0px;
+}
+
+#bottom_left_corner_div {
+    padding: 10px;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    margin: 0px;
+    border: solid rgb(240, 240, 240) 1px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#preview_box {
+    padding: 10px;
+    position: fixed;
+    left: 20%;
+    top: 25%;
+    width: fit-content;
+    height: 75%;
+    border: solid rgb(240, 240, 240) 1px;
+    border-radius: 5px;
+    background-color: white;
+    z-index: 2;
+}
+
+#elonezet_bezaras_gomb {
+    position: fixed;
+    top: 10%;
+    right: 10%;
+    font-size: 30px;
+}
+
+#darken_background {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 75%;
+}
+
+#elonezet_iframe {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.SzovegBalra {
+    text-align: left;
+}
+
+.SzovegJobbra {
+    text-align: right;
+}
+
 .NullaMargin {
     margin: 0px;
 }
 
 .Gombok {
-	height: auto;
+    height: auto;
     font-size: 22px;
     padding: 12px;
-    color: rgb(169,169,169);
+    color: rgb(169, 169, 169);
     border-radius: 12px;
     border: 0px;
-    background-color: rgb(244,244,244);
+    background-color: rgb(244, 244, 244);
 }
 
 .PiciGombok {
@@ -53,48 +115,50 @@
 }
 
 .FuggolegesCenter {
-	margin: 0;
-	position: absolute;
-	top: 50%;
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 .InputSzoveg {
     width: 50%;
     height: auto;
-	font-size: 22px;
-	padding: 15px;
+    font-size: 22px;
+    padding: 15px;
     border: 0px solid black;
-	box-shadow: 0px 2px 5px 0px rgb(200,200,200);
+    box-shadow: 0px 2px 5px 0px rgb(200, 200, 200);
 }
 
-.center { margin: auto; }
+.center {
+    margin: auto;
+}
 
 .FullDoboz {
-	width: 100%;
+    width: 100%;
 }
 
 body {
-	background-color:white;
-	margin: 8px;
+    background-color: white;
+    margin: 8px;
 }
 
 #LinkekkelTeliTopbarXd {
     padding: 10px;
-    margin:0px;
+    margin: 0px;
     width: 100%;
     opacity: 60%;
     background-color: white;
     border-style: solid;
-    border-color:rgb(235,235,235);
-    border-width:0px;
-    box-shadow: 0px 0px 0px 0px rgb(200,200,200);
+    border-color: rgb(235, 235, 235);
+    border-width: 0px;
+    box-shadow: 0px 0px 0px 0px rgb(200, 200, 200);
 }
 
 .TopbarLink {
     text-decoration: none;
-    color:rgb(117,117,117);
+    color: rgb(117, 117, 117);
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -102,7 +166,7 @@ table {
     margin: 10px;
     table-layout: auto;
     border-collapse: collapse;
-    border: 1px solid rgb(180,180,180);
+    border: 1px solid rgb(180, 180, 180);
     text-align: left;
 }
 
@@ -111,20 +175,20 @@ td {
     padding-right: 5px;
     padding-bottom: 0px;
     padding-top: 0px;
-    border-bottom: 1px solid rgb(180,180,180);
+    border-bottom: 1px solid rgb(180, 180, 180);
     white-space: nowrap;
     font-size: 18px;
 }
 
 tr:hover {
-    background-color: rgb(240,240,240);
+    background-color: rgb(240, 240, 240);
 }
 
-pdsadsadsadsa {
+/* pdsadsadsadsa {
     margin: 10px;
     white-space: nowrap;
-    color: rgb(50,50,50);
-}
+    color: rgb(50, 50, 50);
+} */
 
 video {
     background-color: black;
@@ -132,7 +196,7 @@ video {
 
 #utasitas {
     font-size: 45px;
-    color: rgb(120,120,120);
+    color: rgb(120, 120, 120);
 }
 
 ::placeholder {

@@ -7,24 +7,6 @@
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
 	</head>
     <body>
-        <style>
-            #top_right_corner_div {
-                position: absolute;
-                bottom: 5px;
-                left: 5px;
-                margin: 0px;
-            }
-
-            #bottom_left_corner_div {
-                padding: 10px;
-                position: fixed;
-                bottom: 5px;
-                left: 5px;
-                margin: 0px;
-                border: solid rgb(240, 240, 240) 1px;
-                border-radius: 5px;
-            }
-        </style>
         <script>
 			fetch("https://hausz.stream/index/topbar.html")
 				.then(response => response.text())
@@ -32,20 +14,13 @@
 		</script>
 
         <center>
-        <h1>Hausz megosztó</h1>
-        <p>Regisztráció</p>
+            <h1>Hausz megosztó</h1>
+            <p>Regisztráció</p>
         </center>
 
         <?php
             include '../include/adatbazis.php';
-
-            function printLn($string) {
-                echo $string . "\n";
-            }
-
-            function debug($data) {
-                echo "<script>console.log('Debug: " . $data . "' );</script>";
-            }
+            include '../include/alap_fuggvenyek.php';
 
             function showPage($reason) {
                 printLn("<center>");

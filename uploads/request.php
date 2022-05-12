@@ -1,6 +1,5 @@
 <?php
-
-    function printLn($string) { echo $string . "\n"; }
+    include '../include/alap_fuggvenyek.php';
 
     function mimeType($path) {
         preg_match("|\.([a-z0-9]*)$|i", $path, $fileSuffix);
