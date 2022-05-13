@@ -111,7 +111,7 @@
                 $du_eredmeny = exec("du -b /var/www/html/uploads/fajlok/");
                 $du_eredmeny = preg_replace("/[^0-9]/", "", $du_eredmeny);
 
-                $query_statisztika_mentes = "INSERT INTO hausz_megoszto.tarhely_statisztika (datum, szabad, foglalt) values ('".date("Y-m-d h:i:s")."', '".$df_eredmeny."', '".$du_eredmeny."')";
+                $query_statisztika_mentes = "INSERT INTO hausz_megoszto.tarhely_statisztika (datum, szabad, foglalt) values (now(), '".$df_eredmeny."', '".$du_eredmeny."')";
                 $result_statisztika_mentes = $conn->query($query_statisztika_mentes);
                 if(!$result_statisztika_mentes) {
                     var_dump($conn->error);
