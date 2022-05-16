@@ -19,9 +19,6 @@ a {
     text-decoration: none;
     color: #cc00cc;
 }
-body {
-    background-image: url("hatter.gif")
-};
 ol {
     margin: auto 30%;
     text-align: justify;

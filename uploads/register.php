@@ -5,6 +5,7 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+        <meta name="color-scheme" content="dark light">
 	</head>
     <body>
         <script>

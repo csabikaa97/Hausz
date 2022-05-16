@@ -1,6 +1,6 @@
 <?php session_start(); ?>
 <!DOCTYPE html>
-<html>
+<html lang="hu">
     <head>
 		<title>Hausz megosztó</title>
 		<meta charset="UTF-8">
@@ -12,6 +12,17 @@
             function torles(link, fajlnev) {
                 if( confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?') ) {
                     window.location.assign(link);
+                }
+            }
+
+            function PrivatFeltoltesAtallitasa() {
+                document.getElementById('private').checked = !document.getElementById('private').checked;
+                if(document.getElementById('private').checked) {
+                    document.getElementById('private_label_div').classList.add('ZoldHatter');
+                    document.getElementById('private_text').innerHTML = "Fájl privát tárolása";
+                } else {
+                    document.getElementById('private_label_div').classList.remove('ZoldHatter');
+                    document.getElementById('private_text').innerHTML = "Fájl publikus tárolása";
                 }
             }
 
@@ -51,14 +62,18 @@
 
             function $(id) { return document.getElementById(id); }
 
+            function updateFileName() {
+                document.getElementById('fileToUpload_label').innerHTML = "&#128193; "+ document.getElementById('fileToUpload').files[0].name;
+            }
+
             window.onload = function() {
+                document.getElementById("fileToUpload").addEventListener("input", updateFileName);
                 document.addEventListener("keyup", function(event) {
                         if (event.key == "Escape") {
                             elonezet_bezaras();
                         }
                     }
                 );
-
                 fetch("https://hausz.stream/index/topbar.html")
                     .then(response => response.text())
                     .then(text => document.body.innerHTML = text + document.body.innerHTML)
@@ -81,21 +96,19 @@
             }
 
             function showLogin($reason) {
-                printLn("<center><div class='container' id='bottom_left_corner_div'>");
+                printLn("<div class='center container' id='bottom_left_corner_div'>");
                 if( strlen($reason) > 0 ) {   printLn("<p>".$reason."</p>"); }
                 printLn("<div class='login'>");
                 printLn("<form id='login' action='feltoltes.php' method='post'>");
                 printLn("<input id='username' autocomplete='username' type='text' name='username' placeholder='Felhasználónév'><br>");
                 printLn("<input id='current-password' autocomplete='current-password' type='password' name='password' placeholder='Jelszó'><br>");
-                printLn("<input type='hidden' name='login' value='yes'>");
+                printLn("<input type='hidden' name='login' value='yes'><br>");
                 printLn("<button type='submit'>Bejelentkezés</button>");
                 printLn("</form>");
-                printLn('<a href="/uploads/register.php"><button>Regisztráció</button></a>');
+                printLn('<button onclick="location.href=\'/uploads/register.php\'" type="button">Regisztráció</button>');
                 printLn("</div>");
-                printLn("</div></center>");
+                printLn("</div>");
             }
-
-            
             
             if( $_GET['logout'] == "igen" ) {
                 $_SESSION['loggedin'] = false;
@@ -162,7 +175,7 @@
             }
             if($_SESSION['loggedin'] == true) {
                 printLn("<div class='container' id='bottom_left_corner_div'>");
-                printLn('Belépve mint: "'.$_SESSION['username'].'"');
+                printLn('Belépve mint: '.$_SESSION['username']);
                 printLn('<br><a href="feltoltes.php?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
                 printLn('</div>');
             }
@@ -192,7 +205,6 @@
                 $query = "UPDATE files SET user_id = (SELECT id FROM users WHERE username = '".$_SESSION['username']."') WHERE id = ".$_GET['file_id'];
                 $result = $conn->query($query);
                 if($result) {
-                    //echo '<h1>A "' . $_GET['file'] . '" nevű fájl sikeresen hozzá lett rendelve a fiókodhoz.</h1>';
                     ujratoltes('A "' . $_GET['file'] . '" nevű fájl sikeresen hozzá lett rendelve a fiókodhoz.');
                 } else {
                     ujratoltes('Fatal error: '.$query);
@@ -262,27 +274,26 @@
             }
 
             printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
-            printLn('<center><form action="feltoltes.php" method="post" enctype="multipart/form-data">');
-            printLn('<h3 style="font-weight: normal;">Válassz ki, vagy húzz ide egy fájlt a feltöltéshez</h3>');
-            printLn('<input class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
+            printLn('<form class="center" action="feltoltes.php" method="post" enctype="multipart/form-data">');
+            printLn('<label style="display: block; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>');
+            printLn('<input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
             if($_SESSION['loggedin'] == true) { 
-                printLn('<input type="checkbox" name="private" type="private" id="private" />Fájl privát tárolása<br><br>');
+                printLn('<label onclick="PrivatFeltoltesAtallitasa()" id="private_label_div" for="private"><input hidden type="checkbox" name="private" type="private" id="private" /><div id="private_text">Fájl publikus tárolása</div></label><br><br>');
             }
             printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb">Feltöltés</button>');
-            printLn('</form></center>');
-            printLn('<h1 style="text-align: center" id="ujratoltes_szoveg"></h1>');
+            printLn('</form>');
+
             if( strlen($_SESSION['ujratoltes_szoveg']) > 0 ) {
-                printLn('<script>document.getElementById("ujratoltes_szoveg").innerHTML = "'.$_SESSION['ujratoltes_szoveg'].'";</script>');
+                printLn('<h1 style="text-align: center" id="ujratoltes_szoveg">'.$_SESSION['ujratoltes_szoveg'].'</h1>');
                 $_SESSION['ujratoltes_szoveg'] = "";
             }
-            printLn('<br><center><table class="InputSzoveg">');
+            printLn('<br><table style="display: table" class="center InputSzoveg">');
             printLn("<tr>");
                 printLn("<th></th>");
                 printLn("<th>Fájlnév</th>");
                 printLn("<th>Dátum</th>");
                 printLn("<th>Méret</th>");
                 printLn("<th>Feltöltő</th>");
-                printLn("<th></th>");
                 printLn("<th></th>");
                 printLn("<th></th>");
                 printLn("<th></th>");
@@ -332,8 +343,8 @@
                         if($preview_type == "image") { $preview_emoji = '📷'; }
                         if($preview_type == "video") { $preview_emoji = '🎞'; }
 
-                        printLn('<td style="text-align: center">'.$preview_emoji.'</td>');
-                        printLn('<td>');
+                        printLn('<td class="emoji_cell" style="text-align: center">'.$preview_emoji.'</td>');
+                        printLn('<td class="text-align-left">');
                         if( $row['private'] == '1') {   printLn('<font style="color:red">PRIVÁT</font> ');  }
                         printLn($row['filename'].'</td>');
                             
@@ -362,13 +373,11 @@
                             printLn('<td></td>');
                         }
                         if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == true) or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == true)) {
-                            printLn('<td><a style="text-decoration: none" onclick="torles(&quot;/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)">&#10060;</a></td>');
+                            printLn('<td class="emoji_cell"><a style="text-decoration: none" onclick="torles(&quot;/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)">&#10060;</a></td>');
                         } else {
                             printLn('<td></td>');
                         }
-
-                        printLn('<td></td>');
-                        printLn('<td><a href="/uploads/request.php?file_id='.$row['id'].'" download>&#128190;</a></td>');
+                        printLn('<td class="emoji_cell"><a href="/uploads/request.php?file_id='.$row['id'].'" download>&#128190;</a></td>');
                         printLn("</tr>");
                     }
                 } else {
@@ -386,14 +395,14 @@
                 }
             }
 
-            printLn('</table></center><br><br><br>');
+            printLn('</table><br><br><br>');
 
             $foglalt_tarhely_arany = ($foglalt_tarhely) / ($szabad_tarhely + $foglalt_tarhely) * 100;
             $szabad_tarhely_arany = 100 - (($foglalt_tarhely) / ($szabad_tarhely + $foglalt_tarhely) * 100);
 
-            printLn('<div style="background-color: rgb(150,255,150); border: 1px solid black; border-radius: 10px; display: flex; width: 55%; height: auto; margin: auto">');
-                printLn('<div id="div_hasznalt_tarhely" style="border-radius: 10px; background-color: rgb(255,150,150); padding: 10px; width:'.$foglalt_tarhely_arany.'%">Felhasznált: <font id="hasznalt_tarhely"></font></div>');
-                printLn('<div id="div_szabad_tarhely" style="border-radius: 10px; background-color: rgb(150,255,150); padding: 10px; width:'.$szabad_tarhely_arany.'%; text-align: right">Szabad terület: <font id="szabad_tarhely"></font></div>');
+            printLn('<div class="div_szabad_tarhely" style="border: 1px solid black; border-radius: 10px; display: flex; width: 55%; height: auto; margin: auto">');
+                printLn('<div class="div_hasznalt_tarhely" id="div_hasznalt_tarhely" style="border-radius: 10px; padding: 10px; width:'.$foglalt_tarhely_arany.'%"><p id="hasznalt_tarhely">Felhasznált: </p></div>');
+                printLn('<div class="div_szabad_tarhely" id="div_szabad_tarhely" style="border-radius: 10px; padding: 10px; width:'.$szabad_tarhely_arany.'%; text-align: right"><p id="szabad_tarhely">Szabad terület: </p></div>');
             printLn('</div><br><br><br>');
 
             $szabad_tarhely = intval($szabad_tarhely);
@@ -415,8 +424,8 @@
                 }
             }
 
-            printLn("<script>document.getElementById('szabad_tarhely').innerHTML = '".strval($szabad_tarhely)."';</script>");
-            printLn("<script>document.getElementById('hasznalt_tarhely').innerHTML = '".strval($foglalt_tarhely)."';</script>");
+            printLn("<script>document.getElementById('szabad_tarhely').innerHTML = 'Szabad terület: ".strval($szabad_tarhely)."';</script>");
+            printLn("<script>document.getElementById('hasznalt_tarhely').innerHTML = 'Felhasznált: ".strval($foglalt_tarhely)."';</script>");
         ?>
     </body>
 </html>
