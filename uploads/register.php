@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-		<title>Hausz megosztó</title>
+		<title>Hausz megosztó regisztráció</title>
 		<meta charset="UTF-8">
+        <meta name="robots" content="noindex">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <meta name="color-scheme" content="dark light">

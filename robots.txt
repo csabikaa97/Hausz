@@ -1,0 +1,12 @@
+User-agent: googlebot
+Disallow: /priv/
+Disallow: /test/
+Disallow: /googlef67f98e02ef6449a.html
+
+User-agent: robots
+Disallow: /priv/
+Disallow: /test/
+Disallow: /googlef67f98e02ef6449a.html
+
+User-agent: Googlebot-Image
+Disallow: /

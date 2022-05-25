@@ -17,3 +17,9 @@ XSendFile on
     Order Allow,Deny
     Allow from all
 </Files>
+
+<Files change_password.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+

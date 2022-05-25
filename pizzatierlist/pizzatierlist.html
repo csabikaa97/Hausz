@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="hu">
-	<head>
-		<title>LIDL-ös pizza tier list</title>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" type="text/css" href="/index/style.css" />
-		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
-	</head>
-	<body>
-		<script>
-			fetch("/index/topbar.html")
-				.then(response => response.text())
-				.then(text => document.body.innerHTML = text + document.body.innerHTML)
-		</script>
-		<img class="center" src="pizzatierlist.jpg" alt="tier list" />
-	</body>
+
+<head>
+    <title>Hausz LIDL pizza tier lista</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Hivatalos Hausz tier lista a LIDL-ös pizzákról.">
+    <link rel="stylesheet" type="text/css" href="/index/style.css" />
+    <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
+</head>
+
+<body>
+    <script>
+        fetch("/index/topbar.html")
+            .then(response => response.text())
+            .then(text => document.body.innerHTML = text + document.body.innerHTML)
+    </script>
+    <img class="center" src="pizzatierlist.jpg" alt="Hivatalos Hausz LIDL-ös pizza tier list" />
+</body>
+
 </html>

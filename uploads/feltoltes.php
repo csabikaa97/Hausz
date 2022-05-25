@@ -4,8 +4,26 @@
     <head>
 		<title>Hausz megosztó</title>
 		<meta charset="UTF-8">
+        <meta name="description" content="A Hausz Kft. megosztó szolgáltatása, ahol fájlokat lehet megosztani privát és publikus módon, anonim és regisztrált felhasználók által egyaránt.">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+        <script type='application/ld+json'> 
+            {
+                "@context": "https://www.schema.org",
+                "@type": "product",
+                "brand": "Hausz",
+                "logo": "http://hausz.stream/index/favicon.png",
+                "name": "WidgetPress",
+                "category": "Widgets",
+                "image": "http://hausz.stream/index/favicon.png",
+                "description": "A Hausz Kft. megosztó szolgáltatása, ahol fájlokat lehet megosztani privát és publikus módon, anonim és regisztrált felhasználók által egyaránt.",
+                "aggregateRating": {
+                    "@type": "aggregateRating",
+                    "ratingValue": "5",
+                    "reviewCount": "69"
+                }
+            }
+        </script>
 	</head>
     <body>
         <script>
@@ -38,7 +56,7 @@
 
                         
                         if(tipus == "image") {
-                            document.getElementById('preview_box').innerHTML = '<img id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
+                            document.getElementById('preview_box').innerHTML = '<img alt="előnézet" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
                             return;
                         }
                         if(tipus == "audio") {
@@ -150,7 +168,7 @@
                 $foglalt_tarhely = $row['foglalt'];
             }
 
-            if($_SESSION['loggedin'] == false) {
+            if($_SESSION['loggedin'] != "yes") {
                 if($_POST['login']=="yes") {
                     $query = "SELECT * FROM users WHERE username='".$_POST['username']."'";
                     $result = $conn->query($query);
@@ -158,7 +176,7 @@
                         if($result->num_rows > 0) {
                             $row = $result->fetch_assoc();
                             if(password_verify($_POST['password'], $row['password'])) {
-                                $_SESSION['loggedin'] = true;
+                                $_SESSION['loggedin'] = "yes";
                                 $_SESSION['username'] = $_POST['username'];
                             } else {
                                 showLogin("Hibás felhasználónév vagy jelszó");
@@ -173,14 +191,15 @@
                     showLogin("Nem vagy bejelentkezve!");
                 }
             }
-            if($_SESSION['loggedin'] == true) {
+            if($_SESSION['loggedin'] == "yes") {
                 printLn("<div class='container' id='bottom_left_corner_div'>");
                 printLn('Belépve mint: '.$_SESSION['username']);
                 printLn('<br><a href="feltoltes.php?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
+                printLn('<br><a href="change_password.php"><button id="jelszovaltoztatsgomb">Jelszó megváltoztatása</button></a>');
                 printLn('</div>');
             }
 
-            if($_GET['delete'] == '1' && $_SESSION['loggedin'] == true) {
+            if($_GET['delete'] == '1' && $_SESSION['loggedin'] == "yes") {
                 $query = "SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id'];
                 $result = $conn->query($query);
                 if($result) {
@@ -201,7 +220,7 @@
                 }
             }
 
-            if($_GET['claim'] == '1' && $_SESSION['loggedin'] == true) {
+            if($_GET['claim'] == '1' && $_SESSION['loggedin'] == "yes") {
                 $query = "UPDATE files SET user_id = (SELECT id FROM users WHERE username = '".$_SESSION['username']."') WHERE id = ".$_GET['file_id'];
                 $result = $conn->query($query);
                 if($result) {
@@ -222,7 +241,7 @@
                 if($result_check) {
                     if($result_check->num_rows > 0) {
                         $row = $result_check->fetch_assoc();
-                        if( strtolower($row['username']) == strtolower($_SESSION['username']) && $_SESSION['loggedin'] == true ) {
+                        if( strtolower($row['username']) == strtolower($_SESSION['username']) && $_SESSION['loggedin'] == "yes" ) {
                             $query_overwrite = 'DELETE FROM files WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
                             $result_overwrite = $conn->query($query_overwrite);
                             if(!$result_overwrite) {
@@ -247,7 +266,7 @@
                         if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                             ujratoltes('Sikertelen volt a fájl feltöltése.');
                         } else {
-                            if($_SESSION['loggedin'] == true) {
+                            if($_SESSION['loggedin'] == "yes") {
                                 if($_POST['private'] == "on") { $_POST['private'] = "1"; } else { $_POST['private'] = "0"; }
                                 $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), '.$_FILES["fileToUpload"]["size"].', '.$_POST['private'].');';
                                 $result_del2 = $conn->query($query_del2);
@@ -277,7 +296,7 @@
             printLn('<form class="center" action="feltoltes.php" method="post" enctype="multipart/form-data">');
             printLn('<label style="display: block; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>');
             printLn('<input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
-            if($_SESSION['loggedin'] == true) { 
+            if($_SESSION['loggedin'] == "yes") { 
                 printLn('<label onclick="PrivatFeltoltesAtallitasa()" id="private_label_div" for="private"><input hidden type="checkbox" name="private" type="private" id="private" /><div id="private_text">Fájl publikus tárolása</div></label><br><br>');
             }
             printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb">Feltöltés</button>');
@@ -304,7 +323,7 @@
             if($result) {
                 if($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
-                        if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username'])) or ($_SESSION['loggedin'] != true && $row['private'] == '1') )
+                        if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username'])) or ($_SESSION['loggedin'] != "yes" && $row['private'] == '1') )
                             continue;
 
                         $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
@@ -367,17 +386,17 @@
                         
                         printLn('<td>'.$size.'</td>');
                         printLn('<td>'.$row['username'].'</td>');
-                        if( strtolower($row['username'] == "ismeretlen") && $_SESSION['loggedin'] == true ) {
+                        if( strtolower($row['username'] == "ismeretlen") && $_SESSION['loggedin'] == "yes" ) {
                             printLn('<td><a href="/uploads/feltoltes.php?claim=1&file='.$row['filename'].'&file_id='.$row['id'].'">Claimelés</a></td>');
                         } else {
                             printLn('<td></td>');
                         }
-                        if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == true) or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == true)) {
+                        if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == "yes") or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == "yes")) {
                             printLn('<td class="emoji_cell"><a style="text-decoration: none" onclick="torles(&quot;/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)">&#10060;</a></td>');
                         } else {
                             printLn('<td></td>');
                         }
-                        printLn('<td class="emoji_cell"><a href="/uploads/request.php?file_id='.$row['id'].'" download>&#128190;</a></td>');
+                        printLn('<td class="emoji_cell"><a href="/uploads/request.php?file_id='.$row['id'].'" style="text-decoration: none" download>&#128190;</a></td>');
                         printLn("</tr>");
                     }
                 } else {

@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="hu">
-  <head>
-    <title>Fizetős Hausz Webjósda</title>
+
+<head>
+    <title>Hausz Webjósda fizetős verzió</title>
     <meta charset="UTF-8">
+    <meta name="description" content="A Hausz Kft. Webjósda szolgáltatása, ahol megkérheted Hauszt hogy jósoljon neked rohadt sok pénzért cserébe.">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
-    <link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
     <link rel="stylesheet" href="/webjosda/josdastyle.css">
-  </head>
-  <body>
+    <script type='application/ld+json'>
+        {
+            "@context": "https://www.schema.org",
+            "@type": "product",
+            "brand": "Hausz",
+            "logo": "http://hausz.stream/index/favicon.png",
+            "name": "WidgetPress",
+            "category": "Widgets",
+            "image": "http://hausz.stream/index/favicon.png",
+            "description": "A Hausz Kft. Webjósda szolgáltatása, ahol megkérheted Hauszt hogy jósoljon neked rohadt sok pénzért cserébe.",
+            "aggregateRating": {
+                "@type": "aggregateRating",
+                "ratingValue": "5",
+                "reviewCount": "69"
+            }
+        }
+    </script>
+</head>
+
+<body>
     <script>
-      fetch("/index/topbar.html")
-        .then(response => response.text())
-        .then(text => document.body.innerHTML = text + document.body.innerHTML)
+        fetch("/index/topbar.html")
+            .then(response => response.text())
+            .then(text => document.body.innerHTML = text + document.body.innerHTML)
     </script>
     <h1>Hamarosan elérhető</h1>
     <p>A Hausz jósdát a Hausz Kft. hozta létre és üzemelteti. A webjósda a koronavírusra való tekintettel nyílt meg. Itten érintkezésmentesen tudja elintézni napi jóslásszükségletét. Célunk, hogy mindenkinek pozitivitást biztosítsunk és betekintést adjunk a jövőjébe reklámmentesen. A jóslást a világ legfejlettebb mesterséges inteligenciája végzi a háttérben. Az ingyenes próbaverzió már el is érhető a Hausz weboldalán. A fizetős változat még fejlesztés alatt áll, de rohadt drága lesz.</p>
-  </body>
+</body>
+
 </html>

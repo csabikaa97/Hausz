@@ -76,7 +76,7 @@
     if( ( 
             (strtolower($row['username']) != strtolower($_SESSION['username']))
             or
-            ($_SESSION['loggedin'] != true)
+            ($_SESSION['loggedin'] != "yes")
         ) 
         
         && $row['private'] == "1" ) {
@@ -88,4 +88,5 @@
     header("Content-type: ".mimeType("/var/www/html/uploads/fajlok/".$row['filename']));
     header('Content-Disposition: filename="'.$row['filename'].'"');
     header('Content-Length: '.filesize("/var/www/html/uploads/fajlok/".$row['filename']));
+    header('X-Robots-Tag: noindex');
 ?>
