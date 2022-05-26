@@ -64,7 +64,7 @@
                             return;
                         }
 
-                        document.getElementById('preview_box').innerHTML = '<iframe style="height: 100%; width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                        document.getElementById('preview_box').innerHTML = '<iframe class="iframe-full-size" style="height: 100%; width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
                         document.getElementById('preview_box').style.height = '100%'
                         document.getElementById('preview_box').style.width = '80%'
                     }
@@ -106,33 +106,7 @@
         <?php
             include '../include/adatbazis.php';
             include '../include/alap_fuggvenyek.php';
-
-            function ujratoltes($szoveg) { 
-                $_SESSION['ujratoltes_szoveg'] = $szoveg;
-                printLn('<script>window.location.href = "https://hausz.stream/uploads/feltoltes.php";</script>');
-                exit();
-            }
-
-            function showLogin($reason) {
-                printLn("<div class='center container' id='bottom_left_corner_div'>");
-                if( strlen($reason) > 0 ) {   printLn("<p>".$reason."</p>"); }
-                printLn("<div class='login'>");
-                printLn("<form id='login' action='feltoltes.php' method='post'>");
-                printLn("<input id='username' autocomplete='username' type='text' name='username' placeholder='Felhasználónév'><br>");
-                printLn("<input id='current-password' autocomplete='current-password' type='password' name='password' placeholder='Jelszó'><br>");
-                printLn("<input type='hidden' name='login' value='yes'><br>");
-                printLn("<button type='submit'>Bejelentkezés</button>");
-                printLn("</form>");
-                printLn('<button onclick="location.href=\'/uploads/register.php\'" type="button">Regisztráció</button>');
-                printLn("</div>");
-                printLn("</div>");
-            }
-            
-            if( $_GET['logout'] == "igen" ) {
-                $_SESSION['loggedin'] = false;
-                $_SESSION['username'] = '';
-                ujratoltes('Sikeres kilépés.');
-            }
+            include "../include/belepteto_rendszer.php";
 
             function tarhely_statisztika_mentes() {
                 global $conn;
@@ -166,37 +140,6 @@
                 $row = $result_tarhely_adat->fetch_assoc();
                 $szabad_tarhely = $row['szabad'];
                 $foglalt_tarhely = $row['foglalt'];
-            }
-
-            if($_SESSION['loggedin'] != "yes") {
-                if($_POST['login']=="yes") {
-                    $query = "SELECT * FROM users WHERE username='".$_POST['username']."'";
-                    $result = $conn->query($query);
-                    if($result) {
-                        if($result->num_rows > 0) {
-                            $row = $result->fetch_assoc();
-                            if(password_verify($_POST['password'], $row['password'])) {
-                                $_SESSION['loggedin'] = "yes";
-                                $_SESSION['username'] = $_POST['username'];
-                            } else {
-                                showLogin("Hibás felhasználónév vagy jelszó");
-                            }
-                        } else {
-                            showLogin("Nincs ilyen felhasználó");
-                        }
-                    } else {
-                        ujratoltes("Fatal error in: '".$query."'");
-                    }
-                } else {
-                    showLogin("Nem vagy bejelentkezve!");
-                }
-            }
-            if($_SESSION['loggedin'] == "yes") {
-                printLn("<div class='container' id='bottom_left_corner_div'>");
-                printLn('Belépve mint: '.$_SESSION['username']);
-                printLn('<br><a href="feltoltes.php?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
-                printLn('<br><a href="change_password.php"><button id="jelszovaltoztatsgomb">Jelszó megváltoztatása</button></a>');
-                printLn('</div>');
             }
 
             if($_GET['delete'] == '1' && $_SESSION['loggedin'] == "yes") {

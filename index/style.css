@@ -1,4 +1,4 @@
-@media (prefers-color-scheme: dark) {
+@media(prefers-color-scheme: dark) {
     #hausz_logo {
         filter: brightness(85%);
     }
@@ -8,7 +8,7 @@
         z-index: 0;
         opacity: 70%;
     }
-    
+
     #hausz_logo {
         opacity: 80%;
     }
@@ -18,97 +18,105 @@
     }
 
     input {
-        color: rgb(180,180,180);
+        color: rgb(180, 180, 180);
     }
 
     ::placeholder {
-        color: rgb(180,180,180);
+        color: rgb(180, 180, 180);
     }
-    
+
     button {
-        background-color: rgb(50,50,50);
-        border: rgb(70,70,70);
-        color: rgb(180,180,180);
+        background-color: rgb(50, 50, 50);
+        border: rgb(70, 70, 70);
+        color: rgb(180, 180, 180);
     }
 
     input {
-        background-color: black;
-        border: 1px solid black;
-        border: rgb(70,70,70);
+        background-color: rgb(30, 30, 30);
+        border: rgb(70, 70, 70);
     }
 
     #fileToUpload {
-        color: rgb(180,180,180);
-        background-color: rgb(50,50,50);
+        color: rgb(180, 180, 180);
+        background-color: rgb(50, 50, 50);
     }
 
     #fileToUpload_label {
-        background-color: rgb(35,35,35);
+        background-color: rgb(35, 35, 35);
     }
 
-    #bottom_left_corner_div { /* KÉSZ */
-        border: solid rgb(70,70,70) 1px;
-        background-color: rgb(30,30,30);
+    #bottom_left_corner_div {
+        /* KÉSZ */
+        border: solid rgb(70, 70, 70) 1px;
+        background-color: rgb(30, 30, 30);
     }
 
     .TopbarLink {
-        color: rgb(180,180,180);
+        color: rgb(180, 180, 180);
     }
 
-    #preview_box { /* KÉSZ */
-        border: solid rgb(70,70,70) 1px;
-        background-color: rgb(50,50,50);
+    #preview_box {
+        /* KÉSZ */
+        border: solid rgb(70, 70, 70) 1px;
+        background-color: rgb(50, 50, 50);
     }
 
-    .Gombok { 
+    .Gombok {
         color: rgb(169, 169, 169);
         background-color: rgb(50, 50, 50);
     }
 
-    .KekHatter { /* KÉSZ */
+    .KekHatter {
+        /* KÉSZ */
         background-color: rgb(31, 66, 153);
-        color: rgb(180,180,180);
+        color: rgb(180, 180, 180);
     }
-    
-    .KekHatter:hover { /* KÉSZ */
+
+    .KekHatter:hover {
+        /* KÉSZ */
         background-color: rgb(41, 76, 163);
     }
-    
-    .ZoldHatter { /* KÉSZ */
+
+    .ZoldHatter {
+        /* KÉSZ */
         background-color: rgb(34, 129, 72) !important;
-        color: rgb(180,180,180);
+        color: rgb(180, 180, 180);
     }
-    
-    .ZoldHatter:hover { /* KÉSZ */
+
+    .ZoldHatter:hover {
+        /* KÉSZ */
         background-color: rgb(62, 167, 104) !important;
     }
 
-    .InputSzoveg { /* KÉSZ */
+    .InputSzoveg {
+        /* KÉSZ */
         border: 0 solid black;
-        box-shadow: 0 2px 5px 0 rgb(70,70,70);
-        background-color: rgb(35,35,35);
-        color: rgb(180,180,180);
+        box-shadow: 0 2px 5px 0 rgb(70, 70, 70);
+        background-color: rgb(35, 35, 35);
+        color: rgb(180, 180, 180);
     }
 
-    body { /* KÉSZ */
+    body {
+        /* KÉSZ */
         background-color: black;
-        color: rgb(180,180,180);
+        color: rgb(180, 180, 180);
     }
-    
-    #LinkekkelTeliTopbarXd { /* KÉSZ */
+
+    #LinkekkelTeliTopbarXd {
+        /* KÉSZ */
         background-color: rgb(0, 0, 0);
         border-color: rgb(0, 0, 0);
         box-shadow: 0 0 0 0 rgb(0, 0, 0);
     }
 
     table {
-        border: 1px solid rgb(70,70,70);
+        border: 1px solid rgb(70, 70, 70);
     }
-    
+
     td {
-        border-top: 1px solid rgb(70,70,70);
+        border-top: 1px solid rgb(70, 70, 70);
     }
-    
+
     #fileToUpload_label:hover {
         background-color: rgb(70, 70, 70);
     }
@@ -116,11 +124,11 @@
     tr:hover {
         background-color: rgb(70, 70, 70);
     }
-    
+
     video {
         background-color: black;
     }
-    
+
     #utasitas {
         color: rgb(120, 120, 120);
     }
@@ -134,17 +142,17 @@
     }
 
     #private_label_div {
-        background-color: rgb(30,30,30);
+        background-color: rgb(30, 30, 30);
     }
 
     #private_label_div:hover {
-        background-color: rgb(70,70,70);
+        background-color: rgb(70, 70, 70);
     }
 }
 
-@media (prefers-color-scheme: light) {
+@media(prefers-color-scheme: light) {
     #private_label_div:hover {
-        background-color: rgb(240,240,240);
+        background-color: rgb(240, 240, 240);
     }
 
     #private_label_div {
@@ -157,7 +165,7 @@
     }
 
     #fileToUpload_label:hover {
-        background-color: rgb(240,240,240);
+        background-color: rgb(240, 240, 240);
         box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
     }
 
@@ -180,7 +188,7 @@
     }
 
     .Gombok {
-        color: rgb(131,131,131);
+        color: rgb(131, 131, 131);
         background-color: white;
         box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
     }
@@ -189,16 +197,16 @@
         background-color: rgb(52, 110, 255);
         color: white;
     }
-    
+
     .KekHatter:hover {
         background-color: rgb(92, 150, 255);
     }
-    
+
     .ZoldHatter {
         background-color: rgb(60, 236, 131) !important;
         color: black;
     }
-    
+
     .ZoldHatter:hover {
         background-color: rgb(74, 199, 124) !important;
     }
@@ -213,7 +221,7 @@
         background-color: white;
         color: black;
     }
-    
+
     #LinkekkelTeliTopbarXd {
         background-color: white;
         border-color: rgb(235, 235, 235);
@@ -223,29 +231,29 @@
     table {
         border: 1px solid rgb(180, 180, 180);
     }
-    
+
     td {
         border-top: 1px solid rgb(180, 180, 180);
     }
-    
+
     tr:hover {
         background-color: rgb(240, 240, 240);
     }
-    
+
     video {
         background-color: black;
     }
-    
+
     #utasitas {
         color: rgb(120, 120, 120);
     }
 
     .div_hasznalt_tarhely {
-        background-color: rgb(255,150,150);
+        background-color: rgb(255, 150, 150);
     }
 
     .div_szabad_tarhely {
-        background-color: rgb(150,255,150);
+        background-color: rgb(150, 255, 150);
     }
 
     ::placeholder {
@@ -255,6 +263,10 @@
 
 * {
     font-family: Arial, Helvetica, sans-serif;
+}
+
+input {
+    border: 1px solid;
 }
 
 :root {
@@ -271,7 +283,7 @@
 }
 
 .center {
-    margin-left: auto; 
+    margin-left: auto;
     margin-right: auto;
     display: block;
     float: none;
@@ -287,10 +299,7 @@
 }
 
 #fileToUpload_label {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding: 20px 50px;
     border-radius: 15px;
     font-size: 20px;
 }
@@ -422,7 +431,7 @@ body {
 
 #LinkekkelTeliTopbarXd {
     padding: 10px;
-    margin: 0px;
+    margin: 0;
     width: 99%;
     border-bottom: 1px;
     border-style: solid;
@@ -460,7 +469,7 @@ td {
     font-size: 100%;
 }
 
-iframe {
+.iframe-full-size {
     width: 100%;
     height: 90%;
 }

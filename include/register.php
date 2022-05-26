@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-		<title>Hausz megosztó regisztráció</title>
+		<title>Hausz regisztráció</title>
 		<meta charset="UTF-8">
         <meta name="robots" content="noindex">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
@@ -16,8 +16,7 @@
 		</script>
 
         <center>
-            <h1>Hausz megosztó</h1>
-            <p>Regisztráció</p>
+            <h1>Hausz regisztráció</h1>
         </center>
 
         <?php
@@ -37,7 +36,6 @@
                 printLn("<button type='submit'>Regisztráció</button>");
                 printLn("</form>");
                 printLn("</div>");
-                printLn('<br><br><a href="https://hausz.stream/uploads/feltoltes.php"><- Vissza a Hausz megosztóra</a>');
                 printLn("</center>");
                 die();
             }

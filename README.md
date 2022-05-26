@@ -5,7 +5,13 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 #### Tennivalók:
 
 - Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál
-
+- Hausz youtube együttnéző (https://developers.google.com/youtube/iframe_api_reference)
+    0. Prerequisite:
+        - Belépés standardizálása és kiterjesztése együttnézőre
+    1. Adatok szinkronizálása felhasználók között
+    
+    - Hangerő mentése felhasználónak
+    - 
 
 #### Implementált:
 
