@@ -9,14 +9,14 @@
         printLn("<input type='hidden' name='login' value='yes'><br>");
         printLn("<button type='submit'>Bejelentkezés</button>");
         printLn("</form>");
-        printLn('<button onclick="location.href=\'"/include/register.php"\'" type="button">Regisztráció</button>');
+        printLn('<button onclick=location.href="/include/register.php" type="button">Regisztráció</button>');
         printLn("</div>");
         printLn("</div>");
     }
 
-    function ujratoltes($szoveg) { 
+    function ujratoltes($szoveg) {
         $_SESSION['ujratoltes_szoveg'] = $szoveg;
-        header('Refresh: 0; '.$_SERVER['PHP_SELF']);
+        printLn('<script>window.location.href = "'.$_SERVER['PHP_SELF'].'";</script>');
         exit();
     }
     
@@ -36,7 +36,7 @@
                     $row = $result->fetch_assoc();
                     if(password_verify($_POST['password'], $row['password'])) {
                         $_SESSION['loggedin'] = "yes";
-                        $_SESSION['username'] = $_POST['username'];
+                        $_SESSION['username'] = $row['username'];
                     } else {
                         showLogin("Hibás felhasználónév vagy jelszó");
                     }

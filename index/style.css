@@ -322,7 +322,7 @@ input {
     padding: 10px;
     position: fixed;
     bottom: 5px;
-    left: 5px;
+    right: 5px;
     margin: 0;
     border-radius: 5px;
     z-index: 1;
@@ -469,7 +469,7 @@ td {
     font-size: 100%;
 }
 
-.iframe-full-size {
+iframe {
     width: 100%;
     height: 90%;
 }

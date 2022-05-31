@@ -64,7 +64,7 @@
                             return;
                         }
 
-                        document.getElementById('preview_box').innerHTML = '<iframe class="iframe-full-size" style="height: 100%; width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                        document.getElementById('preview_box').innerHTML = '<iframe style="height: 100%; width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
                         document.getElementById('preview_box').style.height = '100%'
                         document.getElementById('preview_box').style.width = '80%'
                     }
@@ -236,7 +236,7 @@
             }
 
             printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
-            printLn('<form class="center" action="feltoltes.php" method="post" enctype="multipart/form-data">');
+            printLn('<form class="center" action="/uploads/feltoltes.php" method="post" enctype="multipart/form-data">');
             printLn('<label style="display: block; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>');
             printLn('<input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
             if($_SESSION['loggedin'] == "yes") { 
@@ -271,31 +271,31 @@
 
                         $kiterjesztes = preg_replace('/(.*)\.(.*)/', '$2', $row['filename']);
                         $preview_type = "other"; 
-                        if(preg_match('/\.jpg$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.png$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.jpeg$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.bmp$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.webp$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.svg$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.gif$/', $row['filename'])) { $preview_type = "image"; }
-                        if(preg_match('/\.heic$/', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.jpg$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.png$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.jpeg$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.bmp$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.webp$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.svg$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.gif$/i', $row['filename'])) { $preview_type = "image"; }
+                        if(preg_match('/\.heic$/i', $row['filename'])) { $preview_type = "image"; }
 
-                        if(preg_match('/mp3$/', $row['filename'])) { $preview_type = "audio"; }
+                        if(preg_match('/mp3$/i', $row['filename'])) { $preview_type = "audio"; }
 
-                        if(preg_match('/\.pdf$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.c$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.cpp$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.m$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.py$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.cs$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.txt$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.sql$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.xls$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.xlsx$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.doc$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.docx$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.ppt$/', $row['filename'])) { $preview_type = "document"; }
-                        if(preg_match('/\.pptx$/', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.pdf$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.c$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.cpp$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.m$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.py$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.cs$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.txt$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.sql$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.xls$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.xlsx$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.doc$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.docx$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.ppt$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.pptx$/i', $row['filename'])) { $preview_type = "document"; }
 
                         printLn('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
                         

@@ -86,7 +86,7 @@
                     showpage('A regisztrációs kérésed NEM került felvételre a Hausz rendszerben.');
                 }
 
-                header("Location: https://hausz.stream/uploads/register.php?register_done=1");
+                header("Location: https://hausz.stream/include/register.php?register_done=1");
             } else {
                 showPage("");
             }
