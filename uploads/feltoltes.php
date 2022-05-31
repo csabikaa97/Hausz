@@ -280,7 +280,12 @@
                         if(preg_match('/\.gif$/i', $row['filename'])) { $preview_type = "image"; }
                         if(preg_match('/\.heic$/i', $row['filename'])) { $preview_type = "image"; }
 
-                        if(preg_match('/mp3$/i', $row['filename'])) { $preview_type = "audio"; }
+                        if(preg_match('/\.mp3$/i', $row['filename'])) { $preview_type = "audio"; }
+
+                        if(preg_match('/\.mkv$/i', $row['filename'])) { $preview_type = "video"; }
+                        if(preg_match('/\.avi$/i', $row['filename'])) { $preview_type = "video"; }
+                        if(preg_match('/\.mp4$/i', $row['filename'])) { $preview_type = "video"; }
+                        if(preg_match('/\.webm$/i', $row['filename'])) { $preview_type = "video"; }
 
                         if(preg_match('/\.pdf$/i', $row['filename'])) { $preview_type = "document"; }
                         if(preg_match('/\.c$/i', $row['filename'])) { $preview_type = "document"; }
@@ -297,6 +302,18 @@
                         if(preg_match('/\.ppt$/i', $row['filename'])) { $preview_type = "document"; }
                         if(preg_match('/\.pptx$/i', $row['filename'])) { $preview_type = "document"; }
 
+                        if(preg_match('/\.exe$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.msi$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.iso$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.apk$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.rpm$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.deb$/i', $row['filename'])) { $preview_type = "software"; }
+                        
+                        if(preg_match('/\.zip$/i', $row['filename'])) { $preview_type = "compressed"; }
+                        if(preg_match('/\.7z$/i', $row['filename'])) { $preview_type = "compressed"; }
+                        if(preg_match('/\.tar$/i', $row['filename'])) { $preview_type = "compressed"; }
+                        if(preg_match('/\.rar$/i', $row['filename'])) { $preview_type = "compressed"; }
+
                         printLn('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
                         
                         $preview_emoji = "❔";
@@ -304,6 +321,8 @@
                         if($preview_type == "audio") { $preview_emoji = '🎵'; }
                         if($preview_type == "image") { $preview_emoji = '📷'; }
                         if($preview_type == "video") { $preview_emoji = '🎞'; }
+                        if($preview_type == "software") { $preview_emoji = '💿'; }
+                        if($preview_type == "compressed") { $preview_emoji = '📦'; }
 
                         printLn('<td class="emoji_cell" style="text-align: center">'.$preview_emoji.'</td>');
                         printLn('<td class="text-align-left">');
