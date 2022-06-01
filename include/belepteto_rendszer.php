@@ -58,6 +58,9 @@
         printLn('Belépve mint: '.$_SESSION['username']);
         printLn('<br><a href="'.$_SERVER['PHP_SELF'].'?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
         printLn('<br><a href="/include/change_password.php"><button id="jelszovaltoztatsgomb">Jelszó megváltoztatása</button></a>');
+        if($_SESSION['user_id'] == 1) {
+            printLn('<br><a href="https://hausz.stream:8080"><button id="jelszovaltoztatsgomb">Admin VScode</button></a>');
+        }
         printLn('</div>');
     }
 ?>

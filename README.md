@@ -4,11 +4,15 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Tennivalók:
 
-- Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál
 - AJAX-osítani a beléptető rendszert és a megosztót
-- Weboldalak mobil verziója
+- Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál
 - Google Search Console (SEO) hibák javítása és javasolt lépések megtétele
-- Websocket használata ajax helyett együttnézőn
+> - Mobil barát oldalak
+> - Rich results hibák
+- Együttnéző kijavítása
+> Hiba: Jelenleg az AJAX kérések egy idő után kifagyasztják a szervert, és a tekerés nem működik mindig.
+> - Websocket használata AJAX helyett
+> Visszatérni a kliens megoldáshoz a megállításnál és indításnál, mert most olyan érzés mintha lassú lenne a szerver válaszideje miatt
 
 #### Implementált:
 
@@ -33,11 +37,11 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 - Tárhely állapot a megosztó oldal alján
 - CSS fájlok egységesítve
 - Csak szükséges portok engedélyezése
-> 80      Apache2
-> 443     Apache2
-> 8080    code-server
-> 9987    TS
-> 30033   TS Fájl és avatar átvitel
+> - 80      Apache2
+> - 443     Apache2
+> - 8080    code-server
+> - 9987    TS
+> - 30033   TS Fájl és avatar átvitel
 - Dark mode
 > https://www.w3schools.com/howto/howto_js_toggle_dark_mode.asp
 > https://css-tricks.com/a-complete-guide-to-dark-mode-on-the-web/#os-level

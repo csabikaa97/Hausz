@@ -70,13 +70,13 @@
 		</script>
 		<h1 style="text-align: center">Hausz keresztény TeamSpeak szerver</h1>
         <?php
+                printLn('<div style="width: 50%; margin: auto">');
+                printLn('<h2 class="center">Lépések a csatlakozáshoz</h2>');
+                printLn('<ol>');
+                printLn('<li>Töltsd le a TeamSpeak 3 kliens szoftvert a következő címről: <a href="https://teamspeak.com/en/downloads/">TeamSpeak 3 - Downloads</a></li>');
+                printLn('<li>Kattints rá a következő linkre a csatlakozáshoz: <a href="ts3server://hausz.stream/?port=9987&nickname='.$_SESSION['username'].'">Csatlakozás</a></li>');
                 if($_SESSION['loggedin'] == "yes") {
-                    printLn('<div style="width: 50%; margin: auto">');
-                    printLn('<h2 class="center">Lépések a csatlakozáshoz</h2>');
-                    printLn('<ol>');
-                    printLn('<li>Töltsd le a TeamSpeak 3 kliens szoftvert a következő címről: <a href="https://teamspeak.com/en/downloads/">TeamSpeak 3 - Downloads</a></li>');
-                    printLn('<li>Kattints rá a következő linkre a csatlakozáshoz: <a href="ts3server://hausz.stream/?port=9987&nickname='.$_SESSION['username'].'">Csatlakozás</a></li>');
-                    printLn('<li>Használd fel a Hausz által generált jogosultsági tokent</li>');
+                    printLn('<li>Használd fel a Hausz által generált jogosultsági tokent a TeamSpeak kliensben</li>');
                     printLn('<p>Mac:       Menü bar -> Permissions -> Use Privilege Key</p>');
                     printLn('<p>Windows:  Az ablak tetején Permissions -> Use Privilege Key</p>');
                     printLn('<p>A lehetőség kiválasztásakor felugró ablakba kell beillesztened az alábbi tokent ami megadja számodra a "Szabad ember" jogosultsági szintet.</p>');
@@ -107,7 +107,7 @@
                         }
                     }
                 } else {
-                    printLn('<h2 class="center">Lépj be, vagy regisztrálj egy fiókot a csatlakozáshoz</h2>');
+                    printLn('<li>Ha nem rendelkezel Hausz fiókkal, akkor meg kell várnod hogy adjon jogosultságot valaki aki online van. Abban az esetben ha regisztrálsz magadnak fiókot a jobb alsó sarokban található menüben, akkor a jogosultságot meg tudod adni magadnak, így nem kell várnod sem.</li>');
                 }
             ?>
         </ol>

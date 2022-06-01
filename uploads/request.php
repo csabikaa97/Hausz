@@ -58,6 +58,7 @@
         die();
     }
 
+    $dbname = "hausz_megoszto";
     include '../include/adatbazis.php';
 
     $query = "select * from files left outer join users on users.id = files.user_id where files.id = ".$_GET['file_id'];

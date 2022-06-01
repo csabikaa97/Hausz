@@ -25,6 +25,7 @@
     </center>
 
     <?php
+    $dbname = "hausz_megoszto";
     include '../include/adatbazis.php';
     include '../include/alap_fuggvenyek.php';
 

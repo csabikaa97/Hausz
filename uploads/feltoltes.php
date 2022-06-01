@@ -104,6 +104,7 @@
         <button id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()" style="visibility: hidden">X</button>
 
         <?php
+            $dbname = "hausz_megoszto";
             include '../include/adatbazis.php';
             include '../include/alap_fuggvenyek.php';
             include "../include/belepteto_rendszer.php";
