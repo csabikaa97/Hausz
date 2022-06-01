@@ -2,17 +2,8 @@
 	session_start();
 
 	if($_GET['allitas'] == 1 || $_GET['statusz'] == 1 || $_GET['teszt'] == 1 || $_GET['visszajelzes'] == 1) {
-		$servername = "127.0.0.1";
-		$username = "root";
-		$password = "root";
 		$dbname = "hausz_egyuttnezo";
-		$conn = new mysqli($servername, $username, $password, $dbname);
-		$conn->set_charset("utf8mb4");
-		if ($conn->connect_error) {
-			printLn("Nem sikerült csatlakozni az SQL szerverhez: " . $conn->connect_error);
-			printLn("Kérlek vedd fel a kapcsolatot a rendszergazdával a csaba@hausz.stream e-mail címen.");
-			die();
-		}
+		include '../include/adatbazis.php';
 		// Videó azonosító, másodperc, megy-e a videó? (I/N), lejátszási sebesség, dátum
 		// GET kapcsolók:	statusz,  allitas
 
@@ -184,7 +175,6 @@
 		<meta charset="UTF-8">
         <meta name="description" content="A Hausz Kft. együttnéző szolgáltatása, ahol YouTube videókat lehet együtt nézni a világhálón keresztül.">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
-		<link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'> 
             {

@@ -1,0 +1,7 @@
+Order deny,allow
+Deny from all
+
+<Files teamspeak.php>
+    Order Allow,Deny
+    Allow from all
+</Files>

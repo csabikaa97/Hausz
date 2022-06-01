@@ -50,6 +50,7 @@
             .then(text => document.body.innerHTML = text + document.body.innerHTML)
     </script>
     <?php
+        $dbname = "hausz_megoszto";
         include 'include/adatbazis.php';
         include 'include/alap_fuggvenyek.php';
         include "include/belepteto_rendszer.php";

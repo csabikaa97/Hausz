@@ -3,7 +3,7 @@
         printLn("<div class='center container' id='bottom_left_corner_div'>");
         if( strlen($reason) > 0 ) {   printLn("<p>".$reason."</p>"); }
         printLn("<div class='login'>");
-        printLn("<form id='login' action='".$_SERVER['PHP_SELF']."' method='post'>");
+        printLn("<form id='login' action='' method='post'>");
         printLn("<input id='username' autocomplete='username' type='text' name='username' placeholder='Felhasználónév'><br>");
         printLn("<input id='current-password' autocomplete='current-password' type='password' name='password' placeholder='Jelszó'><br>");
         printLn("<input type='hidden' name='login' value='yes'><br>");
@@ -23,6 +23,7 @@
     if( $_GET['logout'] == "igen" ) {
         $_SESSION['loggedin'] = false;
         $_SESSION['username'] = '';
+        unset($_SESSION['user_id']);
         $_GET['logout'] = "";
         ujratoltes('Sikeres kilépés.');
     }
@@ -37,6 +38,7 @@
                     if(password_verify($_POST['password'], $row['password'])) {
                         $_SESSION['loggedin'] = "yes";
                         $_SESSION['username'] = $row['username'];
+                        $_SESSION['user_id'] = $row['id'];
                     } else {
                         showLogin("Hibás felhasználónév vagy jelszó");
                     }
