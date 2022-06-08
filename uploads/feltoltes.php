@@ -71,8 +71,23 @@
                 }
             }
 
+            function fajl_atnevezese(id, fajlnev) {
+                document.getElementById('atnevezes_box').style.visibility = '';
+                document.getElementById('darken_background').style.visibility = '';
+                document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
+                document.getElementById('atnevezes_uj_nev').placeholder = fajlnev;
+                document.getElementById('atnevezes_uj_nev').value = fajlnev;
+                document.getElementById('atnevezes_uj_nev').azonosito = id;
+            }
+
+            function atnevezes_inditasa() {
+                link = "https://hausz.stream/uploads/feltoltes.php?atnevezes=1&file_id=" + document.getElementById('atnevezes_uj_nev').azonosito + "&uj_nev=" + document.getElementById('atnevezes_uj_nev').value;
+                window.location.assign(link);
+            }
+
             function elonezet_bezaras() {
                 document.getElementById('preview_box').style.visibility = 'hidden';
+                document.getElementById('atnevezes_box').style.visibility = 'hidden';
                 document.getElementById('darken_background').style.visibility = 'hidden';
                 document.getElementById('elonezet_bezaras_gomb').style.visibility = 'hidden';
                 document.getElementById('preview_box').innerHTML = "";
@@ -100,7 +115,13 @@
 		</script>
 
         
-        <div id='preview_box' style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden"></div>
+        <div id='preview_box' class="preview_box" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden"></div>
+        <div id='atnevezes_box' class="preview_box center" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
+            <h3>Fájl átnevezése</h3>
+            <label for="atnevezes_uj_nev">Add meg a fájl új nevét (kiterjesztéssel együtt)</label><br><br>
+            <input type="text" id="atnevezes_uj_nev" name="atnevezes_uj_nev" placeholder="" style="width: 100%"/><br><br><br>
+            <button class="Gombok KekHatter" onclick="atnevezes_inditasa()">Átnevezés</button>
+        </div>
         <div id='darken_background' onclick="elonezet_bezaras()" style="visibility: hidden"> </div>
         <button id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()" style="visibility: hidden">X</button>
 
@@ -142,6 +163,60 @@
                 $row = $result_tarhely_adat->fetch_assoc();
                 $szabad_tarhely = $row['szabad'];
                 $foglalt_tarhely = $row['foglalt'];
+            }
+
+            if($_GET['atnevezes'] == '1') {
+                if(strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0) {
+                    ujratoltes('HIBA: Hiányzó uj_nev vagy file_id paraméter.');
+                }
+
+                $query = "select * from hausz_megoszto.files where filename='".$_GET['uj_nev']."';";
+                $result = $conn->query($query);
+                if(!$result) {
+                    ujratoltes('Query hiba: '.$query);
+                }
+                if($result->num_rows > 0) {
+                    ujratoltes('Már létezik fájl ezzel a névvel.');
+                }
+
+                $query = "select * from hausz_megoszto.files where id=".$_GET['file_id'].";";
+                $result = $conn->query($query);
+                if(!$result) {
+                    ujratoltes('Query hiba: '.$query);
+                }
+                if($result->num_rows <= 0) {
+                    ujratoltes('Nem létezik az átnevezendő fájl.');
+                }
+                $row = $result->fetch_assoc();
+                if($row['user_id'] != $_SESSION['user_id'] && $row['user_id'] != '0') {
+                    ujratoltes('Nem nevezheted át más fájljait.');
+                }
+
+                if(strlen($_GET['uj_nev']) > 250) {
+                    ujratoltes('Nem lehet az új név 250 karakternél hosszabb.');
+                }
+
+                if(preg_match('/[^a-zA-Z0-9_-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]/', $_GET['uj_nev'], $matches) ) {
+                    ujratoltes('Illegális karakterek vannak az új névben: '.$matches);
+                }
+
+                if(!preg_match('/(.*)\.(.*)/', $_GET['uj_nev']) ) {
+                    ujratoltes('Nincs kiterjesztés megadva az új névben.');
+                }
+
+                $eredmeny = "";
+                $parancs = 'mv "/var/www/html/uploads/fajlok/'.$row['filename'].'" "/var/www/html/uploads/fajlok/'.$_GET['uj_nev'].'"';
+                exec($parancs, $eredmeny, $retval);
+                if($retval != 0) {
+                    ujratoltes('Áthelyezés hiba: "'.$parancs.'"');
+                }
+
+                $query = 'update hausz_megoszto.files set filename="'.$_GET['uj_nev'].'" where id = '.$_GET['file_id'];
+                $result = $conn->query($query);
+                if(!$result) {
+                    ujratoltes('Query hiba: '.$query);
+                }
+                ujratoltes('A(z) "'.$row['filename'].'" nevű fájl sikeresen át lett nevezve.');
             }
 
             if($_GET['delete'] == '1' && $_SESSION['loggedin'] == "yes") {
@@ -262,6 +337,7 @@
                 printLn("<th></th>");
                 printLn("<th></th>");
                 printLn("<th></th>");
+                printLn("<th></th>");
             printLn("</tr>");
 
             $query = "SELECT files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
@@ -361,10 +437,13 @@
                         }
                         if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == "yes") or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == "yes")) {
                             printLn('<td class="emoji_cell"><a style="text-decoration: none" onclick="torles(&quot;/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)">&#10060;</a></td>');
+                            printLn('<td class="emoji_cell"><a onclick=\'fajl_atnevezese("'.$row['id'].'", "'.$row['filename'].'")\'>✏️</a></td>');
                         } else {
-                            printLn('<td></td>');
+                            printLn('<td></td><td></td>');
                         }
+
                         printLn('<td class="emoji_cell"><a href="/uploads/request.php?file_id='.$row['id'].'" style="text-decoration: none" download>&#128190;</a></td>');
+                        
                         printLn("</tr>");
                     }
                 } else {

@@ -55,7 +55,7 @@
         color: rgb(180, 180, 180);
     }
 
-    #preview_box {
+    .preview_box {
         /* KÉSZ */
         border: solid rgb(70, 70, 70) 1px;
         background-color: rgb(50, 50, 50);
@@ -182,7 +182,7 @@
         background-color: white;
     }
 
-    #preview_box {
+    .preview_box {
         border: solid rgb(240, 240, 240) 1px;
         background-color: white;
     }
@@ -328,7 +328,7 @@ input {
     z-index: 1;
 }
 
-#preview_box {
+.preview_box {
     padding: 10px;
     position: fixed;
     left: 20%;
