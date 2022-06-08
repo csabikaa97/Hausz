@@ -175,7 +175,7 @@
 		<title>Hausz együttnéző</title>
 		<meta charset="UTF-8">
         <meta name="description" content="A Hausz Kft. együttnéző szolgáltatása, ahol YouTube videókat lehet együtt nézni a világhálón keresztül.">
-		<link rel="stylesheet" type="text/css" href="/index/style.css" />
+		<link rel="stylesheet" type="text/css" href="../index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'> 
             {
@@ -196,11 +196,7 @@
         </script>
 	</head>
 	<body onload="visszajelzes_kuldese()">
-		<script>
-			fetch("/index/topbar.html")
-				.then(response => response.text())
-				.then(text => document.body.innerHTML = text + document.body.innerHTML)
-		</script>
+		<?php readfile("/var/www/html/index/topbar.html"); ?>
 		<h1 style="text-align: center">Hausz együttnéző</h1>
 		<table style="width: 95%; height: 80%; background-color: rgb(70, 70, 70); border: 0px solid;">
 			<tr>

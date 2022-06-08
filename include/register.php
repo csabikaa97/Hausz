@@ -9,11 +9,7 @@
         <meta name="color-scheme" content="dark light">
 	</head>
     <body>
-        <script>
-			fetch("https://hausz.stream/index/topbar.html")
-				.then(response => response.text())
-				.then(text => document.body.innerHTML = text + document.body.innerHTML)
-		</script>
+        <?php readfile("/var/www/html/index/topbar.html"); ?>
 
         <center>
             <h1>Hausz regisztráció</h1>

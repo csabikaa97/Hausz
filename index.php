@@ -44,12 +44,9 @@
 </head>
 
 <body>
-    <script>
-        fetch("/index/topbar.html")
-            .then(response => response.text())
-            .then(text => document.body.innerHTML = text + document.body.innerHTML)
-    </script>
     <?php
+        readfile("/var/www/html/index/topbar.html");
+
         $dbname = "hausz_megoszto";
         include 'include/adatbazis.php';
         include 'include/alap_fuggvenyek.php';

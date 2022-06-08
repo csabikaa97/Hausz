@@ -102,7 +102,7 @@
         color: rgb(180, 180, 180);
     }
 
-    #LinkekkelTeliTopbarXd {
+    .LinkekkelTeliTopbarXd {
         /* KÉSZ */
         background-color: rgb(0, 0, 0);
         border-color: rgb(0, 0, 0);
@@ -222,7 +222,7 @@
         color: black;
     }
 
-    #LinkekkelTeliTopbarXd {
+    .LinkekkelTeliTopbarXd {
         background-color: white;
         border-color: rgb(235, 235, 235);
         box-shadow: 0 0 0 0 rgb(200, 200, 200);
@@ -425,11 +425,11 @@ input {
 }
 
 body {
-    margin: 8px;
+    margin: 0px;
     overflow-x: hidden;
 }
 
-#LinkekkelTeliTopbarXd {
+.LinkekkelTeliTopbarXd {
     padding: 10px;
     margin: 0;
     width: 99%;

@@ -82,6 +82,7 @@
 
             function updateFileName() {
                 document.getElementById('fileToUpload_label').innerHTML = "&#128193; "+ document.getElementById('fileToUpload').files[0].name;
+                document.getElementById('SubmitGomb').hidden = false;
             }
 
             window.onload = function() {
@@ -174,13 +175,12 @@
                 }
             }
 
-            if(isset($_POST["submit"])) {
+            if(isset($_POST["submit"]) || ($_POST["azonnali_feltoltes"]) == "igen") {
                 if( strlen($_FILES["fileToUpload"]["name"]) <= 0 ) {   ujratoltes('Nem válaszottál ki fájlt a feltöltéshez.'); }
                 $target_file = "/var/www/html/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]);
                 debug("/uploads/fajlok/" . basename($_FILES["fileToUpload"]["name"]));
                 $goforupload = false;
-                $query_del = 'USE hausz_megoszto;';
-                $query_check = 'SELECT files.filename, files.user_id, users.username FROM files LEFT OUTER JOIN users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"';
+                $query_check = 'SELECT files.filename, files.user_id, users.username FROM hausz_megoszto.files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'" COLLATE utf8mb4_general_ci;';
                 $result_check = $conn->query($query_check);
                 if($result_check) {
                     if($result_check->num_rows > 0) {
@@ -200,6 +200,7 @@
                         $goforupload = true;
                     }
                 } else {
+                    var_dump($conn->error);
                     ujratoltes('Query hiba: '.$query_check);
                 }
                 if($goforupload == true) {
@@ -218,6 +219,7 @@
                             } else {
                                 $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", 0, '.$_FILES["fileToUpload"]["size"].', 0)';
                                 $result_del2 = $conn->query($query_del2);
+                                if(!$result_del2) {   var_dump($conn->error); ujratoltes("Fatal error: ".$query_del2);  }
                             }
                             
                             tarhely_statisztika_mentes();
@@ -243,7 +245,7 @@
             if($_SESSION['loggedin'] == "yes") { 
                 printLn('<label onclick="PrivatFeltoltesAtallitasa()" id="private_label_div" for="private"><input hidden type="checkbox" name="private" type="private" id="private" /><div id="private_text">Fájl publikus tárolása</div></label><br><br>');
             }
-            printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb">Feltöltés</button>');
+            printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb" hidden>Feltöltés</button>');
             printLn('</form>');
 
             if( strlen($_SESSION['ujratoltes_szoveg']) > 0 ) {
@@ -309,6 +311,9 @@
                         if(preg_match('/\.apk$/i', $row['filename'])) { $preview_type = "software"; }
                         if(preg_match('/\.rpm$/i', $row['filename'])) { $preview_type = "software"; }
                         if(preg_match('/\.deb$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.dmg$/i', $row['filename'])) { $preview_type = "software"; }
+                        if(preg_match('/\.pkg$/i', $row['filename'])) { $preview_type = "software"; }
+                        
                         
                         if(preg_match('/\.zip$/i', $row['filename'])) { $preview_type = "compressed"; }
                         if(preg_match('/\.7z$/i', $row['filename'])) { $preview_type = "compressed"; }
@@ -321,7 +326,7 @@
                         if($preview_type == "document") { $preview_emoji ='📝'; }
                         if($preview_type == "audio") { $preview_emoji = '🎵'; }
                         if($preview_type == "image") { $preview_emoji = '📷'; }
-                        if($preview_type == "video") { $preview_emoji = '🎞'; }
+                        if($preview_type == "video") { $preview_emoji = '🎬'; }
                         if($preview_type == "software") { $preview_emoji = '💿'; }
                         if($preview_type == "compressed") { $preview_emoji = '📦'; }
 

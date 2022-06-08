@@ -4,7 +4,13 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Tennivalók:
 
+- Megosztó: fájlok átnevezése
+- Admin státusz adatbázisban és admin oldal a regisztrált emberek kezeléséhez, stb..
 - AJAX-osítani a beléptető rendszert és a megosztót
+- Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is)
+- Migráció tesztelés újabb Ubuntu verzióra, és szükséges lépések illetve igényelt szoftver csomagok dokumentálása
+> - Jelenleg telepített apt csomagokról lista mentés
+> - Ubuntu server 22.04-en deployolás
 - Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál
 - Google Search Console (SEO) hibák javítása és javasolt lépések megtétele
 > - Mobil barát oldalak
@@ -16,6 +22,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Implementált:
 
+- TeamSpeak szolgáltatás státusz mutatása a TS oldalon
 - Hausz youtube együttnéző (https://developers.google.com/youtube/iframe_api_reference)
 - Belépés standardizálása és kiterjesztése együttnézőre
 - SEO dolgok
