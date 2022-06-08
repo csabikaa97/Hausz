@@ -4,8 +4,6 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Tennivalók:
 
-- Megosztó: fájlok átnevezése
-- Admin státusz adatbázisban és admin oldal a regisztrált emberek kezeléséhez, stb..
 - AJAX-osítani a beléptető rendszert és a megosztót
 - Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is)
 - Migráció tesztelés újabb Ubuntu verzióra, és szükséges lépések illetve igényelt szoftver csomagok dokumentálása
@@ -22,6 +20,8 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Implementált:
 
+- Admin oszlop adatbázisban és admin oldal a felhasználók kezeléséhez
+- Megosztón fájlok átnevezése
 - TeamSpeak szolgáltatás státusz mutatása a TS oldalon
 - Hausz youtube együttnéző (https://developers.google.com/youtube/iframe_api_reference)
 - Belépés standardizálása és kiterjesztése együttnézőre

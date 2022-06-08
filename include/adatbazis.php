@@ -9,3 +9,4 @@
         printLn("Kérlek vedd fel a kapcsolatot a rendszergazdával a csaba@hausz.stream e-mail címen.");
         die();
     }
+?>

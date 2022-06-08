@@ -23,6 +23,7 @@
     if( $_GET['logout'] == "igen" ) {
         $_SESSION['loggedin'] = false;
         $_SESSION['username'] = '';
+        $_SESSION['admin'] = false;
         unset($_SESSION['user_id']);
         $_GET['logout'] = "";
         ujratoltes('Sikeres kilépés.');
@@ -39,6 +40,7 @@
                         $_SESSION['loggedin'] = "yes";
                         $_SESSION['username'] = $row['username'];
                         $_SESSION['user_id'] = $row['id'];
+                        $_SESSION['admin'] = $row['admin'];
                     } else {
                         showLogin("Hibás felhasználónév vagy jelszó");
                     }
@@ -58,8 +60,9 @@
         printLn('Belépve mint: '.$_SESSION['username']);
         printLn('<br><a href="'.$_SERVER['PHP_SELF'].'?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
         printLn('<br><a href="/include/change_password.php"><button id="jelszovaltoztatsgomb">Jelszó megváltoztatása</button></a>');
-        if($_SESSION['user_id'] == 1) {
+        if($_SESSION['admin'] == "igen") {
             printLn('<br><a href="#"><button onclick="window.open(\'https://hausz.stream:8080\')">Admin VScode</button></a>');
+            printLn('<br><a href="#"><button onclick="window.location.href = \'https://hausz.stream/admin/admin.php\'">Admin felület</button></a>');
         }
         printLn('</div>');
     }

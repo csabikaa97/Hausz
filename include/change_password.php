@@ -5,7 +5,7 @@
 <html>
 
 <head>
-    <title>Hausz megosztó</title>
+    <title>Hausz jelszó változtatás</title>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
@@ -17,7 +17,7 @@
     <?php readfile("/var/www/html/index/topbar.html"); ?>
 
     <center>
-        <h1>Hausz megosztó jelszó változtatás</h1>
+        <h1>Hausz jelszó változtatás</h1>
     </center>
 
     <?php

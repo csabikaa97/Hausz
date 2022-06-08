@@ -226,7 +226,12 @@
                     if($result->num_rows > 0) {
                         $row = $result->fetch_assoc();
                         if($_GET['file'] == $row['filename'] && strtolower($_SESSION['username']) == strtolower($row['username']) or strtolower($row['username']) == "ismeretlen" && $_GET['file_id'] == $row['id']) {
-                            shell_exec('rm "/var/www/html/uploads/fajlok/'.$_GET['file'].'"');
+                            $eredmeny = "";
+                            $parancs = 'rm "/var/www/html/uploads/fajlok/'.$row['filename'].'"';
+                            exec($parancs, $eredmeny, $retval);
+                            if($retval != 0) {
+                                ujratoltes("Parancs hiba: ".$parancs);
+                            }
                             tarhely_statisztika_mentes();
                             $_GET['file'] = preg_replace("/'/", "\'", $_GET['file']);
                             $query_del = "DELETE FROM files WHERE filename = '".$_GET['file']."' AND user_id = '".$row['user_id']."' AND id = ".$_GET['file_id'];
