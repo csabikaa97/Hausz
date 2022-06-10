@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
     <head>
 		<title>Hausz regisztráció</title>
 		<meta charset="UTF-8">

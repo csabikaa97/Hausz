@@ -4,8 +4,10 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Tennivalók:
 
-- AJAX-osítani a beléptető rendszert és a megosztót
-- Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is)
+- Együttnéző széleskörű tesztelése és bugok javítása
+> - Csúszás megoldása belső kliens oldali számlálóval
+- AJAX-osítani a beléptető rendszert
+- Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is belefér)
 - Migráció tesztelés újabb Ubuntu verzióra, és szükséges lépések illetve igényelt szoftver csomagok dokumentálása
 > - Jelenleg telepített apt csomagokról lista mentés
 > - Ubuntu server 22.04-en deployolás
@@ -13,13 +15,13 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 - Google Search Console (SEO) hibák javítása és javasolt lépések megtétele
 > - Mobil barát oldalak
 > - Rich results hibák
-- Együttnéző kijavítása
-> Hiba: Jelenleg az AJAX kérések egy idő után kifagyasztják a szervert, és a tekerés nem működik mindig.
-> - Websocket használata AJAX helyett
-> Visszatérni a kliens megoldáshoz a megállításnál és indításnál, mert most olyan érzés mintha lassú lenne a szerver válaszideje miatt
 
 #### Implementált:
 
+- Megosztó átírás websocket alapra:
+> - Node.js alapú websocket szerver (WSS, hausz.stream certet használva)
+> - Kell hozzá a ws modul hogy működjön: "npm install ws"
+> - a node modul mappát és a package json-öket ignore listára vettem hogy ne legyen tele velük a repository
 - Admin oszlop adatbázisban és admin oldal a felhasználók kezeléséhez
 - Megosztón fájlok átnevezése
 - TeamSpeak szolgáltatás státusz mutatása a TS oldalon

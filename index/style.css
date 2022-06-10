@@ -45,7 +45,7 @@
         background-color: rgb(35, 35, 35);
     }
 
-    #bottom_left_corner_div {
+    .bottom_left_corner_div {
         /* KÉSZ */
         border: solid rgb(70, 70, 70) 1px;
         background-color: rgb(30, 30, 30);
@@ -177,7 +177,7 @@
         color: rgb(0, 0, 0);
     }
 
-    #bottom_left_corner_div {
+    .bottom_left_corner_div {
         border: solid rgb(240, 240, 240) 1px;
         background-color: white;
     }
@@ -318,7 +318,7 @@ input {
     margin: 0;
 }
 
-#bottom_left_corner_div {
+.bottom_left_corner_div {
     padding: 10px;
     position: fixed;
     bottom: 5px;

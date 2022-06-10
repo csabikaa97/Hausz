@@ -1,6 +1,6 @@
 <?php   session_start(); ?>
 <!DOCTYPE html>
-<html>
+<html lang="hu">
     <head>
         <title>Hausz admin felület</title>
         <meta charset="UTF-8">

@@ -1,15 +1,15 @@
 <?php
     function showLogin($reason) {
-        printLn("<div class='center container' id='bottom_left_corner_div'>");
+        printLn('<div id="belepes_doboz" class="center container bottom_left_corner_div">');
         if( strlen($reason) > 0 ) {   printLn("<p>".$reason."</p>"); }
         printLn("<div class='login'>");
-        printLn("<form id='login' action='' method='post'>");
+        printLn("<form id='login' method='post'>");
         printLn("<input id='username' autocomplete='username' type='text' name='username' placeholder='Felhasználónév'><br>");
         printLn("<input id='current-password' autocomplete='current-password' type='password' name='password' placeholder='Jelszó'><br>");
         printLn("<input type='hidden' name='login' value='yes'><br>");
         printLn("<button type='submit'>Bejelentkezés</button>");
         printLn("</form>");
-        printLn('<button onclick=location.href="/include/register.php" type="button">Regisztráció</button>');
+        printLn('<button onclick="location.href=\'/include/register.php\'" type="button">Regisztráció</button>');
         printLn("</div>");
         printLn("</div>");
     }
@@ -56,7 +56,7 @@
     }
 
     if($_SESSION['loggedin'] == "yes") {
-        printLn("<div class='container' id='bottom_left_corner_div'>");
+        printLn('<div id="belepes_doboz" class="container bottom_left_corner_div">');
         printLn('Belépve mint: '.$_SESSION['username']);
         printLn('<br><a href="'.$_SERVER['PHP_SELF'].'?logout=igen"><button id="kilepesgomb">Kilépés</button></a>');
         printLn('<br><a href="/include/change_password.php"><button id="jelszovaltoztatsgomb">Jelszó megváltoztatása</button></a>');

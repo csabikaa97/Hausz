@@ -5,7 +5,7 @@
 <head>
     <title>Hausz</title>
     <meta name="description" content="A Hausz Kft. hivatalos weboldala, ahol a cég, a cég által készített összes szolgáltatás leírása, a Hausz megosztó, és egyéb weboldalak találhatóak.">
-    <meta charset=" UTF-8">
+    <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
     <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
     <script type="application/ld+json">
@@ -43,7 +43,7 @@
     </script>
 </head>
 
-<body>
+<body onload="document.getElementById('ujitasok_doboz').style.bottom = document.getElementById('belepes_doboz').offsetHeight + 20 + 'px';">
     <?php
         readfile("/var/www/html/index/topbar.html");
 
@@ -51,6 +51,25 @@
         include 'include/adatbazis.php';
         include 'include/alap_fuggvenyek.php';
         include "include/belepteto_rendszer.php";
+
+        $ujitasok = array();
+        array_push($ujitasok, "");
+        array_push($ujitasok, "Együttnéző: Már kezd egész beszámíthatóan működni az oldal, és már nem crash-el a websocket implementációnak köszönhetően 🥳");
+        array_push($ujitasok, "Megosztó: Lehet szerkeszteni a kis ceruza ikonnal a saját fájlok nevét.");
+        array_push($ujitasok, "TeamSpeak oldal: Tartalmaz egy rövid leírást új felhasználók számára, lehet rajta jogosultságot igényelni, és meg lehet tekinteni a szerver státuszát, illetve az online felhasználókat.");
+        
+        printLn('<div id="ujitasok_doboz" class="bottom_left_corner_div" style="max-width: 20%"><h3>Újítások a Hauszon</h3><ul>');
+        foreach($ujitasok as $ujitas) {
+            if(strlen($ujitas) > 0) {
+                if(preg_match('/:/', $ujitas)) {
+                    $ujitas = explode(':', $ujitas);
+                    printLn('<li><font style="text-decoration: underline">'.$ujitas[0].'</font>:'.$ujitas[1].'</li><br>');
+                } else {
+                    printLn('<li>'.$ujitas.'</li><br>');
+                }
+            }
+        }
+        printLn('</ul></div>');
     ?>
     <div class="center FuggolegesCenter FullDoboz">
         <img id="hausz_logo" class="center" src="/index/hausz.svg" alt="Hausz logo">

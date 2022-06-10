@@ -2,7 +2,7 @@
     session_start();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="hu">
 
 <head>
     <title>Hausz jelszó változtatás</title>

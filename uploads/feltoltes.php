@@ -442,7 +442,11 @@
                         }
                         if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == "yes") or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == "yes")) {
                             printLn('<td class="emoji_cell"><a style="text-decoration: none" onclick="torles(&quot;/uploads/feltoltes.php?delete=1&file='.$row['filename'].'&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)">&#10060;</a></td>');
-                            printLn('<td class="emoji_cell"><a onclick=\'fajl_atnevezese("'.$row['id'].'", "'.$row['filename'].'")\'>✏️</a></td>');
+                            if( strtolower($row['username']) != "ismeretlen" ) {
+                                printLn('<td class="emoji_cell"><a onclick=\'fajl_atnevezese("'.$row['id'].'", "'.$row['filename'].'")\'>✏️</a></td>');
+                            } else {
+                                printLn('<td></td>');
+                            }
                         } else {
                             printLn('<td></td><td></td>');
                         }
