@@ -1,0 +1,14 @@
+[Unit]
+Description=egyuttnezo_szerver
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/usr/bin/nodejs /var/www/html/egyuttnezo/egyuttnezo_szerver.js
+
+[Install]
+WantedBy=multi-user.target
+

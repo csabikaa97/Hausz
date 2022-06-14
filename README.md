@@ -18,6 +18,8 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Implementált:
 
+- TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása:
+> - Lásd: dokumentacio/linux szolgáltatás/szolgáltatás készítés.txt
 - Megosztó átírás websocket alapra:
 > - Node.js alapú websocket szerver (WSS, hausz.stream certet használva)
 > - Kell hozzá a ws modul hogy működjön: "npm install ws"

@@ -1,0 +1,14 @@
+[Unit]
+Description=code-server
+After=network.target
+StartLimitIntervalSec=0
+StartLimitBurst=5
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/usr/bin/code-server --cert /var/www/html/priv/cert.pem --cert-key /var/www/html/priv/privkey.pem --bind-addr=0.0.0.0:8080 --user-data-dir /var/www/html/priv/vscode/code-server/ --config /var/www/html/priv/vscode/config.yaml
+
+[Install]
+WantedBy=multi-user.target

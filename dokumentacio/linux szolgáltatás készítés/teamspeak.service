@@ -1,0 +1,15 @@
+[Unit]
+Description=teamspeak
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/var/www/html/priv
+/TS3serverCurrent-zT3FOa4V/ts3server_minimal_runscript.sh
+
+[Install]
+WantedBy=multi-user.target
+
