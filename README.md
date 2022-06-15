@@ -18,6 +18,8 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 
 #### Implementált:
 
+- Git repo megtisztítva a jelszavaktól és tanúsítványoktól
+> - https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository
 - TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása:
 > - Lásd: dokumentacio/linux szolgáltatás/szolgáltatás készítés.txt
 - Megosztó átírás websocket alapra:
