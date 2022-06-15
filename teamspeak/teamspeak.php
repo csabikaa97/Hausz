@@ -122,7 +122,7 @@
             printLn('<h3>Lépések a csatlakozáshoz</h3>');
             printLn('<ol>');
             printLn('<li>Töltsd le a TeamSpeak 3 kliens szoftvert, és telepítsd az eszközödre.');
-            printLn('<p>Windows: <a href="#" onclick="window.open(\'https://teamspeak.com/en/downloads/\')">TeamSpeak 3 - Downloads</a></p>');
+            printLn('<p>Windows: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=390\')">Hausz megosztó - TeamSpeak3-Client-win64-3.5.6.exe</a></p>');
             printLn('<p>MacOS: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=343\')">Hausz megosztó - TeamSpeak3-Client-macosx-3.5.7.dmg</a></p></li>');
             printLn('<li>Kattints rá a következő linkre a csatlakozáshoz: <a href="ts3server://hausz.stream/?port=9987&nickname='.$_SESSION['username'].'">Csatlakozás</a></li>');
             if($_SESSION['loggedin'] == "yes") {

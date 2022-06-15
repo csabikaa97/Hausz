@@ -16,6 +16,24 @@
             <h1>Hausz admin felület</h1>
         </center>
 
+        <script>
+            function futtatas() {
+                const xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    document.getElementById("parancssor").innerHTML = document.getElementById("parancssor").innerHTML + this.responseText;
+                }
+                xhttp.open("GET", "https://hausz.stream/admin/parancs.php?parancs=" + document.getElementById("parancs").value);
+                xhttp.send();
+            }
+
+            function futtatas_enter() {
+                if (event.key === 'Enter') {
+                    futtatas();
+                    document.getElementById("parancs").value = "";
+                }
+            }
+        </script>
+
         <?php
             $dbname = "hausz_megoszto";
             include '../include/adatbazis.php';
@@ -109,6 +127,12 @@
                 }
                 printLn('</table>');
             }
+
+            printLn('<h3>Shell</h3>');
+            printLn('<div id="parancssor">');
+            printLn('</div>');
+            printLn('<input id="parancs" onkeydown="futtatas_enter()" type="text" placeholder="parancs" />');
+            printLn('<input onclick="futtatas()" type="button" value="Futtatás"></input>');
         ?>
     </body>
 </html>
