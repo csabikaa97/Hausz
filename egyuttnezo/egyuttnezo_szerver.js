@@ -34,7 +34,7 @@ const options = {
     cert: fs.readFileSync('/var/www/html/priv/cert.pem')
 };
 
-const index = fs.readFileSync('/var/www/html/egyuttnezo/index.html');
+const index = 'miau';
 
 
 let server = https.createServer(options, (req, res) => {

@@ -189,9 +189,10 @@
                 printLn('Query hiba: '.$query);
                 die();
             }
+            $minden_rendben = true;
             if($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
-                printLn('<br><br><h3>Szerver állapot</h3>');
+                printLn('<br><br><h3 id="szerver_allapot">Szerver állapot</h3>');
                 if(preg_match('/(.*)folyamat ok(.*)/', $row['statusz'], $matches)) {    printLn('<p>🟩 TeamSpeak szerver folyamat fut</p>'); }
                 if(!preg_match('/(.*)folyamat ok(.*)/', $row['statusz'], $matches)) {   printLn('<p>🟥 TeamSpeak szerver folyamat nem fut</p>'); }
                 if(preg_match('/(.*)telnet ok(.*)/', $row['statusz'], $matches)) {    printLn('<p>🟩 Telnet elérhető</p>'); }
@@ -203,23 +204,28 @@
                 if( floatval($processzor_hasznalat_reszek[2]) >= $processzor_tulterheltseg_szint ) {
                     if( floatval($processzor_hasznalat_reszek[0]) >= $processzor_tulterheltseg_szint ) {
                         $buffer = '<p>🟥 Processzor terhelés - magas körülbelül 15 perce</p>';
+                        $minden_rendben = false;
                     } else {
                         if( floatval($processzor_hasznalat_reszek[1]) < $processzor_tulterheltseg_szint ) {
                             $buffer = '<p>🟨 Processzor terhelés - magas volt körülbelül 15 perce, de már lecsökkent</p>';
+                            $minden_rendben = false;
                         } else {
                             $buffer = '<p>🟧 Processzor terhelés - magas volt körülbelül 5 perce, de már kezd lecsökkenni</p>';
+                            $minden_rendben = false;
                         }
                     }
                 } else {
                     if( floatval($processzor_hasznalat_reszek[1]) >= $processzor_tulterheltseg_szint ) {
                         if( floatval($processzor_hasznalat_reszek[0]) >= $processzor_tulterheltseg_szint ) {
                             $buffer = '<p>🟧 Processzor terhelés - magas körülbelül 5 perce</p>';
+                            $minden_rendben = false;
                         } else {
                             $buffer = '<p>🟨 Processzor terhelés - magas volt körülbelül 5 perce, de most alacsony</p>';
+                            $minden_rendben = false;
                         }
                     } else {
                         if( floatval($processzor_hasznalat_reszek[0]) >= $processzor_tulterheltseg_szint ) {
-                            $buffer = '<p>🟨 Processzor terhelés - jelenleg magas</p>';
+                            $buffer = '<p>🟨 Processzor terhelés - elfogadható</p>';
                         } else {
                             $buffer = '<p>🟩 Processzor terhelés - optimális</p>';
                         }
@@ -237,9 +243,11 @@
             $memoria_arany = (floatval($memoria_osszes) - floatval($memoria_szabad)) / floatval($memoria_osszes);
             if($memoria_arany >= 0.95) {
                 printLn('<p>🟥 Memória használat - nagyon magas</p>');
+                $minden_rendben = false;
             } else {
                 if($memoria_arany >= 0.85) {
                     printLn('<p>🟧 Memória használat - magas</p>');
+                    $minden_rendben = false;
                 } else {
                     if($memoria_arany >= 0.75) {
                         printLn('<p>🟨 Memória használat - elfogadható</p>');
@@ -254,9 +262,11 @@
             $swap_arany = (floatval($swap_osszes) - floatval($swap_szabad)) / floatval($swap_osszes);
             if($swap_arany >= 0.95) {
                 printLn('<p>🟥 Virtuális memória használat - nagyon magas</p>');
+                $minden_rendben = false;
             } else {
                 if($swap_arany >= 0.85) {
                     printLn('<p>🟧 Virtuális memória használat - magas</p>');
+                    $minden_rendben = false;
                 } else {
                     if($swap_arany >= 0.75) {
                         printLn('<p>🟨 Virtuális memória használat - elfogadható</p>');
@@ -285,9 +295,11 @@
 
             if($tarhely_arany >= 0.95) {
                 printLn('<p>🟥 Lemezterület kihasználtság - nagyon magas</p>');
+                $minden_rendben = false;
             } else {
                 if($tarhely_arany >= 0.85) {
                     printLn('<p>🟧 Lemezterület kihasználtság - magas</p>');
+                    $minden_rendben = false;
                 } else {
                     if($tarhely_arany >= 0.75) {
                         printLn('<p>🟨 Lemezterület kihasználtság - elfogadható</p>');
@@ -295,6 +307,10 @@
                         printLn('<p>🟩 Lemezterület kihasználtság - optimális</p>');
                     }
                 }
+            }
+
+            if( $minden_rendben ) {
+                printLn("<script>document.getElementById('szerver_allapot').innerHTML += 'a jelenleg kifogástalan 🥳'</script>");
             }
 
             printLn('<br><br>');

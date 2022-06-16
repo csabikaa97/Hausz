@@ -1,15 +1,12 @@
 Order deny,allow
 Deny from all
 
-XSendFile on
-
-<Files request.php>
+<Files register.php>
     Order Allow,Deny
     Allow from all
 </Files>
 
-<Files feltoltes.php>
+<Files change_password.php>
     Order Allow,Deny
     Allow from all
 </Files>
-
