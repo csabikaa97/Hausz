@@ -7,8 +7,7 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-ExecStart=/var/www/html/priv
-/TS3serverCurrent-zT3FOa4V/ts3server_minimal_runscript.sh
+ExecStart=/var/www/html/priv/TS3serverCurrent-zT3FOa4V/ts3server_minimal_runscript.sh
 
 [Install]
 WantedBy=multi-user.target

@@ -16,12 +16,14 @@ Ez a repository tartalmazza a Hausz Kft weboldalának forráskódját és tartal
 > - Mobil barát oldalak
 > - Rich results hibák
 
-#### Implementált:
+#### Implementált / megtett lépések:
 
+- Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker!
+> - Lásd: [a relative link](dokumentacio/2022.06.15%20migráció%20teszt/jegyzetek.txt)
 - Git repo megtisztítva a jelszavaktól és tanúsítványoktól
 > - https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository
 - TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása:
-> - Lásd: dokumentacio/linux szolgáltatás/szolgáltatás készítés.txt
+> - Lásd: [a relative link](dokumentacio/linux%20szolgáltatás/szolgáltatás%20készítés.txt)
 - Megosztó átírás websocket alapra:
 > - Node.js alapú websocket szerver (WSS, hausz.stream certet használva)
 > - Kell hozzá a ws modul hogy működjön: "npm install ws"

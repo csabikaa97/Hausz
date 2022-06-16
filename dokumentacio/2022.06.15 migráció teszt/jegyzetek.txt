@@ -1,22 +1,55 @@
 TEENDŐK MIGRÁLÁSKOR
 
-    apt install git apache2 nodejs php mysql-server letsencrypt certbot python3-certbot-apache htop
+1.  Csomagok telepítése
 
-portok nyitása amazonon
+    apt install git apache2 nodejs php mysql-server letsencrypt certbot python3-certbot-apache htop php-mysql libapache2-mod-xsendfile expect
+
+2.  Portok nyitása
+
+    TCP     22, 80, 443, 8080, 8090, 9987, 30033
+    UDP     9987, 30033
+
+3.  Tűzfal kikapcsolása / konfigurálása
 
     ufw disable
 
-    cd /var/www/html
-    rm -rf *
-    scp -r csabikaa97@hausz.stream:/var/www/html/* ./
+4.  Fő mappa átmásolása éles szerverről scp-vel
+
+    cd /var/www/
+    rm -rf html
+    scp -r csabikaa97@hausz.stream:/var/www/html ./
+
+5.  Certificate igénylése certbottal, és átmásolása priv mappába
 
     certbot --apache
-
+    rm /var/ww/html/priv/*.pem
     cp /etc/letsencrypt/live/<domain>/* /var/www/html/priv/
+
+6.  code-server telepítése
 
     curl -fsSL https://code-server.dev/install.sh | sh
 
-szolgáltatásokat a doksi alapján: dokumentacio/linux szolgáltatás készítés/szolgáltatás készítés.txt
+7.  Szolgáltatások létrehozása doksi alapján: "dokumentacio/linux szolgáltatás készítés/szolgáltatás készítés.txt"
 
+8.  MySQL szerveren root user jelszavának megadása
 
+    mysql -u root -p
+
+        ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+
+9.  Éles szerveren adatbázis mentés készítése
+
+    mysqldump --all-databases --single-transaction --quick --lock-tables=false > teljes_mentes.sql -u root -p
+
+10. Új szerveren mentés visszaállítása
+
+    CREATE DATABASE hausz_egyuttnezo;
+    CREATE DATABASE hausz_megoszto;
+    CREATE DATABASE hausz_ts;
     
+    mysql -root -p hausz_egyuttnezo < full-backup.sql
+
+11. "/etc/apache2/sites-enabled/000-default-le-ssl.conf" fájlhoz sorok hozzáadása az "<IfModule mod_ssl.c>" tagen belül:
+
+    XSendFile on
+    XSendFilePath /var/www/html/
