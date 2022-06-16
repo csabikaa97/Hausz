@@ -53,3 +53,6 @@ TEENDŐK MIGRÁLÁSKOR
 
     XSendFile on
     XSendFilePath /var/www/html/
+
+
+2022.06.15 Teszt migrálás Ubuntu 22.04 környezetbe sikeres volt! Minden meglévő szolgáltatás működött.

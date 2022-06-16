@@ -1,7 +1,0 @@
-Order allow,deny
-Allow from all
-
-<Files topbar.html>
-    Order Deny,Allow
-    Deny from all
-</Files>
