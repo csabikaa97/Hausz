@@ -395,7 +395,7 @@
                         if(preg_match('/\.dmg$/i', $row['filename'])) { $preview_type = "software"; }
                         if(preg_match('/\.pkg$/i', $row['filename'])) { $preview_type = "software"; }
                         
-                        
+                        if(preg_match('/\.torrent$/i', $row['filename'])) { $preview_type = "compressed"; }
                         if(preg_match('/\.zip$/i', $row['filename'])) { $preview_type = "compressed"; }
                         if(preg_match('/\.7z$/i', $row['filename'])) { $preview_type = "compressed"; }
                         if(preg_match('/\.tar$/i', $row['filename'])) { $preview_type = "compressed"; }

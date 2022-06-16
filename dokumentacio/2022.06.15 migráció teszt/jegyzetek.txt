@@ -1,0 +1,22 @@
+TEENDŐK MIGRÁLÁSKOR
+
+    apt install git apache2 nodejs php mysql-server letsencrypt certbot python3-certbot-apache htop
+
+portok nyitása amazonon
+
+    ufw disable
+
+    cd /var/www/html
+    rm -rf *
+    scp -r csabikaa97@hausz.stream:/var/www/html/* ./
+
+    certbot --apache
+
+    cp /etc/letsencrypt/live/<domain>/* /var/www/html/priv/
+
+    curl -fsSL https://code-server.dev/install.sh | sh
+
+szolgáltatásokat a doksi alapján: dokumentacio/linux szolgáltatás készítés/szolgáltatás készítés.txt
+
+
+    
