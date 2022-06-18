@@ -6,6 +6,9 @@ XSendFile on
 <Files request.php>
     Order Allow,Deny
     Allow from all
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </Files>
 
 <Files feltoltes.php>

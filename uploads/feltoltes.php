@@ -2,16 +2,19 @@
 <!DOCTYPE html>
 <html lang="hu">
     <head>
-		<title>Hausz megosztó</title>
+		<title>Megosztó - Hausz</title>
 		<meta charset="UTF-8">
-        <meta name="description" content="A Hausz Kft. megosztó szolgáltatása, ahol fájlokat lehet megosztani privát és publikus módon, anonim és regisztrált felhasználók által egyaránt.">
+        <meta name="description" content="Fájl megosztó szolgáltatás, ahol a felhasználók privát és publikus módon tudnak fájlokat megosztani egymással.">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'> 
             {
                 "@context": "https://www.schema.org",
                 "@type": "product",
-                "brand": "Hausz",
+                "brand": {
+					"@type": "Brand",
+					"name": "Hausz"
+				}
                 "logo": "http://hausz.stream/index/favicon.png",
                 "name": "WidgetPress",
                 "category": "Widgets",
@@ -37,10 +40,10 @@
                 document.getElementById('private').checked = !document.getElementById('private').checked;
                 if(document.getElementById('private').checked) {
                     document.getElementById('private_label_div').classList.add('ZoldHatter');
-                    document.getElementById('private_text').innerHTML = "Fájl privát tárolása";
+                    document.getElementById('private_text').innerHTML = "A fájlod privát módon lesz tárolva";
                 } else {
                     document.getElementById('private_label_div').classList.remove('ZoldHatter');
-                    document.getElementById('private_text').innerHTML = "Fájl publikus tárolása";
+                    document.getElementById('private_text').innerHTML = "A fájlod publikus módon lesz tárolva";
                 }
             }
 
@@ -166,6 +169,7 @@
             }
 
             if($_GET['atnevezes'] == '1') {
+                header('X-Robots-Tag: noindex');
                 if(strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0) {
                     ujratoltes('HIBA: Hiányzó uj_nev vagy file_id paraméter.');
                 }
@@ -220,6 +224,7 @@
             }
 
             if($_GET['delete'] == '1' && $_SESSION['loggedin'] == "yes") {
+                header('X-Robots-Tag: noindex');
                 $query = "SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id'];
                 $result = $conn->query($query);
                 if($result) {
@@ -246,6 +251,7 @@
             }
 
             if($_GET['claim'] == '1' && $_SESSION['loggedin'] == "yes") {
+                header('X-Robots-Tag: noindex');
                 $query = "UPDATE files SET user_id = (SELECT id FROM users WHERE username = '".$_SESSION['username']."') WHERE id = ".$_GET['file_id'];
                 $result = $conn->query($query);
                 if($result) {
@@ -318,20 +324,24 @@
                 unset($_POST["submit"]);
             }
 
-            printLn('<h1 style="text-align: center">Hausz megosztó</h1>');
+            printLn('<h1 style="text-align: center">Megosztó</h1>');
+            printLn('<p style="text-align: center">Fájl megosztó szolgáltatás, ahol a felhasználók privát és publikus módon tudnak fájlokat megosztani egymással.</p>');
+            printLn('<p style="text-align: center">Tölts fel egy fájlt, vagy nézd meg hogy mások mit töltöttek eddig fel.</p><br>');
+            printLn('<h2 style="text-align: center">Feltöltés</h2>');
             printLn('<form class="center" action="/uploads/feltoltes.php" method="post" enctype="multipart/form-data">');
             printLn('<label style="display: block; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>');
             printLn('<input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
             if($_SESSION['loggedin'] == "yes") { 
-                printLn('<label onclick="PrivatFeltoltesAtallitasa()" id="private_label_div" for="private"><input hidden type="checkbox" name="private" type="private" id="private" /><div id="private_text">Fájl publikus tárolása</div></label><br><br>');
+                printLn('<label onclick="PrivatFeltoltesAtallitasa()" id="private_label_div" for="private"><input hidden type="checkbox" name="private" type="private" id="private" /><div id="private_text">A fájlod publikus módon lesz tárolva</div></label><br><br>');
             }
             printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb" hidden>Feltöltés</button>');
             printLn('</form>');
 
             if( strlen($_SESSION['ujratoltes_szoveg']) > 0 ) {
-                printLn('<h1 style="text-align: center" id="ujratoltes_szoveg">'.$_SESSION['ujratoltes_szoveg'].'</h1>');
+                printLn('<p style="text-align: center" id="ujratoltes_szoveg">'.$_SESSION['ujratoltes_szoveg'].'</p>');
                 $_SESSION['ujratoltes_szoveg'] = "";
             }
+            printLn('<h2 style="text-align: center">Feltöltött fájlok</h2>');
             printLn('<br><table style="display: table" class="center InputSzoveg">');
             printLn("<tr>");
                 printLn("<th></th>");
@@ -385,6 +395,7 @@
                         if(preg_match('/\.docx$/i', $row['filename'])) { $preview_type = "document"; }
                         if(preg_match('/\.ppt$/i', $row['filename'])) { $preview_type = "document"; }
                         if(preg_match('/\.pptx$/i', $row['filename'])) { $preview_type = "document"; }
+                        if(preg_match('/\.ahk$/i', $row['filename'])) { $preview_type = "document"; }
 
                         if(preg_match('/\.exe$/i', $row['filename'])) { $preview_type = "software"; }
                         if(preg_match('/\.msi$/i', $row['filename'])) { $preview_type = "software"; }
@@ -471,6 +482,8 @@
             }
 
             printLn('</table><br><br><br>');
+            printLn('<h2 style="text-align: center">Tárhely kihasználtsága</h2>');
+
 
             $foglalt_tarhely_arany = ($foglalt_tarhely) / ($szabad_tarhely + $foglalt_tarhely) * 100;
             $szabad_tarhely_arany = 100 - (($foglalt_tarhely) / ($szabad_tarhely + $foglalt_tarhely) * 100);

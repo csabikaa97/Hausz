@@ -90,16 +90,19 @@
 <!DOCTYPE html>
 <html lang="hu">
 	<head>
-		<title>Hausz keresztény TeamSpeak szerver</title>
+		<title>Keresztény TeamSpeak szerver - Hausz</title>
 		<meta charset="UTF-8">
-        <meta name="description" content="A Hausz Kft. keresztény TeamSpeak szolgáltatása amit a céges kommunikáció hatékony és biztonásgos lebonyolításához lehet használni.">
+        <meta name="description" content="Keresztény TeamSpeak szolgáltatás amely a céges kommunikáció hatékony és biztonásgos lebonyolításához használható.">
 		<link rel="stylesheet" type="text/css" href="../index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'>
             {
                 "@context": "https://www.schema.org",
                 "@type": "product",
-                "brand": "Hausz",
+                "brand": {
+					"@type": "Brand",
+					"name": "Hausz"
+				}
                 "logo": "http://hausz.stream/index/favicon.png",
                 "name": "WidgetPress",
                 "category": "Widgets",

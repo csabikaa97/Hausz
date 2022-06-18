@@ -5,7 +5,7 @@
 <html lang="hu">
 
 <head>
-    <title>Hausz jelszó változtatás</title>
+    <title>Jelszó változtatás - Hausz</title>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />

@@ -54,5 +54,9 @@ TEENDŐK MIGRÁLÁSKOR
     XSendFile on
     XSendFilePath /var/www/html/
 
+12. "/etc/apache2/apache2.conf" fájlban a directoryhoz "AllowOverride All"-ra módosítás: Ez engedélyezi a .htaccess fájlok betöltését
+
+13. Engedélyezni kell a header modult "a2enmod headers": Emiatt lehet .htaccess fájlokban "Header" parancsot használni
+
 
 2022.06.15 Teszt migrálás Ubuntu 22.04 környezetbe sikeres volt! Minden meglévő szolgáltatás működött.

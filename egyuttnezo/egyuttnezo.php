@@ -2,16 +2,19 @@
 <!DOCTYPE html>
 <html lang="hu">
 	<head>
-		<title>Hausz együttnéző</title>
+		<title>Együttnéző - Hausz</title>
 		<meta charset="UTF-8">
-        <meta name="description" content="A Hausz Kft. együttnéző szolgáltatása, ahol YouTube videókat lehet együtt nézni a világhálón keresztül.">
+        <meta name="description" content="Együttnéző szolgáltatás, ahol YouTube videókat lehet szinkronban nézni a világhálón keresztül.">
 		<link rel="stylesheet" type="text/css" href="../index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'>
             {
                 "@context": "https://www.schema.org",
                 "@type": "product",
-                "brand": "Hausz",
+                "brand": {
+					"@type": "Brand",
+					"name": "Hausz"
+				}
                 "logo": "http://hausz.stream/index/favicon.png",
                 "name": "WidgetPress",
                 "category": "Widgets",

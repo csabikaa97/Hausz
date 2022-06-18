@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="hu">
     <head>
-        <title>Hausz admin felület</title>
+        <title>Admin felület - Hausz</title>
         <meta charset="UTF-8">
         <meta name="robots" content="noindex">
         <link rel="stylesheet" type="text/css" href="/index/style.css" />

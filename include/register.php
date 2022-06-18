@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="hu">
     <head>
-		<title>Hausz regisztráció</title>
+		<title>Regisztráció - Hausz</title>
 		<meta charset="UTF-8">
-        <meta name="robots" content="noindex">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <meta name="color-scheme" content="dark light">

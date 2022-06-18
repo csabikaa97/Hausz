@@ -3,7 +3,7 @@
 Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatásainak forráskódját, tartalmát, és dokumentációjat, illetve itt található minden olyan fájl ami a Hausz szolgáltatások üzemeltetéséhez szükséges.
 
 ## 💭 Tennivalók
-
+* Header tagek használatát áttervezni
 * Együttnéző széleskörű tesztelése és bugok javítása
 	* Csúszás megoldása belső kliens oldali számlálóval
 * AJAX-osítani a beléptető rendszert
@@ -15,6 +15,9 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## ✅ Implementált funkciók / megtett lépések
 
+* Title-ök átírása "cím - Hausz" formátumra, meta leírások átfogalmazása, és egyéb SEO tippek alkalmazása
+* Néhány fájl eltakarása keresőmotor indexelés elől (pl: index/topbar.html)
+	* A .htaccess fájlokban "Header add" paranccsal hozzáadva az "X-Robots-Tag: noindex" header minden eltűntetendő fájlhoz
 * Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker! -> [Migráció eredmény](dokumentacio/2022.06.15%20migráció%20teszt/jegyzetek.txt)
 * Git repo megtisztítva a jelszavaktól és tanúsítványoktól: [GitHub leírás](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
 * TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása: [Szolgáltatás készítés leírás](dokumentacio/linux%20szolgáltatás/szolgáltatás%20készítés.txt)

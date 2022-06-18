@@ -4,7 +4,7 @@
 
 <head>
     <title>Hausz</title>
-    <meta name="description" content="A Hausz Kft. hivatalos weboldala, ahol a cég, a cég által készített összes szolgáltatás leírása, a Hausz megosztó, és egyéb weboldalak találhatóak.">
+    <meta name="description" content="A cég által készített összes szolgáltatás főoldala.">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
     <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
@@ -13,7 +13,12 @@
             "@context": "https://schema.org",
             "@type": "Organization",
             "url": "http://hausz.stream",
-            "logo": "http://hausz.stream/index/favicon.png"
+            "logo": "http://hausz.stream/index/favicon.png",
+            "aggregateRating": {
+                "@type": "aggregateRating",
+                "ratingValue": "4",
+                "reviewCount": "69"
+            }
         }
     </script>
     <script type="application/ld+json">
