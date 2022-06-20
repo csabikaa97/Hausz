@@ -3,10 +3,21 @@
 Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatásainak forráskódját, tartalmát, és dokumentációjat, illetve itt található minden olyan fájl ami a Hausz szolgáltatások üzemeltetéséhez szükséges.
 
 ## 💭 Tennivalók
+
+* Megosztón titkosított fájlfeltöltés jelszóvédelemmel: [php.net OpenSSL encrypt](https://www.php.net/manual/en/function.openssl-encrypt.php) [php.net OpenSSL decrypt](https://www.php.net/manual/en/function.openssl-decrypt.php)
+* Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
+* Teamspeak oldal leírás
+* LIDL pizza tier list leírás
+* Megosztó előnézet középre igazítás
+* Stíluslapok áttervezése
+	* Mélység hatás: mindenen soft árnyékok
+	* Gombok intuitívan megkülönböztethetőek
+* Backend megírása node.js-ben
+* Saját hibaoldalak írása: 500, 404, stb...
 * Header tagek használatát áttervezni
 * Együttnéző széleskörű tesztelése és bugok javítása
 	* Csúszás megoldása belső kliens oldali számlálóval
-* AJAX-osítani a beléptető rendszert
+* AJAX-osítani a beléptető rendszert és a megosztót
 * Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is belefér)
 * Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál
 * Google Search Console (SEO) hibák javítása és javasolt lépések megtétele

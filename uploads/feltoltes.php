@@ -293,28 +293,73 @@
                     if($szabad_tarhely - $_FILES["fileToUpload"]['size'] < 250*1024*1024) {
                         ujratoltes('Nincs elég tárhely a fájl feltöltéséhez (250 MB).');
                     }
-                    if( $_FILES["fileToUpload"]['size'] < 200*1024*1024 ) {
-                        if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                            ujratoltes('Sikertelen volt a fájl feltöltése.');
-                        } else {
-                            if($_SESSION['loggedin'] == "yes") {
-                                if($_POST['private'] == "on") { $_POST['private'] = "1"; } else { $_POST['private'] = "0"; }
-                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), '.$_FILES["fileToUpload"]["size"].', '.$_POST['private'].');';
-                                $result_del2 = $conn->query($query_del2);
-                                if(!$result_del2) {   ujratoltes("Fatal error: ".$query_del2); }
-                            } else {
-                                $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'", 0, '.$_FILES["fileToUpload"]["size"].', 0)';
-                                $result_del2 = $conn->query($query_del2);
-                                if(!$result_del2) {   var_dump($conn->error); ujratoltes("Fatal error: ".$query_del2);  }
-                            }
-                            
-                            tarhely_statisztika_mentes();
-
-                            ujratoltes('A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.');
-                        }
-                    } else {
+                    if( $_FILES["fileToUpload"]['size'] >= 200*1024*1024 ) {
                         ujratoltes('A fájl meghaladja a 200 MB-os méretlimitet.');
                     }
+
+                    if(strlen($_POST['titkositas_kulcs']) > 0) {
+                        $plaintext = file_get_contents($_FILES['fileToUpload']['tmp_name']);
+                        exec('rm "'.$_FILES['fileToUpload']['tmp_name'].'"', $output, $retval);
+                        if($retval != 0) {
+                            die('Eltávolítás nem sikerült.');
+                        }
+                        $key = $_POST['titkositas_kulcs'];
+                        $cipher = "aes-256-cbc";
+                        if ( in_array($cipher, openssl_get_cipher_methods()) )
+                        {
+                            //$ivlen = openssl_cipher_iv_length($cipher);
+                            //$iv = openssl_random_pseudo_bytes($ivlen);
+                            $iv = "aaaaaaaaaaaaaaaa";
+                            
+                            $ciphertext = base64_encode(openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv));
+                            //$original_plaintext = openssl_decrypt(base64_decode($ciphertext), $cipher, $key, $options=0, $iv);
+                        } else {
+                            foreach (openssl_get_cipher_methods() as $key) { printLn($key.'<br>'); }
+                            die('Nem lehet titkosítani, mert nem jó a titkosítási algoritmus.');
+                        }
+                        ini_set('display_errors', 1);
+                        exec('touch "'.$target_file.'"', $output, $retval);
+                        if($retval != 0) {
+                            die('Fájl készítése sikertelen.');
+                        }
+                        
+                        if ( !file_put_contents($target_file, $ciphertext) ) {
+                            $output = shell_exec('ls -l "'.$target_file.'"');
+                            var_dump($output);
+                            die('Nem sikerül kiírni a fájlba a tartalmat: "'.$target_file.'"');
+                        }
+                    } else {
+                        if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                            ujratoltes('Sikertelen volt a fájl feltöltése.');
+                        }
+                    }
+
+                    $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'",';
+
+                    if($_SESSION['loggedin'] == "yes") {
+                        $query_del2 .= ' (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), ';
+                    } else {
+                        $query_del2 .= ' 0, ';
+                    }
+                    if($_POST['private'] == "on") { 
+                        $_POST['private'] = "1"; 
+                    } else { 
+                        $_POST['private'] = "0"; 
+                    }
+                    $query_del2 .= $_FILES["fileToUpload"]["size"].', '.$_POST['private'].', ';
+                    $titkositas = "0";
+                    if(strlen($_POST['titkositas_kulcs']) > 0) {
+                        $query_del2 .= '1, "'.password_hash($_POST['titkositas_kulcs'], PASSWORD_DEFAULT).'");';
+                    } else {
+                        $query_del2 .= '0, "");';
+                    }
+
+                    $result_del2 = $conn->query($query_del2);
+                    if(!$result_del2) {   var_dump($conn->error); ujratoltes("Fatal error: ".$query_del2);  }
+                    
+                    tarhely_statisztika_mentes();
+
+                    ujratoltes('A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.');
                 }
                 
                 $result_del = $conn->query($query_del);
@@ -329,12 +374,17 @@
             printLn('<p style="text-align: center">Tölts fel egy fájlt, vagy nézd meg hogy mások mit töltöttek eddig fel.</p><br>');
             printLn('<h2 style="text-align: center">Feltöltés</h2>');
             printLn('<form class="center" action="/uploads/feltoltes.php" method="post" enctype="multipart/form-data">');
-            printLn('<label style="display: block; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>');
-            printLn('<input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload"><br><br>');
+            printLn('<label style="display: inline; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>');
+            printLn('<input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload">');
             if($_SESSION['loggedin'] == "yes") { 
-                printLn('<label onclick="PrivatFeltoltesAtallitasa()" id="private_label_div" for="private"><input hidden type="checkbox" name="private" type="private" id="private" /><div id="private_text">A fájlod publikus módon lesz tárolva</div></label><br><br>');
+                printLn('<div style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 10px; background-color: rgb(35, 35, 35);"><input type="checkbox" name="private" type="private" id="private" /><label for="private"> Privát tárolás</label></div>');
             }
-            printLn('<button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb" hidden>Feltöltés</button>');
+            if($_SESSION['admin'] == "igen") {
+                printLn('<div style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 10px; background-color: rgb(35, 35, 35);">');
+                printLn('<label for="titkositas_kulcs">Titkosítás kulcs: </label>');
+                printLn('<input type="text" name="titkositas_kulcs" type="titkositas_kulcs" id="titkositas_kulcs" /></div><br><br>');
+            }
+            printLn('<br><br><button class="Gombok KekHatter" name="submit" type="submit" id="SubmitGomb" hidden>Feltöltés</button>');
             printLn('</form>');
 
             if( strlen($_SESSION['ujratoltes_szoveg']) > 0 ) {
@@ -355,7 +405,7 @@
                 printLn("<th></th>");
             printLn("</tr>");
 
-            $query = "SELECT files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
+            $query = "SELECT files.titkositott, files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
             $result = $conn->query($query);
             if($result) {
                 if($result->num_rows > 0) {
@@ -375,6 +425,7 @@
                         if(preg_match('/\.heic$/i', $row['filename'])) { $preview_type = "image"; }
 
                         if(preg_match('/\.mp3$/i', $row['filename'])) { $preview_type = "audio"; }
+                        if(preg_match('/\.wav$/i', $row['filename'])) { $preview_type = "audio"; }
 
                         if(preg_match('/\.mkv$/i', $row['filename'])) { $preview_type = "video"; }
                         if(preg_match('/\.avi$/i', $row['filename'])) { $preview_type = "video"; }
@@ -412,7 +463,11 @@
                         if(preg_match('/\.tar$/i', $row['filename'])) { $preview_type = "compressed"; }
                         if(preg_match('/\.rar$/i', $row['filename'])) { $preview_type = "compressed"; }
 
-                        printLn('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
+                        if( $row['titkositott'] == '1') {
+                            printLn('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
+                        } else {
+                            printLn('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
+                        }
                         
                         $preview_emoji = "❔";
                         if($preview_type == "document") { $preview_emoji ='📝'; }
@@ -425,6 +480,7 @@
                         printLn('<td class="emoji_cell" style="text-align: center">'.$preview_emoji.'</td>');
                         printLn('<td class="text-align-left">');
                         if( $row['private'] == '1') {   printLn('<font style="color:red">PRIVÁT</font> ');  }
+                        if( $row['titkositott'] == '1') {   printLn('<font style="color:GREEN">TITKOSÍTOTT</font> ');  }
                         printLn($row['filename'].'</td>');
                             
                         $datum_sajat_formatum = preg_replace('/\-/', '.', $row['added']);
