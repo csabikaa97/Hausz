@@ -72,17 +72,11 @@
     }
 
     if( $result->num_rows <= 0 ) {
-        printLn("Nem létező fájl.");
-        var_dump($_GET['file_id']);
+        printLn("HIBA:Nem létező fájl: ".$_GET['file_id']);
         die();
     }
 
     $row = $result->fetch_assoc();
-
-    if( strlen( $row['filename'] ) <= 0 ) {
-        printLn("Hibás fájlnév.");
-        die();
-    }
 
     if( ( 
             (strtolower($row['username']) != strtolower($_SESSION['username']))
@@ -94,9 +88,34 @@
         printLn('Nem vagy jogosult a fájl eléréshez.');
         die();
     }
-
     header('X-Robots-Tag: noindex');
-    header('X-Sendfile: /var/www/html/uploads/fajlok/'.$row['filename']);
     header("Content-Type: ".mimeType("/var/www/html/uploads/fajlok/".$row['filename']));
-    header('Content-Disposition: filename="'.$row['filename'].'"');
-?>
+    if(strlen($_POST['titkositas_feloldasa_kulcs']) > 0) {
+        if($row['titkositott'] != '1') {
+            echo 'HIBA:A fájl nem titkosított';
+            die();
+        }
+        if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']) ) {
+            printLn('HIBA:Nem jó titkosítási kulcs');
+            die();
+        }
+        
+        if( $_POST['letoltes'] == "1" ) {
+            $plaintext = file_get_contents("/var/www/html/uploads/fajlok/".$row['filename']);
+            $plaintext = base64_decode($plaintext);
+            $plaintext = openssl_decrypt($plaintext, "aes-256-cbc", $_POST['titkositas_feloldasa_kulcs'], $options=0, "aaaaaaaaaaaaaaaa");
+            header('Content-Disposition: filename="'.$row['filename'].'"');
+            header('Content-Length: '.strlen($plaintext));
+            echo $plaintext;
+            die();
+        }
+        echo 'OK:Titkosítás feloldva';
+        die();
+    }
+    if($row['titkositott'] == '1') {
+        header('Content-Disposition: filename="titkositott_'.$row['filename'].'"');
+    } else {
+        header('Content-Disposition: filename="'.$row['filename'].'"');
+    }
+    readfile('/var/www/html/uploads/fajlok/'.$row['filename']);
+    ?>

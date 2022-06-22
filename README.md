@@ -4,7 +4,9 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## 💭 Tennivalók
 
-* Megosztón titkosított fájlfeltöltés jelszóvédelemmel: [php.net OpenSSL encrypt](https://www.php.net/manual/en/function.openssl-encrypt.php) [php.net OpenSSL decrypt](https://www.php.net/manual/en/function.openssl-decrypt.php)
+* Megosztó csak saját fájlok mutatása
+* Megosztó felöltés töltés animáció
+* Megosztó jobb-klikk menük készítése
 * Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
 * Teamspeak oldal leírás
 * LIDL pizza tier list leírás
@@ -26,6 +28,8 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## ✅ Implementált funkciók / megtett lépések
 
+* Megosztón titkosított fájlfeltöltés jelszóvédelemmel: [php.net OpenSSL encrypt](https://www.php.net/manual/en/function.openssl-encrypt.php) [php.net OpenSSL decrypt](https://www.php.net/manual/en/function.openssl-decrypt.php)
+* Megosztón utolsó parancs üzenete 3 mp-ig a sarokban jelenjen meg
 * Title-ök átírása "cím - Hausz" formátumra, meta leírások átfogalmazása, és egyéb SEO tippek alkalmazása
 * Néhány fájl eltakarása keresőmotor indexelés elől (pl: index/topbar.html)
 	* A .htaccess fájlokban "Header add" paranccsal hozzáadva az "X-Robots-Tag: noindex" header minden eltűntetendő fájlhoz

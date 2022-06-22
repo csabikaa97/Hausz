@@ -60,7 +60,7 @@
         $ujitasok = array();
         array_push($ujitasok, "");
         array_push($ujitasok, "Együttnéző: Még sok tesztelésre van szükség, és nem valószínű hogy a közeljövőben használható lesz az oldal. Egyelőre egy passion project, de idővel lehet hogy egy kész szolgáltatás lesz majd.");
-        array_push($ujitasok, "Megosztó: Lehet szerkeszteni a kis ceruza ikonnal a saját fájlok nevét.");
+        array_push($ujitasok, "Megosztó: 🔑🔒 Lehet jelszóval titkosítani feltöltéskor a fájlokat, és utána csak azzal a jelszóval lehet őket megnyitni. Mostmár nem kell újratölteni az egész oldalt a változtatások mutatásához.");
         array_push($ujitasok, "TeamSpeak oldal: Tartalmaz egy rövid leírást új felhasználók számára, lehet rajta jogosultságot igényelni, és meg lehet tekinteni a szerver státuszát, illetve az online felhasználókat.");
         
         printLn('<div id="ujitasok_doboz" class="bottom_left_corner_div" style="max-width: 20%"><h3>Újítások a Hauszon</h3><ul>');

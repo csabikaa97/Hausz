@@ -1,0 +1,325 @@
+<!DOCTYPE HTML>
+<html lang="hu">
+    <head>
+		<title>Megosztó - Hausz</title>
+		<meta charset="UTF-8">
+        <meta name="description" content="Fájl megosztó szolgáltatás, ahol a felhasználók privát és publikus módon tudnak fájlokat megosztani egymással.">
+		<link rel="stylesheet" type="text/css" href="/index/style.css" />
+		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+        <script type='application/ld+json'>
+            {
+                "@context": "https://www.schema.org",
+                "@type": "product",
+                "brand": {
+					"@type": "Brand",
+					"name": "Hausz"
+				}
+                "logo": "/index/favicon.png",
+                "name": "WidgetPress",
+                "category": "Widgets",
+                "image": "/index/favicon.png",
+                "description": "A Hausz Kft. megosztó szolgáltatása, ahol fájlokat lehet megosztani privát és publikus módon, anonim és regisztrált felhasználók által egyaránt.",
+                "aggregateRating": {
+                    "@type": "aggregateRating",
+                    "ratingValue": "5",
+                    "reviewCount": "69"
+                }
+            }
+        </script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+        <script>
+            var tablazat_kezdete;
+            var fajlok_resz;
+            var tablazat_vege;
+            var fajl;
+
+            function topbar_betoltese() {
+                szinkron_keres((uzenet) => { document.getElementById('topbar_resz').innerHTML = uzenet; }, "/index/topbar.html");
+            }
+
+            function body_betoltese() {
+                szinkron_keres((uzenet) => { 
+                    document.getElementById('body_resz').innerHTML = uzenet;
+                    document.getElementById("fileToUpload").addEventListener("input", updateFileName);
+                        document.addEventListener("keyup", function(event) {
+                                if (event.key == "Escape") {
+                                    elonezet_bezaras();
+                                }
+                            }
+                        );
+                }, "/uploads/feltoltes.php", "body");
+            }
+
+            function fajlok_betoltese() {
+                szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                szinkron_keres((uzenet) => { document.getElementById('tarhely_resz').innerHTML = uzenet; }, "/uploads/feltoltes.php", "tarhely_resz");
+            }
+            function belepteto_rendszer_betoltese() {
+                szinkron_keres((uzenet) => { 
+                    document.getElementById('belepteto_rendszer').innerHTML = uzenet; 
+                    if(  document.getElementById('kilepesgomb') != null ) {
+                        document.getElementById('kilepesgomb').onclick = function(event) {
+                            event.preventDefault();
+                            var formData = new FormData();
+                            formData.append("login", "yes");
+                            szinkron_keres(function(uzenet) { 
+                                if(/^OK:/.test(uzenet)) {
+                                    belepteto_rendszer_betoltese();
+                                    fajlok_betoltese();
+                                    body_betoltese();
+                                }
+                            }, "/uploads/feltoltes.php?logout=igen&javascript=1", formData);
+                        }
+                    }
+
+                    if(  document.getElementById('bejelentkezes_gomb') != null ) {
+                        document.getElementById('bejelentkezes_gomb').onclick = function(event) {
+                            event.preventDefault();
+                            var formData = "login=yes&belepteto_rendszer&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
+                            szinkron_keres(function(uzenet) {
+                                if(/^OK:/.test(uzenet)) {
+                                    belepteto_rendszer_betoltese();
+                                    fajlok_betoltese();
+                                    body_betoltese();
+                                }
+                            }, "/uploads/feltoltes.php?javascript=1", formData);
+                        }
+                    } 
+                }, "/uploads/feltoltes.php", "belepteto_rendszer");
+            }
+
+            topbar_betoltese();
+            body_betoltese();
+            belepteto_rendszer_betoltese();
+            fajlok_betoltese();
+
+            szinkron_keres((uzenet) => { tablazat_kezdete = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "tablazat");
+            szinkron_keres((uzenet) => { tablazat_vege = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "tablazat_vege");
+            
+            function tablazat_kiirasa() {
+                if(tablazat_kezdete != undefined && fajlok_resz != undefined && tablazat_vege != undefined) {
+                    document.getElementById('tablazat').innerHTML = tablazat_kezdete + fajlok_resz + tablazat_vege;
+                }
+            }
+
+            function torles(link, fajlnev) {
+                if( confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?') ) {
+                    szinkron_keres((uzenet) => {
+                        if(/^OK:/.test(uzenet)) {
+                            valasz = uzenet.replace(/^OK:/, '');
+                            uj_valasz_mutatasa(valasz);
+                            szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                        } else {
+                            valasz = uzenet.replace(/^HIBA:/, 'HIBA: ');
+                            alert(valasz);
+                        }
+                    }, link);
+                }
+            }
+
+            function PrivatFeltoltesAtallitasa() {
+                document.getElementById('private').checked = !document.getElementById('private').checked;
+                if(document.getElementById('private').checked) {
+                    document.getElementById('private_label_div').classList.add('ZoldHatter');
+                    document.getElementById('private_text').innerHTML = "A fájlod privát módon lesz tárolva";
+                } else {
+                    document.getElementById('private_label_div').classList.remove('ZoldHatter');
+                    document.getElementById('private_text').innerHTML = "A fájlod publikus módon lesz tárolva";
+                }
+            }
+
+            function elonezet(hivatkozas, tipus, meret) {
+                var caller = event.target;
+                if(caller.outerHTML.match(/^<td/) ) {
+                    if(meret > 1024*1024*2) {
+                        alert('A fájl mérete nagyobb mint 2MB, ezért az előnézetet nem lehet hozzá betölteni. Amúgy eskü azért mert egy fizikai limitáció, és véletlenül sem azért mert spórolni akarok az elküldött adatmennyiség költségén xddddáű');
+                    } else {
+                        document.getElementById('preview_box').style.visibility = '';
+                        document.getElementById('darken_background').style.visibility = '';
+                        document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
+                        
+                        if(tipus == "image") {
+                            document.getElementById('preview_box').innerHTML = '<img alt="előnézet" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
+                            return;
+                        }
+                        if(tipus == "audio") {
+                            document.getElementById('preview_box').innerHTML = '<audio controls><source src="'+hivatkozas +'" type="audio/mpeg" /></audio>';
+                            return;
+                        }
+
+                        document.getElementById('preview_box').innerHTML = '<iframe style="height: 100%; width: 100%" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet"></iframe>';
+                        document.getElementById('preview_box').style.height = '100%';
+                        document.getElementById('preview_box').style.width = '80%';
+                    }
+                }
+            }
+
+            function titkositas_feloldasa(file_id, fajlnev) {
+                var caller = event.target;
+                if( !caller.outerHTML.match(/^<td/) ) {
+                    return;
+                }
+                document.getElementById('titkositatlan_fajl_letoltes_link').innerHTML = "";
+                document.getElementById('titkositas_feloldasa_kulcs').value = "";
+
+                document.getElementById('titkositott_fajl_letoltes_link').innerHTML = "<br><br>Titkosított " + fajlnev;
+                document.getElementById('titkositott_fajl_letoltes_link').download = "titkositott_" + fajlnev;
+                document.getElementById('titkositott_fajl_letoltes_link').href = "https://hausz.stream/uploads/request.php?file_id=" + file_id;
+                document.getElementById('titkositas_feloldasa_box').style.visibility = '';
+                document.getElementById('darken_background').style.visibility = '';
+                document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
+                document.getElementById('titkositas_feloldasa_kuldes_gomb').onclick = function() { 
+                    titkositas_feloldasa_kuldes(file_id, fajlnev, caller);
+                };
+            }
+
+            function titkositas_feloldasa_kuldes(file_id, fajlnev, caller) {
+                if(document.getElementById('titkositas_feloldasa_kulcs').value.length <= 0) {
+                    if( !confirm("Nem adtál meg titkosítási kulcsot, így nem lehet feloldani a fájlt. Biztos szeretnéd letölteni a fájlt titkosított formában?") ) {
+                        return;
+                    }
+                }
+                
+                let keres = new XMLHttpRequest();
+                keres.onload = function() {
+                    if(/^OK:/.test(this.responseText)) {
+                        uj_valasz_mutatasa("Fájl letöltése...");
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', "/uploads/request.php?file_id=" + file_id);
+                        xhr.responseType = 'blob';
+                        xhr.onload = function() {
+                            fajl = xhr.response;
+                            link = URL.createObjectURL(fajl);
+                            document.getElementById('titkositatlan_fajl_letoltes_link').href = link;
+                            document.getElementById('titkositatlan_fajl_letoltes_link').innerHTML = "<br><br>Titkosítatlan " + fajlnev;
+                            document.getElementById('titkositatlan_fajl_letoltes_link').download = fajlnev;
+                            var mezo = caller.parentElement.getElementsByClassName('text-align-left')[0];
+                            mezo.innerHTML = mezo.innerHTML + ' <a href="'+link+'" download="'+fajlnev+'">feloldott fájl</a>';
+
+                            uj_valasz_mutatasa("Fájl letöltése kész.");
+                        };
+                        let formData_letoltes = new FormData();
+                        formData_letoltes.append("letoltes", "1");
+                        formData_letoltes.append("titkositas_feloldasa_kulcs", document.getElementById('titkositas_feloldasa_kulcs').value);
+                        xhr.send(formData_letoltes);
+                    }
+                    if(/^HIBA:/.test(this.responseText)) {
+                        uj_valasz_mutatasa(this.responseText);
+                    }
+                }
+                let formData = new FormData();
+                formData.append("titkositas_feloldasa_kulcs", document.getElementById('titkositas_feloldasa_kulcs').value);
+                keres.open("POST", "/uploads/request.php?file_id=" + file_id);
+                keres.send(formData);
+            }
+
+            function fajl_atnevezese(id, fajlnev) {
+                document.getElementById('atnevezes_box').style.visibility = '';
+                document.getElementById('darken_background').style.visibility = '';
+                document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
+                document.getElementById('atnevezes_uj_nev').placeholder = fajlnev;
+                document.getElementById('atnevezes_uj_nev').value = fajlnev;
+                document.getElementById('atnevezes_uj_nev').azonosito = id;
+            }
+
+            function uj_valasz_mutatasa(valasz) {
+                document.getElementById('valasz_uzenet').innerHTML = "<p>" + valasz + "</p>";
+                document.getElementById('valasz_uzenet').style.opacity = "100%";
+                uj_valasz_mutatasa_idozito = setTimeout(() => {
+                    document.getElementById('valasz_uzenet').style.opacity = "0%";
+                }, 5000);
+            }
+
+            function atnevezes_inditasa() {
+                elonezet_bezaras();
+                link = "/uploads/feltoltes.php?atnevezes=1&file_id=" + document.getElementById('atnevezes_uj_nev').azonosito + "&uj_nev=" + document.getElementById('atnevezes_uj_nev').value;
+                szinkron_keres((uzenet) => {
+                    if(/^OK:/.test(uzenet)) {
+                        valasz = uzenet.replace(/^OK:/, '');
+                        uj_valasz_mutatasa(valasz);
+                        szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                    } else {
+                        alert(uzenet);
+                    }
+                }, link);
+            }
+
+            function claimeles(link) {
+                szinkron_keres((uzenet) => {
+                    if(/^OK:/.test(uzenet)) {
+                        valasz = uzenet.replace(/^OK:/, '');
+                        uj_valasz_mutatasa(valasz);
+                        szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                    } else {
+                        alert(uzenet);
+                    }
+                }, link);
+            }
+
+            function feltoltes() {
+                let fajl = document.getElementById("fileToUpload").files[0];
+                let keres = new XMLHttpRequest();
+                keres.onload = function() {
+                    if(/^OK:/.test(this.responseText)) {
+                        valasz = this.responseText.replace(/^OK:/, '');
+                        uj_valasz_mutatasa(valasz);
+                        szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                        fajlok_betoltese();
+                    }
+                }
+                let formData = new FormData();
+                if(document.getElementById('titkositas_kulcs').value.length > 0) {
+                    formData.append("titkositas_kulcs", document.getElementById('titkositas_kulcs').value);
+                }
+                if( document.getElementById('private') != null ) {
+                    if(document.getElementById('private').checked) {
+                        formData.append("private", "1");
+                    }
+                }
+                formData.append("fileToUpload", fajl);
+                formData.append("submit", "1");
+                keres.open("POST", '/uploads/feltoltes.php');
+                keres.send(formData);
+            }
+
+            function elonezet_bezaras() {
+                document.getElementById('preview_box').style.visibility = 'hidden';
+                document.getElementById('atnevezes_box').style.visibility = 'hidden';
+                document.getElementById('darken_background').style.visibility = 'hidden';
+                document.getElementById('elonezet_bezaras_gomb').style.visibility = 'hidden';
+                document.getElementById('titkositas_feloldasa_box').style.visibility = 'hidden';
+                document.getElementById('preview_box').innerHTML = "";
+            }
+
+            function updateFileName() {
+                document.getElementById('fileToUpload_label').innerHTML = "&#128193; "+ document.getElementById('fileToUpload').files[0].name;
+                document.getElementById('SubmitGomb').style.visibility = '';
+            }
+        </script>
+	</head>
+    <body>
+        <div id="valasz_uzenet" class="bottom_left_corner_div" style="z-index: 2; left: 5px; max-width: 10%; opacity: 0%;"></div>
+        <div id='preview_box' class="preview_box" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden"></div>
+        <div id='atnevezes_box' class="preview_box center" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
+            <h3>Fájl átnevezése</h3>
+            <label for="atnevezes_uj_nev">Add meg a fájl új nevét (kiterjesztéssel együtt)</label><br><br>
+            <input type="text" id="atnevezes_uj_nev" name="atnevezes_uj_nev" placeholder="" style="width: 100%"/><br><br><br>
+            <button class="Gombok KekHatter" onclick="atnevezes_inditasa()">Átnevezés</button>
+        </div>
+        <div id='titkositas_feloldasa_box' class="preview_box center" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
+            <h3>Fájl titkosításának feloldása</h3>
+            <label for="titkositas_feloldasa_kulcs">Add meg a fájl titkosító kulcsát</label><br><br>
+            <input type="password" id="titkositas_feloldasa_kulcs" name="titkositas_feloldasa_kulcs" placeholder="Titkosítási kulcs" style="width: 100%"/><br><br><br>
+            <button class="Gombok KekHatter" id="titkositas_feloldasa_kuldes_gomb">Titkosított fájl feloldása</button>
+            <a id="titkositott_fajl_letoltes_link" href="" download=""></a>
+            <a id="titkositatlan_fajl_letoltes_link" href="" download=""></a>
+        </div>
+        <div id='darken_background' onclick="elonezet_bezaras()" style="visibility: hidden"> </div>
+        <button id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()" style="visibility: hidden">X</button>
+        <span id="topbar_resz"></span>
+        <span id="body_resz"></span>
+        <span id="tablazat"></span>
+        <span id="belepteto_rendszer"></span>
+        <span id="tarhely_resz"></span>
+    </body>
+</html>

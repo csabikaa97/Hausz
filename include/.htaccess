@@ -9,6 +9,14 @@ Deny from all
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </Files>
 
+<Files alap_fuggvenyek.js>
+    Order Allow,Deny
+    Allow from all
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
 <Files change_password.php>
     Header add X-Robots-Tag "noindex"
     Header add X-Robots-Tag "googlebot: nofollow"
