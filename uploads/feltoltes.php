@@ -33,7 +33,7 @@
             printLn('<div id="privat_doboz" style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 10px; background-color: rgb(35, 35, 35);"><input type="checkbox" name="private" type="private" id="private" /><label for="private"> Privát tárolás</label></div>');
         }
 
-        printLn('<div style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 10px; background-color: rgb(35, 35, 35);">');
+        printLn('<div id="titkositasi_kulcs_doboz" style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 35px;">');
         printLn('<label autocomplete="off" for="titkositas_kulcs">Titkosítás kulcs: </label>');
         printLn('<input autocomplete="off" type="password" name="titkositas_kulcs" type="titkositas_kulcs" id="titkositas_kulcs" /></div><br><br>');
         printLn('</form>');
@@ -50,7 +50,7 @@
             printLn("<th>Dátum</th>");
             printLn("<th>Méret</th>");
             printLn("<th>Feltöltő</th>");
-            printLn('<th colspan="4"><a onclick=\'szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_betoltese(); }, "/test/feltoltes.php", "fajlok");\'>🔃 Frissítés</a></th>');
+            printLn('<th colspan="4"><a onclick=\'szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_betoltese(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a></th>');
         printLn("</tr>");
         die();
     }
@@ -118,21 +118,21 @@
                     if( $row['titkositott'] == '1') {
                         printLn('<tr onclick=\'titkositas_feloldasa("'.$row['id'].'", "'.$row['filename'].'")\'>');
                     } else {
-                        printLn('<tr onclick=\'elonezet("https://hausz.stream/test/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
+                        printLn('<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='.$row['id'].'", "'.$preview_type.'", '.$row['size'].')\'>');
                     }
                     
                     $preview_emoji = "❔";
-                    if($preview_type == "document") { $preview_emoji ='<abbr title="Dokumentum: '.$kiterjesztes.'">📝</abbr>'; }
-                    if($preview_type == "audio") { $preview_emoji = '<abbr title="Audió: '.$kiterjesztes.'">🎵</abbr>'; }
-                    if($preview_type == "image") { $preview_emoji = '<abbr title="Kép: '.$kiterjesztes.'">📷</abbr>'; }
-                    if($preview_type == "video") { $preview_emoji = '<abbr title="Videó: '.$kiterjesztes.'">🎬</abbr>'; }
-                    if($preview_type == "software") { $preview_emoji = '<abbr title="Szoftver: '.$kiterjesztes.'">💿</abbr>'; }
-                    if($preview_type == "compressed") { $preview_emoji = '<abbr title="Tömörített fájl: '.$kiterjesztes.'">📦</abbr>'; }
+                    if($preview_type == "document") { $preview_emoji ='<abbr style="cursor: pointer" title="Dokumentum: '.$kiterjesztes.'">📝</abbr>'; }
+                    if($preview_type == "audio") { $preview_emoji = '<abbr style="cursor: pointer" title="Audió: '.$kiterjesztes.'">🎵</abbr>'; }
+                    if($preview_type == "image") { $preview_emoji = '<abbr style="cursor: pointer" title="Kép: '.$kiterjesztes.'">📷</abbr>'; }
+                    if($preview_type == "video") { $preview_emoji = '<abbr style="cursor: pointer" title="Videó: '.$kiterjesztes.'">🎬</abbr>'; }
+                    if($preview_type == "software") { $preview_emoji = '<abbr style="cursor: pointer" title="Szoftver: '.$kiterjesztes.'">💿</abbr>'; }
+                    if($preview_type == "compressed") { $preview_emoji = '<abbr style="cursor: pointer" title="Tömörített fájl: '.$kiterjesztes.'">📦</abbr>'; }
 
                     printLn('<td class="emoji_cell" style="text-align: center">'.$preview_emoji.'</td>');
                     printLn('<td class="text-align-left">');
-                    if( $row['private'] == '1') {   printLn('<abbr title="Privát">🔒</abbr> ');  }
-                    if( $row['titkositott'] == '1') {   printLn('<abbr title="Titkosított">🔑</abbr> ');  }
+                    if( $row['private'] == '1') {   printLn('<abbr style="cursor: pointer" title="Privát">🔒</abbr> ');  }
+                    if( $row['titkositott'] == '1') {   printLn('<abbr style="cursor: pointer" title="Titkosított">🔑</abbr> ');  }
                     printLn($row['filename'].'</td>');
                         
                     $datum_sajat_formatum = preg_replace('/\-/', '.', $row['added']);
@@ -155,15 +155,15 @@
                     printLn('<td>'.$size.'</td>');
                     printLn('<td>'.$row['username'].'</td>');
                     if( strtolower($row['username'] == "ismeretlen") && $_SESSION['loggedin'] == "yes" ) {
-                        printLn('<td><a onclick=\'claimeles("/test/feltoltes.php?claim=1&file_id='.$row['id'].'")\'>Claimelés</a></td>');
+                        printLn('<td><a onclick=\'claimeles("/uploads/feltoltes.php?claim=1&file_id='.$row['id'].'")\'>Claimelés</a></td>');
                     } else {
                         printLn('<td></td>');
                     }
                     if( (strtolower($_SESSION['username']) == strtolower($row['username']) && $_SESSION['loggedin'] == "yes") or (strtolower($row['username']) == "ismeretlen" && $_SESSION['loggedin'] == "yes")) {
-                        printLn('<td class="emoji_cell"><a style="text-decoration: none" onclick="torles(&quot;/test/feltoltes.php?delete=1&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)"><abbr title="Törlés">❌</abbr></a></td>');
+                        printLn('<td class="emoji_cell"><a style="text-decoration: none" onclick="torles(&quot;/uploads/feltoltes.php?delete=1&file_id='.$row['id'].'&quot;, &quot;'.$row['filename'].'&quot;)"><abbr style="cursor: pointer" title="Törlés">❌</abbr></a></td>');
                         if( strtolower($row['username']) != "ismeretlen" ) {
                             printLn('<td class="emoji_cell">');
-                            printLn('<a onclick="fajl_atnevezese(\''.$row['id'].'\', \''.$row['filename'].'\')"><abbr title="Átnevezés">✏️</abbr></a>');
+                            printLn('<a onclick="fajl_atnevezese(\''.$row['id'].'\', \''.$row['filename'].'\')"><abbr style="cursor: pointer" title="Átnevezés">✏️</abbr></a>');
                             printLn('</td>');
                         } else {
                             printLn('<td></td>');
@@ -173,7 +173,7 @@
                     }
 
                     if($row['titkositott'] != '1') {
-                        printLn('<td class="emoji_cell"><a href="/test/request.php?file_id='.$row['id'].'" style="text-decoration: none" download><abbr title="Letöltés">💾</abbr></a></td>');
+                        printLn('<td class="emoji_cell"><a href="/uploads/request.php?file_id='.$row['id'].'" style="text-decoration: none" download><abbr style="cursor: pointer" title="Letöltés">💾</abbr></a></td>');
                     } else {
                         printLn('<td class="emoji_cell"></td>');
                     }

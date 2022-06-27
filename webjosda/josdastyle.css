@@ -1,66 +1,59 @@
-h1{
+.josda_h1{
     margin: 0 auto;
     text-align: center;
     font-size: 60px;
 }
-body{
-  background: #000000;
-  color: #FFFFFF;
-}
-p{
-  width: 600px;
-  font-size: 23px;
-  display: block;
+.josda_p{
+    width: 600px;
+    font-size: 23px;
+    display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 10%;
     text-align: justify;
 }
 #josda_gomb_kep{
-  width: 400px;
-  height: 400px;
-
-  display: block;
+    width: 400px;
+    height: 400px;
+    display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 10%;
 
 }
-input[type=button]{
-  background-color: rgb(52, 110, 255);
-  border: none;
-  color: white;
-  padding: 30px 64px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 32px;
-  border-radius: 12px;
-
-  display: block;
+.josda_input {
+    background-color: rgb(52, 110, 255);
+    border: none;
+    color: white;
+    padding: 30px 64px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 32px;
+    border-radius: 12px;
+    display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 5%;
 
 }
-button{
-  background-color: rgb(52, 110, 255);
-  border: none;
-  color: white;
-  padding: 30px 64px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 32px;
-  border-radius: 12px;
-
-  display: block;
+.josda_button{
+    background-color: rgb(52, 110, 255);
+    border: none;
+    color: white;
+    padding: 30px 64px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 32px;
+    border-radius: 12px;
+    display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 2%;
 
 }
-a{
-  text-decoration: none;
-  color: #FFFFFF;
+.josda_a{
+    text-decoration: none;
+    color: #FFFFFF;
 }

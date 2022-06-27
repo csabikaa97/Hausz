@@ -1,4 +1,7 @@
 <?php
+
+    session_start();
+    
     function showLogin($reason) {
         printLn('<div id="belepes_doboz" class="center container bottom_left_corner_div">');
         if( strlen($reason) > 0 ) {   printLn("<p>".$reason."</p>"); }
@@ -59,6 +62,16 @@
 
     if($_GET['javascript'] == '1') {
         // Javascript oldalakhoz eredmény
+        if( $_GET['statusz'] == '1') {
+            if($_SESSION['loggedin'] == "yes") {
+                echo 'OK:'.$_SESSION['username'].','.$_SESSION['admin'];
+                die();
+            } else {
+                echo 'HIBA:Nem vagy belépve';
+                die();
+            }
+        }
+
         if( $_GET['logout'] == "igen" ) {
             $_SESSION['loggedin'] = false;
             $_SESSION['username'] = '';

@@ -56,7 +56,7 @@
             }
             function belepteto_rendszer_betoltese() {
                 szinkron_keres((uzenet) => { 
-                    document.getElementById('belepteto_rendszer').innerHTML = uzenet; 
+                    document.getElementById('belepteto_rendszer').innerHTML = uzenet;
                     if(  document.getElementById('kilepesgomb') != null ) {
                         document.getElementById('kilepesgomb').onclick = function(event) {
                             event.preventDefault();
@@ -84,7 +84,7 @@
                                 }
                             }, "/uploads/feltoltes.php?javascript=1", formData);
                         }
-                    } 
+                    }
                 }, "/uploads/feltoltes.php", "belepteto_rendszer");
             }
 
@@ -108,7 +108,9 @@
                         if(/^OK:/.test(uzenet)) {
                             valasz = uzenet.replace(/^OK:/, '');
                             uj_valasz_mutatasa(valasz);
-                            szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                            fajlok_betoltese();
+                            tablazat_kiirasa();
+                            //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                         } else {
                             valasz = uzenet.replace(/^HIBA:/, 'HIBA: ');
                             alert(valasz);
@@ -175,9 +177,8 @@
 
             function titkositas_feloldasa_kuldes(file_id, fajlnev, caller) {
                 if(document.getElementById('titkositas_feloldasa_kulcs').value.length <= 0) {
-                    if( !confirm("Nem adtál meg titkosítási kulcsot, így nem lehet feloldani a fájlt. Biztos szeretnéd letölteni a fájlt titkosított formában?") ) {
-                        return;
-                    }
+                    alert("Nem adtál meg titkosítási kulcsot, így nem lehet feloldani a fájlt.");
+                    return;
                 }
                 
                 let keres = new XMLHttpRequest();
@@ -237,7 +238,9 @@
                     if(/^OK:/.test(uzenet)) {
                         valasz = uzenet.replace(/^OK:/, '');
                         uj_valasz_mutatasa(valasz);
-                        szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                        fajlok_betoltese();
+                        tablazat_kiirasa();
+                        //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                     } else {
                         alert(uzenet);
                     }
@@ -249,7 +252,9 @@
                     if(/^OK:/.test(uzenet)) {
                         valasz = uzenet.replace(/^OK:/, '');
                         uj_valasz_mutatasa(valasz);
-                        szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                        fajlok_betoltese();
+                        tablazat_kiirasa();
+                        //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                     } else {
                         alert(uzenet);
                     }
@@ -263,7 +268,9 @@
                     if(/^OK:/.test(this.responseText)) {
                         valasz = this.responseText.replace(/^OK:/, '');
                         uj_valasz_mutatasa(valasz);
-                        szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
+                        fajlok_betoltese();
+                        tablazat_kiirasa();
+                        //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                         fajlok_betoltese();
                     }
                 }
@@ -307,9 +314,9 @@
             <button class="Gombok KekHatter" onclick="atnevezes_inditasa()">Átnevezés</button>
         </div>
         <div id='titkositas_feloldasa_box' class="preview_box center" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
-            <h3>Fájl titkosításának feloldása</h3>
-            <label for="titkositas_feloldasa_kulcs">Add meg a fájl titkosító kulcsát</label><br><br>
-            <input type="password" id="titkositas_feloldasa_kulcs" name="titkositas_feloldasa_kulcs" placeholder="Titkosítási kulcs" style="width: 100%"/><br><br><br>
+            <h3>Az elérni kívánt fájl titkosítva van 🔑</h3>
+            <label for="titkositas_feloldasa_kulcs">Add meg a fájl titkosító kulcsát a feloldáshoz</label><br><br>
+            <input type="password" id="titkositas_feloldasa_kulcs" name="titkositas_feloldasa_kulcs" placeholder="Kulcs" style="width: 100%"/><br><br><br>
             <button class="Gombok KekHatter" id="titkositas_feloldasa_kuldes_gomb">Titkosított fájl feloldása</button>
             <a id="titkositott_fajl_letoltes_link" href="" download=""></a>
             <a id="titkositatlan_fajl_letoltes_link" href="" download=""></a>

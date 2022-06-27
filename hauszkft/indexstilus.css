@@ -1,36 +1,36 @@
-h1 {
+.hauszkft_h1 {
     text-align: center;
     text-decoration: underline overline;
     text-decoration-color: #33cc00;
     font-size: 50px;
 }
-h2 {
+.hauszkft_h2 {
     text-align: center;
     color: #FFFFFF;
     font-size: 30px;
 }
-p {
+.hauszkft_p {
     margin: auto 30%;
     text-align: justify;
     font-size: 20px;
     color: #FFFFFF;
 }
-a {
+.hauszkft_a {
     text-decoration: none;
     color: #cc00cc;
 }
-ol {
+.hauszkft_ol {
     margin: auto 30%;
     text-align: justify;
     font-size: 20px;
     color: #FFFFFF;
 }
-li {
+.hauszkft_li {
     margin: auto 30%;
     text-align: justify;
     font-size: 20px;
     color: #FFFFFF;
 }
-footer {
+.hauszkft_footer {
     background-color: #F500F9;
 }

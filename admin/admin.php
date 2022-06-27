@@ -6,17 +6,30 @@
         <meta charset="UTF-8">
         <meta name="robots" content="noindex">
         <link rel="stylesheet" type="text/css" href="/index/style.css" />
+        <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
         <meta name="color-scheme" content="dark light">
     </head>
     <body>
-        <?php readfile("/var/www/html/index/topbar.html"); ?>
+        <script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+        <script src="/include/belepteto_rendszer.js"></script>
+        <span id="belepteto_rendszer"></span>
 
         <center>
             <h1>Hausz admin felület</h1>
         </center>
 
         <script>
+            function belepes_siker(uzenet) {
+                location.reload();
+            }
+
+            function kilepes_siker(uzenet) {
+                location.reload();
+            }
+
             function futtatas() {
                 const xhttp = new XMLHttpRequest();
                 xhttp.onload = function() {
@@ -38,7 +51,6 @@
             $dbname = "hausz_megoszto";
             include '../include/adatbazis.php';
             include '../include/alap_fuggvenyek.php';
-            include '../include/belepteto_rendszer.php';
 
             function kidob($szoveg)
             {

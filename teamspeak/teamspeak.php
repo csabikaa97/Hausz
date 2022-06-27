@@ -94,6 +94,8 @@
 		<meta charset="UTF-8">
         <meta name="description" content="Keresztény TeamSpeak szolgáltatás amely a céges kommunikáció hatékony és biztonásgos lebonyolításához használható.">
 		<link rel="stylesheet" type="text/css" href="../index/style.css" />
+        <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'>
             {
@@ -117,11 +119,22 @@
         </script>
 	</head>
 	<body>
-        <?php readfile("/var/www/html/index/topbar.html"); ?>
+        <span id="belepteto_rendszer"></span>
+        <script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+        <script src="/include/belepteto_rendszer.js"></script>
+        <script>
+            function belepes_siker() {
+                location.reload();
+            }
+
+            function kilepes_siker() {
+                location.reload();
+            }
+        </script>
 		<h1 style="text-align: center">Hausz keresztény TeamSpeak szerver</h1>
         <?php
-            include "../include/belepteto_rendszer.php";
-            printLn('<div style="width: 50%; margin: auto">');
+            printLn('<div style="max-width: 800px; width: 90%; margin: auto">');
             printLn('<h3>Lépések a csatlakozáshoz</h3>');
             printLn('<ol>');
             printLn('<li>Töltsd le a TeamSpeak 3 kliens szoftvert, és telepítsd az eszközödre.');

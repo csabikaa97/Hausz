@@ -6,23 +6,24 @@
     <title>Cég ismertető - Hausz</title>
     <meta name="description" content="A cég, és a szolgáltatásaik ismertetője.">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
+    <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
     <link rel="shortcut icon" type="image/png" href="../index/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="indexstilus.css">
 </head>
 
 <body style='background-image: url("hatter.gif")'>
-    <script>
-        fetch("/index/topbar.html")
-            .then(response => response.text())
-            .then(text => document.body.innerHTML = text + document.body.innerHTML)
-    </script>
+    <script src="/include/topbar.js"></script>
+    <script src="/include/alap_fuggvenyek.js"></script>
+    <script src="/include/belepteto_rendszer.js"></script>
+    <span id="belepteto_rendszer"></span>
 
-    <h1>A Hausz Kft</h1>
+    <h1 class="hauszkft_h1">A Hausz Kft</h1>
 
-    <p>
+    <p class="hauszkft_p">
         A Hausz Kft-t 2018-ban alapították.
         A cég névadója
-        <a href="https://www.youtube.com/watch?v=Qmwa0r9D3NE">Danika Hausz</a>.
+        <a class="hauszkft_a" href="https://www.youtube.com/watch?v=Qmwa0r9D3NE">Danika Hausz</a>.
         A Hausz Kft. székhelye a Béke-szigetén található, jelmondatunk: "Legyé pozitív mert gyomorszájon váglak".
         A cégünk mindennel is foglalkozik, mint például számítógépes videójáték szoftverekkel, V12-es Tesla motor tervezéssel, programozással, Blenderezéssel és számítókkal.
         Ezeken felül cégünk fenntart egy Team Speak 3 szervert is, de ez a szolgáltatás csak a prémium ügyfeleinknek érhető el.
@@ -45,7 +46,7 @@
 
     </p>
     <br>
-    <p>
+    <p class="hauszkft_p">
         Szakembereink eddigi legnagyobb munkája a V12-es Tesla motor volt. Ennek a motornak mi a 3D modelljét és műhelyrajzát készítettük el. Szűkös határidőkkel dolgozunk erre a motorra is csak 6 hetünk volt.
         De mivel cégünknél a legjobb szakemberek dolgoznak ezért ilyen rövid idő alatt is hibátlan munkát végeztünk, ESKÜ.
     </p>
@@ -53,34 +54,34 @@
     <br>
     <br>
 
-    <h2>Cégünk oktatással is foglalkozik</h2>
+    <h2 class="hauszkft_h2">Cégünk oktatással is foglalkozik</h2>
 
-    <p>Ingyenesen megtekinthető oktató videóink:</p>
+    <p class="hauszkft_p">Ingyenesen megtekinthető oktató videóink:</p>
 
     <div style="margin: auto 30%">
         <iframe src="https://www.youtube.com/embed/nGUpVIg3e8E" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
         <iframe src="https://www.youtube.com/embed/I2xp8BLX0NU"></iframe>
     </div>
-    <footer>
-        <p>Partnereink:</p>
-        <ol>
-            <li>SpaceX</li>
-            <li>Tanácsadó Krisztián</li>
-            <li>Sándor kúpfogaskerék gyára</li>
-            <li>Jeromos az elektromos gyalogos</li>
-            <li>NASA</li>
-            <li>Tesla</li>
-            <li>Iphone cég</li>
-            <li>Az összes sírós macska</li>
-            <li>Danika</li>
+    <footer class="hauszkft_footer">
+        <p class="hauszkft_p">Partnereink:</p>
+        <ol class="hauszkft_ol">
+            <li class="hauszkft_li">SpaceX</li>
+            <li class="hauszkft_li">Tanácsadó Krisztián</li>
+            <li class="hauszkft_li">Sándor kúpfogaskerék gyára</li>
+            <li class="hauszkft_li">Jeromos az elektromos gyalogos</li>
+            <li class="hauszkft_li">NASA</li>
+            <li class="hauszkft_li">Tesla</li>
+            <li class="hauszkft_li">Iphone cég</li>
+            <li class="hauszkft_li">Az összes sírós macska</li>
+            <li class="hauszkft_li">Danika</li>
         </ol>
 
-        <p>Elérhatőségek:</p>
-        <ol>
-            <li>A Béke-szigete Hős utca 8</li>
-            <li>A saját gyártású jófajta keresztyén Téesünkön</li>
-            <li>Telefon: NINCS xdddáű</li>
-            <li>E-mail: csaba@hausz.stream</li>
+        <p class="hauszkft_p">Elérhatőségek:</p>
+        <ol class="hauszkft_ol">
+            <li class="hauszkft_li">A Béke-szigete Hős utca 8</li>
+            <li class="hauszkft_li">A saját gyártású jófajta keresztyén Téesünkön</li>
+            <li class="hauszkft_li">Telefon: NINCS xdddáű</li>
+            <li class="hauszkft_li">E-mail: csaba@hausz.stream</li>
         </ol>
     </footer>
 </body>

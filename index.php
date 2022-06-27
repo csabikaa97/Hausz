@@ -8,6 +8,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
     <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",

@@ -1,0 +1,214 @@
+:root {
+    --szint-0-dark: rgb(0,0,0);
+    --szint-1-dark: rgb(30,30,30);
+    --szint-2-dark: rgb(60,60,60);
+    --szint-3-dark: rgb(90,90,90);
+    --szint-4-dark: rgb(120,120,120);
+    --szint-5-dark: rgb(150,150,150);
+    --szint-6-dark: rgb(180,180,180);
+    --szint-7-dark: rgb(210,210,210);
+    --szint-8-dark: rgb(240,240,240);
+    --szint-9-dark: rgb(255,255,255);
+
+    --szint-0-light: rgb(255,255,255);
+    --szint-1-light: rgb(245,245,245);
+    --szint-2-light: rgb(235,235,235);
+    --szint-3-light: rgb(225,225,225);
+    --szint-4-light: rgb(215,215,215);
+    --szint-5-light: rgb(205,205,205);
+    --szint-6-light: rgb(195,195,195);
+    --szint-7-light: rgb(185,185,185);
+    --szint-8-light: rgb(175,175,175);
+    --szint-9-light: rgb(165,165,165);
+}
+
+@media(prefers-color-scheme: dark) {
+    body { 
+        background-color: black;
+        color: rgb(200, 200, 200);
+    }
+    h1, h2, h3, h4, h5, h6, p { color: rgb(200, 200, 200); }
+    .arnyek { text-shadow: 0 2px 3px rgb(100,100, 100); }
+    .szint-0 { background-color: var(--szint-0-dark); box-shadow: 0px 0px 5px 0px var(--szint-0-dark); }
+    .szint-1 { background-color: var(--szint-1-dark); box-shadow: 0px 0px 5px 0px var(--szint-0-dark); }
+    .szint-2 { background-color: var(--szint-2-dark); box-shadow: 0px 0px 5px 0px var(--szint-1-dark); }
+    .szint-3 { background-color: var(--szint-3-dark); box-shadow: 0px 0px 5px 0px var(--szint-2-dark); }
+    .szint-4 { background-color: var(--szint-4-dark); box-shadow: 0px 0px 5px 0px var(--szint-3-dark); }
+    .szint-5 { background-color: var(--szint-5-dark); box-shadow: 0px 0px 5px 0px var(--szint-4-dark); }
+    .szint-6 { background-color: var(--szint-6-dark); box-shadow: 0px 0px 5px 0px var(--szint-5-dark); }
+    .szint-7 { background-color: var(--szint-7-dark); box-shadow: 0px 0px 5px 0px var(--szint-6-dark); }
+    .szint-8 { background-color: var(--szint-8-dark); box-shadow: 0px 0px 5px 0px var(--szint-7-dark); }
+    .szint-9 { background-color: var(--szint-9-dark); box-shadow: 0px 0px 5px 0px var(--szint-8-dark); }
+}
+
+@media(prefers-color-scheme: light) {
+    body { 
+        background-color: white;
+        color: rgb(50, 50, 50);
+    }
+    h1, h2, h3, h4, h5, h6, p { color: rgb(0, 0, 0); }
+    .szint-0 { background-color: var(--szint-0-light); box-shadow: 0px 0px 5px 0px var(--szint-3-light); }
+    .szint-1 { background-color: var(--szint-1-light); box-shadow: 0px 0px 5px 0px var(--szint-4-light); }
+    .szint-2 { background-color: var(--szint-2-light); box-shadow: 0px 0px 5px 0px var(--szint-5-light); }
+    .szint-3 { background-color: var(--szint-3-light); box-shadow: 0px 0px 5px 0px var(--szint-6-light); }
+    .szint-4 { background-color: var(--szint-4-light); box-shadow: 0px 0px 5px 0px var(--szint-7-light); }
+    .szint-5 { background-color: var(--szint-5-light); box-shadow: 0px 0px 5px 0px var(--szint-8-light); }
+    .szint-6 { background-color: var(--szint-6-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
+    .szint-7 { background-color: var(--szint-7-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
+    .szint-8 { background-color: var(--szint-8-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
+    .szint-9 { background-color: var(--szint-9-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
+}
+
+/* Egyedi classok */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.TopbarLink {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.LinkekkelTeliTopbarXd {
+    margin: auto;
+    width: fit-content;
+    width: -moz-fit-content;
+    max-width: 90%;
+    top: 0;
+}
+
+.linkDekoracioTiltas {
+    text-decoration: none;
+    color: inherit;
+}
+.linkDekoracioTiltas:hover {
+    text-decoration: none;
+    color: inherit;
+}
+.linkDekoracioTiltas:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
+.kozepre { margin: auto; display: block; }
+.kozepre-szoveg { text-align: center; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.block { display: block; }
+.fit-content { width: fit-content; width: -moz-fit-content; }
+.no-border { border: 0px; }
+.lathatatlan { visibility: hidden; }
+
+@media screen and (min-width: 1023px) {
+    .min-1024-tiltas { display: block; }
+    .mobilon-engedelyezes { display: none; }
+    .merettol-fuggoen-inline-block { display: inline; }
+    * { font-size: 19px; }
+}
+
+@media screen and (max-width: 1023px) {
+    .min-1024-tiltas { display: none; }
+    .mobilon-tiltas { display: none; }
+    .merettol-fuggoen-inline-block { display: block; }
+    * { font-size: 19px; }
+}
+
+/* Gombok */
+.gomb {
+    color: inherit;
+    font-size: inherit;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+} 
+@media(prefers-color-scheme: light) {
+    .gomb {
+        border: none;
+    }
+    .gomb:hover {
+        filter: brightness(0.85);
+    }
+}
+@media(prefers-color-scheme: dark) {
+    .gomb {
+        box-shadow: inset 0px 0px 5px 0 rgb(45 45 45), 0px 0px 5px 0 rgb(25 25 25);
+    }
+    .gomb:hover {
+        box-shadow: inset 0px 0px 15px 0 rgb(90, 90, 90), 0px 0px 5px 0 rgb(25 25 25);
+    }
+}
+
+
+/* Szélességek  */
+.width-10 { width: 10%; }
+.min-width-10 { min-width: 10%; }
+.max-width-10 { max-width: 10%; }
+.width-20 { width: 20%; }
+.min-width-20 { min-width: 20%; }
+.max-width-20 { max-width: 20%; }
+.width-30 { width: 30%; }
+.min-width-30 { min-width: 30%; }
+.max-width-30 { max-width: 30%; }
+.width-40 { width: 40%; }
+.min-width-40 { min-width: 40%; }
+.max-width-40 { max-width: 40%; }
+.width-50 { width: 50%; }
+.min-width-50 { min-width: 50%; }
+.max-width-50 { max-width: 50%; }
+.width-60 { width: 60%; }
+.min-width-60 { min-width: 60%; }
+.max-width-60 { max-width: 60%; }
+.width-70 { width: 70%; }
+.min-width-70 { min-width: 70%; }
+.max-width-70 { max-width: 70%; }
+.width-80 { width: 80%; }
+.min-width-80 { min-width: 80%; }
+.max-width-80 { max-width: 80%; }
+.width-90 { width: 90%; }
+.min-width-90 { min-width: 90%; }
+.max-width-90 { max-width: 90%; }
+.width-100 { width: 100%; }
+.min-width-100 { min-width: 100%; }
+.max-width-100 { max-width: 100%; }
+
+/* Kerekítések */
+.kerekites-5 { border-radius: 5px; }
+.kerekites-10 { border-radius: 10px; }
+.kerekites-15 { border-radius: 15px; }
+.kerekites-20 { border-radius: 20px; }
+.kerekites-25 { border-radius: 25px; }
+.kerekites-30 { border-radius: 30px; }
+.kerekites-35 { border-radius: 35px; }
+.kerekites-40 { border-radius: 40px; }
+
+/* Marginok */
+.margin-5 { margin: 5px; }
+.margin-10 { margin: 10px; }
+.margin-15 { margin: 15px; }
+.margin-20 { margin: 20px; }
+.margin-25 { margin: 25px; }
+
+/* Paddingek */
+.padding-5 { padding: 5px; }
+.padding-10 { padding: 10px; }
+.padding-15 { padding: 15px; }
+.padding-20 { padding: 20px; }
+.padding-25 { padding: 25px; }
+.padding-30 { padding: 30px; }
+
+/* Animációk */
+@keyframes height-novekedes-sigmoid {
+        0%  {   height: 0%;
+                visibility: visible !important;
+            }
+    100%    {   height: 100%;
+            }
+}
+
+@keyframes height-csokkenes-sigmoid {
+    0%      {   height: 100%;
+            }
+    100%    {   height: 0%;
+                visibility: hidden !important;
+                padding: 0px;
+            }
+}

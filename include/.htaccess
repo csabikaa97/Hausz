@@ -17,6 +17,30 @@ Deny from all
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </Files>
 
+<Files topbar.js>
+    Order Allow,Deny
+    Allow from all
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
+<Files belepteto_rendszer.js>
+    Order Allow,Deny
+    Allow from all
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
+<Files belepteto_rendszer.php>
+    Order Allow,Deny
+    Allow from all
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
 <Files change_password.php>
     Header add X-Robots-Tag "noindex"
     Header add X-Robots-Tag "googlebot: nofollow"

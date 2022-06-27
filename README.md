@@ -4,30 +4,34 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## 💭 Tennivalók
 
+* Új readme készítése, és jelenlegi readme átváltoztatása todo-ra
+* Megosztó PHP fájlok által küldött adatmennyiség csökkentése a HTML részek teljes kivonásával, áttérés javascript-re (részlegesen kész)
 * Megosztó csak saját fájlok mutatása
 * Megosztó felöltés töltés animáció
 * Megosztó jobb-klikk menük készítése
+* LIDL pizza tier list leírás (személyes vélemények leírása egyes pizzákról)
 * Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
-* Teamspeak oldal leírás
-* LIDL pizza tier list leírás
 * Megosztó előnézet középre igazítás
-* Stíluslapok áttervezése
-	* Mélység hatás: mindenen soft árnyékok
-	* Gombok intuitívan megkülönböztethetőek
 * Backend megírása node.js-ben
 * Saját hibaoldalak írása: 500, 404, stb...
 * Header tagek használatát áttervezni
 * Együttnéző széleskörű tesztelése és bugok javítása
 	* Csúszás megoldása belső kliens oldali számlálóval
-* AJAX-osítani a beléptető rendszert és a megosztót
 * Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is belefér)
-* Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál
+* Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál [guru99.com cookie mentés leírás](https://www.guru99.com/cookies-and-sessions.html)
 * Google Search Console (SEO) hibák javítása és javasolt lépések megtétele
-	* Mobil barát oldalak
+	* Mobil barát oldalak (már csak a megosztó van hátra)
 	* Rich results hibák
 
 ## ✅ Implementált funkciók / megtett lépések
 
+* AJAX-osítani a beléptető rendszert és a megosztót (Javascript implementáció)
+* Stíluslapok áttervezése
+	* A leggyakoribb tulajdonságokat class-okba szervezni, és azt használni az elementeken közvetlenül (deklaratív CSS)
+	* Standard elemek készítése: gomb, táblázat, div, stb..
+	* Mélység hatás: mindenen soft árnyékok
+	* Gombok intuitívan megkülönböztethetőek
+* Teamspeak oldal leírás
 * Megosztón titkosított fájlfeltöltés jelszóvédelemmel: [php.net OpenSSL encrypt](https://www.php.net/manual/en/function.openssl-encrypt.php) [php.net OpenSSL decrypt](https://www.php.net/manual/en/function.openssl-decrypt.php)
 * Megosztón utolsó parancs üzenete 3 mp-ig a sarokban jelenjen meg
 * Title-ök átírása "cím - Hausz" formátumra, meta leírások átfogalmazása, és egyéb SEO tippek alkalmazása

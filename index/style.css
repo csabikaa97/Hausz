@@ -1,4 +1,12 @@
 @media(prefers-color-scheme: dark) {
+    #privat_doboz {
+        background-color: rgb(35, 35, 35);
+    }
+    
+    #titkositasi_kulcs_doboz {
+        background-color: rgb(35, 35, 35);
+    }
+
     #hausz_logo {
         filter: brightness(85%);
     }
@@ -151,6 +159,14 @@
 }
 
 @media(prefers-color-scheme: light) {
+    #titkositasi_kulcs_doboz {
+        background-color: white;
+        box-shadow: 0 2px 5px 0 rgb(200 200 200);
+    }
+    #privat_doboz {
+        background-color: white;
+        box-shadow: 0 2px 5px 0 rgb(200 200 200);
+    }
     #private_label_div:hover {
         background-color: rgb(240, 240, 240);
     }
@@ -263,6 +279,14 @@
 
 * {
     font-family: Arial, Helvetica, sans-serif;
+}
+
+#privat_doboz {
+    margin-left: 10px;
+    border-radius: 15px;
+    font-size: 20px;
+    display: inline;
+    padding: 20px 10px;
 }
 
 abbr {
