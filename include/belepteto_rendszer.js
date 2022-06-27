@@ -1,7 +1,3 @@
-var username = "";
-var admin = "";
-var loggedin = "";
-
 if(typeof szinkron_keres !== 'function') {
     throw new Error('Nincs importálva az alap_fuggvenyek.js!!!');
 }
@@ -16,8 +12,9 @@ fetch("/index/belepteto_rendszer.html")
                 szinkron_keres(function(uzenet) { 
                     if(/^OK:/.test(uzenet)) {
                         if (typeof kilepes_siker === 'function') {   kilepes_siker(uzenet); }
-                        username = "";
-                        admin = "";
+                        session_username = "";
+                        session_admin = "";
+                        session_loggedin = "";
                         belepteto_rendszer_frissites();
                     } else {
                         alert(uzenet);
@@ -62,37 +59,46 @@ fetch("/index/belepteto_rendszer.html")
         };
         belepteto_rendszer_frissites();
     });
+ 
+function session_valtozok() {
+    return [session_username, session_loggedin, session_admin];
+}
 
 function belepteto_rendszer_frissites() {
     szinkron_keres((uzenet) => {
         if(/^OK:/.test(uzenet)) {
-            adatok = uzenet.replace(/^OK:/, '').split(',');
-            username = adatok[0];
-            document.getElementById('belepve_mint').innerHTML = 'Belépve mint: ' + username;
-            admin = adatok[1];
-            if(username.length > 0) {
-                loggedin = 'yes';
+            var adatok = uzenet.replace(/^OK:/, '').split(',');
+            session_username = adatok[0];
+            document.getElementById('belepve_mint').innerHTML = 'Belépve mint: ' + session_username;
+            session_admin = adatok[1];
+            if(session_username.length > 0) {
+                session_loggedin = 'yes';
             } else {
-                loggedin = '';
+                session_loggedin = '';
             }
-            if(admin == "igen") {
+            if(session_admin == "igen") {
                 document.getElementById('admin_felulet_gomb').style.display = 'block';
                 document.getElementById('vscode_gomb').style.display = 'block';
             } else {
+                session_admin = "";
                 document.getElementById('admin_felulet_gomb').style.display = 'none';
                 document.getElementById('vscode_gomb').style.display = 'none';
             }
-            if(username != "") {
+            if(session_username != "") {
                 document.getElementById('belepett_menu_gomb').style.display = '';
                 document.getElementById('belepes_menu_gomb').style.display = 'none';
             }
             document.getElementById('belepett_doboz').style.visibility = 'visible';
             document.getElementById('belepes_doboz').style.visibility = 'hidden';
         } else {
+            session_admin = "";
+            session_username = "";
+            session_loggedin = "";
             document.getElementById('belepett_doboz').style.visibility = 'hidden';
             document.getElementById('belepes_doboz').style.visibility = 'visible';
             document.getElementById('belepett_menu_gomb').style.display = 'none';
             document.getElementById('belepes_menu_gomb').style.display = '';
         }
+        if (typeof belepteto_rendszer_frissult === 'function') {   belepteto_rendszer_frissult(); }
     }, "/include/belepteto_rendszer.php?javascript=1&statusz=1", "belepteto_rendszer");
 }

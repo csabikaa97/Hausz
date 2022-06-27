@@ -4,6 +4,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## 💭 Tennivalók
 
+* Fájl értesítés ha át lesz nevezve confirm funkcióval
 * Beléptető rendszer nem mindig jelenik meg: sorrendet fixelni kell
 * Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
 * Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett

@@ -33,61 +33,153 @@
         <span id="belepteto_rendszer"></span>
         <script src="/include/topbar.js"></script>
         <script src="/include/alap_fuggvenyek.js"></script>
-        <script src="/include/belepteto_rendszer.js"></script>
+        <script type="module" src="/include/belepteto_rendszer.js"></script>
         <script>
+            var session_username = "";
+            var session_admin = "";
+            var session_loggedin = "";
+
             function belepes_siker() {
-                fajlok_betoltese();
                 document.getElementById('privat_doboz').style.display = 'block';
             }
             
             function kilepes_siker() {
-                fajlok_betoltese();
+                session_admin = '';
+                session_loggedin = '';
+                session_username = '';
                 document.getElementById('privat_doboz').style.display = 'block';
             }
-
-            var tablazat_kezdete;
-            var fajlok_resz;
-            var fajl;
-
-            function fajlok_betoltese() {
-                szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
-                szinkron_keres((uzenet) => {    document.getElementById('tablazat').innerHTML = '<tr><th></th><th>Fájlnév</th><th>Dátum</th><th>Méret</th><th>Feltöltő</th><th colspan="4">';
-                                                document.getElementById('tablazat').innerHTML += '<a onclick=\'szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a>';
-                                                document.getElementById('tablazat').innerHTML += '</th></tr>' + uzenet;
-                }, "/uploads/feltoltes.php", "fajlok");
+            
+            function belepteto_rendszer_frissult() {
+                fajlok_betoltese_js();
             }
             
             function fajlok_betoltese_js() {
-                document.getElementById('tablazat').innerHTML = '';
-                document.getElementById('tablazat').innerHTML = '<tr><th></th><th>Fájlnév</th><th>Dátum</th><th>Méret</th><th>Feltöltő</th><th colspan="4">';
-                document.getElementById('tablazat').innerHTML += '<a onclick=\'szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a>';
-                document.getElementById('tablazat').innerHTML += '</th></tr>'
-                szinkron_keres((uzenet) => { 
+                buffer = '<tr><th class="mobilon-tiltas"></th><th>Fájlnév</th><th class="mobilon-tiltas">Dátum</th><th class="mobilon-tiltas">Méret</th><th class="mobilon-tiltas">Feltöltő</th><th class="mobilon-tiltas" colspan="4"><a onclick=\'szinkron_keres((uzenet) => { fajlok_betoltese_js(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a></th></tr>';
+                szinkron_keres((uzenet) => {
                     sorok = uzenet.replace(/^</, '');
                     sorok = sorok.replace(/>$/, '');
                     sorok = sorok.split('><');
                     sorok.forEach(sor => {
-                        tr = document.createElement('tr');
+                        elemek = sor.split('|');
                         
-                        sor = sor.split('|');
-                        sor.forEach(elem => {
-                            td = document.createElement('td');
-                            td.innerHTML = elem;
-                            tr.appendChild(td);
-                        });
-                        document.getElementById('tablazat').appendChild(tr);
+                        id = elemek[0];
+                        size = elemek[1];
+                        filename = elemek[2];
+                        added = elemek[3];
+                        username = elemek[4];
+                        private = elemek[5];
+                        titkositott = elemek[6];
+
+                        // EMOJI IKON
+                        kiterjesztes = filename.replace(/(.*)(\..*)/, '$2');
+                        elonezet_tipus = "egyéb";
+
+                        kep_regexek =           [   /\.jpg$/i, /\.png$/i, /\.heic$/i, /\.gif$/i, /\.svg$/i, /\.webp$/i, /\.bmp$/i, /\.jpeg$/i,  ]
+                        audio_regexek =         [   /\.mp3$/i, /\.wav$/i ]
+                        video_regexek =         [   /\.mkv$/i, /\.avi$/i, /\.mp4/i, /\.webm/i ]
+                        dokumentum_regexek =    [   /\.pdf$/i, /\.c$/i, /\.cpp$/i, /\.m$/i, /\.py$/i, /\.css$/i, /\.txt$/i, /\.sql$/i, 
+                                                    /\.xls$/i, /\.xlsx$/i, /\.doc$/i, /\.docx$/i, /\.ppt$/i, /\.pptx$/i, /\.ahk$/i, 
+                                                    /\.md$/i ]     
+                        szoftver_regexek =      [   /\.exe$/i, /\.msi$/i, /\.iso$/i, /\.apk$/i, /\.rpm$/i, /\.deb$/i, /\.dmg$/i, /\.pkg$/i ]
+                        csomagolt_regexek =     [   /\.torrent$/i, /\.zip$/i, /\.7z$/i, /\.tar$/i, /\.rar$/i, /\.gz$/i,  ]
+                        
+                        kep_regexek.forEach( kep_regex => { if( kep_regex.test(kiterjesztes) ) {   elonezet_tipus = "kep"; } });
+                        audio_regexek.forEach( audio_regex => { if( audio_regex.test(kiterjesztes) ) {   elonezet_tipus = "audio"; } });
+                        video_regexek.forEach( video_regex => { if( video_regex.test(kiterjesztes) ) {   elonezet_tipus = "video"; } });
+                        dokumentum_regexek.forEach( dokumentum_regex => { if( dokumentum_regex.test(kiterjesztes) ) {   elonezet_tipus = "dokumentum"; } });
+                        szoftver_regexek.forEach( szoftver_regex => { if( szoftver_regex.test(kiterjesztes) ) {   elonezet_tipus = "szoftver"; } });
+                        csomagolt_regexek.forEach( csomagolt_regex => { if( csomagolt_regex.test(kiterjesztes) ) {   elonezet_tipus = "csomagolt"; } });
+                        
+                        
+                        buffer += '<tr>';
+                        if( titkositott == '1') {
+                            buffer += '<tr onclick=\'titkositas_feloldasa('+id+', "'+filename+'")\'>';
+                        } else {
+                            buffer += '<tr onclick=\'elonezet("https://hausz.stream/uploads/request.php?file_id='+id+'", "'+elonezet_tipus+'", '+size+')\'>';
+                        }
+
+                        buffer += '<td class="mobilon-tiltas">';
+                        switch (elonezet_tipus) {
+                            case "kep": buffer          += '<abbr style="cursor: pointer" title="Kép">📷</abbr>'; break;
+                            case "audio": buffer        += '<abbr style="cursor: pointer" title="Audió">🎵</abbr>'; break;
+                            case "video": buffer        += '<abbr style="cursor: pointer" title="Videó">🎬</abbr>'; break;
+                            case "dokumentum": buffer   += '<abbr style="cursor: pointer" title="Dokumentum">📝</abbr>'; break;
+                            case "szoftver": buffer     += '<abbr style="cursor: pointer" title="Szoftver">💿</abbr>'; break;
+                            case "csomagolt": buffer    += '<abbr style="cursor: pointer" title="Csomagolt fájl">📦</abbr>'; break;
+                            default: buffer             += '<abbr style="cursor: pointer" title="Egyéb">❔</abbr>'; break;
+                        }
+                        buffer += '</td>';
+                        
+                        
+                        // private? encrypted? név
+                        buffer += '<td>';
+                        if( private == '1' ) {
+                            buffer += '<abbr style="cursor: pointer" title="Privát (csak te látod)">🔒</abbr> ';
+                        }
+                        if( titkositott == '1' ) {
+                            buffer += '<abbr style="cursor: pointer" title="Jelszóval titkosított">🔑</abbr> ';
+                        }
+                        buffer += filename + '</td>';
+                        
+                        // DÁTUM 2022-04-19 19:34:14
+                        buffer += '<td class="mobilon-tiltas">';
+                        buffer += added.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$1.$2.$3 $4:$5');
+                        buffer += '</td>';
+
+                        // MÉRET
+                        meret = parseFloat(size);
+                        if( meret <= 1024) {
+                            meret = String(meret) + ' B';
+                        } else {
+                            if( meret <= 1024 * 1024) {
+                                meret = String(meret / 1024) + ' KB';
+                            } else {
+                                if( meret <= 1024 * 1024 * 1024) {
+                                    meret = String(meret / 1024 / 1024) + ' MB';
+                                } else {
+                                    if( meret <= 1024 * 1024 * 1024 * 1024) {
+                                        meret = String(meret / 1024 / 1024 / 1024) + ' GB';
+                                    } else {
+                                        if( meret <= 1024 * 1024 * 1024 * 1024 * 1024) {
+                                            meret = String(meret / 1024 / 1024  / 1024  / 1024) + ' GB';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        meret = meret.replace(/([0-9])\.([0-9][0-9]).* ([KMG]?B)/, '$1.$2 $3');
+                        meret = meret.replace(/([0-9][0-9])\.([0-9]).* ([KMG]?B)/, '$1.$2 $3');
+                        meret = meret.replace(/([0-9][0-9][0-9])\..* ([KMG]?B)/, '$1 $2');
+                        buffer += '<td class="mobilon-tiltas">' + meret + '</td>';
+                        
+                        // feltöltő
+                        buffer += '<td class="mobilon-tiltas">' + username + '</td>';
+
+                        // törlés? 
+                        buffer += '<td class="mobilon-tiltas">';
+                        if(session_username == username || (username == 'ismeretlen' && session_loggedin == 'yes')) {
+                            buffer += '<a onclick="torles(\'/uploads/feltoltes.php?delete=1&file_id=' + id + '\', \''+`${filename}`+'\')"><abbr style="cursor: pointer" title="Törlés">❌</abbr></a>';
+                        }
+                        buffer += '</td>';
+
+                        // átnevezés?
+                        buffer += '<td class="mobilon-tiltas">';
+                        if(session_username == username) {
+                            buffer += '<a onclick="fajl_atnevezese(' +id+', \''+`${filename}`+'\')"><abbr style="cursor: pointer" title="Átnevezés">✏️</abbr></a>';
+                        }
+                        buffer += '</td>';   
+
+                        // mentés?
+                        buffer += '<td class="mobilon-tiltas">';
+                        if( titkositott != '1' ) {
+                            buffer += '<a href="/uploads/request.php?file_id=' + `${id}` + '"><abbr style="cursor: pointer" title="Letöltés">💾</abbr></a>';
+                        }
+                        buffer += '</td>';
                     });
+                    document.getElementById('tablazat').innerHTML = buffer;
                 }, "/uploads/feltoltes.php", "fajlok_javascript");
-            }
-
-            fajlok_betoltese();
-
-            szinkron_keres((uzenet) => { tablazat_kezdete = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "tablazat");
-            
-            function tablazat_kiirasa() {
-                if(fajlok_resz != undefined) {
-                    document.getElementById('tablazat').innerHTML = fajlok_resz;
-                }
+                
             }
 
             function torles(link, fajlnev) {
@@ -96,24 +188,13 @@
                         if(/^OK:/.test(uzenet)) {
                             valasz = uzenet.replace(/^OK:/, '');
                             uj_valasz_mutatasa(valasz);
-                            fajlok_betoltese();
+                            fajlok_betoltese_js();
                             tablazat_kiirasa();
                         } else {
                             valasz = uzenet.replace(/^HIBA:/, 'HIBA: ');
                             alert(valasz);
                         }
                     }, link);
-                }
-            }
-
-            function PrivatFeltoltesAtallitasa() {
-                document.getElementById('private').checked = !document.getElementById('private').checked;
-                if(document.getElementById('private').checked) {
-                    document.getElementById('private_label_div').classList.add('ZoldHatter');
-                    document.getElementById('private_text').innerHTML = "A fájlod privát módon lesz tárolva";
-                } else {
-                    document.getElementById('private_label_div').classList.remove('ZoldHatter');
-                    document.getElementById('private_text').innerHTML = "A fájlod publikus módon lesz tárolva";
                 }
             }
 
@@ -127,7 +208,7 @@
                         document.getElementById('darken_background').style.visibility = '';
                         document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
                         
-                        if(tipus == "image") {
+                        if(tipus == "kep") {
                             document.getElementById('preview_box').innerHTML = '<img alt="előnézet" id="elonezet_iframe" src="' + hivatkozas + '" title="Előnézet" />';
                             return;
                         }
@@ -151,7 +232,7 @@
                 document.getElementById('titkositatlan_fajl_letoltes_link').innerHTML = "";
                 document.getElementById('titkositas_feloldasa_kulcs').value = "";
 
-                document.getElementById('titkositott_fajl_letoltes_link').innerHTML = "<br><br>Titkosított " + fajlnev;
+                document.getElementById('titkositott_fajl_letoltes_link').innerHTML = "<br><br>Titkosított fájl letöltése";
                 document.getElementById('titkositott_fajl_letoltes_link').download = "titkositott_" + fajlnev;
                 document.getElementById('titkositott_fajl_letoltes_link').href = "https://hausz.stream/uploads/request.php?file_id=" + file_id;
                 document.getElementById('titkositas_feloldasa_box').style.visibility = '';
@@ -179,11 +260,8 @@
                             fajl = xhr.response;
                             link = URL.createObjectURL(fajl);
                             document.getElementById('titkositatlan_fajl_letoltes_link').href = link;
-                            document.getElementById('titkositatlan_fajl_letoltes_link').innerHTML = "<br><br>Titkosítatlan " + fajlnev;
+                            document.getElementById('titkositatlan_fajl_letoltes_link').innerHTML = "<br><br>Titkosítatlan fájl letöltése";
                             document.getElementById('titkositatlan_fajl_letoltes_link').download = fajlnev;
-                            var mezo = caller.parentElement.getElementsByClassName('text-align-left')[0];
-                            mezo.innerHTML = mezo.innerHTML + ' <a href="'+link+'" download="'+fajlnev+'">feloldott fájl</a>';
-
                             uj_valasz_mutatasa("Fájl letöltése kész.");
                         };
                         let formData_letoltes = new FormData();
@@ -202,6 +280,7 @@
             }
 
             function fajl_atnevezese(id, fajlnev) {
+                console.log(id +' '+ fajlnev);
                 document.getElementById('atnevezes_box').style.visibility = '';
                 document.getElementById('darken_background').style.visibility = '';
                 document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
@@ -225,7 +304,7 @@
                     if(/^OK:/.test(uzenet)) {
                         valasz = uzenet.replace(/^OK:/, '');
                         uj_valasz_mutatasa(valasz);
-                        fajlok_betoltese();
+                        fajlok_betoltese_js();
                         tablazat_kiirasa();
                     } else {
                         alert(uzenet);
@@ -238,7 +317,7 @@
                     if(/^OK:/.test(uzenet)) {
                         valasz = uzenet.replace(/^OK:/, '');
                         uj_valasz_mutatasa(valasz);
-                        fajlok_betoltese();
+                        fajlok_betoltese_js();
                         tablazat_kiirasa();
                     } else {
                         alert(uzenet);
@@ -253,7 +332,7 @@
                     if(/^OK:/.test(this.responseText)) {
                         valasz = this.responseText.replace(/^OK:/, '');
                         uj_valasz_mutatasa(valasz);
-                        fajlok_betoltese();
+                        fajlok_betoltese_js();
                         tablazat_kiirasa();
                     }
                 }
