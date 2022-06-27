@@ -6,6 +6,7 @@
 		<meta charset="UTF-8">
         <meta name="description" content="Együttnéző szolgáltatás, ahol YouTube videókat lehet szinkronban nézni a világhálón keresztül.">
 		<link rel="stylesheet" type="text/css" href="../index/style.css" />
+		<link rel="stylesheet" type="text/css" href="/index/alapok.css" />
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'>
             {
@@ -29,13 +30,16 @@
         </script>
 	</head>
 	<body>
-		<?php 
-			readfile("/var/www/html/index/topbar.html"); 
+		<?php
 			$dbname = "hausz_megoszto";
 			include '../include/adatbazis.php';
 			include '../include/alap_fuggvenyek.php';
-			include "../include/belepteto_rendszer.php";
 		?>
+		<script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+		<script src="/include/belepteto_rendszer.js"></script>
+    	<span id="belepteto_rendszer"></span>
+    
 		<h1 style="text-align: center">Hausz együttnéző</h1>
 		<table style="width: 95%; height: 80%; background-color: rgb(70, 70, 70); border: 0px solid;">
 			<tr>

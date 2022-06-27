@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php 
+Header('Location: https://hausz.stream');
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="hu">
 
@@ -51,7 +56,6 @@
 
 <body onload="document.getElementById('ujitasok_doboz').style.bottom = document.getElementById('belepes_doboz').offsetHeight + 20 + 'px';">
     <?php
-        readfile("/var/www/html/index/topbar.html");
 
         $dbname = "hausz_megoszto";
         include 'include/adatbazis.php';

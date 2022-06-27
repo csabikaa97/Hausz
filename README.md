@@ -4,6 +4,9 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## 💭 Tennivalók
 
+* Beléptető rendszer nem mindig jelenik meg: sorrendet fixelni kell
+* Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
+* Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett
 * Új readme készítése, és jelenlegi readme átváltoztatása todo-ra
 * Megosztó PHP fájlok által küldött adatmennyiség csökkentése a HTML részek teljes kivonásával, áttérés javascript-re (részlegesen kész)
 * Megosztó csak saját fájlok mutatása

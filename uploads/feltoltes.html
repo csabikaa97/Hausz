@@ -5,6 +5,8 @@
 		<meta charset="UTF-8">
         <meta name="description" content="Fájl megosztó szolgáltatás, ahol a felhasználók privát és publikus módon tudnak fájlokat megosztani egymással.">
 		<link rel="stylesheet" type="text/css" href="/index/style.css" />
+        <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'>
             {
@@ -26,79 +28,65 @@
                 }
             }
         </script>
+	</head>
+    <body>
+        <span id="belepteto_rendszer"></span>
+        <script src="/include/topbar.js"></script>
         <script src="/include/alap_fuggvenyek.js"></script>
+        <script src="/include/belepteto_rendszer.js"></script>
         <script>
+            function belepes_siker() {
+                fajlok_betoltese();
+                document.getElementById('privat_doboz').style.display = 'block';
+            }
+            
+            function kilepes_siker() {
+                fajlok_betoltese();
+                document.getElementById('privat_doboz').style.display = 'block';
+            }
+
             var tablazat_kezdete;
             var fajlok_resz;
-            var tablazat_vege;
             var fajl;
-
-            function topbar_betoltese() {
-                szinkron_keres((uzenet) => { document.getElementById('topbar_resz').innerHTML = uzenet; }, "/index/topbar.html");
-            }
-
-            function body_betoltese() {
-                szinkron_keres((uzenet) => { 
-                    document.getElementById('body_resz').innerHTML = uzenet;
-                    document.getElementById("fileToUpload").addEventListener("input", updateFileName);
-                        document.addEventListener("keyup", function(event) {
-                                if (event.key == "Escape") {
-                                    elonezet_bezaras();
-                                }
-                            }
-                        );
-                }, "/uploads/feltoltes.php", "body");
-            }
 
             function fajlok_betoltese() {
                 szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
-                szinkron_keres((uzenet) => { document.getElementById('tarhely_resz').innerHTML = uzenet; }, "/uploads/feltoltes.php", "tarhely_resz");
+                szinkron_keres((uzenet) => {    document.getElementById('tablazat').innerHTML = '<tr><th></th><th>Fájlnév</th><th>Dátum</th><th>Méret</th><th>Feltöltő</th><th colspan="4">';
+                                                document.getElementById('tablazat').innerHTML += '<a onclick=\'szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a>';
+                                                document.getElementById('tablazat').innerHTML += '</th></tr>' + uzenet;
+                }, "/uploads/feltoltes.php", "fajlok");
             }
-            function belepteto_rendszer_betoltese() {
+            
+            function fajlok_betoltese_js() {
+                document.getElementById('tablazat').innerHTML = '';
+                document.getElementById('tablazat').innerHTML = '<tr><th></th><th>Fájlnév</th><th>Dátum</th><th>Méret</th><th>Feltöltő</th><th colspan="4">';
+                document.getElementById('tablazat').innerHTML += '<a onclick=\'szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a>';
+                document.getElementById('tablazat').innerHTML += '</th></tr>'
                 szinkron_keres((uzenet) => { 
-                    document.getElementById('belepteto_rendszer').innerHTML = uzenet;
-                    if(  document.getElementById('kilepesgomb') != null ) {
-                        document.getElementById('kilepesgomb').onclick = function(event) {
-                            event.preventDefault();
-                            var formData = new FormData();
-                            formData.append("login", "yes");
-                            szinkron_keres(function(uzenet) { 
-                                if(/^OK:/.test(uzenet)) {
-                                    belepteto_rendszer_betoltese();
-                                    fajlok_betoltese();
-                                    body_betoltese();
-                                }
-                            }, "/uploads/feltoltes.php?logout=igen&javascript=1", formData);
-                        }
-                    }
-
-                    if(  document.getElementById('bejelentkezes_gomb') != null ) {
-                        document.getElementById('bejelentkezes_gomb').onclick = function(event) {
-                            event.preventDefault();
-                            var formData = "login=yes&belepteto_rendszer&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
-                            szinkron_keres(function(uzenet) {
-                                if(/^OK:/.test(uzenet)) {
-                                    belepteto_rendszer_betoltese();
-                                    fajlok_betoltese();
-                                    body_betoltese();
-                                }
-                            }, "/uploads/feltoltes.php?javascript=1", formData);
-                        }
-                    }
-                }, "/uploads/feltoltes.php", "belepteto_rendszer");
+                    sorok = uzenet.replace(/^</, '');
+                    sorok = sorok.replace(/>$/, '');
+                    sorok = sorok.split('><');
+                    sorok.forEach(sor => {
+                        tr = document.createElement('tr');
+                        
+                        sor = sor.split('|');
+                        sor.forEach(elem => {
+                            td = document.createElement('td');
+                            td.innerHTML = elem;
+                            tr.appendChild(td);
+                        });
+                        document.getElementById('tablazat').appendChild(tr);
+                    });
+                }, "/uploads/feltoltes.php", "fajlok_javascript");
             }
 
-            topbar_betoltese();
-            body_betoltese();
-            belepteto_rendszer_betoltese();
             fajlok_betoltese();
 
             szinkron_keres((uzenet) => { tablazat_kezdete = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "tablazat");
-            szinkron_keres((uzenet) => { tablazat_vege = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "tablazat_vege");
             
             function tablazat_kiirasa() {
-                if(tablazat_kezdete != undefined && fajlok_resz != undefined && tablazat_vege != undefined) {
-                    document.getElementById('tablazat').innerHTML = tablazat_kezdete + fajlok_resz + tablazat_vege;
+                if(fajlok_resz != undefined) {
+                    document.getElementById('tablazat').innerHTML = fajlok_resz;
                 }
             }
 
@@ -110,7 +98,6 @@
                             uj_valasz_mutatasa(valasz);
                             fajlok_betoltese();
                             tablazat_kiirasa();
-                            //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                         } else {
                             valasz = uzenet.replace(/^HIBA:/, 'HIBA: ');
                             alert(valasz);
@@ -240,7 +227,6 @@
                         uj_valasz_mutatasa(valasz);
                         fajlok_betoltese();
                         tablazat_kiirasa();
-                        //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                     } else {
                         alert(uzenet);
                     }
@@ -254,7 +240,6 @@
                         uj_valasz_mutatasa(valasz);
                         fajlok_betoltese();
                         tablazat_kiirasa();
-                        //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
                     } else {
                         alert(uzenet);
                     }
@@ -270,8 +255,6 @@
                         uj_valasz_mutatasa(valasz);
                         fajlok_betoltese();
                         tablazat_kiirasa();
-                        //szinkron_keres((uzenet) => { fajlok_resz = uzenet; tablazat_kiirasa(); }, "/uploads/feltoltes.php", "fajlok");
-                        fajlok_betoltese();
                     }
                 }
                 let formData = new FormData();
@@ -303,16 +286,17 @@
                 document.getElementById('SubmitGomb').style.visibility = '';
             }
         </script>
-	</head>
-    <body>
         <div id="valasz_uzenet" class="bottom_left_corner_div" style="z-index: 2; left: 5px; max-width: 10%; opacity: 0%;"></div>
+
         <div id='preview_box' class="preview_box" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden"></div>
+
         <div id='atnevezes_box' class="preview_box center" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
             <h3>Fájl átnevezése</h3>
             <label for="atnevezes_uj_nev">Add meg a fájl új nevét (kiterjesztéssel együtt)</label><br><br>
             <input type="text" id="atnevezes_uj_nev" name="atnevezes_uj_nev" placeholder="" style="width: 100%"/><br><br><br>
             <button class="Gombok KekHatter" onclick="atnevezes_inditasa()">Átnevezés</button>
         </div>
+
         <div id='titkositas_feloldasa_box' class="preview_box center" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
             <h3>Az elérni kívánt fájl titkosítva van 🔑</h3>
             <label for="titkositas_feloldasa_kulcs">Add meg a fájl titkosító kulcsát a feloldáshoz</label><br><br>
@@ -323,10 +307,32 @@
         </div>
         <div id='darken_background' onclick="elonezet_bezaras()" style="visibility: hidden"> </div>
         <button id="elonezet_bezaras_gomb" onclick="elonezet_bezaras()" style="visibility: hidden">X</button>
-        <span id="topbar_resz"></span>
-        <span id="body_resz"></span>
-        <span id="tablazat"></span>
-        <span id="belepteto_rendszer"></span>
-        <span id="tarhely_resz"></span>
+
+        <h1 style="text-align: center">Megosztó</h1>
+        <p style="text-align: center">Fájl megosztó szolgáltatás, ahol a felhasználók privát és publikus módon tudnak fájlokat megosztani egymással.</p>
+        <p style="text-align: center">Tölts fel egy fájlt, vagy nézd meg hogy mások mit töltöttek eddig fel.</p><br>
+        
+        <h2 style="text-align: center">Feltöltés</h2>
+        <form class="center" enctype="multipart/form-data">
+            <label style="display: inline; width: 35%; margin:auto; font-size: 20px" for="fileToUpload" id="fileToUpload_label">&#128193; Kattints ide fájlok feltöltéséhez</label>
+            <input onChange="updateFileName()" class="InputSzoveg" type="file" name="fileToUpload" id="fileToUpload">
+            <div id="privat_doboz" style="display: none; margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 10px; background-color: rgb(35, 35, 35);"><input type="checkbox" name="private" type="private" id="private" /><label for="private"> Privát tárolás</label></div>
+            <div id="titkositasi_kulcs_doboz" style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 35px;">
+            <label autocomplete="off" for="titkositas_kulcs">Titkosítás kulcs: </label>
+            <input autocomplete="off" type="password" name="titkositas_kulcs" type="titkositas_kulcs" id="titkositas_kulcs" /></div><br><br>
+        </form>
+        <br><br><button style="visibility: hidden; display: block; margin: auto" onclick="feltoltes()" class="Gombok KekHatter" id="SubmitGomb" hidden>Feltöltés</button>
+        
+        <h2 style="text-align: center">Feltöltött fájlok</h2>
+        <table id="tablazat"></table>
+
+        <h2 style="text-align: center">Tárhely kihasználtsága</h2>
+        <div class="div_szabad_tarhely" style="border: 1px solid black; border-radius: 10px; display: flex; width: 55%; height: auto; margin: auto">
+            <div class="div_hasznalt_tarhely" id="div_hasznalt_tarhely" style="border-radius: 10px; padding: 10px; width:'.$foglalt_tarhely_arany.'%"><p id="hasznalt_tarhely">Felhasznált: </p></div>
+            <div class="div_szabad_tarhely" id="div_szabad_tarhely" style="border-radius: 10px; padding: 10px; width:'.$szabad_tarhely_arany.'%; text-align: right"><p id="szabad_tarhely">Szabad terület: </p></div>
+        </div><br><br><br>
+
+        <script>document.getElementById('szabad_tarhely').innerHTML = 'Szabad terület: ".strval($szabad_tarhely)."';</script>
+        <script>document.getElementById('hasznalt_tarhely').innerHTML = 'Felhasznált: ".strval($foglalt_tarhely)."';</script>
     </body>
 </html>

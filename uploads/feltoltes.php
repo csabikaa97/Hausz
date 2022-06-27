@@ -198,6 +198,24 @@
         die();
     }
 
+    if( isset($_POST['fajlok_javascript']) ) {
+        $query = "SELECT files.titkositott, files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC";
+        $result = $conn->query($query);
+        if($result) {
+            if($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username'])) or ($_SESSION['loggedin'] != "yes" && $row['private'] == '1') )
+                        continue;
+                    
+                    echo '<'.$row['id'].'|'.$row['size'].'|'.$row['filename'].'|'.$row['added'].'|'.$row['username'].'|'.$row['private'].'>';
+                }
+            } else {
+                echo '<-|-|-|-|-|-|->';
+            }
+        }
+        die();
+    }
+
     if( isset($_POST['tablazat_vege']) ) {
         printLn('</table><br><br><br>');
         die();

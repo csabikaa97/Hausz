@@ -9,12 +9,14 @@
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
+    <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
     <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
     <meta name="color-scheme" content="dark light">
 </head>
 
 <body>
-    <?php readfile("/var/www/html/index/topbar.html"); ?>
+    <script src="/include/topbar.js"></script>
+    <script src="/include/alap_fuggvenyek.js"></script>
 
     <center>
         <h1>Hausz jelszó változtatás</h1>
@@ -43,7 +45,6 @@ echo <<<END
         <br><button type='submit'>Jelszó megváltoztatása</button>
         </form>
         </div>
-        <br><br><a href="https://hausz.stream/uploads/feltoltes.php"><- Vissza a Hausz megosztóra</a>
         </center>
 END;
         die();

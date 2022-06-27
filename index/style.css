@@ -13,7 +13,6 @@
 
     .emoji_cell {
         position: relative;
-        z-index: 0;
         opacity: 70%;
     }
 

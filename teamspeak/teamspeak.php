@@ -189,6 +189,7 @@
                     $sor = preg_replace('/(.*)client_nickname=(.*) client_type=(.*)/', '$2', $sor);
                     if($sor != "serveradmin") {
                         $sor = preg_replace('/\\\s/', ' ', $sor);
+                        $sor = preg_replace('/\\\p/', '|', $sor);
                         printLn('<li>'.$sor.'</li>');
                         $van_online_felhasznalo = true;
                     }

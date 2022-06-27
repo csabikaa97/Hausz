@@ -7,16 +7,17 @@
     <meta name="description" content="Számláló a 12.A osztálynak az érettségiig (mostmár inkább érettségitől).">
     <meta name="author" content="Habony Zoltán">
     <link rel="stylesheet" type="text/css" href="/index/style.css" />
+    <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
     <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
     <link rel="stylesheet" type="text/css" href="/erettsegiszamlalo/ErettsegiStyle.css">
 </head>
 
 <body>
-    <script>
-        fetch("/index/topbar.html")
-            .then(response => response.text())
-            .then(text => document.body.innerHTML = text + document.body.innerHTML)
-    </script>
+    <script src="/include/topbar.js"></script>
+    <script src="/include/alap_fuggvenyek.js"></script>
+    <script src="/include/belepteto_rendszer.js"></script>
+    <span id="belepteto_rendszer"></span>
+    
     <div class="container">
         <h1>HAUSZ</h1>
         <h2>Az magyar nyelv és irodalom írásbeli <br> érettségi vizsgáig hátralévő idő (2019. Május 6. 8:00):</h2>
