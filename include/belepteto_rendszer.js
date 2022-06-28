@@ -19,14 +19,14 @@ fetch("/index/belepteto_rendszer.html")
                     } else {
                         alert(uzenet);
                     }
-                }, "/uploads/feltoltes.php?logout=igen&javascript=1");
+                }, "/uploads/feltoltes.php?logout=igen");
             }
         }
     
         if( document.getElementById('bejelentkezes_gomb') != null ) {
             document.getElementById('bejelentkezes_gomb').onclick = function(event) {
                 event.preventDefault();
-                var formData = "login=yes&belepteto_rendszer&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
+                var formData = "login=yes&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
                 szinkron_keres(function(uzenet) {
                     if(/^OK:/.test(uzenet)) {
                         if (typeof belepes_siker === 'function') {   belepes_siker(uzenet); }
@@ -34,7 +34,7 @@ fetch("/index/belepteto_rendszer.html")
                     } else {
                         alert(uzenet);
                     }
-                }, "/uploads/feltoltes.php?javascript=1", formData);
+                }, "/include/belepteto_rendszer.php", formData);
             }
         }
 
@@ -100,5 +100,5 @@ function belepteto_rendszer_frissites() {
             document.getElementById('belepes_menu_gomb').style.display = '';
         }
         if (typeof belepteto_rendszer_frissult === 'function') {   belepteto_rendszer_frissult(); }
-    }, "/include/belepteto_rendszer.php?javascript=1&statusz=1", "belepteto_rendszer");
+    }, "/include/belepteto_rendszer.php?statusz=1");
 }

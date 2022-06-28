@@ -30,7 +30,7 @@
                     "@type": "ListItem",
                     "name": "Megosztó",
                     "position": 1,
-                    "url": "https://hausz.stream/uploads/feltoltes.php"
+                    "url": "https://hausz.stream/uploads/feltoltes.html"
                 },
                 {
                     "@type": "ListItem",
@@ -69,6 +69,32 @@
                         <button class="szint-2 gomb kerekites-15 no-border merettol-fuggoen-inline-block kozepre padding-10" style="margin-top: 5px; margin-bottom: 5px" onclick="alert('Az jó he!')">Jó napom van more</button>
                     </div>
                 </form>
+                <br><br><br><br><br><br><br><br><br><br>
+                <div id="ujitasok_doboz" class="szint-1 mobilon-tiltas kozepre kerekites-15" style="padding-top: 1px; max-width: 45%">
+                    <h3 class="kozepre-szoveg">Újítások a Hauszon</h3>
+                    <ul id="ujitasok"></ul>
+                </div>
+                <script>
+                    ujitasok = [
+                        ""
+                        , "Megosztó: 🔑🔒 Lehet jelszóval titkosítani feltöltéskor a fájlokat, és teljesen újra lett írva az egész."
+                        , "TeamSpeak oldal: Rövid leírás új felhasználók számára, jogosultságot igénylés, szerver státuszát, és online felhasználó lista."
+                        , "Együttnéző: Nagyon alpha verzió még."
+                    ]
+
+                    ujitasok_ul = document.getElementById('ujitasok');
+
+                    ujitasok.forEach(ujitas => {
+                        if( ujitas.length > 0 ) {
+                            if( /:/.test(ujitas) ) {
+                                ujitas = ujitas.split(':');
+                                ujitasok_ul.innerHTML += '<li><font style="text-decoration: underline">' + ujitas[0] + '</font>:' + ujitas[1] + '</li><br>';
+                            } else {
+                                ujitasok_ul.innerHTML += '<li>' + ujitas + '</li><br>';
+                            }
+                        }
+                    });
+                </script>
             </div>
         </div>
     </div>

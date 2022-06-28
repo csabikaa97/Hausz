@@ -55,7 +55,11 @@
             }
             
             function fajlok_betoltese_js() {
-                buffer = '<tr><th class="mobilon-tiltas"></th><th>Fájlnév</th><th class="mobilon-tiltas">Dátum</th><th class="mobilon-tiltas">Méret</th><th class="mobilon-tiltas">Feltöltő</th><th class="mobilon-tiltas" colspan="4"><a onclick=\'szinkron_keres((uzenet) => { fajlok_betoltese_js(); }, "/uploads/feltoltes.php", "fajlok");\'>🔃 Frissítés</a></th></tr>';
+                buffer = '<tr><th class="mobilon-tiltas"></th><th>Fájlnév</th><th class="mobilon-tiltas">Dátum</th><th class="mobilon-tiltas">Méret</th><th class="mobilon-tiltas">Feltöltő</th><th class="mobilon-tiltas" colspan="4">';
+                if( session_admin == 'igen' ) {
+                    buffer += '<a onclick=\'fajlok_betoltese_js()\'>🔃 Frissítés</a>';
+                }
+                buffer += '</th></tr>';
                 szinkron_keres((uzenet) => {
                     sorok = uzenet.replace(/^</, '');
                     sorok = sorok.replace(/>$/, '');
@@ -178,7 +182,7 @@
                         buffer += '</td>';
                     });
                     document.getElementById('tablazat').innerHTML = buffer;
-                }, "/uploads/feltoltes.php", "fajlok_javascript");
+                }, "/uploads/feltoltes.php?fajlok=1");
                 
             }
 
@@ -280,7 +284,6 @@
             }
 
             function fajl_atnevezese(id, fajlnev) {
-                console.log(id +' '+ fajlnev);
                 document.getElementById('atnevezes_box').style.visibility = '';
                 document.getElementById('darken_background').style.visibility = '';
                 document.getElementById('elonezet_bezaras_gomb').style.visibility = '';

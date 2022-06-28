@@ -17,9 +17,7 @@
         <script src="/include/belepteto_rendszer.js"></script>
         <span id="belepteto_rendszer"></span>
 
-        <center>
-            <h1>Hausz admin felület</h1>
-        </center>
+        <h1 class="kozepre-szoveg">Hausz admin felület</h1>
 
         <script>
             function belepes_siker(uzenet) {
