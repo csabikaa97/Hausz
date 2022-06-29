@@ -60,8 +60,17 @@
 }
 
 /* Egyedi classok */
+
+h1 { font-size: 25px; }
+h2 { font-size: 24px; }
+h3 { font-size: 23px; }
+h4 { font-size: 22px; }
+h5 { font-size: 21px; }
+h6 { font-size: 20px; }
+
 * {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 19px;
 }
 
 .linkDekoracioTiltas {
@@ -90,14 +99,12 @@
     .min-1024-tiltas { display: block; }
     .mobilon-engedelyezes { display: none; }
     .merettol-fuggoen-inline-block { display: inline; }
-    * { font-size: 19px; }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1023px) {
     .min-1024-tiltas { display: none; }
     .mobilon-tiltas { display: none; }
     .merettol-fuggoen-inline-block { display: block; }
-    * { font-size: 19px; }
 }
 
 /* Gombok */
@@ -168,6 +175,14 @@
 .kerekites-30 { border-radius: 30px; }
 .kerekites-35 { border-radius: 35px; }
 .kerekites-40 { border-radius: 40px; }
+
+/* Tabok */
+.tab-1 { margin-left: 19px; }
+.tab-2 { margin-left: 38px; }
+.tab-3 { margin-left: 57px; }
+.tab-4 { margin-left: 76px; }
+.tab-5 { margin-left: 95px; }
+.tab-6 { margin-left: 114px; }
 
 /* Marginok */
 .margin-5 { margin: 5px; }

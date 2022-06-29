@@ -3,14 +3,14 @@
         <input class="gomb szint-2 no-border margin-5 kerekites-10" id='username' autocomplete='username' type='text' name='username' placeholder='Felhasználónév'><br>
         <input class="gomb szint-2 no-border margin-5 kerekites-10" id='current-password' autocomplete='current-password' type='password' name='password' placeholder='Jelszó'><br>
         <input type='hidden' name='login' value='yes'><br>
-        <button class="gomb szint-2 kozepre no-border kerekites-10" id='bejelentkezes_gomb' type='submit'>Bejelentkezés</button>
+        <button class="gomb szint-2 kozepre no-border kerekites-10" id='bejelentkezes_gomb' type='submit' onclick='belepesgomb(event)'>Bejelentkezés</button>
     </form>
     <button class="gomb szint-2 kozepre no-border kerekites-10" onclick="location.href='/include/register.php'" id="regisztracio_gomb" type="button">Regisztráció</button>
 </div>
 
 <div class="szint-1 padding-10 kerekites-15 mobilon-tiltas" id="belepett_doboz" style="z-index: 1; visibility: hidden; position: fixed; bottom: 5px; right: 5px">
     <p id="belepve_mint"></p>
-    <button class="gomb szint-2 no-border kerekites-10 block width-100" id="kilepesgomb">Kilépés</button>
+    <button class="gomb szint-2 no-border kerekites-10 block width-100" id="kilepesgomb" onclick='kilepesgomb(event)'>Kilépés</button>
     <button class="gomb szint-2 no-border kerekites-10 block width-100" id="jelszovaltoztatasgomb" onclick="location.href = '/include/change_password.php'">Jelszó megváltoztatása</button>
     <button class="gomb szint-2 no-border kerekites-10 block width-100" id="vscode_gomb" onclick="window.open('https://hausz.stream:8080')" style="display: none">Admin VScode</button>
     <button class="gomb szint-2 no-border kerekites-10 block width-100" id="admin_felulet_gomb" onclick="location.href = 'https://hausz.stream/admin/admin.php'" style="display: none">Admin felület</button>

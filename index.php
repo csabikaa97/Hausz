@@ -1,1 +1,0 @@
-<?php Header('Location: https://hausz.stream'); ?>

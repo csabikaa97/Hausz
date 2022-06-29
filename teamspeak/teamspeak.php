@@ -135,17 +135,17 @@
 		<h1 style="text-align: center">Hausz keresztény TeamSpeak szerver</h1>
         <?php
             printLn('<div style="max-width: 800px; width: 90%; margin: auto">');
-            printLn('<h3>Lépések a csatlakozáshoz</h3>');
+            printLn('<h2>Lépések a csatlakozáshoz</h2>');
             printLn('<ol>');
             printLn('<li>Töltsd le a TeamSpeak 3 kliens szoftvert, és telepítsd az eszközödre.');
-            printLn('<p>Windows: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=390\')">Hausz megosztó - TeamSpeak3-Client-win64-3.5.6.exe</a></p>');
-            printLn('<p>MacOS: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=343\')">Hausz megosztó - TeamSpeak3-Client-macosx-3.5.7.dmg</a></p></li>');
-            printLn('<li>Kattints rá a következő linkre a csatlakozáshoz: <a href="ts3server://hausz.stream/?port=9987&nickname='.$_SESSION['username'].'">Csatlakozás</a></li>');
+            printLn('<p class="tab-1">Windows: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=390\')">Hausz megosztó - TeamSpeak3-Client-win64-3.5.6.exe</a></p>');
+            printLn('<p class="tab-1">MacOS: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=343\')">Hausz megosztó - TeamSpeak3-Client-macosx-3.5.7.dmg</a></p></li><br>');
+            printLn('<li>Kattints rá a következő linkre a csatlakozáshoz: <a href="ts3server://hausz.stream/?port=9987&nickname='.$_SESSION['username'].'">Csatlakozás</a></li><br>');
             if($_SESSION['loggedin'] == "yes") {
-                printLn('<li>Használd fel a Hausz által generált jogosultsági tokent a TeamSpeak kliensben</li>');
-                printLn('<p>Windows:  Az ablak tetején Permissions > Use Privilege Key</p>');
-                printLn('<p>MacOS:       Menü bar > Permissions > Use Privilege Key</p>');
-                printLn('<p>A lehetőség kiválasztásakor felugró ablakba kell beillesztened az alábbi tokent ami megadja számodra a "Szabad ember" jogosultsági szintet.</p>');
+                printLn('<li>Használd fel a Hausz által generált jogosultsági tokent a TeamSpeak kliensben');
+                printLn('<p class="tab-1">Windows:  Az ablak tetején Permissions > Use Privilege Key</p>');
+                printLn('<p class="tab-1">MacOS:       Menü bar > Permissions > Use Privilege Key</p>');
+                printLn('<p class="tab-1">A lehetőség kiválasztásakor felugró ablakba kell beillesztened az alábbi tokent ami megadja számodra a "Szabad ember" jogosultsági szintet.</p>');
                 $result = $conn->query('use hausz_ts;');
                 $query = 'select * from felhasznalo_tokenek where user_id = '.$_SESSION['user_id'];
                 $result = $conn->query($query);
@@ -155,9 +155,9 @@
                 }
                 if($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
-                    printLn('<p>Jelenlegi jogosultsági tokened:   '.$row['token'].'</p>');
+                    printLn('<p class="tab-1">Jelenlegi jogosultsági tokened:   '.$row['token'].'</p>');
                 } else {
-                    printLn('<p>Nincs jelenleg jogosultsági tokened: <a href="https://hausz.stream/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
+                    printLn('<p class="tab-1">Nincs jelenleg jogosultsági tokened: <a href="https://hausz.stream/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
 
                 }
                 $conn->query('use hausz_ts;');
@@ -169,16 +169,17 @@
                 if($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
                     if($row['kulonbseg'] >= 5) {
-                        printLn('<p>Jogosult vagy új token kérésére, mert a jelenlegi tokened '.$row['kulonbseg'].' napja készült: <a href="https://hausz.stream/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
+                        printLn('<p class="tab-1">Jogosult vagy új token kérésére, mert a jelenlegi tokened '.$row['kulonbseg'].' napja készült: <a href="https://hausz.stream/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
                     }
                 }
+                printLn('</li>');
             } else {
-                printLn('<li>Ha nem rendelkezel Hausz fiókkal, akkor meg kell várnod hogy adjon jogosultságot valaki aki online van. Abban az esetben ha regisztrálsz magadnak fiókot a jobb alsó sarokban található gombbal, akkor a jogosultságot meg tudod adni magadnak, és az online felhasználók listáját is láthatod erről a weboldalról.</li>');
+                printLn('<li>Ha nem rendelkezel Hausz fiókkal, akkor meg kell várnod hogy adjon jogosultságot valaki aki online van. Abban az esetben ha regisztrálsz magadnak fiókot a jobb alsó sarokban található gombbal, akkor a jogosultságot meg tudod adni magadnak, és az online felhasználók listáját is láthatod erről a weboldalról.</li><br>');
             }
             printLn('</ol>');
 
             if($_SESSION['loggedin'] == "yes") {
-                printLn('<br><br><h3>Online felhasználók</h3>');
+                printLn('<br><br><h2>Online felhasználók</h2>');
                 printLn('<ul>');
                 $van_online_felhasznalo = false;
                 $eredmeny = shell_exec('/var/www/html/teamspeak/list_clients.sh');
@@ -196,7 +197,7 @@
                 }
                 printLn('</ul>');
                 if(!$van_online_felhasznalo) {
-                    printLn('<p>Jelenleg senki nincs csatlakozva a szerverhez.</p>');
+                    printLn('<p class="tab-1">Jelenleg senki nincs csatlakozva a szerverhez.</p>');
                 }
             }
 
@@ -210,14 +211,14 @@
             if($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 $buffer = "";
-                if(preg_match('/(.*)folyamat ok(.*)/', $row['statusz'], $matches)) {    $buffer .= '<p>🟩 TeamSpeak szerver folyamat fut</p>'; }
+                if(preg_match('/(.*)folyamat ok(.*)/', $row['statusz'], $matches)) {    $buffer .= '<p class="tab-1">🟩 TeamSpeak szerver folyamat fut</p>'; }
                 if(!preg_match('/(.*)folyamat ok(.*)/', $row['statusz'], $matches)) {   
-                    $buffer .= '<p>🟥 TeamSpeak szerver folyamat nem fut</p>';
+                    $buffer .= '<p class="tab-1">🟥 TeamSpeak szerver folyamat nem fut</p>';
                     $minden_rendben = false;
                 }
-                if(preg_match('/(.*)telnet ok(.*)/', $row['statusz'], $matches)) {    $buffer .= '<p>🟩 Telnet elérhető</p>'; }
+                if(preg_match('/(.*)telnet ok(.*)/', $row['statusz'], $matches)) {    $buffer .= '<p class="tab-1">🟩 Telnet elérhető</p>'; }
                 if(!preg_match('/(.*)telnet ok(.*)/', $row['statusz'], $matches)) {   
-                    $buffer .= '<p>🟥 Telnet csatlakozás sikertelen</p>';
+                    $buffer .= '<p class="tab-1">🟥 Telnet csatlakozás sikertelen</p>';
                     $minden_rendben = false;
                 }
                 $statusz_reszek = explode(',', $row['statusz']);
@@ -225,32 +226,32 @@
                 $processzor_tulterheltseg_szint = 0.9;
                 if( floatval($processzor_hasznalat_reszek[2]) >= $processzor_tulterheltseg_szint ) {
                     if( floatval($processzor_hasznalat_reszek[0]) >= $processzor_tulterheltseg_szint ) {
-                        $buffer .= '<p>🟥 Processzor terhelés - magas körülbelül 15 perce</p>';
+                        $buffer .= '<p class="tab-1">🟥 Processzor terhelés - magas körülbelül 15 perce</p>';
                         $minden_rendben = false;
                     } else {
                         if( floatval($processzor_hasznalat_reszek[1]) < $processzor_tulterheltseg_szint ) {
-                            $buffer .= '<p>🟨 Processzor terhelés - magas volt körülbelül 15 perce, de már lecsökkent</p>';
+                            $buffer .= '<p class="tab-1">🟨 Processzor terhelés - magas volt körülbelül 15 perce, de már lecsökkent</p>';
                             $minden_rendben = false;
                         } else {
-                            $buffer .= '<p>🟧 Processzor terhelés - magas volt körülbelül 5 perce, de már kezd lecsökkenni</p>';
+                            $buffer .= '<p class="tab-1">🟧 Processzor terhelés - magas volt körülbelül 5 perce, de már kezd lecsökkenni</p>';
                             $minden_rendben = false;
                         }
                     }
                 } else {
                     if( floatval($processzor_hasznalat_reszek[1]) >= $processzor_tulterheltseg_szint ) {
                         if( floatval($processzor_hasznalat_reszek[0]) >= $processzor_tulterheltseg_szint ) {
-                            $buffer .= '<p>🟧 Processzor terhelés - magas körülbelül 5 perce</p>';
+                            $buffer .= '<p class="tab-1">🟧 Processzor terhelés - magas körülbelül 5 perce</p>';
                             $minden_rendben = false;
                         } else {
-                            $buffer .= '<p>🟨 Processzor terhelés - magas volt körülbelül 5 perce, de most alacsony</p>';
+                            $buffer .= '<p class="tab-1">🟨 Processzor terhelés - magas volt körülbelül 5 perce, de most alacsony</p>';
                             $minden_rendben = false;
                         }
                     } else {
                         if( floatval($processzor_hasznalat_reszek[0]) >= $processzor_tulterheltseg_szint ) {
-                            $buffer .= '<p>🟨 Processzor terhelés - elfogadható</p>';
+                            $buffer .= '<p class="tab-1">🟨 Processzor terhelés - elfogadható</p>';
                             $minden_rendben = false;
                         } else {
-                            $buffer .= '<p>🟩 Processzor terhelés - optimális</p>';
+                            $buffer .= '<p class="tab-1">🟩 Processzor terhelés - optimális</p>';
                         }
                     }
                 }
@@ -263,18 +264,18 @@
             $memoria_szabad = preg_replace('/(.*)Mem: ([0-9]*) ([0-9]*) ([0-9]*) ([0-9]*) ([0-9]*) ([0-9]*) (.*)/', '$7', $eredmeny);
             $memoria_arany = (floatval($memoria_osszes) - floatval($memoria_szabad)) / floatval($memoria_osszes);
             if($memoria_arany >= 0.95) {
-                $buffer .= '<p>🟥 Memória használat - nagyon magas</p>';
+                $buffer .= '<p class="tab-1">🟥 Memória használat - nagyon magas</p>';
                 $minden_rendben = false;
             } else {
                 if($memoria_arany >= 0.85) {
-                    $buffer .= '<p>🟧 Memória használat - magas</p>';
+                    $buffer .= '<p class="tab-1">🟧 Memória használat - magas</p>';
                     $minden_rendben = false;
                 } else {
                     if($memoria_arany >= 0.75) {
-                        $buffer .= '<p>🟨 Memória használat - elfogadható</p>';
+                        $buffer .= '<p class="tab-1">🟨 Memória használat - elfogadható</p>';
                         $minden_rendben = false;
                     } else {
-                        $buffer .= '<p>🟩 Memória használat - optimális</p>';
+                        $buffer .= '<p class="tab-1">🟩 Memória használat - optimális</p>';
                     }
                 }
             }
@@ -283,18 +284,18 @@
             $swap_szabad = preg_replace('/(.*)Swap: ([0-9]*) ([0-9]*) ([0-9]*)(.*)/', '$4', $eredmeny);
             $swap_arany = (floatval($swap_osszes) - floatval($swap_szabad)) / floatval($swap_osszes);
             if($swap_arany >= 0.95) {
-                $buffer .= '<p>🟥 Virtuális memória használat - nagyon magas</p>';
+                $buffer .= '<p class="tab-1">🟥 Virtuális memória használat - nagyon magas</p>';
                 $minden_rendben = false;
             } else {
                 if($swap_arany >= 0.85) {
-                    $buffer .= '<p>🟧 Virtuális memória használat - magas</p>';
+                    $buffer .= '<p class="tab-1">🟧 Virtuális memória használat - magas</p>';
                     $minden_rendben = false;
                 } else {
                     if($swap_arany >= 0.75) {
-                        $buffer .= '<p>🟨 Virtuális memória használat - elfogadható</p>';
+                        $buffer .= '<p class="tab-1">🟨 Virtuális memória használat - elfogadható</p>';
                         $minden_rendben = false;
                     } else {
-                        $buffer .= '<p>🟩 Virtuális memória használat - optimális</p>';
+                        $buffer .= '<p class="tab-1">🟩 Virtuális memória használat - optimális</p>';
                     }
                 }
             }
@@ -317,26 +318,26 @@
             $tarhely_arany = 1.0 - $tarhely_arany;
 
             if($tarhely_arany >= 0.95) {
-                $buffer .= '<p>🟥 Lemezterület kihasználtság - nagyon magas</p>';
+                $buffer .= '<p class="tab-1">🟥 Lemezterület kihasználtság - nagyon magas</p>';
                 $minden_rendben = false;
             } else {
                 if($tarhely_arany >= 0.85) {
-                    $buffer .= '<p>🟧 Lemezterület kihasználtság - magas</p>';
+                    $buffer .= '<p class="tab-1">🟧 Lemezterület kihasználtság - magas</p>';
                     $minden_rendben = false;
                 } else {
                     if($tarhely_arany >= 0.75) {
-                        $buffer .= '<p>🟨 Lemezterület kihasználtság - elfogadható</p>';
+                        $buffer .= '<p class="tab-1">🟨 Lemezterület kihasználtság - elfogadható</p>';
                         $minden_rendben = false;
                     } else {
-                        $buffer .= '<p>🟩 Lemezterület kihasználtság - optimális</p>';
+                        $buffer .= '<p class="tab-1">🟩 Lemezterület kihasználtság - optimális</p>';
                     }
                 }
             }
 
             if( $minden_rendben ) {
-                printLn('<br><br><h3 id="szerver_allapot">A szerver állapota jelenleg kifogástalan 🥳</h3>');
+                printLn('<br><br><h2 id="szerver_allapot">A szerver állapota jelenleg kifogástalan 🥳</h2>');
             } else {
-                printLn('<br><br><h3 id="szerver_allapot">Szerver állapot</h3>');
+                printLn('<br><br><h2 id="szerver_allapot">Szerver állapot</h2>');
                 printLn($buffer);
             }
             

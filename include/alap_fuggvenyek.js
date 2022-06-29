@@ -15,3 +15,30 @@ function szinkron_keres(fuggveny, hivatkozas, parameterek) {
         xhttp.send(parameterek);
     }
 }
+
+function bajt_merette_valtas(size) {
+    meret = parseFloat(size);
+    if( meret <= 1024) {
+        meret = String(meret) + ' B';
+    } else {
+        if( meret <= 1024 * 1024) {
+            meret = String(meret / 1024) + ' KB';
+        } else {
+            if( meret <= 1024 * 1024 * 1024) {
+                meret = String(meret / 1024 / 1024) + ' MB';
+            } else {
+                if( meret <= 1024 * 1024 * 1024 * 1024) {
+                    meret = String(meret / 1024 / 1024 / 1024) + ' GB';
+                } else {
+                    if( meret <= 1024 * 1024 * 1024 * 1024 * 1024) {
+                        meret = String(meret / 1024 / 1024  / 1024  / 1024) + ' GB';
+                    }
+                }
+            }
+        }
+    }
+    meret = meret.replace(/([0-9])\.([0-9][0-9]).* ([KMG]?B)/, '$1.$2 $3');
+    meret = meret.replace(/([0-9][0-9])\.([0-9]).* ([KMG]?B)/, '$1.$2 $3');
+    meret = meret.replace(/([0-9][0-9][0-9])\..* ([KMG]?B)/, '$1 $2');
+    return meret;
+}

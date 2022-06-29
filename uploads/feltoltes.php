@@ -185,6 +185,23 @@
         die();
     }
 
+    if($_GET['tarhely'] == '1') {
+        $query_tarhely_adat = "select * from hausz_megoszto.tarhely_statisztika order by datum desc limit 1;";
+        $result_tarhely_adat = $conn->query($query_tarhely_adat);
+        $szabad_tarhely = "";
+        $foglalt_tarhely = "";
+        if(!$result_tarhely_adat) {
+            echo 'HIBA:'.$query_tarhely_adat;
+            die();
+        } else {
+            $row = $result_tarhely_adat->fetch_assoc();
+            $szabad_tarhely = $row['szabad'];
+            $foglalt_tarhely = $row['foglalt'];
+            echo 'OK:'.$szabad_tarhely.','.$foglalt_tarhely;
+            die();
+        }
+    }
+
     if(isset($_POST["submit"]) || ($_POST["azonnali_feltoltes"]) == "igen") {
         if( strlen($_FILES["fileToUpload"]["name"]) <= 0 ) {   
             echo('Nem válaszottál ki fájlt a feltöltéshez.');

