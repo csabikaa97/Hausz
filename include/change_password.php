@@ -18,9 +18,7 @@
     <script src="/include/topbar.js"></script>
     <script src="/include/alap_fuggvenyek.js"></script>
 
-    <center>
-        <h1>Hausz jelszó változtatás</h1>
-    </center>
+    <h1 class="kozepre-szoveg">Hausz jelszó változtatás</h1>
 
     <?php
     $dbname = "hausz_megoszto";

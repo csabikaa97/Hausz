@@ -29,7 +29,7 @@ TEENDŐK MIGRÁLÁSKOR
 
     curl -fsSL https://code-server.dev/install.sh | sh
 
-7.  Szolgáltatások létrehozása doksi alapján: "dokumentacio/linux szolgáltatás készítés/szolgáltatás készítés.txt"
+7.  Szolgáltatások létrehozása doksi alapján: "dokumentáció/linux szolgáltatás készítés/szolgáltatás készítés.txt"
 
 8.  MySQL szerveren root user jelszavának megadása
 
