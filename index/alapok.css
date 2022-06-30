@@ -97,13 +97,13 @@ h6 { font-size: 20px; }
 
 @media screen and (min-width: 1023px) {
     .min-1024-tiltas { display: block; }
-    .mobilon-engedelyezes { display: none; }
+    .nagy-kepernyon-tiltas { display: none !important; }
     .merettol-fuggoen-inline-block { display: inline; }
 }
 
 @media screen and (max-width: 1023px) {
     .min-1024-tiltas { display: none; }
-    .mobilon-tiltas { display: none; }
+    .mobilon-tiltas { display: none !important; }
     .merettol-fuggoen-inline-block { display: block; }
 }
 
@@ -115,6 +115,7 @@ h6 { font-size: 20px; }
     padding-bottom: 5px;
     padding-left: 10px;
     padding-right: 10px;
+    cursor: pointer;
 } 
 @media(prefers-color-scheme: light) {
     .gomb {
@@ -198,6 +199,18 @@ h6 { font-size: 20px; }
 .padding-20 { padding: 20px; }
 .padding-25 { padding: 25px; }
 .padding-30 { padding: 30px; }
+
+/* z-index */
+.zindex-0 { z-index: 0; }
+.zindex-1 { z-index: 1; }
+.zindex-2 { z-index: 2; }
+.zindex-3 { z-index: 3; }
+.zindex-4 { z-index: 4; }
+.zindex-5 { z-index: 5; }
+.zindex-6 { z-index: 6; }
+.zindex-7 { z-index: 7; }
+.zindex-8 { z-index: 8; }
+.zindex-9 { z-index: 9; }
 
 /* Animációk */
 @keyframes height-novekedes-sigmoid {

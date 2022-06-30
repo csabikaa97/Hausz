@@ -4,19 +4,15 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## 💭 Tennivalók
 
-* Fájl értesítés ha át lesz nevezve confirm funkcióval
-* Beléptető rendszer nem mindig jelenik meg: sorrendet fixelni kell
+* Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
 * Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
 * Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett
 * Új readme készítése, és jelenlegi readme átváltoztatása todo-ra
-* Megosztó PHP fájlok által küldött adatmennyiség csökkentése a HTML részek teljes kivonásával, áttérés javascript-re (részlegesen kész)
-* Megosztó csak saját fájlok mutatása
-* Megosztó felöltés töltés animáció
-* Megosztó jobb-klikk menük készítése
+* Megosztó feltöltés töltés animáció
 * LIDL pizza tier list leírás (személyes vélemények leírása egyes pizzákról)
 * Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
 * Megosztó előnézet középre igazítás
-* Backend megírása node.js-ben
+* Backend cseréje Apache-ról házi Node.js backend-re
 * Saját hibaoldalak írása: 500, 404, stb...
 * Header tagek használatát áttervezni
 * Együttnéző széleskörű tesztelése és bugok javítása
@@ -29,6 +25,10 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ## ✅ Implementált funkciók / megtett lépések
 
+* Megosztó jobb-klikk menük készítése
+* Fájl értesítés ha át lesz nevezve confirm funkcióval
+* Megosztó csak saját fájlok mutatása (keresés fájlnév, dátum és feltöltő neve alapján)
+* Megosztó PHP fájlok által küldött adatmennyiség csökkentése a HTML részek teljes kivonásával, áttérés javascript-re
 * AJAX-osítani a beléptető rendszert és a megosztót (Javascript implementáció)
 * Stíluslapok áttervezése
 	* A leggyakoribb tulajdonságokat class-okba szervezni, és azt használni az elementeken közvetlenül (deklaratív CSS)

@@ -12,6 +12,10 @@
             case "cs" : return 'text/plain'; break;
             case "py" : return 'text/plain'; break;
             case "txt" : return 'text/plain'; break;
+            case "md" : return 'text/plain'; break;
+            case "sql" : return 'text/plain'; break;
+            case "ahk" : return 'text/plain'; break;
+            case "css" : return 'text/plain'; break;
 
             case "php" : return 'text/html'; break;
 
