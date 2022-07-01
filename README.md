@@ -13,7 +13,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 ### Szolgáltatások
 
 * [TeamSpeak 3 szerver](https://hausz.stream/teamspeak/) - [Dokumentáció](dokumentáció/teamspeak/leírás.txt)
-* [Megosztó](https://hausz.stream/uploads/) - [Dokumentáció](dokumentáció/megosztó/leírás.txt)
+* [Megosztó](https://hausz.stream/megoszto/) - [Dokumentáció](dokumentáció/megosztó/leírás.txt)
 * [Együttnéző (csak tesztelésre)](https://hausz.stream/egyuttnezo/) - [Dokumentáció](dokumentáció/együttnéző/leírás.txt)
 
 ### Jelenlegi szerver specifikációk, és használt szoftverek

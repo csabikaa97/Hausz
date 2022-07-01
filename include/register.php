@@ -16,8 +16,8 @@
 
         <?php
             $dbname = "hausz_megoszto";
-            include '../include/adatbazis.php';
             include '../include/alap_fuggvenyek.php';
+            include '../include/adatbazis.php';
 
             function showPage($reason) {
                 printLn("<center>");
@@ -82,6 +82,7 @@
                     showpage('A regisztrációs kérésed NEM került felvételre a Hausz rendszerben.');
                 }
 
+                log_bejegyzes("hausz_alap", "regisztráció", $_POST['register_username'].' - '.$_POST['register_email'], "");
                 header("Location: https://hausz.stream/include/register.php?register_done=1");
             } else {
                 showPage("");

@@ -43,7 +43,7 @@ function kilepesgomb(event) {
         } else {
             alert(uzenet);
         }
-    }, "/uploads/feltoltes.php?logout=igen");
+    }, "/megoszto/feltoltes.php?logout=igen");
 }
 
 function belepteto_rendszer_frissites() {

@@ -32,8 +32,8 @@
 	<body>
 		<?php
 			$dbname = "hausz_megoszto";
-			include '../include/adatbazis.php';
 			include '../include/alap_fuggvenyek.php';
+			include '../include/adatbazis.php';
 		?>
 		<script src="/include/topbar.js"></script>
         <script src="/include/alap_fuggvenyek.js"></script>

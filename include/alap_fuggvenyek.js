@@ -42,3 +42,15 @@ function bajt_merette_valtas(size) {
     meret = meret.replace(/([0-9][0-9][0-9])\..* ([KMG]?B)/, '$1 $2');
     return meret;
 }
+
+function eloterbe_helyezes(object) {
+    if( document.getElementById('sotetites_div') == null ) {
+        sotetites = document.createElement('div');
+        sotetites.id = 'sotetites_div';
+        sotetites.style = "z-index: 10; background-color: black; opacity: 0.65; display: block; width: 100%; height: 100%; top: 0; left: 0;";
+        document.body.appendChild(sotetites);
+    }
+
+    object.style.zIndex = '';
+    
+}

@@ -33,7 +33,7 @@
                 xhttp.onload = function() {
                     document.getElementById("parancssor").innerHTML = document.getElementById("parancssor").innerHTML + this.responseText;
                 }
-                xhttp.open("GET", "https://hausz.stream/admin/parancs.php?parancs=" + document.getElementById("parancs").value);
+                xhttp.open("GET", "/admin/parancs.php?parancs=" + document.getElementById("parancs").value);
                 xhttp.send();
             }
 
@@ -47,15 +47,10 @@
 
         <?php
             $dbname = "hausz_megoszto";
-            include '../include/adatbazis.php';
             include '../include/alap_fuggvenyek.php';
+            include '../include/adatbazis.php';
 
-            function kidob($szoveg)
-            {
-                printLn($szoveg);
-                //header("Location: https://hausz.stream");
-                die();
-            }
+            function kidob($szoveg) {   die_if(true, $szoveg); }
 
             if (!($_SESSION['loggedin'] == "yes")) {
                 kidob('Nem vagy belépve');
@@ -66,28 +61,18 @@
             }
 
             if($_GET['aktivalas'] == 1) {
-                if(strlen($_GET['request_id']) <= 0) {
-                    printLn('A request_id helytelenül van, vagy nincs megadva');
-                    die();
-                }
+                die_if( strlen($_GET['request_id']) <= 0, 'A request_id helytelenül van, vagy nincs megadva');
 
                 $query = "call hausz_megoszto.add_user(".$_GET['request_id'].");";
                 $result = $conn->query($query);
-                if(!$result) {
-                    printLn('Query hiba: '.$query);
-                    die();
-                }
-
+                die_if( !$result, 'Query hiba: '.$query);
                 header('Location: https://hausz.stream/admin/admin.php');
             }
 
             printLn('<h3>Aktiválandó fiókok</h3>');
             $query = "select * from hausz_megoszto.users_requested";
             $result = $conn->query($query);
-            if(!$result) {
-                printLn('Query hiba: '.$query);
-                die();
-            }
+            die_if( !$result, 'Query hiba: '.$query);
             if($result->num_rows <= 0) {
                 printLn('<p>Jelenleg nincs aktiválandó fiók</p>');
             } else {
@@ -104,7 +89,7 @@
                     printLn('<td>'.$row['request_id'].'</td>');
                     printLn('<td>'.$row['username'].'</td>');
                     printLn('<td>'.$row['email'].'</td>');
-                    printLn('<td><a href="https://hausz.stream/admin/admin.php?aktivalas=1&request_id='.$row['request_id'].'">Aktiválás</a></td>');
+                    printLn('<td><a href="/admin/admin.php?aktivalas=1&request_id='.$row['request_id'].'">Aktiválás</a></td>');
                     printLn('</tr>');
                 }
                 printLn('</table>');
@@ -113,10 +98,7 @@
             printLn('<h3>Aktív fiókok</h3>');
             $query = "select * from hausz_megoszto.users";
             $result = $conn->query($query);
-            if(!$result) {
-                printLn('Query hiba: '.$query);
-                die();
-            }
+            die_if( !$result, 'Query hiba: '.$query);
 
             if($result->num_rows > 0) {
                 printLn('<table>');
@@ -133,6 +115,36 @@
                     printLn('<td>'.$row['username'].'</td>');
                     printLn('<td>'.$row['email'].'</td>');
                     printLn('<td>'.$row['admin'].'</td>');
+                    printLn('</tr>');
+                }
+                printLn('</table>');
+            }
+
+            // id | szolgaltatas | bejegyzes   | komment                     | felhasznalo | datum         
+            printLn('<h3>Log</h3>');
+            $query = "select * from hausz_log.log order by datum desc limit 100";
+            $result = $conn->query($query);
+            die_if( !$result, 'Query hiba: '.$query);
+
+            if($result->num_rows > 0) {
+                printLn('<table>');
+                printLn('<tr>');
+                printLn('<th>id</th>');
+                printLn('<th>szolgaltatas</th>');
+                printLn('<th>bejegyzes</th>');
+                printLn('<th>komment</th>');
+                printLn('<th>felhasznalo</th>');
+                printLn('<th>datum</th>');
+                printLn('</tr>');
+
+                while($row = $result->fetch_assoc()) {
+                    printLn('<tr>');
+                    printLn('<td>'.$row['id'].'</td>');
+                    printLn('<td>'.$row['szolgaltatas'].'</td>');
+                    printLn('<td>'.$row['bejegyzes'].'</td>');
+                    printLn('<td>'.$row['komment'].'</td>');
+                    printLn('<td>'.$row['felhasznalo'].'</td>');
+                    printLn('<td>'.$row['datum'].'</td>');
                     printLn('</tr>');
                 }
                 printLn('</table>');

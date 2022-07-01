@@ -1,0 +1,20 @@
+Order Allow,Deny
+Allow from all
+
+<Files request.php>
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
+<Files feltoltes.php>
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
+RewriteEngine on
+RewriteRule (.*)fajlok(.*) https://hausz.stream/megoszto/
+RewriteRule (.*)\.htaccess https://hausz.stream/megoszto/
+
+DirectoryIndex feltoltes.html

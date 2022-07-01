@@ -1,8 +1,6 @@
 <?php
     session_start();
 
-    include '../include/alap_fuggvenyek.php';
-
     function mimeType($path) {
         preg_match("|\.([a-z0-9]*)$|i", $path, $fileSuffix);
         switch(strtolower($fileSuffix[1])) {
@@ -57,69 +55,42 @@
         return 'unknown/' . trim($fileSuffix[0], '.');
     }
 
-    if( strlen( $_GET['file_id'] ) <= 0 ) {
-        printLn('Nem adtál meg fájl azonsítót.');
-        die();
-    }
-
     $dbname = "hausz_megoszto";
+    include '../include/alap_fuggvenyek.php';
     include '../include/adatbazis.php';
 
+    die_if( strlen( $_GET['file_id'] ) <= 0, 'Nem adtál meg fájl azonsítót.');
+    
     $query = "select * from files left outer join users on users.id = files.user_id where files.id = ".$_GET['file_id'];
     $result = $conn->query($query);
-    if( !$result ) {
-        printLn("Hiba a lekérdezés futtatása közben.");
-        var_dump($query);
-        var_dump($result);
-        var_dump($conn->error);
-        die();
-    }
-
-    if( $result->num_rows <= 0 ) {
-        printLn("HIBA:Nem létező fájl: ".$_GET['file_id']);
-        die();
-    }
+    die_if( !$result, "Query hiba: ".$query);
+    die_if( $result->num_rows <= 0, "HIBA:Nem létező fájl: ".$_GET['file_id']);
 
     $row = $result->fetch_assoc();
+    die_if( ( (strtolower($row['username']) != strtolower($_SESSION['username'])) or ($_SESSION['loggedin'] != "yes") ) && $row['private'] == "1", 'Nem vagy jogosult a fájl eléréshez.');
 
-    if( ( 
-            (strtolower($row['username']) != strtolower($_SESSION['username']))
-            or
-            ($_SESSION['loggedin'] != "yes")
-        ) 
-        
-        && $row['private'] == "1" ) {
-        printLn('Nem vagy jogosult a fájl eléréshez.');
-        die();
-    }
+    header("Cache-Control: public, max-age=9999999, immutable");
     header('X-Robots-Tag: noindex');
-    header("Content-Type: ".mimeType("/var/www/html/uploads/fajlok/".$row['filename']));
+    header("Content-Type: ".mimeType("/var/www/html/megoszto/fajlok/".$row['filename']));
     if(strlen($_POST['titkositas_feloldasa_kulcs']) > 0) {
-        if($row['titkositott'] != '1') {
-            echo 'HIBA:A fájl nem titkosított';
-            die();
-        }
-        if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']) ) {
-            printLn('HIBA:Nem jó titkosítási kulcs');
-            die();
-        }
+        die_if( $row['titkositott'] != '1', 'HIBA:A fájl nem titkosított');
+        die_if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']), 'HIBA:Nem jó titkosítási kulcs');
         
         if( $_POST['letoltes'] == "1" ) {
-            $plaintext = file_get_contents("/var/www/html/uploads/fajlok/".$row['filename']);
+            $plaintext = file_get_contents("/var/www/html/megoszto/fajlok/".$row['filename']);
             $plaintext = base64_decode($plaintext);
             $plaintext = openssl_decrypt($plaintext, "aes-256-cbc", $_POST['titkositas_feloldasa_kulcs'], $options=0, "aaaaaaaaaaaaaaaa");
             header('Content-Disposition: filename="'.$row['filename'].'"');
             header('Content-Length: '.strlen($plaintext));
-            echo $plaintext;
-            die();
+            exit_ok($plaintext);
         }
-        echo 'OK:Titkosítás feloldva';
-        die();
+        
+        exit_ok('OK:Titkosítás feloldva');
     }
     if($row['titkositott'] == '1') {
         header('Content-Disposition: filename="titkositott_'.$row['filename'].'"');
     } else {
         header('Content-Disposition: filename="'.$row['filename'].'"');
     }
-    readfile('/var/www/html/uploads/fajlok/'.$row['filename']);
-    ?>
+    readfile('/var/www/html/megoszto/fajlok/'.$row['filename']);
+?>

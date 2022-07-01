@@ -2,15 +2,12 @@
     session_start();
 
     $dbname = "hausz_megoszto";
-    include '../include/adatbazis.php';
     include '../include/alap_fuggvenyek.php';
+    include '../include/adatbazis.php';
 
     $query = "select *, timestampdiff(second, datum, now(6)) as kulonbseg from hausz_ts.szolgaltatas_statusz order by datum desc limit 1;";
     $result = $conn->query($query);
-    if(!$result) {
-        printLn('Query hiba: '.$query);
-        die();
-    }
+    die_if( !$result, 'Query hiba: '.$query);
     $kell_statusz_update = 0;
     if($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -45,17 +42,11 @@
         
         $query = "delete from hausz_ts.szolgaltatas_statusz;";
         $result = $conn->query($query);
-        if(!$result) {
-            printLn('Query hiba: '.$query);
-            die();
-        }
+        die_if( !$result, 'Query hiba: '.$query);
 
         $query = "insert into hausz_ts.szolgaltatas_statusz (datum, statusz) values (now(6), '".$statusz."');";
         $result = $conn->query($query);
-        if(!$result) {
-            printLn('Query hiba: '.$query);
-            die();
-        }
+        die_if( !$result, 'Query hiba: '.$query);
     }
     
     if($_GET['uj_token'] == 1 && $_SESSION['loggedin'] == "yes") {
@@ -66,22 +57,14 @@
         $result = $conn->query('select datediff(now(), generalasi_datum) as kulonbseg from felhasznalo_tokenek where user_id = '.$_SESSION['user_id'].';');
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if($row['kulonbseg'] == 0) {
-                printLn('Csak 5 naponként lehet új tokent igényelni. A jelenlegi tokened ma készült.');
-                die();
-            }
-            if($row['kulonbseg'] < 5) {
-                printLn('Csak 5 naponként lehet új tokent igényelni. A jelenlegi tokened '.$row['kulonbseg'].' napja készült.');
-                die();
-            }
+            die_if( $row['kulonbseg'] == 0, 'Csak 5 naponként lehet új tokent igényelni. A jelenlegi tokened ma készült.');
+            die_if( $row['kulonbseg'] < 5, 'Csak 5 naponként lehet új tokent igényelni. A jelenlegi tokened '.$row['kulonbseg'].' napja készült.');
             $conn->query('delete from felhasznalo_tokenek where user_id = '.$_SESSION['user_id']);
         }
         $query = "insert into felhasznalo_tokenek (user_id, token, generalasi_datum) values (".$_SESSION['user_id'].", '".$eredmeny."', now());";
         $result = $conn->query($query);
-        if(!$result) {
-            printLn('Query hiba: '.$query);
-            die();
-        }
+        die_if( !$result, 'Query hiba: '.$query);
+        log_bejegyzes("teamspeak szerver", "új token igénylés", $eredmeny, $_SESSION['username']);
         header('Location: https://hausz.stream/teamspeak/teamspeak.php');
     }
 
@@ -138,8 +121,8 @@
             printLn('<h2>Lépések a csatlakozáshoz</h2>');
             printLn('<ol>');
             printLn('<li>Töltsd le a TeamSpeak 3 kliens szoftvert, és telepítsd az eszközödre.');
-            printLn('<p class="tab-1">Windows: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=390\')">Hausz megosztó - TeamSpeak3-Client-win64-3.5.6.exe</a></p>');
-            printLn('<p class="tab-1">MacOS: <a href="#" onclick="window.open(\'https://hausz.stream/uploads/request.php?file_id=343\')">Hausz megosztó - TeamSpeak3-Client-macosx-3.5.7.dmg</a></p></li><br>');
+            printLn('<p class="tab-1">Windows: <a href="#" onclick="window.open(\'/megoszto/request.php?file_id=390\')">Hausz megosztó - TeamSpeak3-Client-win64-3.5.6.exe</a></p>');
+            printLn('<p class="tab-1">MacOS: <a href="#" onclick="window.open(\'/megoszto/request.php?file_id=343\')">Hausz megosztó - TeamSpeak3-Client-macosx-3.5.7.dmg</a></p></li><br>');
             printLn('<li>Kattints rá a következő linkre a csatlakozáshoz: <a href="ts3server://hausz.stream/?port=9987&nickname='.$_SESSION['username'].'">Csatlakozás</a></li><br>');
             if($_SESSION['loggedin'] == "yes") {
                 printLn('<li>Használd fel a Hausz által generált jogosultsági tokent a TeamSpeak kliensben');
@@ -149,27 +132,22 @@
                 $result = $conn->query('use hausz_ts;');
                 $query = 'select * from felhasznalo_tokenek where user_id = '.$_SESSION['user_id'];
                 $result = $conn->query($query);
-                if(!$result) {
-                    printLn('Query hiba: '.$query);
-                    die();
-                }
+                die_if( !$result, 'Query hiba: '.$query);
                 if($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
                     printLn('<p class="tab-1">Jelenlegi jogosultsági tokened:   '.$row['token'].'</p>');
                 } else {
-                    printLn('<p class="tab-1">Nincs jelenleg jogosultsági tokened: <a href="https://hausz.stream/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
+                    printLn('<p class="tab-1">Nincs jelenleg jogosultsági tokened: <a href="/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
 
                 }
                 $conn->query('use hausz_ts;');
                 $query = 'select datediff(now(), generalasi_datum) as kulonbseg from felhasznalo_tokenek where user_id = '.$_SESSION['user_id'].';';
                 $result = $conn->query($query);
-                if(!$result) {
-                    printLn('Query hiba: '.$query);
-                }
+                die_if( !$result, 'Query hiba: '.$query);
                 if($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
                     if($row['kulonbseg'] >= 5) {
-                        printLn('<p class="tab-1">Jogosult vagy új token kérésére, mert a jelenlegi tokened '.$row['kulonbseg'].' napja készült: <a href="https://hausz.stream/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
+                        printLn('<p class="tab-1">Jogosult vagy új token kérésére, mert a jelenlegi tokened '.$row['kulonbseg'].' napja készült: <a href="/teamspeak/teamspeak.php?uj_token=1">Új token kérése</a></p>');
                     }
                 }
                 printLn('</li>');
@@ -203,10 +181,7 @@
 
             $query = "select * from hausz_ts.szolgaltatas_statusz order by datum desc limit 1;";
             $result = $conn->query($query);
-            if(!$result) {
-                printLn('Query hiba: '.$query);
-                die();
-            }
+            die_if( !$result, 'Query hiba: '.$query);
             $minden_rendben = true;
             if($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
@@ -304,14 +279,12 @@
             $result_tarhely_adat = $conn->query($query_tarhely_adat);
             $szabad_tarhely = "";
             $foglalt_tarhely = "";
-            if(!$result_tarhely_adat) {
-                printLn('Query hiba: '.$query_tarhely_adat);
-                die();
-            } else {
-                $row = $result_tarhely_adat->fetch_assoc();
-                $szabad_tarhely = floatval($row['szabad']);
-                $foglalt_tarhely = floatval($row['foglalt']);
-            }
+
+            die_if( !$result_tarhely_adat, 'Query hiba: '.$query_tarhely_adat);
+
+            $row = $result_tarhely_adat->fetch_assoc();
+            $szabad_tarhely = floatval($row['szabad']);
+            $foglalt_tarhely = floatval($row['foglalt']);
 
             $teljes_tarhely = floatval(8065444*1024);
             $tarhely_arany = $szabad_tarhely / $teljes_tarhely;

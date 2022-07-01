@@ -22,8 +22,8 @@
 
     <?php
     $dbname = "hausz_megoszto";
-    include '../include/adatbazis.php';
     include '../include/alap_fuggvenyek.php';
+    include '../include/adatbazis.php';
 
     function showPage($reason)
     {
@@ -53,7 +53,7 @@ END;
     }
 
     if ($_SESSION['loggedin'] != "yes") {
-        header("Location: https://hausz.stream/uploads/register.php");
+        header("Location: https://hausz.stream/include/register.php");
     }
 
     if ($_POST['change'] != "yes") {
@@ -92,7 +92,7 @@ END;
     }
 
     showPage('A jelszavad sikeresen meg lett változtatva');
-    
+    log_bejegyzes("hausz_alap", "jelszó változtatás", "", $_SESSION['username']);
     ?>
 </body>
 

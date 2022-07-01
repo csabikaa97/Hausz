@@ -1,10 +1,10 @@
 ## 💭 Tennivalók
 
-- [ ] Megosztó: Általános log készítése minden funkció használatáról
-- [ ] Regisztráció oldalon email cím megadásához leírás
-- [ ] Adatkezelői nyilatkozat készítése regisztrációs oldalhoz
-- [ ] Jelszó változtatás és regisztrálás oldal átírás Javascript-be
-- [ ] megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
+* Megosztó: Megjelenő szöveg bal alul időzítés fix
+* Regisztráció oldalon email cím megadásához leírás
+* Adatkezelői nyilatkozat készítése regisztrációs oldalhoz
+* Jelszó változtatás, regisztrálás, együttnéző oldal átírás Javascript-be
+* megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
 	* Google-ról SEO tool-ban leszedni a régi linkeket
 	* Belső hivatkozásokat mind átírni
 * Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
@@ -15,7 +15,7 @@
 * LIDL pizza tier list leírás (személyes vélemények leírása egyes pizzákról)
 * Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
 * Megosztó előnézet középre igazítás
-* Backend cseréje Apache-ról házi Node.js backend-re
+* Backend cseréje Apache-ról saját fejlesztésű Node.js backend-re
 * Saját hibaoldalak írása: 500, 404, stb...
 * Header tagek használatát áttervezni
 * Együttnéző széleskörű tesztelése és bugok javítása
@@ -30,7 +30,10 @@
 
 ## ✅ Implementált funkciók / megtett lépések
 
-- [x] Megosztó jobb-klikk menük készítése
+* Megosztó: 10MB méretes előnézet felett csak a bal alsó sarokban ír üzenetet alert() helyett
+* Általános log készítése minden funkció használatáról: Admin oldalon lehet megtekinteni
+* Megosztó: 200MB méretlimitet feltöltés előtt vizsgálni JS-ben
+* Megosztó jobb-klikk menük
 * Fájl értesítés ha át lesz nevezve confirm funkcióval
 * Megosztó csak saját fájlok mutatása (keresés fájlnév, dátum és feltöltő neve alapján)
 * Megosztó PHP fájlok által küldött adatmennyiség csökkentése a HTML részek teljes kivonásával, áttérés javascript-re

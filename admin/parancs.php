@@ -1,13 +1,11 @@
 <?php   
-    session_start(); 
-    if($_SESSION['admin'] != "igen" || $_SESSION['loggedin'] != "yes") {
-        die('Nem vagy jogosult');
-    }
+    session_start();
 
-    if(strlen($_GET['parancs']) <= 0) {
-        die('Nem adtál meg parancsot');
-    }
+    include '../include/alap_fuggvenyek.php';
 
+    die_if( $_SESSION['admin'] != "igen" || $_SESSION['loggedin'] != "yes", 'Nem vagy jogosult');
+    die_if( strlen($_GET['parancs']) <= 0, 'Nem adtál meg parancsot');
+    
     $eredmeny = "";
     exec($_GET['parancs'], $eredmeny, $retval);
     echo '>>> '.$_GET['parancs'].'<br>';
