@@ -112,12 +112,10 @@
             var uj_valasz_mutatasa_idozito;
 
             function belepes_siker() {
-                console.log("CALL: belepes_siker()");
                 document.getElementById('privat_doboz').style.display = 'block';
             }
 
             function kilepes_siker() {
-                console.log("CALL: kilepes_siker()");
                 session_admin = '';
                 session_loggedin = '';
                 session_username = '';
@@ -125,12 +123,10 @@
             }
 
             function belepteto_rendszer_frissult() {
-                console.log("CALL: belepteto_rendszer_frissult()");
                 fajlok_betoltese();
             }
 
             function szures_gomb_kattintas(event) {
-                console.log("CALL: szures_gomb_kattintas(event)");
                 if (document.getElementById('szuro_sor').style.display == 'none') {
                     document.getElementById('szuro_sor').style.display = 'table-row';
                     document.getElementById('szures_gomb').classList.remove("szint-3");
@@ -147,7 +143,6 @@
             }
 
             function filter_frissites() {
-                console.log("CALL: filter_frissites()");
                 filter_fajlnev = document.getElementById('fajlnev_szures_mezo').value;
                 filter_datum = document.getElementById('datum_szures_mezo').value;
                 filter_feltolto = document.getElementById('feltolto_szures_mezo').value;
@@ -203,7 +198,6 @@
             }
 
             function fajlok_betoltese() {
-                console.log("CALL: fajlok_betoltese()");
                 jobb_klikk_menu_eltuntetes();
 
                 var filter_fajlnev = "";
@@ -379,7 +373,6 @@
             }
 
             function torles(link, fajlnev) {
-                console.log("CALL: torles(link, fajlnev)");
                 if (confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?')) {
                     szinkron_keres((uzenet) => {
                         if (/^OK:/.test(uzenet)) {
@@ -395,7 +388,6 @@
             }
 
             function elonezet(hivatkozas, tipus, meret) {
-                console.log("CALL: elonezet(hivatkozas, tipus, meret)");
                 if (meret > 1024 * 1024 * 10) {
                     uj_valasz_mutatasa('A fájl mérete nagyobb mint 10MB, ezért az előnézetet nem lehet hozzá betölteni.', 5000);
                 } else {
@@ -427,7 +419,6 @@
             }
 
             function titkositas_feloldasa(file_id, fajlnev) {
-                console.log("CALL: titkositas_feloldasa(file_id, fajlnev)");
                 var caller = event.target;
                 if (!caller && !caller.outerHTML.match(/^<td/)) {
                     return;
@@ -447,7 +438,6 @@
             }
 
             function titkositas_feloldasa_kuldes(file_id, fajlnev, caller) {
-                console.log("CALL: titkositas_feloldasa_kuldes(file_id, fajlnev, caller)");
                 if (document.getElementById('titkositas_feloldasa_kulcs').value.length <= 0) {
                     alert("Nem adtál meg titkosítási kulcsot, így nem lehet feloldani a fájlt.");
                     return;
@@ -484,7 +474,6 @@
             }
 
             function fajl_atnevezese(id, fajlnev) {
-                console.log("CALL: fajl_atnevezese(id, fajlnev)");
                 document.getElementById('atnevezes_box').style.visibility = '';
                 document.getElementById('darken_background').style.visibility = '';
                 document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
@@ -494,7 +483,6 @@
             }
 
             function uj_valasz_mutatasa(valasz, ido) {
-                console.log("CALL: uj_valasz_mutatasa(valasz, ido)");
                 document.getElementById('valasz_uzenet').innerHTML = "<p>" + valasz + "</p>";
                 document.getElementById('valasz_uzenet').style.opacity = "100%";
                 clearTimeout(uj_valasz_mutatasa_idozito);
@@ -504,7 +492,6 @@
             }
 
             function atnevezes_inditasa() {
-                console.log("CALL: atnevezes_inditasa()");
                 elonezet_bezaras();
                 link = "/megoszto/feltoltes.php?atnevezes=1&file_id=" + document.getElementById('atnevezes_uj_nev').azonosito + "&uj_nev=" + document.getElementById('atnevezes_uj_nev').value;
                 szinkron_keres((uzenet) => {
@@ -519,7 +506,6 @@
             }
 
             function claimeles(link) {
-                console.log("CALL: claimeles(link)");
                 szinkron_keres((uzenet) => {
                     if (/^OK:/.test(uzenet)) {
                         valasz = uzenet.replace(/^OK:/, '');
@@ -532,7 +518,6 @@
             }
 
             function feltoltes() {
-                console.log("CALL: feltoltes()");
                 fajlok = document.getElementById('fileToUpload').files;
                 if (fajlok.length > 1) {
                     uj_valasz_mutatasa('Fájlok feltöltése...', 99999);
@@ -605,7 +590,6 @@
             }
 
             function elonezet_bezaras() {
-                console.log("CALL: elonezet_bezaras()");
                 document.getElementById('preview_box').style.visibility = 'hidden';
                 document.getElementById('atnevezes_box').style.visibility = 'hidden';
                 document.getElementById('darken_background').style.visibility = 'hidden';
@@ -620,7 +604,6 @@
             }
 
             function fajlnev_frissitese() {
-                console.log("CALL: fajlnev_frissitese()");
                 fajlok = document.getElementById('fileToUpload').files;
                 fajlnevek = "";
                 for (let i = 0; i < fajlok.length; i++) {
@@ -660,7 +643,6 @@
             }
 
             function bal_klikk(event) {
-                console.log("CALL: bal_klikk(event)");
                 var volt_tr = false;
                 var tr;
                 event.composedPath().forEach(element => {
@@ -685,12 +667,10 @@
             }
 
             function jobb_klikk_menu_eltuntetes() {
-                console.log("CALL: jobb_klikk_menu_eltuntetes()");
                 jobb_klikk_menu.style.display = 'none';
             }
 
             function jobb_klikk_menu_kinyitas(event, tr) {
-                console.log("CALL: jobb_klikk_menu_kinyitas(event, tr)");
                 jobb_klikk_menu = document.getElementById('jobb_klikk_menu');
                 jobb_klikk_menu.style.display = 'block';
 
@@ -782,7 +762,6 @@
             });
 
             function drop_zona_aktivalas() {
-                console.log("CALL: drop_zona_aktivalas()");
                 dropZone = document.getElementById('fajl_drop_zona');
                 dropZone_leiras = document.getElementById('fajl_drop_zona_leiras');
 
@@ -825,17 +804,7 @@
         </script>
 </body>
 
-</html> }
-}
-
-function handleDrop(e) {
-document.getElementById('fileToUpload').files = e.dataTransfer.files;
-fajlnev_frissitese();
-console.log();
-
-e.preventDefault();
-hideDropZone();
-}
+</html>
 </script>
 </body>
 

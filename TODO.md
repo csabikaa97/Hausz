@@ -1,6 +1,7 @@
 ## 💭 Tennivalók
 
-* Megosztó: Megjelenő szöveg bal alul időzítés fix
+* Globális: előtérbe helyezés függvény
+* Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
 * Regisztráció oldalon email cím megadásához leírás
 * Adatkezelői nyilatkozat készítése regisztrációs oldalhoz
 * Jelszó változtatás, regisztrálás, együttnéző oldal átírás Javascript-be
@@ -26,10 +27,10 @@
 	* Mobil barát oldalak (már csak a megosztó van hátra)
 	* Rich results hibák
 
-    
 
-## ✅ Implementált funkciók / megtett lépések
+## ✅ Implementált tennivalók
 
+* Megosztó: Bal alsó sarokban megjelenő státusz szöveg időzítésének javítása
 * Megosztó: 10MB méretes előnézet felett csak a bal alsó sarokban ír üzenetet alert() helyett
 * Általános log készítése minden funkció használatáról: Admin oldalon lehet megtekinteni
 * Megosztó: 200MB méretlimitet feltöltés előtt vizsgálni JS-ben

@@ -69,6 +69,24 @@
                 header('Location: https://hausz.stream/admin/admin.php');
             }
 
+            if($_GET['elutasitas'] == 1) {
+                die_if( strlen($_GET['request_id']) <= 0, 'A request_id helytelenül van, vagy nincs megadva');
+
+                $query = "delete from hausz_megoszto.users_requested where request_id = ".$_GET['request_id'].";";
+                $result = $conn->query($query);
+                die_if( !$result, 'Query hiba: '.$query);
+                header('Location: https://hausz.stream/admin/admin.php');
+            }
+
+            if($_GET['torles'] == 1) {
+                die_if( strlen($_GET['user_id']) <= 0, 'A user_id helytelenül van, vagy nincs megadva');
+
+                $query = "delete from hausz_megoszto.users where id = ".$_GET['user_id'].";";
+                $result = $conn->query($query);
+                die_if( !$result, 'Query hiba: '.$query);
+                header('Location: https://hausz.stream/admin/admin.php');
+            }
+
             printLn('<h3>Aktiválandó fiókok</h3>');
             $query = "select * from hausz_megoszto.users_requested";
             $result = $conn->query($query);
@@ -81,7 +99,8 @@
                 printLn('<th>request_id</th>');
                 printLn('<th>username</th>');
                 printLn('<th>email</th>');
-                printLn('<th>Aktiválás</th>');
+                printLn('<th></th>');
+                printLn('<th></th>');
                 printLn('</tr>');
 
                 while($row = $result->fetch_assoc()) {
@@ -90,6 +109,7 @@
                     printLn('<td>'.$row['username'].'</td>');
                     printLn('<td>'.$row['email'].'</td>');
                     printLn('<td><a href="/admin/admin.php?aktivalas=1&request_id='.$row['request_id'].'">Aktiválás</a></td>');
+                    printLn('<td><a href="/admin/admin.php?elutasitas=1&request_id='.$row['request_id'].'">Elutasítás</a></td>');
                     printLn('</tr>');
                 }
                 printLn('</table>');
@@ -107,6 +127,7 @@
                 printLn('<th>username</th>');
                 printLn('<th>email</th>');
                 printLn('<th>Admin</th>');
+                printLn('<th></th>');
                 printLn('</tr>');
 
                 while($row = $result->fetch_assoc()) {
@@ -115,6 +136,7 @@
                     printLn('<td>'.$row['username'].'</td>');
                     printLn('<td>'.$row['email'].'</td>');
                     printLn('<td>'.$row['admin'].'</td>');
+                    printLn('<td><a href="/admin/admin.php?torles=1&user_id='.$row['id'].'">Törlés</a></td>');
                     printLn('</tr>');
                 }
                 printLn('</table>');

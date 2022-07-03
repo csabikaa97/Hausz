@@ -53,7 +53,7 @@ END;
     }
 
     if ($_SESSION['loggedin'] != "yes") {
-        header("Location: https://hausz.stream/include/register.php");
+        header("Location: https://hausz.stream/include/regisztracio.html");
     }
 
     if ($_POST['change'] != "yes") {

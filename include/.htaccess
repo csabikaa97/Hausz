@@ -1,7 +1,15 @@
 Order deny,allow
 Deny from all
 
-<Files register.php>
+<Files regisztracio.php>
+    Order Allow,Deny
+    Allow from all
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
+<Files regisztracio.html>
     Order Allow,Deny
     Allow from all
     Header add X-Robots-Tag "noindex"

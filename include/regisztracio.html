@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+		<title>Regisztráció - Hausz</title>
+		<meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+        <meta name="color-scheme" content="dark light">
+	</head>
+    <body>
+        <script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+
+        
+        <p id="reason"></p>
+        <div class='kozepre' id="adatvedelmi_tajekoztato_doboz" style="max-width: 900px">
+            <h1 style="kozepre-szoveg">Hausz regisztráció</h1>
+            <div id="adatvedelmi_tajekoztato" class="tab-2">
+                <h2>Adatvédelmi tájékoztató</h2>
+                <h3 class="tab-3">A regisztráció gomb megnyomásával, és a szükséges adatok megadásával beleegyezel a következőkbe:</h3> 
+                <ol class="tab-3">
+                    <li>A hausz.stream weboldal üzemeltetői minden megadott adatod korlátlan ideig eltárolhatják, bárhogy felhasználhatják, és nem vállalnak semmilyen felelősséget irántuk.</li>
+                    <br><li>A hausz.stream weboldalon és aloldalain illetve szolgáltatásain tárolt adataid, üzeneteid, fájljaid iránt nem vállalnak felelősséget a weboldal üzemeltetői, és bármilyen formában felhasználhatják, tárolhatják korlátlan ideig.</li>
+                    <br><li>A hausz.stream weboldalon általad közzétett fájlok, üzenetek, adatok törlésére van lehetőség a szerver tulajdonos(ok) által, de nem garantált hogy minden adat sikeresen törlődik véglegesen a szerver(ek)ről.</li>
+                </ol>
+                <br><br><br>
+                <h2>Ez mit jelent a valóságban?</h2>
+                <ol class="tab-3">
+                    <li>Az általad megadott e-mail címeket csak a rendszergazdák látják, és csak arra használják majd fel hogy értesítést küldjenek rá a sikeres fiók aktiválásról.</li>
+                    <br><li>Az általad megadott jelszavak hash formátumban vannak eltárolva, így azzal nem tud senki visszaélni akinek van hozzáférése (szerver tulajdonos(ok), hackerek illetéktelen hozzáféréssel).</li>
+                    <br><li>Az általad közzétett üzenetek a weboldalon mentésre, és felhasználásra kerülhetnek.</li>
+                    <br><li>Az általad közzétett fájlok feltöltést követően nem lesznek titkosítva, így azok akiknek a szerverhez van hozzáférése (szerver tulajdonos(ok), hackerek illetéktelen hozzáféréssel), azok ki tudják olvasni a tartalmát. A fájlok megvédéséért kérlek add meg a 'Titkosítási kulcs' paramétert felöltéskor, ami effektív jelszóval védi a fájlt, így senki nem tudja megtekinteni annak tartalmát, csak az akinek a hozzátartozó jelszó is megvan.</li>
+                    <br><li>Az általad közzétett fájlok határozatlan ideig a szerveren maradhatnak törlést követően.</li>
+                </ol>
+            </div>
+            <br>
+            <button id="adatvedelmi_tajekoztato_elolvasva_gomb" class="gomb kozepre szint-2 kerekites-15" onclick="adatvedelmi_tajekoztato_elolvasva()" style="border: 0px">Elolvastam, és tudomásul vettem a fent írtakat</button>
+        </div>
+        <div class="kozepre" id="regisztracio_doboz" style="display: none">
+            <form class="kozepre" style="width: fit-content">
+                <input id="regisztracio_username" autocomplete="new-username" name='regisztracio_username' type='text'  placeholder='Felhasználónév'><br>
+                <input id="regisztracio_password" autocomplete='new-password' type='password' name='regisztracio_password' placeholder='Jelszó'><br>
+                <input id="regisztracio_password_confirm" autocomplete='new-password' type='password' name='regisztracio_password_confirm' placeholder='Jelszó megerősítése'><br>
+                <input id="regisztracio_email" type='text' name='regisztracio_email' placeholder='E-mail cím (opcionális)'><br><br>
+                <button onclick="regisztracio_inditasa(event)">Regisztráció</button>
+            </form>
+        </div>
+        <div id="regisztracio_siker_doboz" class="kozepre" style="max-width: 900px; display: none">
+            <h2>Sikeres regisztráció</h2>
+            <p>Ha adtál meg e-mail címet, akkor azon keresztül fogunk értesíteni arról ha aktiválva lett a fiókod, egyébként pedig bármelyik aloldalon tudod próbálgatni a belépést amíg nem lesz aktív a fiókod.</p>
+            <br>
+            <div class="gomb kerekites-15 szint-2" style="width: fit-content" onclick='location.href = "/"'>Ugrás a főoldalra</div>
+        </div>
+        <br><br><br><br><br><br><br><br><br><br>
+        <script>
+            var formData;
+            function regisztracio_inditasa(event) {
+                event.preventDefault();
+
+                formData = "regisztracio=igen";
+                formData += "&regisztracio_username=" + document.getElementById('regisztracio_username').value;
+                formData += "&regisztracio_password=" + document.getElementById('regisztracio_password').value;
+                formData += "&regisztracio_password_confirm=" + document.getElementById('regisztracio_password_confirm').value;
+                formData += "&regisztracio_email=" + document.getElementById('regisztracio_email').value;
+
+                szinkron_keres((uzenet) => {
+                    if(/^OK:/.test(uzenet)) {
+                        document.getElementById('regisztracio_doboz').style.display = 'none';
+                        document.getElementById('adatvedelmi_tajekoztato_doboz').style.display = 'none';
+                        document.getElementById('regisztracio_siker_doboz').style.display = 'block';
+                    } else {
+                        alert(uzenet);
+                        console.log(formData);
+                    }
+                }, "/include/regisztracio.php", formData);
+            }
+
+            function adatvedelmi_tajekoztato_elolvasva() {
+                document.getElementById('adatvedelmi_tajekoztato_elolvasva_gomb').style.visibility = 'hidden';
+                document.getElementById('regisztracio_doboz').style.display = 'block';
+            }
+        </script>
+    </body>
+</html>

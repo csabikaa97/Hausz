@@ -12,9 +12,50 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ### Szolgáltatások
 
-* [TeamSpeak 3 szerver](https://hausz.stream/teamspeak/) - [Dokumentáció](dokumentáció/teamspeak/leírás.txt)
-* [Megosztó](https://hausz.stream/megoszto/) - [Dokumentáció](dokumentáció/megosztó/leírás.txt)
-* [Együttnéző (csak tesztelésre)](https://hausz.stream/egyuttnezo/) - [Dokumentáció](dokumentáció/együttnéző/leírás.txt)
+<table>
+    <tr>
+        <th></th>
+        <th>Backend</th>
+        <th>Frontend</th>
+        <th>Dokumentáció</th>
+    </tr>
+    <tr>
+        <td><a href="https://hausz.stream/teamspeak/">TeamSpeak 3 szerver</a></td>
+        <td>TeamSpeak 3 szerver szolgáltatás</td>
+        <td></td>
+        <td><a href="dokumentáció/teamspeak/leírás.txt">leírás.txt</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://hausz.stream/megoszto/">Megosztó</a></td>
+        <td>megoszto/feltoltes.php<br>megoszto/request.php</td>
+        <td>megoszto/feltoltes.html</td>
+        <td><a href="dokumentáció/megosztó/leírás.txt">leírás.txt</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://hausz.stream/egyuttnezo/">Együttnéző (csak tesztelésre)</a></td>
+        <td>egyuttnezo/egyuttnezo.php</td>
+        <td>-||-</td>
+        <td><a href="dokumentáció/együttnéző/leírás.txt">leírás.txt</a></td>
+    </tr>
+    <tr>
+        <td><a href="https://hausz.stream/include/regisztracio.html">Regisztráció</a></td>
+        <td>include/regisztracio.php</td>
+        <td>include/regisztracio.html</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><a href="https://hausz.stream/include/change_password.php">Jelszó változtatás</a></td>
+        <td>include/change_password.php</td>
+        <td>-||-</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><a href="https://hausz.stream/admin/admin.php">Rendszergazda felület</a></td>
+        <td>admin/admin.php</td>
+        <td>-||-</td>
+        <td></td>
+    </tr>
+</table>
 
 ### Jelenlegi szerver specifikációk, és használt szoftverek
 
