@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <title>Jelszó változtatás - Hausz</title>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+    <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
+    <meta name="color-scheme" content="dark light">
+</head>
+
+<body>
+    <span id="belepteto_rendszer"></span>
+    <script src="/include/topbar.js"></script>
+    <script src="/include/alap_fuggvenyek.js"></script>
+    <script src="/include/belepteto_rendszer.js"></script>
+    <script src="/include/jelszo_valtoztatas.js"></script>
+
+    <h1 class="kozepre-szoveg">Hausz jelszó változtatás</h1>
+
+    <div class="kozepre fit-content" id="jelszo_valtoztatas_doboz" style="display: none">
+        <p>Add meg az adataid a jelszó megváltoztatásához</p>
+        <div class='register'>
+            <form id='password_reset' onsubmit="jelszo_valtoztatasa(event)">
+                <input class="gomb szint-1 kerekites-10" autocomplete='current-password' id='jelenlegi_jelszo' type='password' name='current-password' placeholder='Jelenlegi jelszó'><br>
+                <input class="gomb szint-1 kerekites-10" autocomplete='new-password' id='uj_jelszo' type='password' name='new-password' placeholder='Új jelszó'><br>
+                <input class="gomb szint-1 kerekites-10" autocomplete='new-password-confirm' id='uj_jelszo_megerosites' type='password' name='new-password-confirm' placeholder='Új jelszó megerősítése'><br>
+                <br><button class="gomb szint-2 kerekites-10" type="submit">Jelszó megváltoztatása</button>
+            </form>
+        </div>
+    </div>
+    <div class="kozepre fit-content" id="hiba_nem_vagy_belepve_doboz" style="display: none">
+        <p>Nem vagy belépve</p>
+    </div>
+    <div class="kozepre fit-content" id="ok_jelszo_valtoztatas_sikeres" style="display: none">
+        <p>Jelszavad sikeresen meg lett változtatva</p>
+    </div>
+</body>
+
+</html>

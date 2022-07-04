@@ -1,18 +1,15 @@
-Order deny,allow
-Deny from all
+Order Allow,Deny
+Allow from all
 
-<Files admin.php>
-    Order Allow,Deny
-    Allow from all
+<FilesMatch "admin\.php|admin\.js|admin\.html">
     Header add X-Robots-Tag "noindex"
     Header add X-Robots-Tag "googlebot: nofollow"
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
+</FilesMatch>
 
-<Files parancs.php>
-    Order Allow,Deny
-    Allow from all
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
+<FilesMatch "backup|backup.sh">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+DirectoryIndex admin.html

@@ -1,182 +1,119 @@
-<?php   session_start(); ?>
-<!DOCTYPE html>
-<html lang="hu">
-    <head>
-        <title>Admin felület - Hausz</title>
-        <meta charset="UTF-8">
-        <meta name="robots" content="noindex">
-        <link rel="stylesheet" type="text/css" href="/index/style.css" />
-        <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
-        <meta name="color-scheme" content="dark light">
-    </head>
-    <body>
-        <script src="/include/topbar.js"></script>
-        <script src="/include/alap_fuggvenyek.js"></script>
-        <script src="/include/belepteto_rendszer.js"></script>
-        <span id="belepteto_rendszer"></span>
+<?php   
+    session_start();
+    $dbname = "hausz_megoszto";
+    include '../include/alap_fuggvenyek.php';
+    include '../include/adatbazis.php';
 
-        <h1 class="kozepre-szoveg">Hausz admin felület</h1>
+    die_if( $_SESSION['loggedin'] != "yes", 'HIBA:Nem vagy belépve');
+    die_if( $_SESSION['admin'] != "igen", 'HIBA:Nem vagy rendszergazda');
 
-        <script>
-            function belepes_siker(uzenet) {
-                location.reload();
-            }
+    if( isset($_GET['aktivalas'])) {
+        die_if( strlen($_GET['request_id']) <= 0, 'HIBA:A request_id helytelenül van, vagy nincs megadva');
 
-            function kilepes_siker(uzenet) {
-                location.reload();
-            }
+        $query = "call hausz_megoszto.add_user(".$_GET['request_id'].");";
+        $result = $conn->query($query);
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        log_bejegyzes("hausz_alap", "fiók aktiválás", '['.$_GET['request_id'].']', $_SESSION['username']);
+        exit_ok('OK:Aktiválás sikeres');
+    }
 
-            function futtatas() {
-                const xhttp = new XMLHttpRequest();
-                xhttp.onload = function() {
-                    document.getElementById("parancssor").innerHTML = document.getElementById("parancssor").innerHTML + this.responseText;
-                }
-                xhttp.open("GET", "/admin/parancs.php?parancs=" + document.getElementById("parancs").value);
-                xhttp.send();
-            }
+    if( isset($_GET['elutasitas'])) {
+        die_if( strlen($_GET['request_id']) <= 0, 'HIBA:A request_id helytelenül van, vagy nincs megadva');
 
-            function futtatas_enter() {
-                if (event.key === 'Enter') {
-                    futtatas();
-                    document.getElementById("parancs").value = "";
-                }
-            }
-        </script>
+        $query = "delete from hausz_megoszto.users_requested where request_id = ".$_GET['request_id'].";";
+        $result = $conn->query($query);
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        log_bejegyzes("hausz_alap", "fiók elutasítás", '['.$_GET['request_id'].']', $_SESSION['username']);
+        exit_ok('OK:Elutasítás sikeres');
+    }
 
-        <?php
-            $dbname = "hausz_megoszto";
-            include '../include/alap_fuggvenyek.php';
-            include '../include/adatbazis.php';
+    if( isset($_GET['torles'])) {
+        die_if( strlen($_GET['user_id']) <= 0, 'HIBA:A user_id helytelenül van, vagy nincs megadva');
 
-            function kidob($szoveg) {   die_if(true, $szoveg); }
+        $query = "delete from hausz_megoszto.users where id = ".$_GET['user_id'].";";
+        $result = $conn->query($query);
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        log_bejegyzes("hausz_alap", "fiók törlés", '['.$_GET['user_id'].']', $_SESSION['username']);
+        exit_ok('OK:Törlés sikeres');
+    }
 
-            if (!($_SESSION['loggedin'] == "yes")) {
-                kidob('Nem vagy belépve');
-            }
+    if( isset($_GET['aktivalando_fiokok'])) {
+        $query = "select * from hausz_megoszto.users_requested";
+        $result = $conn->query($query);
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        die_if( $result->num_rows <= 0, "HIBA:OK:nincs aktivalando fiok");
 
-            if ($_SESSION['admin'] != "igen") {
-                kidob('Nem vagy admin');
-            }
+        echo 'OK:';
+        while($row = $result->fetch_assoc()) {
+            echo '<'.$row['request_id'].'|'.$row['username'].'|'.$row['email'].'>';
+        }
+        die();
+    }
 
-            if($_GET['aktivalas'] == 1) {
-                die_if( strlen($_GET['request_id']) <= 0, 'A request_id helytelenül van, vagy nincs megadva');
+    if( isset($_GET['fiokok'])) {
+        $query = "select * from hausz_megoszto.users";
+        $result = $conn->query($query);
 
-                $query = "call hausz_megoszto.add_user(".$_GET['request_id'].");";
-                $result = $conn->query($query);
-                die_if( !$result, 'Query hiba: '.$query);
-                header('Location: https://hausz.stream/admin/admin.php');
-            }
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        die_if( $result->num_rows <= 0, "HIBA:Nincs aktív felhasználó");
 
-            if($_GET['elutasitas'] == 1) {
-                die_if( strlen($_GET['request_id']) <= 0, 'A request_id helytelenül van, vagy nincs megadva');
+        echo 'OK:';
+        while($row = $result->fetch_assoc()) {
+            echo '<'.$row['id'].'|'.$row['username'].'|'.$row['email'].'|'.$row['admin'].'>';
+        }
+        die();
+    }
 
-                $query = "delete from hausz_megoszto.users_requested where request_id = ".$_GET['request_id'].";";
-                $result = $conn->query($query);
-                die_if( !$result, 'Query hiba: '.$query);
-                header('Location: https://hausz.stream/admin/admin.php');
-            }
+    if( isset($_GET['admin_csere'])) {
+        die_if( !isset($_GET['id']), "HIBA:Nem adtál meg felhasználói azonosítót");
+        die_if( strlen($_GET['id']) <= 0, "HIBA:Hibás felhasználói azonosító");
 
-            if($_GET['torles'] == 1) {
-                die_if( strlen($_GET['user_id']) <= 0, 'A user_id helytelenül van, vagy nincs megadva');
+        $query = "select * from hausz_megoszto.users where id = ".$_GET['id'];
+        $result = $conn->query($query);
 
-                $query = "delete from hausz_megoszto.users where id = ".$_GET['user_id'].";";
-                $result = $conn->query($query);
-                die_if( !$result, 'Query hiba: '.$query);
-                header('Location: https://hausz.stream/admin/admin.php');
-            }
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        die_if( $result->num_rows <= 0, "HIBA:Nincs aktív felhasználó");
 
-            printLn('<h3>Aktiválandó fiókok</h3>');
-            $query = "select * from hausz_megoszto.users_requested";
-            $result = $conn->query($query);
-            die_if( !$result, 'Query hiba: '.$query);
-            if($result->num_rows <= 0) {
-                printLn('<p>Jelenleg nincs aktiválandó fiók</p>');
-            } else {
-                printLn('<table>');
-                printLn('<tr>');
-                printLn('<th>request_id</th>');
-                printLn('<th>username</th>');
-                printLn('<th>email</th>');
-                printLn('<th></th>');
-                printLn('<th></th>');
-                printLn('</tr>');
+        $row = $result->fetch_assoc();
 
-                while($row = $result->fetch_assoc()) {
-                    printLn('<tr>');
-                    printLn('<td>'.$row['request_id'].'</td>');
-                    printLn('<td>'.$row['username'].'</td>');
-                    printLn('<td>'.$row['email'].'</td>');
-                    printLn('<td><a href="/admin/admin.php?aktivalas=1&request_id='.$row['request_id'].'">Aktiválás</a></td>');
-                    printLn('<td><a href="/admin/admin.php?elutasitas=1&request_id='.$row['request_id'].'">Elutasítás</a></td>');
-                    printLn('</tr>');
-                }
-                printLn('</table>');
-            }
+        $uj_ertek = "";
+        if( $row['admin'] == NULL) {
+            $uj_ertek = "'igen'";
+        } else {
+            $uj_ertek = 'null';
+        }
+        $query_csere = "update hausz_megoszto.users set admin = ".$uj_ertek.' where id = '.$_GET['id'];
+        $result = $conn->query($query_csere);
+        die_if( !$result, "HIBA:Query hiba: ".$query_csere);
+        log_bejegyzes('hausz_admin', 'admin státusz csere', '['.$_GET['id'].'] - '.$row['username'].': '.$uj_ertek, $_SESSION['username']);
+        exit_ok('OK:Csere kész');
+    }
 
-            printLn('<h3>Aktív fiókok</h3>');
-            $query = "select * from hausz_megoszto.users";
-            $result = $conn->query($query);
-            die_if( !$result, 'Query hiba: '.$query);
+    if( isset($_GET['log'])) {
+        $query = "select * from hausz_log.log order by datum desc limit 100";
+        $result = $conn->query($query);
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        die_if( $result->num_rows <= 0, "HIBA:Nincs jelenleg log");
 
-            if($result->num_rows > 0) {
-                printLn('<table>');
-                printLn('<tr>');
-                printLn('<th>id</th>');
-                printLn('<th>username</th>');
-                printLn('<th>email</th>');
-                printLn('<th>Admin</th>');
-                printLn('<th></th>');
-                printLn('</tr>');
+        echo 'OK:';
+        while($row = $result->fetch_assoc()) {
+            echo '<'.$row['id'].'|'.$row['szolgaltatas'].'|'.$row['bejegyzes'].'|'.$row['komment'].'|'.$row['felhasznalo'].'|'.$row['datum'].'>';
+        }
+        die();
+    }
 
-                while($row = $result->fetch_assoc()) {
-                    printLn('<tr>');
-                    printLn('<td>'.$row['id'].'</td>');
-                    printLn('<td>'.$row['username'].'</td>');
-                    printLn('<td>'.$row['email'].'</td>');
-                    printLn('<td>'.$row['admin'].'</td>');
-                    printLn('<td><a href="/admin/admin.php?torles=1&user_id='.$row['id'].'">Törlés</a></td>');
-                    printLn('</tr>');
-                }
-                printLn('</table>');
-            }
+    if( isset($_GET['parancs'])) {
+        die_if( strlen( $_GET['parancs']) <= 0, "HIBA:Parancs paraméter helytelen");
+        $eredmeny = "";
+        exec($_GET['parancs'], $eredmeny, $retval);
+        die_if( $retval != 0, "HIBA:Parancs futtatás hiba: ".$_GET['parancs']);
+        echo '>>> '.$_GET['parancs'].'<br>';
+        foreach ($eredmeny as $sor) {
+            echo $sor.'<br>';
+        }
+        echo '<br>';
+        die();
+    }
 
-            // id | szolgaltatas | bejegyzes   | komment                     | felhasznalo | datum         
-            printLn('<h3>Log</h3>');
-            $query = "select * from hausz_log.log order by datum desc limit 100";
-            $result = $conn->query($query);
-            die_if( !$result, 'Query hiba: '.$query);
-
-            if($result->num_rows > 0) {
-                printLn('<table>');
-                printLn('<tr>');
-                printLn('<th>id</th>');
-                printLn('<th>szolgaltatas</th>');
-                printLn('<th>bejegyzes</th>');
-                printLn('<th>komment</th>');
-                printLn('<th>felhasznalo</th>');
-                printLn('<th>datum</th>');
-                printLn('</tr>');
-
-                while($row = $result->fetch_assoc()) {
-                    printLn('<tr>');
-                    printLn('<td>'.$row['id'].'</td>');
-                    printLn('<td>'.$row['szolgaltatas'].'</td>');
-                    printLn('<td>'.$row['bejegyzes'].'</td>');
-                    printLn('<td>'.$row['komment'].'</td>');
-                    printLn('<td>'.$row['felhasznalo'].'</td>');
-                    printLn('<td>'.$row['datum'].'</td>');
-                    printLn('</tr>');
-                }
-                printLn('</table>');
-            }
-
-            printLn('<h3>Shell</h3>');
-            printLn('<div id="parancssor">');
-            printLn('</div>');
-            printLn('<input id="parancs" onkeydown="futtatas_enter()" type="text" placeholder="parancs" />');
-            printLn('<input onclick="futtatas()" type="button" value="Futtatás"></input>');
-        ?>
-    </body>
-</html>
+    echo 'HIBA:Mi a parancs?';
+?>

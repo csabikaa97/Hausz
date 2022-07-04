@@ -127,6 +127,7 @@ h6 { font-size: 20px; }
 }
 @media(prefers-color-scheme: dark) {
     .gomb {
+        border: none;
         box-shadow: inset 0px 0px 5px 0 rgb(45 45 45), 0px 0px 5px 0 rgb(25 25 25);
     }
     .gomb:hover {

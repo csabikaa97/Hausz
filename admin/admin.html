@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <title>Admin felület - Hausz</title>
+        <meta charset="UTF-8">
+        <meta name="robots" content="noindex">
+        <link rel="stylesheet" type="text/css" href="/index/style.css" />
+        <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
+        <meta name="color-scheme" content="dark light">
+    </head>
+    <body>
+        <span id="belepteto_rendszer"></span>
+        <script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+        <script src="/include/belepteto_rendszer.js"></script>
+        <script src="/admin/admin.js"></script>
+
+        <h1 class="kozepre-szoveg">Hausz admin felület</h1>
+
+        <h3 id="hibauzenet" style="display: none">Nem vagy jogosult az oldal megtekintéséhez</h3>
+
+        <div id="aktivalando_fiokok" style="display: none">
+            <h3>Aktiválandó fiókok</h3>
+            <table>
+                <tr>
+                    <th>request_id</th>
+                    <th>username</th>
+                    <th>email</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="fiokok" style="display: none">
+            <h3>Aktív fiókok</h3>
+            <table>
+                <tr>
+                    <th>id</th>
+                    <th>username</th>
+                    <th>email</th>
+                    <th>Admin</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="log" style="display: none">
+            <h3>Log</h3>
+            <table>
+                <tr>
+                    <th>id</th>
+                    <th>szolgaltatas</th>
+                    <th>bejegyzes</th>
+                    <th>komment</th>
+                    <th>felhasznalo</th>
+                    <th>datum</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="shell" style="display: none">
+            <h3>Shell</h3>
+            <div id="parancssor">
+            </div>
+            <input id="parancs" onkeydown="futtatas_enter()" type="text" placeholder="parancs" />
+            <input onclick="futtatas()" type="button" value="Futtatás" />
+        </div>
+    </body>
+</html>

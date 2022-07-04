@@ -1,58 +1,10 @@
-Order deny,allow
-Deny from all
+Order Allow,Deny
+Allow from all
 
-<Files regisztracio.php>
-    Order Allow,Deny
-    Allow from all
+<FilesMatch "adatbazis\.php|alap_fuggvenyek\.php">
+    Order deny,allow
+    Deny from all
     Header add X-Robots-Tag "noindex"
     Header add X-Robots-Tag "googlebot: nofollow"
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files regisztracio.html>
-    Order Allow,Deny
-    Allow from all
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files alap_fuggvenyek.js>
-    Order Allow,Deny
-    Allow from all
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files topbar.js>
-    Order Allow,Deny
-    Allow from all
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files belepteto_rendszer.js>
-    Order Allow,Deny
-    Allow from all
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files belepteto_rendszer.php>
-    Order Allow,Deny
-    Allow from all
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files change_password.php>
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-    Order Allow,Deny
-    Allow from all
 </Files>

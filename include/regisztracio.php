@@ -10,6 +10,7 @@
     die_if( strlen($_POST['regisztracio_password_confirm']) == 0, 'HIBA:Nem erősítetted meg a jelszavad');
     die_if( strlen($_POST['regisztracio_username']) < 3, 'HIBA:Túl rövid a felhasználóneved (minimum 3 karakter hosszúnak kell lennie)');
     die_if( strlen($_POST['regisztracio_password']) < 5, 'HIBA:Túl rövid a jelszavad (minimum 5 karakter hosszúnak kell lennie)');
+    die_if( preg_match('/["\'`]/', $_POST['regisztracio_username']), "HIBA:Illegális karaktert tartalmaz a felhasználóneved ( \' \" \` ).");
     die_if( preg_match('/[^a-zA-Z0-9-\.#/\\áűőúüóöéí]/', $_POST['regisztracio_username']), 'HIBA:Illegális karaktert tartalmaz a felhasználóneved');
     die_if( $_POST['regisztracio_password'] != $_POST['regisztracio_password_confirm'], 'HIBA:Nem egyeznek a megadott jelszavak');
     die_if( !preg_match('/^\S+@\S+\.\S+$/', $_POST['regisztracio_email']) && strlen($_POST['regisztracio_email']) > 0, 'HIBA:Helytelen e-mail cím formátum');

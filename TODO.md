@@ -1,17 +1,13 @@
 ## 💭 Tennivalók
 
+* HTML JS részek külön fájlba helyezése (Együttnéző van csak hátra)
 * Globális: előtérbe helyezés függvény
 * Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
-* Regisztráció oldalon email cím megadásához leírás
-* Adatkezelői nyilatkozat készítése regisztrációs oldalhoz
-* Jelszó változtatás, regisztrálás, együttnéző oldal átírás Javascript-be
 * megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
 	* Google-ról SEO tool-ban leszedni a régi linkeket
-	* Belső hivatkozásokat mind átírni
 * Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
 * Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
 * Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett
-* Új readme készítése, és jelenlegi readme átváltoztatása todo-ra
 * Megosztó feltöltés töltés animáció
 * LIDL pizza tier list leírás (személyes vélemények leírása egyes pizzákról)
 * Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
@@ -30,6 +26,11 @@
 
 ## ✅ Implementált tennivalók
 
+* megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
+	* Belső hivatkozásokat mind átírni
+* Jelszó változtatás, regisztrálás, együttnéző oldal átírás Javascript-be
+* Adatkezelői nyilatkozat regisztrációs oldalon
+* Új readme készítése, és jelenlegi readme átváltoztatása todo-ra
 * Megosztó: Bal alsó sarokban megjelenő státusz szöveg időzítésének javítása
 * Megosztó: 10MB méretes előnézet felett csak a bal alsó sarokban ír üzenetet alert() helyett
 * Általános log készítése minden funkció használatáról: Admin oldalon lehet megtekinteni

@@ -20,7 +20,7 @@ function belepett_menu_gomb_kattintas(event) {
 
 function belepesgomb(event) {
     event.preventDefault();
-    var formData = "login=yes&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
+    var post_parameterek_belepes = "login=yes&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
     szinkron_keres(function(uzenet) {
         if(/^OK:/.test(uzenet)) {
             if (typeof belepes_siker === 'function') {   belepes_siker(uzenet); }
@@ -28,7 +28,7 @@ function belepesgomb(event) {
         } else {
             alert(uzenet);
         }
-    }, "/include/belepteto_rendszer.php", formData);
+    }, "/include/belepteto_rendszer.php", post_parameterek_belepes);
 }
  
 function kilepesgomb(event) {
@@ -51,13 +51,9 @@ function belepteto_rendszer_frissites() {
         if(/^OK:/.test(uzenet)) {
             var adatok = uzenet.replace(/^OK:/, '').split(',');
             session_username = adatok[0];
-            document.getElementById('belepve_mint').innerHTML = 'Belépve mint: ' + session_username;
             session_admin = adatok[1];
-            if(session_username.length > 0) {
-                session_loggedin = 'yes';
-            } else {
-                session_loggedin = '';
-            }
+            session_loggedin = 'yes';
+            document.getElementById('belepve_mint').innerHTML = 'Belépve mint: ' + session_username;
             if(session_admin == "igen") {
                 document.getElementById('admin_felulet_gomb').style.display = 'block';
                 document.getElementById('vscode_gomb').style.display = 'block';
@@ -85,6 +81,9 @@ function belepteto_rendszer_frissites() {
     }, "/include/belepteto_rendszer.php?statusz=1");
 }
 
+var session_loggedin = "";
+var session_username = "";
+var session_admin = "";
 
 if(typeof szinkron_keres !== 'function') {
     throw new Error('Nincs importálva az alap_fuggvenyek.js!!!');

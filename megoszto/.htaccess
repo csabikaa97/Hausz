@@ -13,6 +13,12 @@ Allow from all
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </Files>
 
+<Files megoszto.js>
+    Header add X-Robots-Tag "noindex"
+    Header add X-Robots-Tag "googlebot: nofollow"
+    Header add X-Robots-Tag "otherbot: noindex, nofollow"
+</Files>
+
 RewriteEngine on
 RewriteRule (.*)fajlok(.*) https://hausz.stream/megoszto/
 RewriteRule (.*)\.htaccess https://hausz.stream/megoszto/
