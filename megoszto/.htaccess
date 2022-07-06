@@ -1,26 +1,24 @@
 Order Allow,Deny
 Allow from all
 
-<Files request.php>
+<FilesMatch "megoszto.php|megoszto.js">
     Header add X-Robots-Tag "noindex"
     Header add X-Robots-Tag "googlebot: nofollow"
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
+</FilesMatch>
 
-<Files feltoltes.php>
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
-
-<Files megoszto.js>
-    Header add X-Robots-Tag "noindex"
-    Header add X-Robots-Tag "googlebot: nofollow"
-    Header add X-Robots-Tag "otherbot: noindex, nofollow"
-</Files>
+<FilesMatch "\.htaccess">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
 
 RewriteEngine on
+
+# Régi request.php URL-ek támogatása átírással
+RewriteCond %{QUERY_STRING} (.*)
+RewriteRule request\.php /megoszto/megoszto.php?letoltes&%1
+
+# Fajlok mappa elérésének tiltása átirányítással
 RewriteRule (.*)fajlok(.*) https://hausz.stream/megoszto/
-RewriteRule (.*)\.htaccess https://hausz.stream/megoszto/
 
 DirectoryIndex feltoltes.html

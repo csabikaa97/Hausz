@@ -108,7 +108,7 @@ function fajlok_betoltese() {
     buffer += '</tr>';
     buffer += '<tr style="display: none" id="nem_letezo_fajl_sor"><td colspan="5"><h3 class="kozepre-szoveg">Nem létezik a keresett fájl</h3></td></tr>';
 
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/megoszto/megoszto.php?fajlok=1", (uzenet) => {
         sorok = uzenet.replace(/^</, '');
         sorok = sorok.replace(/>$/, '');
         sorok = sorok.split('><');
@@ -235,9 +235,9 @@ function fajlok_betoltese() {
         if (filter_fajlnev.length > 0 || filter_datum.length > 0 || filter_feltolto.length > 0) {
             filter_frissites();
         }
-    }, "/megoszto/feltoltes.php?fajlok=1");
+    });
 
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/megoszto/megoszto.php?tarhely=1", (uzenet) => {
         if (/^OK:/.test(uzenet)) {
             ertekek = uzenet.replace(/^OK:/, '');
             ertekek = ertekek.split(',');
@@ -255,13 +255,13 @@ function fajlok_betoltese() {
         } else {
             alert(uzenet);
         }
-    }, "/megoszto/feltoltes.php?tarhely=1");
+    });
 
 }
 
 function torles(link, fajlnev) {
     if (confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?')) {
-        szinkron_keres((uzenet) => {
+        szinkron_keres(link, (uzenet) => {
             if (/^OK:/.test(uzenet)) {
                 valasz = uzenet.replace(/^OK:/, '');
                 uj_valasz_mutatasa(valasz, 5000);
@@ -270,7 +270,7 @@ function torles(link, fajlnev) {
                 valasz = uzenet.replace(/^HIBA:/, 'HIBA: ');
                 alert(valasz);
             }
-        }, link);
+        });
     }
 }
 
@@ -315,7 +315,7 @@ function titkositas_feloldasa(file_id, fajlnev) {
 
     document.getElementById('titkositott_fajl_letoltes_link').innerHTML = "<br><br>Titkosított fájl letöltése";
     document.getElementById('titkositott_fajl_letoltes_link').download = "titkositott_" + fajlnev;
-    document.getElementById('titkositott_fajl_letoltes_link').href = "/megoszto/request.php?file_id=" + file_id;
+    document.getElementById('titkositott_fajl_letoltes_link').href = "/megoszto/megoszto.php?letoltes&file_id=" + file_id;
     document.getElementById('titkositas_feloldasa_box').style.visibility = '';
     document.getElementById('darken_background').style.visibility = '';
     document.getElementById('elonezet_bezaras_gomb').style.visibility = '';
@@ -335,7 +335,7 @@ function titkositas_feloldasa_kuldes(file_id, fajlnev, caller) {
         if (/^OK:/.test(this.responseText)) {
             uj_valasz_mutatasa("Fájl letöltése...", 99999);
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', "/megoszto/request.php?file_id=" + file_id);
+            xhr.open('POST', "/megoszto/megoszto.php?letoltes&file_id=" + file_id);
             xhr.responseType = 'blob';
             xhr.onload = () => {
                 fajl = xhr.response;
@@ -353,7 +353,7 @@ function titkositas_feloldasa_kuldes(file_id, fajlnev, caller) {
         }
     }
     let post_parameterek_titkositas_feloldasa = "titkositas_feloldasa_kulcs=" + document.getElementById('titkositas_feloldasa_kulcs').value;
-    keres.open("POST", "/megoszto/request.php?file_id=" + file_id);
+    keres.open("POST", "/megoszto/megoszto.php?letoltes&file_id=" + file_id);
     keres.send(post_parameterek_titkositas_feloldasa);
 }
 
@@ -377,8 +377,8 @@ function uj_valasz_mutatasa(valasz, ido) {
 
 function atnevezes_inditasa() {
     elonezet_bezaras();
-    link = "/megoszto/feltoltes.php?atnevezes=1&file_id=" + document.getElementById('atnevezes_uj_nev').azonosito + "&uj_nev=" + document.getElementById('atnevezes_uj_nev').value;
-    szinkron_keres((uzenet) => {
+    link = "/megoszto/megoszto.php?atnevezes=1&file_id=" + document.getElementById('atnevezes_uj_nev').azonosito + "&uj_nev=" + document.getElementById('atnevezes_uj_nev').value;
+    szinkron_keres(link, (uzenet) => {
         if (/^OK:/.test(uzenet)) {
             valasz = uzenet.replace(/^OK:/, '');
             uj_valasz_mutatasa(valasz, 3000);
@@ -386,11 +386,11 @@ function atnevezes_inditasa() {
         } else {
             alert(uzenet);
         }
-    }, link);
+    });
 }
 
 function claimeles(link) {
-    szinkron_keres((uzenet) => {
+    szinkron_keres(link, (uzenet) => {
         if (/^OK:/.test(uzenet)) {
             valasz = uzenet.replace(/^OK:/, '');
             uj_valasz_mutatasa(valasz, 3000);
@@ -398,7 +398,7 @@ function claimeles(link) {
         } else {
             alert(uzenet);
         }
-    }, link);
+    });
 }
 
 function feltoltes() {
@@ -468,7 +468,7 @@ function feltoltes() {
         keres.onprogress = (event) => {
             console.log(event);
         }
-        keres.open("POST", '/megoszto/feltoltes.php');
+        keres.open("POST", '/megoszto/megoszto.php');
         keres.send(formData);
     }
 }
@@ -540,7 +540,7 @@ function bal_klikk(event) {
             if (tr.attributes['sor_titkositott'].value == '1') {
                 titkositas_feloldasa(tr.attributes['sor_id'].value, tr.attributes['sor_filename'].value);
             } else {
-                elonezet("/megoszto/request.php?file_id=" + tr.attributes['sor_id'].value, tr.attributes['sor_elonezet_tipus'].value, tr.attributes['sor_size'].value);
+                elonezet("/megoszto/megoszto.php?letoltes&file_id=" + tr.attributes['sor_id'].value, tr.attributes['sor_elonezet_tipus'].value, tr.attributes['sor_size'].value);
             }
         } else {
             alert('NINCS TR');
@@ -601,20 +601,20 @@ function jobb_klikk_menu_kinyitas(event, tr) {
         jobb_klikk_menu.innerHTML += '<div class="szint-3 gomb kerekites-10" onclick=\'titkositas_feloldasa("' + tr.attributes['sor_id'].value + '", "' + tr.attributes['sor_filename'].value + '");\'>Fájl feloldása</div><br>';
     } else {
         if (parseInt(tr.attributes['sor_size'].value) <= 1024 * 1024 * 10 && ['kep', 'audio', 'video', 'dokumentum'].includes(tr.attributes['sor_elonezet_tipus'].value)) {
-            jobb_klikk_menu.innerHTML += '<div class="szint-3 gomb kerekites-10" onclick=\'elonezet("/megoszto/request.php?file_id=' + tr.attributes['sor_id'].value + '", "' + tr.attributes['sor_elonezet_tipus'].value + '", "' + tr.attributes['sor_size'].value + '");\'>Megnyitás</div><br>';
+            jobb_klikk_menu.innerHTML += '<div class="szint-3 gomb kerekites-10" onclick=\'elonezet("/megoszto/megoszto.php?letoltes&file_id=' + tr.attributes['sor_id'].value + '", "' + tr.attributes['sor_elonezet_tipus'].value + '", "' + tr.attributes['sor_size'].value + '");\'>Megnyitás</div><br>';
         }
     }
     if (tr.attributes['sor_username'].value == 'ismeretlen' && session_loggedin == 'yes') {
-        jobb_klikk_menu.innerHTML += '<div class="szint-3 gomb kerekites-10" onclick=\'claimeles("/megoszto/feltoltes.php?claim=1&file_id=' + tr.attributes['sor_id'].value + '");\'>Claimelés</div><br>';
+        jobb_klikk_menu.innerHTML += '<div class="szint-3 gomb kerekites-10" onclick=\'claimeles("/megoszto/megoszto.php?claim=1&file_id=' + tr.attributes['sor_id'].value + '");\'>Claimelés</div><br>';
     }
     if (tr.attributes['sor_username'].value == session_username || (tr.attributes['sor_username'].value == 'ismeretlen' && session_loggedin == 'yes')) {
-        jobb_klikk_menu.innerHTML += '<a class="linkDekoracioTiltas" onclick="torles(\'/megoszto/feltoltes.php?delete=1&file_id=' + tr.attributes['sor_id'].value + '\', \'' + tr.attributes['sor_filename'].value + '\')"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Törlés">❌</abbr></a>';
+        jobb_klikk_menu.innerHTML += '<a class="linkDekoracioTiltas" onclick="torles(\'/megoszto/megoszto.php?delete=1&file_id=' + tr.attributes['sor_id'].value + '\', \'' + tr.attributes['sor_filename'].value + '\')"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Törlés">❌</abbr></a>';
     }
     if (tr.attributes['sor_username'].value == session_username) {
         jobb_klikk_menu.innerHTML += '<a class="linkDekoracioTiltas" onclick="fajl_atnevezese(' + tr.attributes['sor_id'].value + ', \'' + tr.attributes['sor_filename'].value + '\')"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Átnevezés">✏️</abbr></a>';
     }
     if (tr.attributes['sor_titkositott'].value != '1') {
-        jobb_klikk_menu.innerHTML += '<a class="linkDekoracioTiltas" href="/megoszto/request.php?file_id=' + tr.attributes['sor_id'].value + '"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Letöltés">💾</abbr></a>';
+        jobb_klikk_menu.innerHTML += '<a class="linkDekoracioTiltas" href="/megoszto/megoszto.php?letoltes&file_id=' + tr.attributes['sor_id'].value + '"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Letöltés">💾</abbr></a>';
     }
 }
 

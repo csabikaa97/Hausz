@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="hu">
+	<head>
+		<title>Együttnéző - Hausz</title>
+		<meta charset="UTF-8">
+        <meta name="description" content="Együttnéző szolgáltatás, ahol YouTube videókat lehet szinkronban nézni a világhálón keresztül.">
+		<link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+		<link rel="stylesheet" type="text/css" href="../index/style.css" />
+		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+        <script type='application/ld+json'>
+            {
+                "@context": "https://www.schema.org",
+                "@type": "product",
+                "brand": {
+					"@type": "Brand",
+					"name": "Hausz"
+				}
+                "logo": "http://hausz.stream/index/favicon.png",
+                "name": "WidgetPress",
+                "category": "Widgets",
+                "image": "http://hausz.stream/index/favicon.png",
+                "description": "A Hausz Kft. együttnéző szolgáltatása, ahol YouTube videókat lehet együtt nézni a világhálón keresztül.",
+                "aggregateRating": {
+                    "@type": "aggregateRating",
+                    "ratingValue": "2",
+                    "reviewCount": "69"
+                }
+            }
+        </script>
+	</head>
+	<body>
+        <span id="belepteto_rendszer"></span>
+        <script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+		<script src="/include/belepteto_rendszer.js"></script>
+        <script src="/egyuttnezo/egyuttnezo.js"></script>
+    	<span id="belepteto_rendszer"></span>
+    
+		<h1 class="kozepre-szoveg">Hausz együttnéző</h1>
+		<table style="width: 95%; height: 80%; background-color: rgb(70, 70, 70); border: 0px solid;">
+			<tr>
+				<td>
+					<div id="player"></div>
+				</td>
+				<td style="width: 25%; max-width: 25%">
+                    <h2>Jelenlegi videó:</h2>
+                    <a style="font-size: 18px" href="" id="video_link"></a><br><br>
+                    <h3 id="csatlakozas_statusz"></h3>
+                    <h3 id="valaszido"></h3>
+                    <input type="text" id="video_id_mezo" onkeydown="input_uj_video()"></input>
+                    <button onclick="gomb_uj_video()">Új videó indítása</button>
+
+                    <br><br><button onclick="gomb_szinkronizalas()">Idő szinkronizálása (Átmeneti amíg nem lesz jobb megoldás)</button>
+                    <br><br>
+                    <div id="parancs_box" style="overflow-y: scroll; max-height: 300px; background-color: rgb(50,50,50);">
+                        <h2>Online felhasználók</h2>
+                        <ul id="nev_lista"></ul>
+                        <h2>Parancsok</h2>
+                        <ul id="parancs_lista"></ul>
+                    </div>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

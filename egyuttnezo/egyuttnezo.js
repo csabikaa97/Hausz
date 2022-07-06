@@ -16,12 +16,22 @@ function input_uj_video() {
     }
 }
 
-// egyuttnezo.php fájlban megadott változók
+function gomb_megallitas() {
+    if(session_loggedin == 'yes') {
+        player.pauseVideo();
+        console.log(player.getCurrentTime());
+        socket.send("lejatszas:N|tekeres:" + player.getCurrentTime());
+    } else {
+        player.playVideo();
+    }
+}
 
-// let vanfelhasznalonev_BOOL;
-// let felhasznalonev_STRING;
-// let controls_INT;
-
+function gomb_lejatszas() {
+    if(session_loggedin == 'yes') {
+        player.playVideo();
+        socket.send("lejatszas:I");
+    }
+}
 
 var debug_BOOL = true;
 var video_id_STRING = "";
@@ -78,7 +88,7 @@ function onYouTubeIframeAPIReady() {
         playerVars: {
             'playsinline': 1,
             'autoplay': 1,
-            'controls': controls_INT
+            'controls': session_loggedin == 'yes' ? 1 : 0
         },
         events: {
             'onReady': onPlayerReady,
@@ -147,8 +157,8 @@ function socket_csatlakozas() {
             tag.src = "https://www.youtube.com/iframe_api";
         }
         document.getElementById('csatlakozas_statusz').innerHTML = 'Csatlakozás státusz: 🟩';
-        if (vanfelhasznalonev_BOOL) {
-            socket.send("felhasznalonev:" + felhasznalonev_STRING);
+        if (session_username.length > 0) {
+            socket.send("felhasznalonev:" + session_username);
         }
         valaszidok_ARRAY_FLOAT = Array();
         tekeres_ellenorzes_INTERVAL = setInterval(function() {

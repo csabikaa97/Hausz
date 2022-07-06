@@ -4,12 +4,10 @@
     $password = "root";
     $conn = new mysqli($servername, $username, $password, $dbname);
     $conn->set_charset("utf8mb4");
-    die_if( $conn->connect_error, "Nem sikerült csatlakozni az SQL szerverhez: " . $conn->connect_error . "\nKérlek vedd fel a kapcsolatot a rendszergazdával a csaba@hausz.stream e-mail címen.");
+    die_if( $conn->connect_error, "HIBA:Nem sikerült csatlakozni az SQL szerverhez: " . $conn->connect_error . "\nKérlek vedd fel a kapcsolatot a rendszergazdával a csaba@hausz.stream e-mail címen.");
 
     function log_bejegyzes($szolgaltatas, $bejegyzes, $komment, $felhasznalo) {
         global $conn;
-        $query = 'insert into hausz_log.log (szolgaltatas, bejegyzes, komment, felhasznalo, datum) values ("'.$szolgaltatas.'", "'.$bejegyzes.'", "'.$komment.'", "'.$felhasznalo.'", now(6));';
-        $result = $conn->query($query);
-        die_if( !$result, "Query hiba: ".$query);
+        $result = query_futtatas('insert into hausz_log.log (szolgaltatas, bejegyzes, komment, felhasznalo, datum) values ("'.$szolgaltatas.'", "'.$bejegyzes.'", "'.$komment.'", "'.$felhasznalo.'", now(6));');
     }
 ?>

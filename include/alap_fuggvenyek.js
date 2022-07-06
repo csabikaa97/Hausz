@@ -1,6 +1,12 @@
-function szinkron_keres(fuggveny, hivatkozas, parameterek) {
+function szinkron_keres(hivatkozas, parameterek, fuggveny) {
+    if(typeof parameterek === 'function') {
+        fuggveny = parameterek;
+    }
     if(hivatkozas == undefined) {
-        return false;
+        throw new Error('Nincs megadva URL!!!');
+    }
+    if(fuggveny == undefined) {
+        throw new Error('Nincs definiálva függvény!!!');
     }
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
@@ -52,5 +58,12 @@ function eloterbe_helyezes(object) {
     }
 
     object.style.zIndex = '';
-    
+}
+
+function masolas(event) {
+    navigator.clipboard.writeText( event.target.innerHTML ).then(function() {
+        console.log('Vágólapra kimásolva: "'+event.target.innerHTML+'"');
+    }, function(err) {
+        console.error('Vágólap másolás hiba "'+event.target.innerHTML+'"');
+    });
 }

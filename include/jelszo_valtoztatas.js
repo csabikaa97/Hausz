@@ -15,7 +15,7 @@ function jelszo_valtoztatasa(event) {
     post_parameterek += "&uj_jelszo_megerosites=" + document.getElementById('uj_jelszo_megerosites').value;
     post_parameterek += "&jelenlegi_jelszo=" + document.getElementById('jelenlegi_jelszo').value;
 
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/include/jelszo_valtoztatas.php", post_parameterek, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             document.getElementById('jelszo_valtoztatas_doboz').style.display = 'none';
             document.getElementById('hiba_nem_vagy_belepve_doboz').style.display = 'none';
@@ -24,5 +24,5 @@ function jelszo_valtoztatasa(event) {
             alert(uzenet);
             console.log(post_parameterek);
         }
-    }, "/include/jelszo_valtoztatas.php", post_parameterek);
+    });
 }

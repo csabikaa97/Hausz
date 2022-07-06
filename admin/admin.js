@@ -15,32 +15,32 @@ function futtatas_enter() {
 }
 
 function admin_statusz_csere(nev, id) {
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/admin/admin.php?admin_csere&id=" + id, (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             fiokok_betoltese();
             log_betoltese();
         } else {
             alert(uzenet);
         }
-    }, "/admin/admin.php?admin_csere&id=" + id);
+    });
 }
 
 function elutasitas(nev, id) {
     if( confirm('Biztosan elutasítod "'+nev+'" regisztrációs kérelmét?') ) {
-        szinkron_keres((uzenet) => {
+        szinkron_keres("/admin/admin.php?elutasitas&id=" + id, (uzenet) => {
             if( /^OK:/.test(uzenet) ) {
                 aktivalando_fiokok_betoltese();
                 log_betoltese(); 
             } else {
                 alert(uzenet);
             }
-        }, "/admin/admin.php?elutasitas&id=" + id)
+        });
     }
 }
 
 function aktivalas(nev, id) {
     if( confirm('Biztosan elfogadod "'+nev+'" regisztrációs kérelmét?') ) {
-        szinkron_keres((uzenet) => {
+        szinkron_keres("/admin/admin.php?aktivalas&request_id=" + id, (uzenet) => {
             if( /^OK:/.test(uzenet) ) {
                 aktivalando_fiokok_betoltese();
                 fiokok_betoltese();
@@ -48,26 +48,26 @@ function aktivalas(nev, id) {
             } else {
                 alert(uzenet);
             }
-        }, "/admin/admin.php?aktivalas&request_id=" + id);
+        });
     }
 }
 
 function torles(nev, id) {
     if( confirm('Biztosan szeretnéd törölni a "'+nev+'" nevű fiókot?') ) {
-        szinkron_keres((uzenet) => {
+        szinkron_keres("/admin/admin.php?torles&user_id=" + id, (uzenet) => {
             if( /^OK:/.test(uzenet) ) {
                 fiokok_betoltese();
                 log_betoltese(); 
             } else {
                 alert(uzenet);
             }
-        }, "/admin/admin.php?torles&user_id=" + id)
+        });
     }
 }
 
 function aktivalando_fiokok_betoltese() {
     var buffer = '<h3>Aktiválandó fiókok</h3><table><tbody><tr><th>request_id</th><th>username</th><th>email</th><th></th><th></th></tr>';
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/admin/admin.php?aktivalando_fiokok", (uzenet) => {
         if( /OK:nincs aktivalando fiok/.test(uzenet) ) {
             buffer += '<tr><td colspan="3" class="kozepre-szoveg">Jelenleg nincs aktiválandó fiók</td><td></td><td></td></tr>';
         } else {
@@ -96,12 +96,12 @@ function aktivalando_fiokok_betoltese() {
         }
 
         document.getElementById('aktivalando_fiokok').innerHTML = buffer + '</tbody></table>';
-    }, "/admin/admin.php?aktivalando_fiokok");
+    });
 }
 
 function fiokok_betoltese() {
     var buffer = '<h3>Aktív fiókok</h3><table><tbody><tr><th>id</th><th>username</th><th>email</th><th>Admin</th><th></th><th></th></tr>';
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/admin/admin.php?fiokok", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             uzenet = uzenet.replace(/^OK:/, '');
             uzenet = uzenet.split('><');
@@ -131,12 +131,12 @@ function fiokok_betoltese() {
         }
 
         document.getElementById('fiokok').innerHTML = buffer + '</tbody></table>';
-    }, "/admin/admin.php?fiokok");
+    });
 }
 
 function log_betoltese() {
     var buffer = '<h3>Log</h3><table><tbody><tr><th>id</th><th>szolgaltatas</th><th>bejegyzes</th><th>komment</th><th>felhasznalo</th><th>datum</th></tr>';
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/admin/admin.php?log", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             uzenet = uzenet.replace(/^OK:/, '');
             uzenet = uzenet.split('><');
@@ -159,7 +159,7 @@ function log_betoltese() {
         }
 
         document.getElementById('log').innerHTML = buffer + '</tbody></table>';
-    }, "/admin/admin.php?log");
+    });
 }
 
 function belepteto_rendszer_frissult() {

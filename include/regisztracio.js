@@ -7,7 +7,7 @@ function regisztracio_inditasa(event) {
     post_parameterek += "&regisztracio_password_confirm=" + document.getElementById('regisztracio_password_confirm').value;
     post_parameterek += "&regisztracio_email=" + document.getElementById('regisztracio_email').value;
 
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/include/regisztracio.php", post_parameterek, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             document.getElementById('regisztracio_doboz').style.display = 'none';
             document.getElementById('adatvedelmi_tajekoztato_doboz').style.display = 'none';
@@ -16,7 +16,7 @@ function regisztracio_inditasa(event) {
             alert(uzenet);
             console.log(post_parameterek);
         }
-    }, "/include/regisztracio.php", post_parameterek);
+    });
 }
 
 function adatvedelmi_tajekoztato_elolvasva() {

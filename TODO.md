@@ -1,9 +1,10 @@
 ## 💭 Tennivalók
 
-* HTML JS részek külön fájlba helyezése (Együttnéző van csak hátra)
+* Régi style.css kivezetése
+* Új mappastruktúra kialakítása közös kódokhoz
 * Globális: előtérbe helyezés függvény
 * Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
-* megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
+* Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
 	* Google-ról SEO tool-ban leszedni a régi linkeket
 * Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
 * Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
@@ -26,8 +27,9 @@
 
 ## ✅ Implementált tennivalók
 
-* megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
-	* Belső hivatkozásokat mind átírni
+* HTML JS részek külön fájlba helyezése
+* Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
+	* Belső hivatkozások átírva
 * Jelszó változtatás, regisztrálás, együttnéző oldal átírás Javascript-be
 * Adatkezelői nyilatkozat regisztrációs oldalon
 * Új readme készítése, és jelenlegi readme átváltoztatása todo-ra

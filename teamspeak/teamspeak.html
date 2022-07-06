@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hu">
+	<head>
+		<title>Keresztény TeamSpeak szerver - Hausz</title>
+		<meta charset="UTF-8">
+        <meta name="description" content="Keresztény TeamSpeak szolgáltatás amely a céges kommunikáció hatékony és biztonásgos lebonyolításához használható.">
+		<link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
+        <script type='application/ld+json'>
+            {
+                "@context": "https://www.schema.org",
+                "@type": "product",
+                "brand": {
+					"@type": "Brand",
+					"name": "Hausz"
+				}
+                "logo": "http://hausz.stream/index/favicon.png",
+                "name": "WidgetPress",
+                "category": "Widgets",
+                "image": "http://hausz.stream/index/favicon.png",
+                "description": "A Hausz Kft. keresztény TeamSpeak szolgáltatása amit a céges kommunikáció hatékony és biztonásgos lebonyolításához lehet használni.",
+                "aggregateRating": {
+                    "@type": "aggregateRating",
+                    "ratingValue": "5",
+                    "reviewCount": "69"
+                }
+            }
+        </script>
+	</head>
+	<body>
+        <span id="belepteto_rendszer"></span>
+        <script src="/include/topbar.js"></script>
+        <script src="/include/alap_fuggvenyek.js"></script>
+        <script src="/include/belepteto_rendszer.js"></script>
+        <script src="/teamspeak/teamspeak.js"></script>
+        <h1 style="text-align: center">Hausz keresztény TeamSpeak szerver</h1>
+        <div style="max-width: 800px; width: 90%; margin: auto">
+            <h2>Lépések a csatlakozáshoz</h2>
+            <div class="tab-1">
+                <h3>1. Töltsd le a TeamSpeak 3 kliens szoftvert, és telepítsd az eszközödre.</h3>
+                <div class="tab-2">
+                    Windows: <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('/megoszto/megoszto.php?letoltes&file_id=390')">TeamSpeak3-Client-win64-3.5.6.exe</div>
+                    <br><br>MacOS: <div class="gomb szint-2 kerekites-15  inline" onclick="window.open('/megoszto/megoszto.php?letoltes&file_id=343')">TeamSpeak3-Client-macosx-3.5.7.dmg</div>
+                </div>
+                <h3>2. Kattints rá a következő gombra a csatlakozáshoz:</h3>
+                <div id="csatlakozas_gomb" class="tab-2 gomb szint-2 kerekites-15 inline">Csatlakozás a Hausz TS szerverhez</div>
+                <div id="token_felhasznalas" style="display: none">
+                    <h3>3. Használd fel a jogosultsági tokened</h3>
+                    <div class="tab-2">
+                        <div id="van_token" style="display: none">
+                            Jelenlegi jogosultsági tokened: <abbr class="linkDekoracioTiltas" title="Kattints a tokenre a másoláshoz"><szoveg id="token" onclick="masolas(event)"></szoveg></abbr>
+                            <p>Windows:  Az ablak tetején Permissions > Use Privilege Key</p>
+                            <p>MacOS:       Menü bar > Permissions > Use Privilege Key</p>
+                            <p>A lehetőség kiválasztásakor felugró ablakba kell beillesztened a fenti tokent ami megadja számodra a "Szabad ember" jogosultsági szintet.</p>
+                        </div>
+                        <div id="nincs_token" style="display: none">
+                            Jelenleg nincs jogosultsági tokened <div class="gomb szint-2 kerekites-15 inline" onclick="uj_token_igenylese()">Új token igénylése</div>
+                        </div>
+                        <div id="jogosult_tokenre_szoveg" style="display: none">
+                            Jogosult vagy új token kérésére, mert a jelenlegi tokened több mint 5 napja készült: 
+                            <br><br><div class="gomb szint-2 kerekites-15 inline" onclick="uj_token_igenylese()">Új token igénylése</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="nincs_belepve_leiras" style="display: none">
+                    <h3>3. Lépj be jogosultság igényléséhez</h3>
+                    <div class="tab-2">
+                        Ha nem rendelkezel Hausz fiókkal, akkor meg kell várnod hogy adjon jogosultságot valaki aki online van. Abban az esetben ha regisztrálsz magadnak fiókot a jobb alsó sarokban található gombbal, akkor a jogosultságot meg tudod adni magadnak, és az online felhasználók listáját is láthatod erről a weboldalról.
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            
+            <div>
+                <div id="online_felhasznalok" style="display: none">
+                    <div id="van_online_felhasznalo">
+                        <h2>Online felhasználók</h2>
+                        <ul class="tab-2" id="online_felhasznalok_lista">
+                        </ul>
+                    </div>
+                    <div id="nincs_online_felhasznalo" style="display: none">
+                        <h2>Online felhasználók</h2>
+                        <p class="tab-2">Jelenleg senki nincs csatlakozva a szerverhez.</p>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+
+            <div id="szerver_statusz" style="display: none">
+                <h2>Szerver státusz</h2>
+                <div class="tab-2" id="szerver_statusz_szoveg">
+                </div>
+            </div>
+            <br><br><br><br><br>
+        </div>
+	</body>
+</html>

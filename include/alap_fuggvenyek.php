@@ -18,4 +18,11 @@
         echo($szoveg);
         die();
     }
+
+    function query_futtatas($query) {
+        global $conn;
+        $result = $conn->query($query);
+        die_if( !$result, 'HIBA:Query hiba: '.$query);
+        return $result;
+    }
 ?>

@@ -15,15 +15,11 @@
     die_if( $_POST['regisztracio_password'] != $_POST['regisztracio_password_confirm'], 'HIBA:Nem egyeznek a megadott jelszavak');
     die_if( !preg_match('/^\S+@\S+\.\S+$/', $_POST['regisztracio_email']) && strlen($_POST['regisztracio_email']) > 0, 'HIBA:Helytelen e-mail cím formátum');
 
-    $query_username_check = "select * from users where username = '".$_POST['regisztracio_username']."'";
-    $result_username_check = $conn->query($query_username_check);
-    die_if( !$result_username_check, "Query hiba: ".$query_username_check);
+    $result_username_check = query_futtatas("select * from users where username = '".$_POST['regisztracio_username']."'");
     $row = $result_username_check->fetch_assoc();
     die_if( mysqli_num_rows($result_username_check) > 0, 'HIBA:Ez a felhasználónév már foglalt');
 
-    $query_username_check = "select * from users_requested where username = '".$_POST['regisztracio_username']."'";
-    $result_username_check = $conn->query($query_username_check);
-    die_if( !$result_username_check, "Query hiba: ".$query_username_check);
+    $result_username_check = query_futtatas("select * from users_requested where username = '".$_POST['regisztracio_username']."'");
     $row = $result_username_check->fetch_assoc();
     die_if( mysqli_num_rows($result_username_check) > 0, 'HIBA:Ez a felhasználónév már meg lett igényelve');
     
@@ -33,9 +29,7 @@
     } else {
         $query_add = $query_add.' null);';
     }
-    $result_add = $conn->query($query_add);
-
-    die_if( !$result_add, 'Query hiba: '.$query_add);
+    $result_add = query_futtatas($query_add);
 
     log_bejegyzes("hausz_alap", "regisztráció", $_POST['regisztracio_username'].' - '.$_POST['regisztracio_email'], "");
     exit_ok("OK:Sikeres regisztráció");

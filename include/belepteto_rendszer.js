@@ -21,19 +21,19 @@ function belepett_menu_gomb_kattintas(event) {
 function belepesgomb(event) {
     event.preventDefault();
     var post_parameterek_belepes = "login=yes&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
-    szinkron_keres(function(uzenet) {
+    szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             if (typeof belepes_siker === 'function') {   belepes_siker(uzenet); }
             belepteto_rendszer_frissites();
         } else {
             alert(uzenet);
         }
-    }, "/include/belepteto_rendszer.php", post_parameterek_belepes);
+    });
 }
  
 function kilepesgomb(event) {
     event.preventDefault();
-    szinkron_keres(function(uzenet) { 
+    szinkron_keres("/include/belepteto_rendszer.php?logout=igen", (uzenet) => { 
         if(/^OK:/.test(uzenet)) {
             if (typeof kilepes_siker === 'function') {   kilepes_siker(uzenet); }
             session_username = "";
@@ -43,11 +43,11 @@ function kilepesgomb(event) {
         } else {
             alert(uzenet);
         }
-    }, "/megoszto/feltoltes.php?logout=igen");
+    });
 }
 
 function belepteto_rendszer_frissites() {
-    szinkron_keres((uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.php?statusz=1", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             var adatok = uzenet.replace(/^OK:/, '').split(',');
             session_username = adatok[0];
@@ -78,7 +78,7 @@ function belepteto_rendszer_frissites() {
             document.getElementById('belepes_menu_gomb').style.display = '';
         }
         if (typeof belepteto_rendszer_frissult === 'function') {   belepteto_rendszer_frissult(); }
-    }, "/include/belepteto_rendszer.php?statusz=1");
+    });
 }
 
 var session_loggedin = "";

@@ -1,7 +1,7 @@
-DirectoryIndex teamspeak.php
+DirectoryIndex teamspeak.html
 
 RewriteEngine on
-RewriteRule (.*)check_telnet\.sh https://hausz.stream/teamspeak/
-RewriteRule (.*)create_token\.sh https://hausz.stream/teamspeak/
-RewriteRule (.*)list_clients\.sh https://hausz.stream/teamspeak/
+RewriteRule (.*)check_telnet\.sh(.*) https://hausz.stream/teamspeak/
+RewriteRule (.*)create_token\.sh(.*) https://hausz.stream/teamspeak/
+RewriteRule (.*)list_clients\.sh(.*) https://hausz.stream/teamspeak/
 RewriteRule (.*)\.htaccess https://hausz.stream/teamspeak/
