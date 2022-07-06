@@ -73,7 +73,7 @@
         <div id="privat_doboz" style="display: none; margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 10px; background-color: rgb(35, 35, 35);"><input type="checkbox" name="private" type="private" id="private" /><label for="private"> Privát tárolás</label></div>
         <div id="titkositasi_kulcs_doboz" style="margin-left: 10px; border-radius: 15px; font-size: 20px; display: inline; padding: 20px 35px;">
             <label for="titkositas_kulcs">Titkosítás kulcs: </label>
-            <input type="text" oninput='document.getElementById("titkositas_kulcs").type = "password"'' name="titkositas_kulcs" type="titkositas_kulcs" id="titkositas_kulcs" /></div><br><br>
+            <input type="text" oninput='obj("titkositas_kulcs").type = "password"'' name="titkositas_kulcs" type="titkositas_kulcs" id="titkositas_kulcs" /></div><br><br>
         </form>
         <br><br><button style="visibility: hidden; display: block; margin: auto" onclick="feltoltes()" class="Gombok KekHatter" id="SubmitGomb" hidden>Feltöltés</button>
         
@@ -86,14 +86,7 @@
                 <th class="mobilon-tiltas">Dátum</th>
                 <th class="mobilon-tiltas">Méret</th>
                 <th class="mobilon-tiltas">Feltöltő</th>
-            </tr>
-            
-            <script>
-                tablazat = document.getElementById('tablazat'); 
-                for (let index=0; index < 30; index++) { 
-                    tablazat.innerHTML +='<tr><td class="mobilon-tiltas"></td><td class="padding-5"></td><td class="mobilon-tiltas"></td><td class="mobilon-tiltas"></td><td class="mobilon-tiltas"></td></tr>'; 
-                }
-            </script>    
+            </tr> 
         </table>
 
         <h2 style="text-align: center">Tárhely kihasználtsága</h2>

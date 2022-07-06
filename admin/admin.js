@@ -1,16 +1,16 @@
 function futtatas() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        document.getElementById("parancssor").innerHTML = document.getElementById("parancssor").innerHTML + this.responseText;
+        obj("parancssor").innerHTML = obj("parancssor").innerHTML + this.responseText;
     }
-    xhttp.open("GET", "/admin/admin.php?parancs=" + document.getElementById("parancs").value);
+    xhttp.open("GET", "/admin/admin.php?parancs=" + obj("parancs").value);
     xhttp.send();
 }
 
 function futtatas_enter() {
     if (event.key === 'Enter') {
         futtatas();
-        document.getElementById("parancs").value = "";
+        obj("parancs").value = "";
     }
 }
 
@@ -95,7 +95,7 @@ function aktivalando_fiokok_betoltese() {
             }
         }
 
-        document.getElementById('aktivalando_fiokok').innerHTML = buffer + '</tbody></table>';
+        obj('aktivalando_fiokok').innerHTML = buffer + '</tbody></table>';
     });
 }
 
@@ -130,7 +130,7 @@ function fiokok_betoltese() {
             alert(uzenet);
         }
 
-        document.getElementById('fiokok').innerHTML = buffer + '</tbody></table>';
+        obj('fiokok').innerHTML = buffer + '</tbody></table>';
     });
 }
 
@@ -158,26 +158,26 @@ function log_betoltese() {
             alert(uzenet);
         }
 
-        document.getElementById('log').innerHTML = buffer + '</tbody></table>';
+        obj('log').innerHTML = buffer + '</tbody></table>';
     });
 }
 
 function belepteto_rendszer_frissult() {
     if(session_admin == "igen") {
-        document.getElementById('aktivalando_fiokok').style.display = 'block';
-        document.getElementById('fiokok').style.display = 'block';
-        document.getElementById('log').style.display = 'block';
-        document.getElementById('shell').style.display = 'block';
-        document.getElementById('hibauzenet').style.display = 'none';
+        obj('aktivalando_fiokok').style.display = 'block';
+        obj('fiokok').style.display = 'block';
+        obj('log').style.display = 'block';
+        obj('shell').style.display = 'block';
+        obj('hibauzenet').style.display = 'none';
         aktivalando_fiokok_betoltese();
         fiokok_betoltese();
         log_betoltese();
     } else {
-        document.getElementById('aktivalando_fiokok').style.display = 'none';
-        document.getElementById('fiokok').style.display = 'none';
-        document.getElementById('log').style.display = 'none';
-        document.getElementById('shell').style.display = 'none';
-        document.getElementById('hibauzenet').style.display = 'block';
+        obj('aktivalando_fiokok').style.display = 'none';
+        obj('fiokok').style.display = 'none';
+        obj('log').style.display = 'none';
+        obj('shell').style.display = 'none';
+        obj('hibauzenet').style.display = 'block';
     }
 
 }

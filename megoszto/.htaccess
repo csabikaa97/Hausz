@@ -20,5 +20,7 @@ RewriteRule request\.php /megoszto/megoszto.php?letoltes&%1
 
 # Fajlok mappa elérésének tiltása átirányítással
 RewriteRule (.*)fajlok(.*) https://hausz.stream/megoszto/
+RewriteRule (.*)feltoltes.html(.*) https://hausz.stream/megoszto/
+RewriteRule (.*)feltoltes.php(.*) https://hausz.stream/megoszto/
 
-DirectoryIndex feltoltes.html
+DirectoryIndex megoszto.html

@@ -1,21 +1,21 @@
 function belepteto_rendszer_frissult() {
     if( session_loggedin == 'yes' ) {
-        document.getElementById('token_felhasznalas').style.display = 'block';
-        document.getElementById('nincs_belepve_leiras').style.display = 'none';
-        document.getElementById('online_felhasznalok').style.display = 'block';
-        document.getElementById('szerver_statusz').style.display = 'block';
-        document.getElementById('csatlakozas_gomb').onclick = () => {
+        obj('token_felhasznalas').style.display = 'block';
+        obj('nincs_belepve_leiras').style.display = 'none';
+        obj('online_felhasznalok').style.display = 'block';
+        obj('szerver_statusz').style.display = 'block';
+        obj('csatlakozas_gomb').onclick = () => {
             location.href = 'ts3server://hausz.stream/?port=9987&nickname=' + session_username;
         }
         felhasznalok_frissitese();
         token_informaciok_frissitese();
         szerver_statusz_frissitese();
     } else {
-        document.getElementById('token_felhasznalas').style.display = 'none';
-        document.getElementById('nincs_belepve_leiras').style.display = 'block';
-        document.getElementById('online_felhasznalok').style.display = 'none';
-        document.getElementById('szerver_statusz').style.display = 'none';
-        document.getElementById('csatlakozas_gomb').onclick = () => {
+        obj('token_felhasznalas').style.display = 'none';
+        obj('nincs_belepve_leiras').style.display = 'block';
+        obj('online_felhasznalok').style.display = 'none';
+        obj('szerver_statusz').style.display = 'none';
+        obj('csatlakozas_gomb').onclick = () => {
             location.href = 'ts3server://hausz.stream/?port=9987&nickname=' + 'ismeretlen felhasználó';
         }
     }
@@ -34,12 +34,12 @@ function uj_token_igenylese() {
 function felhasznalok_frissitese() {
     szinkron_keres("/teamspeak/teamspeak.php?felhasznalok", (uzenet) => {
         if( /^OK:Nincs online felhaszn/.test(uzenet) ) {
-            document.getElementById('nincs_online_felhasznalo').style.display = 'block';
-            document.getElementById('van_online_felhasznalo').style.display = 'none';
+            obj('nincs_online_felhasznalo').style.display = 'block';
+            obj('van_online_felhasznalo').style.display = 'none';
             return;
         }
         if( /^OK:/.test(uzenet) ) {
-            online_felhasznalok_lista = document.getElementById('online_felhasznalok_lista');
+            online_felhasznalok_lista = obj('online_felhasznalok_lista');
             online_felhasznalok_lista.innerHTML = '';
             uzenet = uzenet.replace( /^OK:/, '' );
             felhasznalok = uzenet.split('\\n');
@@ -55,26 +55,26 @@ function felhasznalok_frissitese() {
 function token_informaciok_frissitese() {
     szinkron_keres("/teamspeak/teamspeak.php?token_informacio", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
-            document.getElementById('van_token').style.display = 'block';
-            document.getElementById('nincs_token').style.display = 'none';
+            obj('van_token').style.display = 'block';
+            obj('nincs_token').style.display = 'none';
             uzenet = uzenet.replace(/^OK:/, '');
             adatok = uzenet.split('|');
 
             token = adatok[0];
             jogosult_uj_rokenre = adatok[1];
 
-            document.getElementById('token').innerHTML = token;
+            obj('token').innerHTML = token;
 
             if( jogosult_uj_rokenre == "igen" ) {
-                document.getElementById('jogosult_tokenre_szoveg').style.display = 'block';
+                obj('jogosult_tokenre_szoveg').style.display = 'block';
             } else {
-                document.getElementById('jogosult_tokenre_szoveg').style.display = 'none';
+                obj('jogosult_tokenre_szoveg').style.display = 'none';
             }
             return;
         }
         if( /^HIBA:Nincs/.test(uzenet) ) {
-            document.getElementById('van_token').style.display = 'none';
-            document.getElementById('nincs_token').style.display = 'block';
+            obj('van_token').style.display = 'none';
+            obj('nincs_token').style.display = 'block';
         }
     });
 }
@@ -201,6 +201,6 @@ function szerver_statusz_frissitese() {
             buffer += '<p>A szerver állapota jelenleg kifogástalan 🥳</p>';
         }
 
-        document.getElementById('szerver_statusz_szoveg').innerHTML = buffer;
+        obj('szerver_statusz_szoveg').innerHTML = buffer;
     });
 }

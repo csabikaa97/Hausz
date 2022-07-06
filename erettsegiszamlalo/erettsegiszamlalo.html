@@ -12,9 +12,10 @@
     <link rel="stylesheet" type="text/css" href="/erettsegiszamlalo/ErettsegiStyle.css">
 </head>
 
-<body>
+<body onload="ido_frissitese()">
     <script src="/include/topbar.js"></script>
     <script src="/include/alap_fuggvenyek.js"></script>
+    <script src="/erettsegiszamlalo/erettsegiszamlalo.js"></script>
     <script src="/include/belepteto_rendszer.js"></script>
     <span id="belepteto_rendszer"></span>
     
@@ -41,29 +42,6 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        var szamlalo = new Date("May 6, 2019 8:00:00").getTime();
-        var most = new Date().getTime();
-        var x = setInterval(function() {
-
-            most = new Date().getTime();
-            var lesz = szamlalo - most;
-
-            var nap = Math.floor(lesz / (1000 * 60 * 60 * 24));
-            var ora = Math.floor((lesz % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var perc = Math.floor((lesz % (1000 * 60 * 60)) / (1000 * 60));
-            var masodperc = Math.floor((lesz % (1000 * 60)) / 1000);
-
-            document.getElementById("nap").innerHTML = nap;
-            document.getElementById("ora").innerHTML = ora;
-            document.getElementById("perc").innerHTML = perc;
-            document.getElementById("masodperc").innerHTML = masodperc;
-
-            if (lesz <= 0) {
-                clearInterval(x);
-            }
-        }, 1000);
-    </script>
 </body>
 
 </html>

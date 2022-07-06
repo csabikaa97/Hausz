@@ -1,26 +1,26 @@
 function belepes_menu_gomb_kattintas(event) {
-    if( document.getElementById('belepes_doboz').style.visibility == 'hidden' ||
-        document.getElementById('belepes_doboz').style.visibility == 'visible') {
-        document.getElementById('belepes_doboz').style.visibility = 'visible';
-        document.getElementById('belepes_doboz').style.display = 'block';
+    if( obj('belepes_doboz').style.visibility == 'hidden' ||
+        obj('belepes_doboz').style.visibility == 'visible') {
+        obj('belepes_doboz').style.visibility = 'visible';
+        obj('belepes_doboz').style.display = 'block';
     } else {
-        document.getElementById('belepes_doboz').style.visibility = 'hidden';
+        obj('belepes_doboz').style.visibility = 'hidden';
     }
 }
 
 function belepett_menu_gomb_kattintas(event) {
-    if( document.getElementById('belepett_doboz').style.visibility == 'hidden' || 
-        document.getElementById('belepett_doboz').style.visibility == 'visible' ) {
-        document.getElementById('belepett_doboz').style.visibility = 'visible';
-        document.getElementById('belepett_doboz').style.display = 'block';
+    if( obj('belepett_doboz').style.visibility == 'hidden' || 
+        obj('belepett_doboz').style.visibility == 'visible' ) {
+        obj('belepett_doboz').style.visibility = 'visible';
+        obj('belepett_doboz').style.display = 'block';
     } else {
-        document.getElementById('belepett_doboz').style.visibility = 'hidden';
+        obj('belepett_doboz').style.visibility = 'hidden';
     }
 }
 
 function belepesgomb(event) {
     event.preventDefault();
-    var post_parameterek_belepes = "login=yes&username=" + document.getElementById('username').value + "&password=" + document.getElementById('current-password').value;
+    var post_parameterek_belepes = "login=yes&username=" + obj('username').value + "&password=" + obj('current-password').value;
     szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             if (typeof belepes_siker === 'function') {   belepes_siker(uzenet); }
@@ -53,29 +53,29 @@ function belepteto_rendszer_frissites() {
             session_username = adatok[0];
             session_admin = adatok[1];
             session_loggedin = 'yes';
-            document.getElementById('belepve_mint').innerHTML = 'Belépve mint: ' + session_username;
+            obj('belepve_mint').innerHTML = 'Belépve mint: ' + session_username;
             if(session_admin == "igen") {
-                document.getElementById('admin_felulet_gomb').style.display = 'block';
-                document.getElementById('vscode_gomb').style.display = 'block';
+                obj('admin_felulet_gomb').style.display = 'block';
+                obj('vscode_gomb').style.display = 'block';
             } else {
                 session_admin = "";
-                document.getElementById('admin_felulet_gomb').style.display = 'none';
-                document.getElementById('vscode_gomb').style.display = 'none';
+                obj('admin_felulet_gomb').style.display = 'none';
+                obj('vscode_gomb').style.display = 'none';
             }
             if(session_username != "") {
-                document.getElementById('belepett_menu_gomb').style.display = '';
-                document.getElementById('belepes_menu_gomb').style.display = 'none';
+                obj('belepett_menu_gomb').style.display = '';
+                obj('belepes_menu_gomb').style.display = 'none';
             }
-            document.getElementById('belepett_doboz').style.visibility = 'visible';
-            document.getElementById('belepes_doboz').style.visibility = 'hidden';
+            obj('belepett_doboz').style.visibility = 'visible';
+            obj('belepes_doboz').style.visibility = 'hidden';
         } else {
             session_admin = "";
             session_username = "";
             session_loggedin = "";
-            document.getElementById('belepett_doboz').style.visibility = 'hidden';
-            document.getElementById('belepes_doboz').style.visibility = 'visible';
-            document.getElementById('belepett_menu_gomb').style.display = 'none';
-            document.getElementById('belepes_menu_gomb').style.display = '';
+            obj('belepett_doboz').style.visibility = 'hidden';
+            obj('belepes_doboz').style.visibility = 'visible';
+            obj('belepett_menu_gomb').style.display = 'none';
+            obj('belepes_menu_gomb').style.display = '';
         }
         if (typeof belepteto_rendszer_frissult === 'function') {   belepteto_rendszer_frissult(); }
     });
@@ -92,6 +92,6 @@ if(typeof szinkron_keres !== 'function') {
 fetch("/index/belepteto_rendszer.html")
     .then(response => response.text())
     .then(uzenet => {
-        document.getElementById('belepteto_rendszer').innerHTML = uzenet;
+        obj('belepteto_rendszer').innerHTML = uzenet;
         belepteto_rendszer_frissites();
     });

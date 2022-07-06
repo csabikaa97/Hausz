@@ -1,7 +1,25 @@
 ## 💭 Tennivalók
 
+* Fiókokhoz megjelenő név beállítás, profil oldal
+* /uploads mappa kivezetése Jul. 28 után
 * Régi style.css kivezetése
+	* index
+	* admin
+	* egyuttnezo
+	* erettsegiszamlalo
+	* hasuzkft
+	* megoszto
+	* pizzatierlist
+	* josda
+	* josda/fizetos
 * Új mappastruktúra kialakítása közös kódokhoz
+	* komponensek mappa
+	* külön mappa jelszó változtatásnak és regisztrációnak
+	* Vaagy, külön fiok mappa, benne:
+		* beléptető rendszer
+		* jelszó változatás
+		* regisztráció
+		* jövőben lehetséges profil lap
 * Globális: előtérbe helyezés függvény
 * Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
@@ -11,7 +29,6 @@
 * Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett
 * Megosztó feltöltés töltés animáció
 * LIDL pizza tier list leírás (személyes vélemények leírása egyes pizzákról)
-* Teamspeak oldal szolgáltatás státuszokból adatbázis kivonása
 * Megosztó előnézet középre igazítás
 * Backend cseréje Apache-ról saját fejlesztésű Node.js backend-re
 * Saját hibaoldalak írása: 500, 404, stb...
@@ -27,6 +44,8 @@
 
 ## ✅ Implementált tennivalók
 
+* Ismétlődő, sokszor előforduló kódok csökkentése
+	* document.GetElementById() -> document.QuerySelector() -> obj()
 * HTML JS részek külön fájlba helyezése
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
 	* Belső hivatkozások átírva

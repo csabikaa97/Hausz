@@ -1,4 +1,4 @@
-ujitasok_doboz = document.getElementById('ujitasok');
+ujitasok_doboz = obj('ujitasok');
 ujitasok = Array();
 
 ujitasok.push('');
@@ -28,7 +28,7 @@ ujitasok['2022.05.26'] = [
     "Együttnéző: Nagyon alpha verzió még."
 ]
 
-ujitasok_doboz = document.getElementById('ujitasok_doboz');
+ujitasok_doboz = obj('ujitasok_doboz');
 
 ujitasok.forEach(datum => {
     ujitasok_doboz.innerHTML += '<p class="tab-1">'+datum+'</p>';

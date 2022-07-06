@@ -5,14 +5,14 @@ function gomb_szinkronizalas() {
 }
 
 function gomb_uj_video() {
-    socket.send('uj_video:' + document.getElementById('video_id_mezo').value);
-    document.getElementById('video_id_mezo').value = "";
+    socket.send('uj_video:' + obj('video_id_mezo').value);
+    obj('video_id_mezo').value = "";
 }
 
 function input_uj_video() {
     if (event.key === 'Enter') {
-        socket.send('uj_video:' + document.getElementById('video_id_mezo').value);
-        document.getElementById('video_id_mezo').value = "";
+        socket.send('uj_video:' + obj('video_id_mezo').value);
+        obj('video_id_mezo').value = "";
     }
 }
 
@@ -156,7 +156,7 @@ function socket_csatlakozas() {
             console.log('PLAYER: iframe betöltése...');
             tag.src = "https://www.youtube.com/iframe_api";
         }
-        document.getElementById('csatlakozas_statusz').innerHTML = 'Csatlakozás státusz: 🟩';
+        obj('csatlakozas_statusz').innerHTML = 'Csatlakozás státusz: 🟩';
         if (session_username.length > 0) {
             socket.send("felhasznalonev:" + session_username);
         }
@@ -178,7 +178,7 @@ function socket_csatlakozas() {
         }
         clearInterval(valaszido_ellenorzes_INTERVAL);
         clearInterval(tekeres_ellenorzes_INTERVAL);
-        document.getElementById('csatlakozas_statusz').innerHTML = 'Csatlakozás státusz: 🟥';
+        obj('csatlakozas_statusz').innerHTML = 'Csatlakozás státusz: 🟥';
         socket_ujracsatlakozas_INTERVAL = setInterval(socket_csatlakozas, 2000);
     };
     socket.onmessage = function(event) {
@@ -196,7 +196,7 @@ function socket_csatlakozas() {
                 }
             }
             atlag_FLOAT = atlag_FLOAT / parseFloat(atlag_oszto_INT);
-            document.getElementById('valaszido').innerHTML = Math.round(atlag_FLOAT) + ' ms';
+            obj('valaszido').innerHTML = Math.round(atlag_FLOAT) + ' ms';
             return;
         }
         utolso_utasitas_ideje_FLOAT = Date.now();
@@ -210,9 +210,9 @@ function socket_csatlakozas() {
         }
         if (/^felhasznalok:/.test(event.data)) {
             var nevek = event.data.replace(/felhasznalok:/, '').split(",");
-            document.getElementById('nev_lista').innerHTML = "";
+            obj('nev_lista').innerHTML = "";
             nevek.forEach(function(nev) {
-                document.getElementById('nev_lista').innerHTML += "<li>" + nev + "</li>";
+                obj('nev_lista').innerHTML += "<li>" + nev + "</li>";
             });
             return;
         }
@@ -331,6 +331,6 @@ function player_frissitese() {
     elozo_sebesseg_FLOAT = sebesseg_FLOAT;
     if(parancs_lista_buffer_STRING != '') {
         parancs_lista_buffer_STRING = '<li>' + user_STRING + ':' + parancs_lista_buffer_STRING + '</li>';
-        document.getElementById('parancs_lista').innerHTML = parancs_lista_buffer_STRING + document.getElementById('parancs_lista').innerHTML;
+        obj('parancs_lista').innerHTML = parancs_lista_buffer_STRING + obj('parancs_lista').innerHTML;
     }
 }

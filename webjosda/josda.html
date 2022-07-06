@@ -35,6 +35,7 @@
 <body>
     <script src="/include/topbar.js"></script>
     <script src="/include/alap_fuggvenyek.js"></script>
+    <script src="/webjosda/josda.js"></script>
     <script src="/include/belepteto_rendszer.js"></script>
     <span id="belepteto_rendszer"></span>
 
@@ -42,57 +43,10 @@
     <img id="josda_gomb_kep" src="gif.gif" alt="haaa">
 
     <form>
-        <input class="josda_input" type="button" value="Jósolj nekem Hausz!" onclick="clickEvent()">
+        <input class="josda_input" type="button" value="Jósolj nekem Hausz!" onclick="joslas()">
     </form>
     <button class="josda_button" onclick='location.href="fizetos.html"' type="button">Fizetős verzió</button>
 
-    <script>
-        function clickEvent() {
-
-            var a = "Nemsoká pénz áll a házhoz.";
-            var b = "Meglepetés fog érni.";
-            var c = "Levegőt fogsz venni.";
-            var d = "Szerencse vár.";
-            var e = "Ha most lépsz, szerencséd lesz.";
-            var f = "Köss békét.";
-            var g = "Az esőt hamarosan felváltja a jó idő vagy fordítva.";
-            var h = "Az utazás szerencsét hoz.";
-            var i = "Nehéz lesz meggyógyítani.";
-            var j = "Némi időbe telik, míg megvalósul.";
-            var k = "Érdemes nyugodtan kivárni.";
-            var l = "Megérkeznek.";
-            var m = "Keleten található.";
-            var n = "Megnyerhető.";
-            var o = "Bajnok leszel.";
-            var p = "A fizetős verzióban nagyobb szerencsére lelsz.";
-            var q = "Gazdag leszel.";
-            var r = "Tényleg ennyire szerencsétlen vagy hogy feljöttél ide tanácsért?!";
-            var s = "Visszajön majd egyszer, vagy nem...";
-            var t = "Csak a pozitivitás G a G-hez.";
-            var szam = Math.floor(Math.random() * 20) + 1;
-
-            if (szam == 1) { alert(a); }
-            if (szam == 2) { alert(b); }
-            if (szam == 3) { alert(c); }
-            if (szam == 4) { alert(d); }
-            if (szam == 5) { alert(e); }
-            if (szam == 6) { alert(f); }
-            if (szam == 7) { alert(g); }
-            if (szam == 8) { alert(h); }
-            if (szam == 9) { alert(i); }
-            if (szam == 10) { alert(j); }
-            if (szam == 11) { alert(k); }
-            if (szam == 12) { alert(l); }
-            if (szam == 13) { alert(m); }
-            if (szam == 14) { alert(n); }
-            if (szam == 15) { alert(o); }
-            if (szam == 16) { alert(p); }
-            if (szam == 17) { alert(q); }
-            if (szam == 18) { alert(r); }
-            if (szam == 19) { alert(s); }
-            if (szam == 20) { alert(t); }
-        }
-    </script>
 </body>
 
 </html>
