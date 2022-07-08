@@ -107,26 +107,22 @@ function szerver_statusz_frissitese() {
         var lemez_hasznalat_figyelmeztetes = 0.75;
         var lemez_hasznalat_kritikus = 0.75;
 
-        if( !folyamat_ok 
-            || !telnet_ok 
-            || processzor_1perc >= processzor_hasznalat_figyelmeztetes 
-            || processzor_5perc >= processzor_hasznalat_figyelmeztetes
-            || processzor_15perc >= processzor_hasznalat_figyelmeztetes
-            || memoria_hasznalat >= memoria_hasznalat_elfogadhato
-            || swap_hasznalat >= swap_hasznalat_elfogadhato
-            || lemez_hasznalat >= lemez_hasznalat_elfogadhato
-        ) {
-            if( !folyamat_ok ) {
-                buffer += '<p>🟥 TeamSpeak szerver folyamat nem fut</p>';
-            } else {
-                buffer += '<p>🟩 TeamSpeak szerver folyamat fut</p>';
-            }
+        if( folyamat_ok 
+            && telnet_ok 
+            && processzor_1perc < processzor_hasznalat_figyelmeztetes 
+            && processzor_5perc < processzor_hasznalat_figyelmeztetes
+            && processzor_15perc < processzor_hasznalat_figyelmeztetes
+            && memoria_hasznalat < memoria_hasznalat_elfogadhato
+            && swap_hasznalat < swap_hasznalat_elfogadhato
+            && lemez_hasznalat < lemez_hasznalat_elfogadhato ) {
 
-            if( !telnet_ok ) {
-                buffer += '<p>🟥 Serverquery nem elérhető</p>';
-            } else {
-                buffer += '<p>🟩 Serverquery elérhető</p>';
-            }
+            buffer += '<p>A szerver állapota jelenleg kifogástalan 🥳</p>';
+        } else {
+            if( folyamat_ok ) { buffer += '<p>🟩 TeamSpeak szerver folyamat fut</p>'; }
+            else { buffer += '<p>🟥 TeamSpeak szerver folyamat nem fut</p>'; }
+
+            if( !telnet_ok ) { buffer += '<p>🟥 Serverquery nem elérhető</p>'; } 
+            else { buffer += '<p>🟩 Serverquery elérhető</p>'; }
 
             if( processzor_15perc >= processzor_hasznalat_figyelmeztetes ) {
                 if( processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
@@ -195,10 +191,6 @@ function szerver_statusz_frissitese() {
                     }
                 }
             }
-
-            console.log(lemez_hasznalat);
-        } else {
-            buffer += '<p>A szerver állapota jelenleg kifogástalan 🥳</p>';
         }
 
         obj('szerver_statusz_szoveg').innerHTML = buffer;

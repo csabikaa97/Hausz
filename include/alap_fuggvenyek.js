@@ -62,7 +62,7 @@ function eloterbe_helyezes(object) {
 
 function masolas(event) {
     navigator.clipboard.writeText( event.target.innerHTML ).then(function() {
-        console.log('Vágólapra kimásolva: "'+event.target.innerHTML+'"');
+        
     }, function(err) {
         console.error('Vágólap másolás hiba "'+event.target.innerHTML+'"');
     });

@@ -1,17 +1,15 @@
 ## 💭 Tennivalók
 
+* Együttnézőhöz külön videó kezelés UI készítése
+* alapok.css: Szín párok létrehozása ligth és dark mode-hoz
+	* Megosztón tárhely statisztika javítása vele
+* uj_valasz_mutatasa() mozgatás alap_fuggvenyek.js-be, és implementáció az összes oldalon
+* JS oldalak átírása Typescript-be
 * Fiókokhoz megjelenő név beállítás, profil oldal
 * /uploads mappa kivezetése Jul. 28 után
 * Régi style.css kivezetése
-	* index
-	* admin
 	* egyuttnezo
-	* erettsegiszamlalo
-	* hasuzkft
 	* megoszto
-	* pizzatierlist
-	* josda
-	* josda/fizetos
 * Új mappastruktúra kialakítása közös kódokhoz
 	* komponensek mappa
 	* külön mappa jelszó változtatásnak és regisztrációnak
@@ -44,8 +42,16 @@
 
 ## ✅ Implementált tennivalók
 
+* Régi style.css kivezetése
+	* index
+	* admin
+	* hasuzkft
+	* pizzatierlist
+	* erettsegiszamlalo
+	* josda
+	* josda/fizetos
 * Ismétlődő, sokszor előforduló kódok csökkentése
-	* document.GetElementById() -> document.QuerySelector() -> obj()
+	* document.GetElementById() -> obj()
 * HTML JS részek külön fájlba helyezése
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
 	* Belső hivatkozások átírva

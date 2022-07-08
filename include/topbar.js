@@ -15,7 +15,7 @@ fetch("/index/topbar.html")
                 }
                 
                 if(menure_kattintott) {
-                    obj('menu_div').style.top = (parseInt(event.Y)) + 'px';
+                    obj('menu_div').style.top = (parseInt(event.y)) + 'px';
                     obj('menu_div').style.visibility = '';
                     obj('menu_div').style.animation = 'height-novekedes-sigmoid 0.3s ease 1 forwards';
                 } else {

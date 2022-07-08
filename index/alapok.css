@@ -1,62 +1,62 @@
-:root {
-    --szint-0-dark: rgb(0,0,0);
-    --szint-1-dark: rgb(30,30,30);
-    --szint-2-dark: rgb(60,60,60);
-    --szint-3-dark: rgb(90,90,90);
-    --szint-4-dark: rgb(120,120,120);
-    --szint-5-dark: rgb(150,150,150);
-    --szint-6-dark: rgb(180,180,180);
-    --szint-7-dark: rgb(210,210,210);
-    --szint-8-dark: rgb(240,240,240);
-    --szint-9-dark: rgb(255,255,255);
-
-    --szint-0-light: rgb(255,255,255);
-    --szint-1-light: rgb(245,245,245);
-    --szint-2-light: rgb(235,235,235);
-    --szint-3-light: rgb(225,225,225);
-    --szint-4-light: rgb(215,215,215);
-    --szint-5-light: rgb(205,205,205);
-    --szint-6-light: rgb(195,195,195);
-    --szint-7-light: rgb(185,185,185);
-    --szint-8-light: rgb(175,175,175);
-    --szint-9-light: rgb(165,165,165);
-}
-
 @media(prefers-color-scheme: dark) {
+    :root {
+        --szint-0-szin: rgb(0,0,0);
+        --szint-1-szin: rgb(30,30,30);
+        --szint-2-szin: rgb(60,60,60);
+        --szint-3-szin: rgb(90,90,90);
+        --szint-4-szin: rgb(120,120,120);
+        --szint-5-szin: rgb(150,150,150);
+        --szint-6-szin: rgb(180,180,180);
+        --szint-7-szin: rgb(210,210,210);
+        --szint-8-szin: rgb(240,240,240);
+        --szint-9-szin: rgb(255,255,255);
+    }
     body { 
-        background-color: black;
+        background-color: var(--szint-0-szin);
         color: rgb(200, 200, 200);
     }
     h1, h2, h3, h4, h5, h6, p { color: rgb(200, 200, 200); }
     .arnyek { text-shadow: 0 2px 3px rgb(100,100, 100); }
-    .szint-0 { background-color: var(--szint-0-dark); box-shadow: 0px 0px 5px 0px var(--szint-0-dark); }
-    .szint-1 { background-color: var(--szint-1-dark); box-shadow: 0px 0px 5px 0px var(--szint-0-dark); }
-    .szint-2 { background-color: var(--szint-2-dark); box-shadow: 0px 0px 5px 0px var(--szint-1-dark); }
-    .szint-3 { background-color: var(--szint-3-dark); box-shadow: 0px 0px 5px 0px var(--szint-2-dark); }
-    .szint-4 { background-color: var(--szint-4-dark); box-shadow: 0px 0px 5px 0px var(--szint-3-dark); }
-    .szint-5 { background-color: var(--szint-5-dark); box-shadow: 0px 0px 5px 0px var(--szint-4-dark); }
-    .szint-6 { background-color: var(--szint-6-dark); box-shadow: 0px 0px 5px 0px var(--szint-5-dark); }
-    .szint-7 { background-color: var(--szint-7-dark); box-shadow: 0px 0px 5px 0px var(--szint-6-dark); }
-    .szint-8 { background-color: var(--szint-8-dark); box-shadow: 0px 0px 5px 0px var(--szint-7-dark); }
-    .szint-9 { background-color: var(--szint-9-dark); box-shadow: 0px 0px 5px 0px var(--szint-8-dark); }
+    .szint-0 { background-color: var(--szint-0-szin); box-shadow: 0px 0px 5px 0px var(--szint-0-szin); }
+    .szint-1 { background-color: var(--szint-1-szin); box-shadow: 0px 0px 5px 0px var(--szint-0-szin); }
+    .szint-2 { background-color: var(--szint-2-szin); box-shadow: 0px 0px 5px 0px var(--szint-1-szin); }
+    .szint-3 { background-color: var(--szint-3-szin); box-shadow: 0px 0px 5px 0px var(--szint-2-szin); }
+    .szint-4 { background-color: var(--szint-4-szin); box-shadow: 0px 0px 5px 0px var(--szint-3-szin); }
+    .szint-5 { background-color: var(--szint-5-szin); box-shadow: 0px 0px 5px 0px var(--szint-4-szin); }
+    .szint-6 { background-color: var(--szint-6-szin); box-shadow: 0px 0px 5px 0px var(--szint-5-szin); }
+    .szint-7 { background-color: var(--szint-7-szin); box-shadow: 0px 0px 5px 0px var(--szint-6-szin); }
+    .szint-8 { background-color: var(--szint-8-szin); box-shadow: 0px 0px 5px 0px var(--szint-7-szin); }
+    .szint-9 { background-color: var(--szint-9-szin); box-shadow: 0px 0px 5px 0px var(--szint-8-szin); }
 }
 
 @media(prefers-color-scheme: light) {
+    :root {
+        --szint-0-szin: rgb(255,255,255);
+        --szint-1-szin: rgb(245,245,245);
+        --szint-2-szin: rgb(235,235,235);
+        --szint-3-szin: rgb(225,225,225);
+        --szint-4-szin: rgb(215,215,215);
+        --szint-5-szin: rgb(205,205,205);
+        --szint-6-szin: rgb(195,195,195);
+        --szint-7-szin: rgb(185,185,185);
+        --szint-8-szin: rgb(175,175,175);
+        --szint-9-szin: rgb(165,165,165);
+    }
     body { 
-        background-color: white;
+        background-color: var(--szint-0-szin);
         color: rgb(50, 50, 50);
     }
-    h1, h2, h3, h4, h5, h6, p { color: rgb(0, 0, 0); }
-    .szint-0 { background-color: var(--szint-0-light); box-shadow: 0px 0px 5px 0px var(--szint-3-light); }
-    .szint-1 { background-color: var(--szint-1-light); box-shadow: 0px 0px 5px 0px var(--szint-4-light); }
-    .szint-2 { background-color: var(--szint-2-light); box-shadow: 0px 0px 5px 0px var(--szint-5-light); }
-    .szint-3 { background-color: var(--szint-3-light); box-shadow: 0px 0px 5px 0px var(--szint-6-light); }
-    .szint-4 { background-color: var(--szint-4-light); box-shadow: 0px 0px 5px 0px var(--szint-7-light); }
-    .szint-5 { background-color: var(--szint-5-light); box-shadow: 0px 0px 5px 0px var(--szint-8-light); }
-    .szint-6 { background-color: var(--szint-6-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
-    .szint-7 { background-color: var(--szint-7-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
-    .szint-8 { background-color: var(--szint-8-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
-    .szint-9 { background-color: var(--szint-9-light); box-shadow: 0px 0px 5px 0px var(--szint-9-light); }
+    h1, h2, h3, h4, h5, h6, p { color: rgb(50, 50, 50); }
+    .szint-0 { background-color: var(--szint-0-szin); box-shadow: 0px 0px 5px 0px var(--szint-3-szin); }
+    .szint-1 { background-color: var(--szint-1-szin); box-shadow: 0px 0px 5px 0px var(--szint-4-szin); }
+    .szint-2 { background-color: var(--szint-2-szin); box-shadow: 0px 0px 5px 0px var(--szint-5-szin); }
+    .szint-3 { background-color: var(--szint-3-szin); box-shadow: 0px 0px 5px 0px var(--szint-6-szin); }
+    .szint-4 { background-color: var(--szint-4-szin); box-shadow: 0px 0px 5px 0px var(--szint-7-szin); }
+    .szint-5 { background-color: var(--szint-5-szin); box-shadow: 0px 0px 5px 0px var(--szint-8-szin); }
+    .szint-6 { background-color: var(--szint-6-szin); box-shadow: 0px 0px 5px 0px var(--szint-9-szin); }
+    .szint-7 { background-color: var(--szint-7-szin); box-shadow: 0px 0px 5px 0px var(--szint-9-szin); }
+    .szint-8 { background-color: var(--szint-8-szin); box-shadow: 0px 0px 5px 0px var(--szint-9-szin); }
+    .szint-9 { background-color: var(--szint-9-szin); box-shadow: 0px 0px 5px 0px var(--szint-9-szin); }
 }
 
 /* Egyedi classok */
@@ -95,15 +95,29 @@ h6 { font-size: 20px; }
 .no-border { border: 0px; }
 .lathatatlan { visibility: hidden; }
 
+table.tablazat {
+    border: 0.5px solid var(--szint-4-szin);
+    border-collapse: collapse;
+}
+
+td.cella {
+    border-top: 0.1px solid var(--szint-4-szin);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
 @media screen and (min-width: 1023px) {
     .min-1024-tiltas { display: block; }
-    .nagy-kepernyon-tiltas { display: none !important; }
+    .nagy-kepernyon-tiltas { display: none; }
+    .mindig-lathato-nagy-kepernyon { visibility: visible !important; }
     .merettol-fuggoen-inline-block { display: inline; }
 }
 
 @media screen and (max-width: 1023px) {
     .min-1024-tiltas { display: none; }
-    .mobilon-tiltas { display: none !important; }
+    .mobilon-tiltas { display: none; }
     .merettol-fuggoen-inline-block { display: block; }
 }
 

@@ -14,7 +14,6 @@ function regisztracio_inditasa(event) {
             obj('regisztracio_siker_doboz').style.display = 'block';
         } else {
             alert(uzenet);
-            console.log(post_parameterek);
         }
     });
 }

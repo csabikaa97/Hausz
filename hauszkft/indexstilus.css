@@ -10,7 +10,8 @@
     font-size: 30px;
 }
 .hauszkft_p {
-    margin: auto 30%;
+    margin: auto;
+    max-width: 600px;
     text-align: justify;
     font-size: 20px;
     color: #FFFFFF;

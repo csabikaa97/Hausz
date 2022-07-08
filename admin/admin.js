@@ -66,10 +66,10 @@ function torles(nev, id) {
 }
 
 function aktivalando_fiokok_betoltese() {
-    var buffer = '<h3>Aktiválandó fiókok</h3><table><tbody><tr><th>request_id</th><th>username</th><th>email</th><th></th><th></th></tr>';
+    var buffer = '<h3>Aktiválandó fiókok</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">request_id</th><th class="cella">username</th><th class="cella">email</th><th class="cella"></th><th class="cella"></th></tr>';
     szinkron_keres("/admin/admin.php?aktivalando_fiokok", (uzenet) => {
         if( /OK:nincs aktivalando fiok/.test(uzenet) ) {
-            buffer += '<tr><td colspan="3" class="kozepre-szoveg">Jelenleg nincs aktiválandó fiók</td><td></td><td></td></tr>';
+            buffer += '<tr><td class="cella kozepre-szoveg" colspan="3">Jelenleg nincs aktiválandó fiók</td><td class="cella"></td><td class="cella"></td></tr>';
         } else {
             if( /^OK:/.test(uzenet) ) {
                 uzenet = uzenet.replace(/^OK:/, '');
@@ -83,11 +83,11 @@ function aktivalando_fiokok_betoltese() {
                     username = adatok[1];
                     email = adatok[2];
 
-                    buffer += '<td>' + request_id + '</td>';
-                    buffer += '<td>' + username + '</td>';
-                    buffer += '<td>' + email + '</td>';
-                    buffer += '<td><div class="szint-2 gomb kerekites-15" onclick="elutasitas(&quot;'+username+'&quot;, '+request_id+')">Elutasítás</div></td>';
-                    buffer += '<td><div class="szint-2 gomb kerekites-15" onclick="aktivalas(&quot;'+username+'&quot;, '+request_id+')">Aktiválás</div></td>';
+                    buffer += '<td class="cella">' + request_id + '</td>';
+                    buffer += '<td class="cella">' + username + '</td>';
+                    buffer += '<td class="cella">' + email + '</td>';
+                    buffer += '<td class="cella"><div class="szint-2 gomb kerekites-15" onclick="elutasitas(&quot;'+username+'&quot;, '+request_id+')">Elutasítás</div></td>';
+                    buffer += '<td class="cella"><div class="szint-2 gomb kerekites-15" onclick="aktivalas(&quot;'+username+'&quot;, '+request_id+')">Aktiválás</div></td>';
                 }
                 buffer += '</tr>';
             } else {
@@ -100,7 +100,7 @@ function aktivalando_fiokok_betoltese() {
 }
 
 function fiokok_betoltese() {
-    var buffer = '<h3>Aktív fiókok</h3><table><tbody><tr><th>id</th><th>username</th><th>email</th><th>Admin</th><th></th><th></th></tr>';
+    var buffer = '<h3>Aktív fiókok</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">id</th><th class="cella">username</th><th class="cella">email</th><th class="cella">Admin</th><th class="cella"></th><th class="cella"></th></tr>';
     szinkron_keres("/admin/admin.php?fiokok", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             uzenet = uzenet.replace(/^OK:/, '');
@@ -118,12 +118,12 @@ function fiokok_betoltese() {
                 email = adatok[2];
                 Admin = adatok[3];
                 
-                buffer += '<td>' + id + '</td>';
-                buffer += '<td>' + username + '</td>';
-                buffer += '<td>' + email + '</td>';
-                buffer += '<td>' + Admin + '</td>';
-                buffer += "<td><div class='szint-2 gomb kerekites-15' onclick='admin_statusz_csere(&quot;"+username+"&quot;, "+id+")'>Admin státusz csere</div></td>";
-                buffer += "<td><div class='szint-2 gomb kerekites-15' onclick='torles(&quot;"+username+"&quot;, "+id+")'>Törlés</div></td>";
+                buffer += '<td class="cella">' + id + '</td>';
+                buffer += '<td class="cella">' + username + '</td>';
+                buffer += '<td class="cella">' + email + '</td>';
+                buffer += '<td class="cella">' + Admin + '</td>';
+                buffer += "<td class='cella'><div class='szint-2 gomb kerekites-15' onclick='admin_statusz_csere(&quot;"+username+"&quot;, "+id+")'>Admin státusz csere</div></td>";
+                buffer += "<td class='cella'><div class='szint-2 gomb kerekites-15' onclick='torles(&quot;"+username+"&quot;, "+id+")'>Törlés</div></td>";
                 buffer += '</tr>';
             });
         } else {
@@ -135,7 +135,7 @@ function fiokok_betoltese() {
 }
 
 function log_betoltese() {
-    var buffer = '<h3>Log</h3><table><tbody><tr><th>id</th><th>szolgaltatas</th><th>bejegyzes</th><th>komment</th><th>felhasznalo</th><th>datum</th></tr>';
+    var buffer = '<h3>Log</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">id</th><th class="cella">szolgaltatas</th><th class="cella">bejegyzes</th><th class="cella">komment</th><th class="cella">felhasznalo</th><th class="cella">datum</th></tr>';
     szinkron_keres("/admin/admin.php?log", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             uzenet = uzenet.replace(/^OK:/, '');
@@ -149,7 +149,7 @@ function log_betoltese() {
                 adatok = adatok.split('|');
 
                 adatok.forEach(adat => {
-                    buffer += '<td>' + adat + '</td>';
+                    buffer += '<td class="cella">' + adat + '</td>';
                 });
 
                 buffer += '</tr>';

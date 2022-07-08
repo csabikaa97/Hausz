@@ -22,7 +22,6 @@ function jelszo_valtoztatasa(event) {
             obj('ok_jelszo_valtoztatas_sikeres').style.display = 'block';
         } else {
             alert(uzenet);
-            console.log(post_parameterek);
         }
     });
 }

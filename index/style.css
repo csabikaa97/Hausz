@@ -1,25 +1,4 @@
 @media(prefers-color-scheme: dark) {
-    #privat_doboz {
-        background-color: rgb(35, 35, 35);
-    }
-    
-    #titkositasi_kulcs_doboz {
-        background-color: rgb(35, 35, 35);
-    }
-
-    #hausz_logo {
-        filter: brightness(85%);
-    }
-
-    .emoji_cell {
-        position: relative;
-        opacity: 70%;
-    }
-
-    #hausz_logo {
-        opacity: 80%;
-    }
-
     a {
         color: rgb(106, 195, 255);
     }
@@ -43,77 +22,14 @@
         border: rgb(70, 70, 70);
     }
 
-    #fileToUpload {
-        color: rgb(180, 180, 180);
-        background-color: rgb(50, 50, 50);
-    }
-
-    #fileToUpload_label {
-        background-color: rgb(35, 35, 35);
-    }
-
-    .bottom_left_corner_div {
-        /* KÉSZ */
-        border: solid rgb(70, 70, 70) 1px;
-        background-color: rgb(30, 30, 30);
-    }
-
-    .TopbarLink {
-        color: rgb(180, 180, 180);
-    }
-
     .preview_box {
-        /* KÉSZ */
         border: solid rgb(70, 70, 70) 1px;
         background-color: rgb(50, 50, 50);
-    }
-
-    .Gombok {
-        color: rgb(169, 169, 169);
-        background-color: rgb(50, 50, 50);
-    }
-
-    .KekHatter {
-        /* KÉSZ */
-        background-color: rgb(31, 66, 153);
-        color: rgb(180, 180, 180);
-    }
-
-    .KekHatter:hover {
-        /* KÉSZ */
-        background-color: rgb(41, 76, 163);
-    }
-
-    .ZoldHatter {
-        /* KÉSZ */
-        background-color: rgb(34, 129, 72) !important;
-        color: rgb(180, 180, 180);
-    }
-
-    .ZoldHatter:hover {
-        /* KÉSZ */
-        background-color: rgb(62, 167, 104) !important;
-    }
-
-    .InputSzoveg {
-        /* KÉSZ */
-        border: 0 solid black;
-        box-shadow: 0 2px 5px 0 rgb(70, 70, 70);
-        background-color: rgb(35, 35, 35);
-        color: rgb(180, 180, 180);
     }
 
     body {
-        /* KÉSZ */
         background-color: black;
         color: rgb(180, 180, 180);
-    }
-
-    .LinkekkelTeliTopbarXd {
-        /* KÉSZ */
-        background-color: rgb(0, 0, 0);
-        border-color: rgb(0, 0, 0);
-        box-shadow: 0 0 0 0 rgb(0, 0, 0);
     }
 
     table {
@@ -124,10 +40,6 @@
         border-top: 1px solid rgb(70, 70, 70);
     }
 
-    #fileToUpload_label:hover {
-        background-color: rgb(70, 70, 70);
-    }
-
     tr:hover {
         background-color: rgb(70, 70, 70);
     }
@@ -135,112 +47,17 @@
     video {
         background-color: black;
     }
-
-    #utasitas {
-        color: rgb(120, 120, 120);
-    }
-
-    .div_hasznalt_tarhely {
-        background-color: rgb(83, 0, 0);
-    }
-
-    .div_szabad_tarhely {
-        background-color: rgb(0, 85, 0);
-    }
-
-    #private_label_div {
-        background-color: rgb(30, 30, 30);
-    }
-
-    #private_label_div:hover {
-        background-color: rgb(70, 70, 70);
-    }
 }
 
 @media(prefers-color-scheme: light) {
-    #titkositasi_kulcs_doboz {
-        background-color: white;
-        box-shadow: 0 2px 5px 0 rgb(200 200 200);
-    }
-    #privat_doboz {
-        background-color: white;
-        box-shadow: 0 2px 5px 0 rgb(200 200 200);
-    }
-    #private_label_div:hover {
-        background-color: rgb(240, 240, 240);
-    }
-
-    #private_label_div {
-        background-color: white;
-    }
-
-    #fileToUpload_label {
-        background-color: white;
-        box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
-    }
-
-    #fileToUpload_label:hover {
-        background-color: rgb(240, 240, 240);
-        box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
-    }
-
-    #private_label_div {
-        box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
-    }
-
-    .TopbarLink {
-        color: rgb(0, 0, 0);
-    }
-
-    .bottom_left_corner_div {
-        border: solid rgb(240, 240, 240) 1px;
-        background-color: white;
-    }
-
     .preview_box {
         border: solid rgb(240, 240, 240) 1px;
         background-color: white;
     }
 
-    .Gombok {
-        color: rgb(131, 131, 131);
-        background-color: white;
-        box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
-    }
-
-    .KekHatter {
-        background-color: rgb(52, 110, 255);
-        color: white;
-    }
-
-    .KekHatter:hover {
-        background-color: rgb(92, 150, 255);
-    }
-
-    .ZoldHatter {
-        background-color: rgb(60, 236, 131) !important;
-        color: black;
-    }
-
-    .ZoldHatter:hover {
-        background-color: rgb(74, 199, 124) !important;
-    }
-
-    .InputSzoveg {
-        border: 0 solid black;
-        box-shadow: 0 2px 5px 0 rgb(200, 200, 200);
-        border-radius: 10px;
-    }
-
     body {
         background-color: white;
         color: black;
-    }
-
-    .LinkekkelTeliTopbarXd {
-        background-color: white;
-        border-color: rgb(235, 235, 235);
-        box-shadow: 0 0 0 0 rgb(200, 200, 200);
     }
 
     table {
@@ -259,18 +76,6 @@
         background-color: black;
     }
 
-    #utasitas {
-        color: rgb(120, 120, 120);
-    }
-
-    .div_hasznalt_tarhely {
-        background-color: rgb(255, 150, 150);
-    }
-
-    .div_szabad_tarhely {
-        background-color: rgb(150, 255, 150);
-    }
-
     ::placeholder {
         color: black;
     }
@@ -278,14 +83,6 @@
 
 * {
     font-family: Arial, Helvetica, sans-serif;
-}
-
-#privat_doboz {
-    margin-left: 10px;
-    border-radius: 15px;
-    font-size: 20px;
-    display: inline;
-    padding: 20px 10px;
 }
 
 abbr {
@@ -300,61 +97,6 @@ input {
     color-scheme: light dark;
 }
 
-#private_label_div {
-    display: block;
-    width: 10%;
-    float: none;
-    margin: auto;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.center {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    float: none;
-    text-align: center;
-}
-
-.inline {
-    display: inline;
-}
-
-.text-align-left {
-    text-align: left;
-}
-
-#fileToUpload_label {
-    padding: 20px 50px;
-    border-radius: 15px;
-    font-size: 20px;
-}
-
-#fileToUpload {
-    cursor: pointer;
-    opacity: 0;
-    position: absolute;
-    z-index: -1;
-}
-
-#top_right_corner_div {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    margin: 0;
-}
-
-.bottom_left_corner_div {
-    padding: 10px;
-    position: fixed;
-    bottom: 5px;
-    right: 5px;
-    margin: 0;
-    border-radius: 5px;
-    z-index: 1;
-}
-
 .preview_box {
     padding: 10px;
     position: fixed;
@@ -366,111 +108,9 @@ input {
     z-index: 2;
 }
 
-#elonezet_bezaras_gomb {
-    position: fixed;
-    top: 10%;
-    right: 10%;
-    font-size: 30px;
-    z-index: 2;
-}
-
-#darken_background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    opacity: 75%;
-    z-index: 1;
-}
-
-#elonezet_iframe {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.SzovegBalra {
-    text-align: left;
-}
-
-.SzovegJobbra {
-    text-align: right;
-}
-
-.NullaMargin {
-    margin: 0;
-}
-
-.Gombok {
-    height: auto;
-    font-size: 22px;
-    padding: 12px;
-    border-radius: 12px;
-    border: 0;
-    cursor: pointer;
-}
-
-.PiciGombok {
-    width: auto;
-    font-size: 18px;
-    padding: 5px 12px;
-    border-radius: 12px;
-    border: 0;
-    cursor: pointer;
-}
-
-.ReteknagyGombok {
-    width: 38%;
-}
-
-.LetoltoGombHelyek {
-    padding: 0;
-}
-
-.FuggolegesCenter {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-
-.InputSzoveg {
-    width: 50%;
-    height: auto;
-    font-size: 22px;
-    padding: 15px;
-}
-
-.center {
-    margin: auto;
-}
-
-.FullDoboz {
-    width: 99%;
-}
-
 body {
     margin: 0px;
     overflow-x: hidden;
-}
-
-.LinkekkelTeliTopbarXd {
-    padding: 10px;
-    margin: 0;
-    width: 99%;
-    border-bottom: 1px;
-    border-style: solid;
-    border-width: 0;
-    top: 0;
-    left: 0;
-    z-index: 2;
-}
-
-.TopbarLink {
-    text-decoration: none;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 table {
@@ -484,10 +124,6 @@ table {
 td {
     padding: 0 5px;
     font-size: 18px;
-}
-
-#utasitas {
-    font-size: 45px;
 }
 
 ::placeholder {
