@@ -6,6 +6,7 @@
         <meta name="description" content="Együttnéző szolgáltatás, ahol YouTube videókat lehet szinkronban nézni a világhálón keresztül.">
 		<link rel="stylesheet" type="text/css" href="/index/alapok.css" />
 		<link rel="stylesheet" type="text/css" href="../index/style.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/png" href="/index/favicon.png"/>
         <script type='application/ld+json'>
             {
@@ -29,26 +30,41 @@
         </script>
 	</head>
 	<body>
-        <span id="belepteto_rendszer"></span>
+        <script id="tag"></script>
         <script src="/include/alap_fuggvenyek.js"></script>
         <script src="/include/topbar.js"></script>
 		<script src="/include/belepteto_rendszer.js"></script>
         <script src="/egyuttnezo/egyuttnezo.js"></script>
-    	<span id="belepteto_rendszer"></span>
-    
+    	    
 		<h1 class="kozepre-szoveg">Hausz együttnéző</h1>
-		<table style="width: 95%; height: 80%; background-color: rgb(70, 70, 70); border: 0px solid;">
-			<tr>
-				<td>
-					<div id="player"></div>
-				</td>
-				<td style="width: 25%; max-width: 25%">
-                    <h2>Jelenlegi videó:</h2>
-                    <a style="font-size: 18px" href="" id="video_link"></a><br><br>
-                    <h3 id="csatlakozas_statusz"></h3>
-                    <h3 id="valaszido"></h3>
-                    <input type="text" id="video_id_mezo" onkeydown="input_uj_video()"></input>
-                    <button onclick="gomb_uj_video()">Új videó indítása</button>
+		<div class="szint-2">
+            <div id="bal" class="merettol-fuggoen-inline-block">
+                <div id="player" style="width: 100vw; height: 56vw"></div>
+                <div id="iranyito_gombok" style="display: none">
+                    <div id="lejatszasgomb" class="inline" onclick="gomb_lejatszas()">▶</div>
+                    <div id="megallitasgomb" class="inline" onclick="gomb_megallitas()">⏸</div>
+                    <div id="csuszka_doboz" class="inline">
+                        <input onchange="tekeres()" id="csuszka" type="range" min="1" max="10000000000" value="50" style="width: 100%">
+                    </div>
+                    <div id="ido"></div>
+                </div>
+            </div>
+            <div id="jobb" class="merettol-fuggoen-inline-block">
+                <div id="leiras">
+                    <h2>Videó információ</h2>
+                    <div id="video_informaciok">
+                        <h3>Jelenlegi videó:</h3>
+                        <a style="font-size: 18px" href="" id="video_link"></a><br><br>
+                    </div>
+                    
+                    <h3>Csatlakozás státusz</h3>
+                    <szoveg id="csatlakozas_statusz"></szoveg>
+                    <szoveg id="valaszido"></szoveg>
+
+                    <div id="uj_video_doboz" style="display: none">
+                        <input type="text" id="video_id_mezo" onkeydown="input_uj_video()"></input>
+                        <button onclick="gomb_uj_video()">Új videó indítása</button>
+                    </div>
 
                     <br><br><button onclick="gomb_szinkronizalas()">Idő szinkronizálása (Átmeneti amíg nem lesz jobb megoldás)</button>
                     <br><br>
@@ -58,8 +74,8 @@
                         <h2>Parancsok</h2>
                         <ul id="parancs_lista"></ul>
                     </div>
-				</td>
-			</tr>
-		</table>
+                </div>
+            </div>
+        </div>
 	</body>
 </html>

@@ -188,6 +188,8 @@
         } else {
             header('Content-Disposition: filename="'.$row['filename'].'"');
         }
+        header_remove("Pragma"); 
+        header('Cache-control: public, max-age=9999999');
         readfile('/var/www/html/megoszto/fajlok/'.$row['filename']);
         die();
     }

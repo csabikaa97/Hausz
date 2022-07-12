@@ -104,8 +104,12 @@ wss.on('connection', function connection(ws, req) {
         }
 
         if (/^felhasznalonev:/.test(data)) {
-            console.log(szoveg + (ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id) + ': Felhasználóneve mostantól "' + data.replace(/^felhasznalonev:(.*)/, '$1') + '"');
-            ws.felhasznalonev = data.replace(/^felhasznalonev:(.*)/, '$1');
+            if( /^felhasznalonev:$/.test( data ) ) {
+                ws.felhasznalonev = undefined;
+            } else {
+                console.log(szoveg + (ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id) + ': Felhasználóneve mostantól "' + data.replace(/^felhasznalonev:(.*)/, '$1') + '"');
+                ws.felhasznalonev = data.replace(/^felhasznalonev:(.*)/, '$1');
+            }
             osszes_kliens_felhasznalolista_frissitese();
             return;
         }

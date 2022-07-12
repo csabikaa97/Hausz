@@ -1,3 +1,9 @@
+if( typeof belepteto_rendszer_beallitas != 'function' ) {   throw new Error('Nincs importálva a belepteto_rendszer.js!!!'); }
+if( typeof topbar_betoltese != 'function' ) {   throw new Error('Nincs importálva a topbar.js!!!'); }
+
+belepteto_rendszer_beallitas();
+topbar_betoltese();
+
 var szamlalo = new Date("May 6, 2019 8:00:00").getTime();
 
 function ido_frissitese() {

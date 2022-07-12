@@ -1,4 +1,5 @@
-fetch("/index/topbar.html")
+function topbar_betoltese() {
+    fetch("/index/topbar.html")
     .then(response => response.text())
     .then(text => {
         document.body.innerHTML = text + document.body.innerHTML;
@@ -27,3 +28,4 @@ fetch("/index/topbar.html")
             });
         }
     });
+}

@@ -1,4 +1,6 @@
-function szinkron_keres(hivatkozas, parameterek, fuggveny) {
+var uj_valasz_mutatasa_idozito;
+
+function szinkron_keres(hivatkozas, fuggveny, parameterek) {
     if(typeof parameterek === 'function') {
         fuggveny = parameterek;
     }
@@ -22,7 +24,7 @@ function szinkron_keres(hivatkozas, parameterek, fuggveny) {
     }
 }
 
-function bajt_merette_valtas(size) {
+function bajt_merette_valtasa(size) {
     meret = parseFloat(size);
     if( meret <= 1024) {
         meret = String(meret) + ' B';
@@ -73,4 +75,41 @@ function obj(szoveg) {
         return document.querySelector('#' + szoveg);
     }
     return document.querySelector(szoveg);
+}
+
+function uj_valasz_mutatasa(ido, tipus, valasz) {
+    if( typeof ido == "undefined" ) {
+        throw new Error('Nem adtál meg időt: uj_valasz_mutatasa(ido, tipus ?, valasz)');
+    }
+    if( typeof tipus == "undefined" ) {
+        throw new Error('Nem adtál meg üzenetet: uj_valasz_mutatasa(ido, tipus ?, valasz)');
+    }
+    
+    if( obj('valasz_uzenet') == null ) {
+        document.body.innerHTML += '<div id="valasz_uzenet" class="bottom_left_corner_div kerekites-10" style="z-index: 2; bottom: 5px; left: 5px; max-width: 20%; visibility: hidden; position: fixed; padding: 10px; text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70)"></div>';
+    }
+    if( typeof valasz == "undefined" ) {
+        valasz = tipus;
+        if( /^HIBA:/i.test(valasz) ) {
+            obj('valasz_uzenet').style.border ='1px solid var(--piros-1)';
+            obj('valasz_uzenet').style.backgroundColor ='var(--piros-0)';
+        } else {
+            obj('valasz_uzenet').style.border ='1px solid var(--szint-2-szin)';
+            obj('valasz_uzenet').style.backgroundColor ='var(--szint-1-szin)';
+        }
+    } else {
+        if( tipus == "hiba" ) {
+            obj('valasz_uzenet').style.border ='1px solid var(--piros-1)';
+            obj('valasz_uzenet').style.backgroundColor ='var(--piros-0)';
+        } else {
+            obj('valasz_uzenet').style.border ='1px solid var(--zold-1)';
+            obj('valasz_uzenet').style.backgroundColor ='var(--zold-0)';
+        }
+    }
+    obj('valasz_uzenet').innerHTML = "<p>" + valasz + "</p>";
+    obj('valasz_uzenet').style.visibility = "visible";
+    clearTimeout(uj_valasz_mutatasa_idozito);
+    uj_valasz_mutatasa_idozito = setTimeout(() => {
+        obj('valasz_uzenet').style.visibility = 'hidden';
+    }, ido);
 }

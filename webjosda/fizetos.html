@@ -35,8 +35,14 @@
     <script src="/include/alap_fuggvenyek.js"></script>
     <script src="/include/topbar.js"></script>
     <script src="/include/belepteto_rendszer.js"></script>
-    <span id="belepteto_rendszer"></span>
+    <script>
+        if( typeof belepteto_rendszer_beallitas != 'function' ) {   throw new Error('Nincs importálva a belepteto_rendszer.js!!!'); }
+        if( typeof topbar_betoltese != 'function' ) {   throw new Error('Nincs importálva a topbar.js!!!'); }
 
+        belepteto_rendszer_beallitas();
+        topbar_betoltese();
+    </script>
+    
     <h1 class="josda_h1">Hamarosan elérhető</h1>
     <p class="josda_p">A Hausz jósdát a Hausz Kft. hozta létre és üzemelteti. A webjósda a koronavírusra való tekintettel nyílt meg. Itten érintkezésmentesen tudja elintézni napi jóslásszükségletét. Célunk, hogy mindenkinek pozitivitást biztosítsunk és betekintést adjunk a jövőjébe reklámmentesen. A jóslást a világ legfejlettebb mesterséges inteligenciája végzi a háttérben. Az ingyenes próbaverzió már el is érhető a Hausz weboldalán. A fizetős változat még fejlesztés alatt áll, de rohadt drága lesz.</p>
 </body>

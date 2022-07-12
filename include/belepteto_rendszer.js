@@ -21,14 +21,15 @@ function belepett_menu_gomb_kattintas(event) {
 function belepesgomb(event) {
     event.preventDefault();
     var post_parameterek_belepes = "login=yes&username=" + obj('username').value + "&password=" + obj('current-password').value;
-    szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.php", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             if (typeof belepes_siker === 'function') {   belepes_siker(uzenet); }
+            uj_valasz_mutatasa(3000, "ok", "Sikeres belépés");
             belepteto_rendszer_frissites();
         } else {
-            alert(uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
-    });
+    }, post_parameterek_belepes);
 }
  
 function kilepesgomb(event) {
@@ -40,8 +41,9 @@ function kilepesgomb(event) {
             session_admin = "";
             session_loggedin = "";
             belepteto_rendszer_frissites();
+            uj_valasz_mutatasa(3000, "ok", "Sikeres kilépés");
         } else {
-            alert(uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
     });
 }
@@ -79,19 +81,34 @@ function belepteto_rendszer_frissites() {
         }
         if (typeof belepteto_rendszer_frissult === 'function') {   belepteto_rendszer_frissult(); }
     });
+
+    if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(); }
+    if( typeof belepes_fuggveny == 'function' ) { belepes_fuggveny(); }
+    if( typeof kilepes_fuggveny == 'function' ) { kilepes_fuggveny(); }
 }
 
 var session_loggedin = "";
 var session_username = "";
 var session_admin = "";
 
-if(typeof szinkron_keres !== 'function') {
-    throw new Error('Nincs importálva az alap_fuggvenyek.js!!!');
-}
+var frissites_fuggveny;
+var belepes_fuggveny;
+var kilepes_fuggveny;
 
-fetch("/index/belepteto_rendszer.html")
+function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
+    console.log('Beléptető rendszer init')
+    if(typeof szinkron_keres != 'function') {   throw new Error('Nincs importálva az alap_fuggvenyek.js!!!'); }
+
+    document.body.innerHTML += '<span id="belepteto_rendszer"></span>';
+
+    fetch("/index/belepteto_rendszer.html")
     .then(response => response.text())
     .then(uzenet => {
         obj('belepteto_rendszer').innerHTML = uzenet;
         belepteto_rendszer_frissites();
     });
+
+    if( typeof frissult == 'function' ) { frissites_fuggveny = frissult; console.log(frissites_fuggveny); }
+    if( typeof belepes == 'function' ) { belepes_fuggveny = belepes; console.log(belepes_fuggveny); }
+    if( typeof kilepes == 'function' ) { kilepes_fuggveny = kilepes; console.log(kilepes_fuggveny); }
+}

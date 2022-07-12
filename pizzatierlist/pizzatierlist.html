@@ -14,11 +14,25 @@
     <script src="/include/alap_fuggvenyek.js"></script>
     <script src="/include/topbar.js"></script>
     <script src="/include/belepteto_rendszer.js"></script>
-    <span id="belepteto_rendszer"></span>
+    <script>
+        if( typeof belepteto_rendszer_beallitas != 'function' ) {   throw new Error('Nincs importálva a belepteto_rendszer.js!!!'); }
+        if( typeof topbar_betoltese != 'function' ) {   throw new Error('Nincs importálva a topbar.js!!!'); }
 
+        belepteto_rendszer_beallitas();
+        topbar_betoltese();
+    </script>
+    
     <h1 class="kozepre-szoveg">Hivatalos tier lista a LIDL-ös pizzákról</h1>
     <p class="kozepre-szoveg">Ez a Hausz Kft. alkalmazottjai által összeállított hivatalos Hausz tier lista a LIDL-ös bajnok pizzákról</p>
     <img class="kozepre" src="pizzatierlist.jpg" alt="Hivatalos Hausz LIDL-ös pizza tier list" />
+
+    <h1 class="kozepre-szoveg">Vélemények</h1>
+    <div class="kozepre fit-content" id="velemenyek">
+        <br>
+        <h3>A szalámis pizza nagyon kiváló</h3>
+        <p>- Tanúsított Angyalgyógyító</p>
+        <br>
+    </div>
 </body>
 
 </html>

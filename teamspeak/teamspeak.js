@@ -26,7 +26,7 @@ function uj_token_igenylese() {
         if( /^OK:/.test(uzenet) ) {
             token_informaciok_frissitese();
         } else {
-            alert(uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
     });
 }

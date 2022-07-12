@@ -30,14 +30,12 @@
     </script>
 </head>
 
-<body onload="body_onload()">
-    <span id="belepteto_rendszer"></span>
+<body>
     <script src="/include/alap_fuggvenyek.js"></script>
     <script src="/include/topbar.js"></script>
     <script src="/include/belepteto_rendszer.js"></script>
     <script src="/megoszto/megoszto.js"></script>
-
-    <div id="valasz_uzenet" class="bottom_left_corner_div" style="z-index: 2; bottom: 5px; left: 5px; max-width: 10%; visibility: hidden; position: fixed;"></div>
+    
     <div id='preview_box' class="preview_box" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden"></div>
     <div id='jobb_klikk_menu' class="szint-2 kerekites-15 padding-10" style="max-width: 240px; position: absolute; display: none"></div>
     <div id='atnevezes_box' class="preview_box kozepre" style="max-width: 60%; max-height: 60%;display: inline-block; visibility: hidden">
@@ -92,18 +90,36 @@
     <table id="tablazat" class="szint-1 kozepre fit-content" style="max-width: 95%; display: table">
         <tr class="szint-2">
             <th colspan="2" style="padding-bottom: 10px">
-                <div id="szures_gomb" class="gomb szint-3 kerekites-15" style="display: inline">🔎</div> Fájlnév
+                <div id="szures_gomb" onclick="szures_gomb_kattintas(event)" class="gomb szint-3 kerekites-15" style="display: inline">🔎</div> Fájlnév
             </th>
             <th class="mobilon-tiltas">Dátum</th>
             <th class="mobilon-tiltas">Méret</th>
             <th class="mobilon-tiltas">Feltöltő</th>
-        </tr> 
+        </tr>
+        <tr class="szint-1" id="szuro_sor" style="display: none">
+            <th class="mobilon-tiltas"></th>
+            <th>
+                <input type="text" id="fajlnev_szures_mezo" oninput="filter_frissites()" style="width: 100%"></input>
+            </th>
+            <th class="mobilon-tiltas">
+                <input type="text" id="datum_szures_mezo" oninput="filter_frissites()" style="max-width: 130px"></input>
+            </th>
+            <th class="mobilon-tiltas"></th>
+            <th class="mobilon-tiltas">
+                <input type="text" id="feltolto_szures_mezo" oninput="filter_frissites()" style="max-width: 75px"></input>
+            </th>
+        </tr>
+        <tr style="display: none" id="nem_letezo_fajl_sor">
+            <td colspan="5">
+                <h3 class="kozepre-szoveg">Nem létezik a keresett fájl</h3>
+            </td>
+        </tr>
     </table>
 
     <h2 style="text-align: center">Tárhely kihasználtsága</h2>
-    <div style="background-color: rgb(0, 85, 0); border: 1px solid black; border-radius: 10px; display: flex; width: 55%; height: auto; margin: auto">
-        <div id="div_hasznalt_tarhely" style="border-radius: 10px; padding: 10px"> </div>
-        <div id="div_szabad_tarhely" style="background-color: rgb(0, 85, 0); border-radius: 10px; padding: 10px; text-align: right"></div>
+    <div style="background-color: var(--zold-0); border: 1px solid black; border-radius: 10px; display: flex; width: 55%; height: auto; margin: auto">
+        <div id="div_hasznalt_tarhely" style="text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70); background-color: var(--piros-0); border-radius: 10px; padding: 10px"> </div>
+        <div id="div_szabad_tarhely" style="text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70); border-radius: 10px; padding: 10px; text-align: right"></div>
     </div>
     <br><br><br>
 </body>

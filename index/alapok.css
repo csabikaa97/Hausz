@@ -1,3 +1,11 @@
+:root {
+    color-scheme: light dark;
+    --zold-0: rgb(65, 138, 83);
+    --zold-1: rgb(93, 196, 119);
+    --piros-0: rgb(133, 64, 64);
+    --piros-1: rgb(190, 94, 94);
+}
+
 @media(prefers-color-scheme: dark) {
     :root {
         --szint-0-szin: rgb(0,0,0);

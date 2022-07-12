@@ -20,7 +20,7 @@ function admin_statusz_csere(nev, id) {
             fiokok_betoltese();
             log_betoltese();
         } else {
-            alert(uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
     });
 }
@@ -32,7 +32,7 @@ function elutasitas(nev, id) {
                 aktivalando_fiokok_betoltese();
                 log_betoltese(); 
             } else {
-                alert(uzenet);
+                uj_valasz_mutatasa(5000, "hiba", uzenet);
             }
         });
     }
@@ -46,7 +46,7 @@ function aktivalas(nev, id) {
                 fiokok_betoltese();
                 log_betoltese();
             } else {
-                alert(uzenet);
+                uj_valasz_mutatasa(5000, "hiba", uzenet);
             }
         });
     }
@@ -59,7 +59,7 @@ function torles(nev, id) {
                 fiokok_betoltese();
                 log_betoltese(); 
             } else {
-                alert(uzenet);
+                uj_valasz_mutatasa(5000, "hiba", uzenet);
             }
         });
     }
@@ -91,7 +91,7 @@ function aktivalando_fiokok_betoltese() {
                 }
                 buffer += '</tr>';
             } else {
-                alert(uzenet);
+                uj_valasz_mutatasa(5000, "hiba", uzenet);
             }
         }
 
@@ -127,7 +127,7 @@ function fiokok_betoltese() {
                 buffer += '</tr>';
             });
         } else {
-            alert(uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
 
         obj('fiokok').innerHTML = buffer + '</tbody></table>';
@@ -155,7 +155,7 @@ function log_betoltese() {
                 buffer += '</tr>';
             });
         } else {
-            alert(uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
 
         obj('log').innerHTML = buffer + '</tbody></table>';

@@ -1,10 +1,10 @@
 ## 💭 Tennivalók
 
+* azonnali feltöltés javítása - ios shortcuts
 * Együttnézőhöz külön videó kezelés UI készítése
-* alapok.css: Szín párok létrehozása ligth és dark mode-hoz
-	* Megosztón tárhely statisztika javítása vele
-* uj_valasz_mutatasa() mozgatás alap_fuggvenyek.js-be, és implementáció az összes oldalon
 * JS oldalak átírása Typescript-be
+	* együttnéző
+	* teamspeak infó
 * Fiókokhoz megjelenő név beállítás, profil oldal
 * /uploads mappa kivezetése Jul. 28 után
 * Régi style.css kivezetése
@@ -42,6 +42,8 @@
 
 ## ✅ Implementált tennivalók
 
+* uj_valasz_mutatasa() függvény átírása az alap_fuggvenyek.js-ben, és implementáció az összes oldalon
+* alapok.css: Szín párok létrehozása ligth és dark mode-hoz
 * Régi style.css kivezetése
 	* index
 	* admin

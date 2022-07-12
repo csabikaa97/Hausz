@@ -13,3 +13,9 @@ function joslas() {
     var szam = Math.floor(Math.random() * 21);
     alert(joslatok[szam]);
 }
+
+if( typeof belepteto_rendszer_beallitas != 'function' ) {   throw new Error('Nincs importálva a belepteto_rendszer.js!!!'); }
+if( typeof topbar_betoltese != 'function' ) {   throw new Error('Nincs importálva a topbar.js!!!'); }
+
+belepteto_rendszer_beallitas();
+topbar_betoltese();
