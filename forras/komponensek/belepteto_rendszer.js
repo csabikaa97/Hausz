@@ -79,12 +79,9 @@ function belepteto_rendszer_frissites() {
             obj('belepett_menu_gomb').style.display = 'none';
             obj('belepes_menu_gomb').style.display = '';
         }
-        if (typeof belepteto_rendszer_frissult === 'function') {   belepteto_rendszer_frissult(); }
+        
+        if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(); }
     });
-
-    if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(); }
-    if( typeof belepes_fuggveny == 'function' ) { belepes_fuggveny(); }
-    if( typeof kilepes_fuggveny == 'function' ) { kilepes_fuggveny(); }
 }
 
 var session_loggedin = "";
@@ -108,7 +105,7 @@ function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
         belepteto_rendszer_frissites();
     });
 
-    if( typeof frissult == 'function' ) { frissites_fuggveny = frissult; console.log(frissites_fuggveny); }
-    if( typeof belepes == 'function' ) { belepes_fuggveny = belepes; console.log(belepes_fuggveny); }
-    if( typeof kilepes == 'function' ) { kilepes_fuggveny = kilepes; console.log(kilepes_fuggveny); }
+    if( typeof frissult == 'function' ) { frissites_fuggveny = frissult; }
+    if( typeof belepes == 'function' ) { belepes_fuggveny = belepes; }
+    if( typeof kilepes == 'function' ) { kilepes_fuggveny = kilepes; }
 }

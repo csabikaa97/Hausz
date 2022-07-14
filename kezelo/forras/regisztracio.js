@@ -7,7 +7,7 @@ function regisztracio_inditasa(event) {
     post_parameterek += "&regisztracio_password_confirm=" + obj('regisztracio_password_confirm').value;
     post_parameterek += "&regisztracio_email=" + obj('regisztracio_email').value;
 
-    szinkron_keres("/include/regisztracio.php", (uzenet) => {
+    szinkron_keres("/kezelo/regisztracio.php", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             obj('regisztracio_doboz').style.display = 'none';
             obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';

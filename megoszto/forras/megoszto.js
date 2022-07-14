@@ -1,10 +1,9 @@
 function belepteto_rendszer_frissult() {
     if( session_loggedin == "yes" ) {
-        obj('privat_doboz').style.display = 'block';
+        obj('privat_doboz').style.visibility = 'visible';
     } else {
-        obj('privat_doboz').style.display = 'none';
+        obj('privat_doboz').style.visibility = 'hidden';
     }
-    fajlok_betoltese();
 }
 
 function szures_gomb_kattintas(event) {
@@ -79,7 +78,9 @@ function filter_frissites() {
 }
 
 function fajlok_betoltese() {
-    jobb_klikk_menu_eltuntetes();
+    if(obj('jobb_klikk_menu') != null) {
+        jobb_klikk_menu_eltuntetes();
+    }
 
     var filter_fajlnev = "";
     var filter_datum = "";
@@ -504,7 +505,7 @@ function bal_klikk(event) {
 }
 
 function jobb_klikk_menu_eltuntetes() {
-    jobb_klikk_menu.style.display = 'none';
+    obj('jobb_klikk_menu').style.display = 'none';
 }
 
 function jobb_klikk_menu_kinyitas(event, tr) {
@@ -611,17 +612,23 @@ function handleDrop(e) {
     hideDropZone();
 }
 
-var dropZone;
-var dropZone_leiras;
+function belepes_siker() {
+    fajlok_betoltese();
+}
+
+function kilepes_siker() {
+    belepes_siker();
+}
 
 // main()
 
-if( typeof belepteto_rendszer_beallitas != 'function' ) {   throw new Error('Nincs importálva a belepteto_rendszer.js!!!'); }
-if( typeof topbar_betoltese != 'function' ) {   throw new Error('Nincs importálva a topbar.js!!!'); }
+var dropZone;
+var dropZone_leiras;
 
-belepteto_rendszer_beallitas( belepteto_rendszer_frissult );
 topbar_betoltese();
-
+fajlok_betoltese();
+belepteto_rendszer_beallitas( belepteto_rendszer_frissult, belepes_siker, kilepes_siker );
+    
 window.addEventListener('dragenter', function(e) {
     drop_zona_aktivalas();
     showDropZone();

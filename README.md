@@ -56,17 +56,17 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
         <td><a href="dokumentáció/együttnéző/leírás.txt">leírás.txt</a></td>
     </tr>
     <tr>
-        <td><a href="https://hausz.stream/include/regisztracio.html">Regisztráció</a></td>
-        <td><a href="include/regisztracio.php">regisztracio.php</a></td>
-        <td><a href="include/regisztracio.js">regisztracio.js</a></td>
-        <td><a href="include/regisztracio.html">regisztracio.html</a></td>
+        <td><a href="https://hausz.stream/kezelo/regisztracio.html">Regisztráció</a></td>
+        <td><a href="kezelo/regisztracio.php">regisztracio.php</a></td>
+        <td><a href="kezelo/regisztracio.js">regisztracio.js</a></td>
+        <td><a href="kezelo/regisztracio.html">regisztracio.html</a></td>
         <td></td>
     </tr>
     <tr>
-        <td><a href="https://hausz.stream/include/jelszo_valtoztatas.html">Jelszó változtatás</a></td>
-        <td><a href="include/jelszo_valtoztatas.php">jelszo_valtoztatas.php</a></td>
-        <td><a href="include/jelszo_valtoztatas.js">jelszo_valtoztatas.js</a></td>
-        <td><a href="include/jelszo_valtoztatas.html">jelszo_valtoztatas.html</a></td>
+        <td><a href="https://hausz.stream/kezelo/jelszo_valtoztatas.html">Jelszó változtatás</a></td>
+        <td><a href="kezelo/jelszo_valtoztatas.php">jelszo_valtoztatas.php</a></td>
+        <td><a href="kezelo/jelszo_valtoztatas.js">jelszo_valtoztatas.js</a></td>
+        <td><a href="kezelo/jelszo_valtoztatas.html">jelszo_valtoztatas.html</a></td>
         <td></td>
     </tr>
     <tr>
@@ -123,6 +123,13 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
         <td><a href="index/topbar.html">topbar.html</a></td>
         <td></td>
     </tr>
+    <tr>
+        <td>Kiadás - bundler (Node.js)</td>
+        <td><a href="forras/kiadas.js">kiadas.js</a><br><a href="forras/osszes_kiadasa.sh">osszes_kiadasa.sh</a></td>
+        <td></td>
+        <td></td>
+        <td><a href="dokumentáció/kiadas/leiras.txt">leírás.txt</a></td>
+    </tr>
 </table>
 
 ### Jelenlegi szerver specifikációk, és használt szoftverek
@@ -138,4 +145,5 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 * Adatbázis: MySQL
 * TeamSpeak 3 szerver
 * Együttnéző backend: Node.js
+* Kiadás (bundler)
 * Fejlesztői környezet: [code-server](https://github.com/coder/code-server)

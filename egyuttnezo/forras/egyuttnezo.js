@@ -380,9 +380,6 @@ var tekeres_ellenorzes_INTERVAL;
 var player;
 var socket;
 
-if( typeof belepteto_rendszer_beallitas != 'function' ) {   throw new Error('Nincs importálva a belepteto_rendszer.js!!!'); }
-if( typeof topbar_betoltese != 'function' ) {   throw new Error('Nincs importálva a topbar.js!!!'); }
-
 belepteto_rendszer_beallitas( belepteto_rendszer_frissult );
 topbar_betoltese();
 

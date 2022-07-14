@@ -1,11 +1,14 @@
 ## 💭 Tennivalók
 
-* azonnali feltöltés javítása - ios shortcuts
-* Együttnézőhöz külön videó kezelés UI készítése
+* index.js átrakása /index-be
+* /index fájlok átrakása komponensekbe
+* Leírás.txt fájlok átírása, és formázása .md kiterjesztésre
+* Együttnézőhöz külön videó kezelés UI készítése (folyamatban)
 * JS oldalak átírása Typescript-be
 	* együttnéző
+	* megoszto
 	* teamspeak infó
-* Fiókokhoz megjelenő név beállítás, profil oldal
+* Fiókokhoz megjelenő név beállítás, profil oldal /kezelo/
 * /uploads mappa kivezetése Jul. 28 után
 * Régi style.css kivezetése
 	* egyuttnezo
@@ -42,6 +45,8 @@
 
 ## ✅ Implementált tennivalók
 
+* .gitignore fájlok egyesítése gyökérmappában
+* [Saját bundler létrehozása](dokumentáció/kiadas/leírás.txt)
 * uj_valasz_mutatasa() függvény átírása az alap_fuggvenyek.js-ben, és implementáció az összes oldalon
 * alapok.css: Szín párok létrehozása ligth és dark mode-hoz
 * Régi style.css kivezetése

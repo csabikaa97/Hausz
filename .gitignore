@@ -10,3 +10,17 @@ egyuttnezo/package-lock.json
 admin/backup/
 
 test/
+
+megoszto/megoszto.js
+admin/admin.js
+egyuttnezo/egyuttnezo.js
+index.js
+egyuttnezo/egyuttnezo.js
+erettsegiszamlalo/erettsegiszamlalo.js
+hauszkft/hauszkft.js
+kezelo/jelszo_valtoztatas.js
+kezelo/regisztracio.js
+pizzatierlist/pizzatierlist.js
+teamspeak/teamspeak.js
+webjosda/josda.js
+webjosda/fizetos.js

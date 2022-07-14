@@ -113,3 +113,19 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
         obj('valasz_uzenet').style.visibility = 'hidden';
     }, ido);
 }
+
+function varakozas(feltetel, hiba, fuggveny) {
+    var kezdet = Date.now();
+    var interval = setInterval(() => {
+        if( Date.now() - kezdet > 5000 ) {
+            clearInterval(interval);
+            throw new Error(hiba);
+            return;
+        }
+        if( feltetel() ) {
+            clearInterval(interval);
+            fuggveny();
+            return;
+        }
+    }, 3);
+}

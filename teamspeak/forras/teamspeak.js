@@ -196,3 +196,19 @@ function szerver_statusz_frissitese() {
         obj('szerver_statusz_szoveg').innerHTML = buffer;
     });
 }
+
+varakozas(
+    () => {  return ( typeof topbar_betoltese == 'function' ); }
+    , "Nem sikerült betölteni a topbar.js scriptet!"
+    , () => {
+        topbar_betoltese();
+    }
+);
+
+varakozas(
+    () => {  return ( typeof belepteto_rendszer_beallitas == 'function'); }
+    , "Nem sikerült betölteni a belepteto_rendszer.js scriptet!"
+    , () => {
+        belepteto_rendszer_beallitas( belepteto_rendszer_frissult );
+    }
+);

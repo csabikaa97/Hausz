@@ -31,15 +31,12 @@
 	</head>
 	<body>
         <script id="tag"></script>
-        <script src="/include/alap_fuggvenyek.js"></script>
-        <script src="/include/topbar.js"></script>
-		<script src="/include/belepteto_rendszer.js"></script>
         <script src="/egyuttnezo/egyuttnezo.js"></script>
     	    
 		<h1 class="kozepre-szoveg">Hausz együttnéző</h1>
 		<div class="szint-2">
             <div id="bal" class="merettol-fuggoen-inline-block">
-                <div id="player" style="width: 100vw; height: 56vw"></div>
+                <div id="player" style="width: min(100vw, 1024px); height: min(56vw, 576px)"></div>
                 <div id="iranyito_gombok" style="display: none">
                     <div id="lejatszasgomb" class="inline" onclick="gomb_lejatszas()">▶</div>
                     <div id="megallitasgomb" class="inline" onclick="gomb_megallitas()">⏸</div>

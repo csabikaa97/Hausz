@@ -3,3 +3,7 @@
     Header add X-Robots-Tag "googlebot: nofollow"
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </Files>
+
+<FilesMatch ".*\.(js|html|css)">
+    Header add Cache-Control "public, max-age=120"
+</FilesMatch>
