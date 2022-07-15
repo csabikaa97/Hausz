@@ -1,11 +1,16 @@
+# Kiadás - Javascript csomagoló
+
 Ezzel az eszközzel lehet összecsomagolni külön lévő Javascript fájlokat
 
-Rendszerhez hozzáadás:
+## Rendszerhez hozzáadás
 
+    ```
     ln -s /var/www/html/forras/kiadas.js /usr/local/bin/kiadas.js
+    
     ln -s /var/www/html/forras/osszes_kiadasa.sh /usr/local/bin/osszes_kiadasa.sh
+    ```
 
-Használat:
+## Használat
 
     kiadas.js [--be] < > --ki < > [--tomorites]
                       ^        ^

@@ -1,26 +1,37 @@
-googlef67f98e02ef6449a.html
-priv
+# Google SEO authentikáció
 
-megoszto/fajlok/
+/googlef67f98e02ef6449a.html
 
-egyuttnezo/node_modules
-egyuttnezo/package.json
-egyuttnezo/package-lock.json
+# Privát fájlok
 
-admin/backup/
+/priv
 
-test/
+# Felhasználói fájlok
 
-megoszto/megoszto.js
-admin/admin.js
-egyuttnezo/egyuttnezo.js
-index.js
-egyuttnezo/egyuttnezo.js
-erettsegiszamlalo/erettsegiszamlalo.js
-hauszkft/hauszkft.js
-kezelo/jelszo_valtoztatas.js
-kezelo/regisztracio.js
-pizzatierlist/pizzatierlist.js
-teamspeak/teamspeak.js
-webjosda/josda.js
-webjosda/fizetos.js
+/megoszto/fajlok/
+
+# Együttnéző működéséhez generált szemetek
+
+/egyuttnezo/node_modules
+/egyuttnezo/package.json
+/egyuttnezo/package-lock.json
+
+/admin/backup/
+
+/test/
+
+# Csomagolt Javascript fájlok
+
+/megoszto/megoszto.js
+/admin/admin.js
+/egyuttnezo/egyuttnezo.js
+/index/index.js
+/egyuttnezo/egyuttnezo.js
+/erettsegiszamlalo/erettsegiszamlalo.js
+/hauszkft/hauszkft.js
+/kezelo/jelszo_valtoztatas.js
+/kezelo/regisztracio.js
+/pizzatierlist/pizzatierlist.js
+/teamspeak/teamspeak.js
+/webjosda/josda.js
+/webjosda/fizetos.js

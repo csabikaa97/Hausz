@@ -1,5 +1,5 @@
 function topbar_betoltese() {
-    fetch("/index/topbar.html")
+    fetch("/forras/komponensek/topbar.html")
     .then(response => response.text())
     .then(text => {
         document.body.innerHTML = text + document.body.innerHTML;
@@ -16,7 +16,7 @@ function topbar_betoltese() {
                 }
                 
                 if(menure_kattintott) {
-                    obj('menu_div').style.top = (parseInt(event.y)) + 'px';
+                    obj('menu_div').style.top = String(event.y) + 'px';
                     obj('menu_div').style.visibility = '';
                     obj('menu_div').style.animation = 'height-novekedes-sigmoid 0.3s ease 1 forwards';
                 } else {

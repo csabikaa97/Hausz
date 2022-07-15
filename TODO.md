@@ -1,13 +1,7 @@
 ## 💭 Tennivalók
 
-* index.js átrakása /index-be
-* /index fájlok átrakása komponensekbe
-* Leírás.txt fájlok átírása, és formázása .md kiterjesztésre
+* Együttnézp iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
 * Együttnézőhöz külön videó kezelés UI készítése (folyamatban)
-* JS oldalak átírása Typescript-be
-	* együttnéző
-	* megoszto
-	* teamspeak infó
 * Fiókokhoz megjelenő név beállítás, profil oldal /kezelo/
 * /uploads mappa kivezetése Jul. 28 után
 * Régi style.css kivezetése
@@ -45,18 +39,25 @@
 
 ## ✅ Implementált tennivalók
 
+* JS oldalak kijavítása Typescript compiler üzenetei alapján
+	- [x] megosztó
+	- [x] teamspeak infó
+	- [x] együttnéző
+* Minden txt fájl átírása, és formázása .md kiterjesztésre
+* /index fájlok átrakása forras/komponensek mappába
+* index.js áthelyezése /index mappába
 * .gitignore fájlok egyesítése gyökérmappában
-* [Saját bundler létrehozása](dokumentáció/kiadas/leírás.txt)
+* [Saját bundler létrehozása](dokumentáció/kiadas/leírás.md)
 * uj_valasz_mutatasa() függvény átírása az alap_fuggvenyek.js-ben, és implementáció az összes oldalon
 * alapok.css: Szín párok létrehozása ligth és dark mode-hoz
 * Régi style.css kivezetése
-	* index
-	* admin
-	* hasuzkft
-	* pizzatierlist
-	* erettsegiszamlalo
-	* josda
-	* josda/fizetos
+	- [x] index
+	- [x] admin
+	- [x] hauszkft
+	- [x] pizzatierlist
+	- [x] erettsegiszamlalo
+	- [x] josda
+	- [x] josda/fizetos
 * Ismétlődő, sokszor előforduló kódok csökkentése
 	* document.GetElementById() -> obj()
 * HTML JS részek külön fájlba helyezése
@@ -83,11 +84,11 @@
 * Megosztón titkosított fájlfeltöltés jelszóvédelemmel: [php.net OpenSSL encrypt](https://www.php.net/manual/en/function.openssl-encrypt.php) [php.net OpenSSL decrypt](https://www.php.net/manual/en/function.openssl-decrypt.php)
 * Megosztón utolsó parancs üzenete 3 mp-ig a sarokban jelenjen meg
 * Title-ök átírása "cím - Hausz" formátumra, meta leírások átfogalmazása, és egyéb SEO tippek alkalmazása
-* Néhány fájl eltakarása keresőmotor indexelés elől (pl: index/topbar.html)
+* Néhány fájl eltakarása keresőmotor indexelés elől (pl: forras/komponensek/topbar.html)
 	* A .htaccess fájlokban "Header add" paranccsal hozzáadva az "X-Robots-Tag: noindex" header minden eltűntetendő fájlhoz
-* Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker! -> [Migráció eredmény](dokumentáció/2022.06.15%20migráció%20teszt/jegyzetek.txt)
+* Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker! -> [Migráció eredmény](dokumentáció/2022.06.15%20migráció%20teszt/jegyzetek.md)
 * Git repo megtisztítva a jelszavaktól és tanúsítványoktól: [GitHub leírás](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
-* TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása: [Szolgáltatás készítés leírás](dokumentáció/linux%20szolgáltatás/szolgáltatás%20készítés.txt)
+* TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása: [Szolgáltatás készítés leírás](dokumentáció/linux%20szolgáltatás/szolgáltatás%20készítés.md)
 * Megosztó átírás websocket alapra:
 	* Node.js alapú websocket szerver (WSS, hausz.stream certet használva)
 	* Kell hozzá a ws modul hogy működjön: "npm install ws"

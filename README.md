@@ -32,7 +32,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
         <td>ts3server</td>
         <td></td>
         <td></td>
-        <td><a href="dokumentáció/teamspeak/leírás.txt">leírás.txt</a></td>
+        <td><a href="dokumentáció/teamspeak/leírás.md">leírás.md</a></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/teamspeak/">TeamSpeak szerver infó</a></td>
@@ -46,14 +46,14 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
         <td><a href="megoszto/megoszto.php">megoszto.php</a></td>
         <td><a href="megoszto/megoszto.js">megoszto.js</a></td>
         <td><a href="megoszto/feltoltes.html">feltoltes.html</a></td>
-        <td><a href="dokumentáció/megosztó/leírás.txt">leírás.txt</a></td>
+        <td><a href="dokumentáció/megosztó/leírás.md">leírás.md</a></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/egyuttnezo/">Együttnéző (csak tesztelésre)</a></td>
         <td><a href="egyuttnezo/egyuttnezo_szerver.js">egyuttnezo_szerver.js<br>(Node.js websocket)</a></td>
         <td><a href="egyuttnezo/egyuttnezo.js">egyuttnezo.js</a></td>
         <td><a href="egyuttnezo/egyuttnezo.html">egyuttnezo.html</a></td>
-        <td><a href="dokumentáció/együttnéző/leírás.txt">leírás.txt</a></td>
+        <td><a href="dokumentáció/együttnéző/leírás.md">leírás.md</a></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/kezelo/regisztracio.html">Regisztráció</a></td>
@@ -120,7 +120,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
         <td>Topbar betöltő (JS)</td>
         <td></td>
         <td><a href="include/topbar.js">topbar.js</a></td>
-        <td><a href="index/topbar.html">topbar.html</a></td>
+        <td><a href="forras/komponensek/topbar.html">topbar.html</a></td>
         <td></td>
     </tr>
     <tr>
@@ -128,7 +128,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
         <td><a href="forras/kiadas.js">kiadas.js</a><br><a href="forras/osszes_kiadasa.sh">osszes_kiadasa.sh</a></td>
         <td></td>
         <td></td>
-        <td><a href="dokumentáció/kiadas/leiras.txt">leírás.txt</a></td>
+        <td><a href="dokumentáció/kiadas/leírás.md">leírás.md</a></td>
     </tr>
 </table>
 

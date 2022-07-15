@@ -165,7 +165,7 @@ function socket_csatlakozas() {
                     atlag_oszto_INT++;
                 }
             }
-            atlag_FLOAT = atlag_FLOAT / parseFloat(atlag_oszto_INT);
+            atlag_FLOAT = atlag_FLOAT / atlag_oszto_INT;
             obj('valaszido').innerHTML = Math.round(atlag_FLOAT) + ' ms';
             return;
         }
@@ -202,7 +202,7 @@ function jelenlegi_ido_debug() {
 function jelenlegi_ido() {
     var eredmeny_FLOAT = 0.0;
     if (valaszido_utolso_frissiteskor_FLOAT != undefined && !isNaN(valaszido_utolso_frissiteskor_FLOAT)) {
-        eredmeny_FLOAT += valaszido_utolso_frissiteskor_FLOAT / 2000;
+        eredmeny_FLOAT += valaszido_utolso_frissiteskor_FLOAT / 2000.0;
     } else {
         console.log('HIBÁS: valaszido_utolso_frissiteskor');
     }
@@ -212,14 +212,14 @@ function jelenlegi_ido() {
         console.log('HIBÁS: masodperc');
     }
     if (lejatszas_STRING == 'N') {
-        return parseFloat(eredmeny_FLOAT);
+        return eredmeny_FLOAT;
     } else {
         if (utolso_idopont_fogadasanak_ideje_FLOAT != undefined && !isNaN(utolso_idopont_fogadasanak_ideje_FLOAT)) {
             eredmeny_FLOAT += (Date.now() - utolso_idopont_fogadasanak_ideje_FLOAT) / 1000;
         } else {
             console.log('HIBÁS: utolso_idopont_fogadasanak_ideje');
         }
-        return parseFloat(eredmeny_FLOAT);
+        return eredmeny_FLOAT;
     }
 }
 
@@ -257,22 +257,27 @@ function seek(to) {
 }
 
 function masodperc_szovegge_alakitas(jelenlegi, maximum) {
+    if( typeof jelenlegi != 'number')
+        throw new Error('Jelenlegi parameter nem number típusú!!!');
+    if( typeof maximum != 'number')
+        throw new Error('Maximum parameter nem number típusú!!!');
+    
     var szoveg = "";
 
     if( maximum > 60*60 ) {
-        szoveg = parseInt( jelenlegi / (60*60) ) + ":";
+        szoveg = String(parseInt( jelenlegi / (60*60) )) + ":";
     }
     
     if( parseInt(jelenlegi / 60 % (60) ) < 10 ) {
-        szoveg += '0' + parseInt(jelenlegi / 60 % (60));
+        szoveg += '0' + String(parseInt(jelenlegi / 60 % (60)));
     } else {
-        szoveg += parseInt(jelenlegi / 60 % (60));
+        szoveg += String(parseInt(jelenlegi / 60 % (60)));
     }
 
     if( jelenlegi % 60 < 10 ) {
-        szoveg += ':0' + parseInt(jelenlegi % 60);
+        szoveg += ':0' + String(parseInt(jelenlegi % 60));
     } else {
-        szoveg += ':' + parseInt(jelenlegi % 60);
+        szoveg += ':' + String(parseInt(jelenlegi % 60));
     }
     
     return szoveg;
@@ -290,7 +295,7 @@ function player_frissitese() {
             console.log('PLAYER: Videó betöltése:  '+ video_id_STRING + ' @ ' + jelenlegi_ido());
             player.loadVideoById(video_id_STRING);
             setTimeout(function() {
-                seek(jelenlegi_ido(), true);
+                seek(jelenlegi_ido());
             }, 500);
             parancs_lista_buffer_STRING += '<br>Új videó > <a href="https://youtube.com/watch?v=' + video_id_STRING + '">' + video_id_STRING + '</a>';
         } else {
@@ -306,7 +311,7 @@ function player_frissitese() {
     if( elozo_masodperc_FLOAT != masodperc_FLOAT ) {
         console.log('PLAYER: Tekerés szerver kérésére: ' + jelenlegi_ido());
         utolso_tekeres_ideje_FLOAT = Date.now();
-        seek(jelenlegi_ido(), true);
+        seek(jelenlegi_ido());
     }
 
     if (elozo_lejatszas_STRING != lejatszas_STRING) {
@@ -315,7 +320,7 @@ function player_frissitese() {
             player.playVideo();
         } else {
             player.pauseVideo();
-            seek(jelenlegi_ido(), true);
+            seek(jelenlegi_ido());
         }
     }
 

@@ -15,7 +15,7 @@ function jelszo_valtoztatasa(event) {
     post_parameterek += "&uj_jelszo_megerosites=" + obj('uj_jelszo_megerosites').value;
     post_parameterek += "&jelenlegi_jelszo=" + obj('jelenlegi_jelszo').value;
 
-    szinkron_keres("/kezelo/jelszo_valtoztatas.php", (uzenet) => {
+    szinkron_keres("/kezelo/jelszo_valtoztatas.php", post_parameterek, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             obj('jelszo_valtoztatas_doboz').style.display = 'none';
             obj('hiba_nem_vagy_belepve_doboz').style.display = 'none';
@@ -23,7 +23,7 @@ function jelszo_valtoztatasa(event) {
         } else {
             uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
-    }, post_parameterek);
+    });
 }
 
 belepteto_rendszer_beallitas();

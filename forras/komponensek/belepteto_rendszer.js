@@ -21,22 +21,22 @@ function belepett_menu_gomb_kattintas(event) {
 function belepesgomb(event) {
     event.preventDefault();
     var post_parameterek_belepes = "login=yes&username=" + obj('username').value + "&password=" + obj('current-password').value;
-    szinkron_keres("/include/belepteto_rendszer.php", (uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
-            if (typeof belepes_siker === 'function') {   belepes_siker(uzenet); }
+            if (typeof belepes_siker === 'function') {   belepes_siker(); }
             uj_valasz_mutatasa(3000, "ok", "Sikeres belépés");
             belepteto_rendszer_frissites();
         } else {
             uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
-    }, post_parameterek_belepes);
+    });
 }
  
 function kilepesgomb(event) {
     event.preventDefault();
-    szinkron_keres("/include/belepteto_rendszer.php?logout=igen", (uzenet) => { 
+    szinkron_keres("/include/belepteto_rendszer.php?logout=igen", "", (uzenet) => { 
         if(/^OK:/.test(uzenet)) {
-            if (typeof kilepes_siker === 'function') {   kilepes_siker(uzenet); }
+            if (typeof kilepes_siker === 'function') {   kilepes_siker(); }
             session_username = "";
             session_admin = "";
             session_loggedin = "";
@@ -49,7 +49,7 @@ function kilepesgomb(event) {
 }
 
 function belepteto_rendszer_frissites() {
-    szinkron_keres("/include/belepteto_rendszer.php?statusz=1", (uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             var adatok = uzenet.replace(/^OK:/, '').split(',');
             session_username = adatok[0];
@@ -98,7 +98,7 @@ function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
 
     document.body.innerHTML += '<span id="belepteto_rendszer"></span>';
 
-    fetch("/index/belepteto_rendszer.html")
+    fetch("/forras/komponensek/belepteto_rendszer.html")
     .then(response => response.text())
     .then(uzenet => {
         obj('belepteto_rendszer').innerHTML = uzenet;

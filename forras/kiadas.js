@@ -41,8 +41,13 @@ var kimenet = "// Kiadás dátuma: " + String(new Date()) + '\n';
 for (let i = 0; i < be_elemek; i++) {
     var data = String( fs.readFileSync(be_lista[i]) );
     if( tomorites ) {
-        data = data.replace(/[\t\n\r]/ig, '');
-        data = data.replace(/  /ig, '');
+        data = data.replace(/\n[\s\t]{1,99}/ig, '\n');
+        data = data.replace(/(.*)\/\/(.*)\n/ig, '$1');
+        data = data.replace(/\/\*(.*?)\*\//ig, '');
+        data = data.replace(/\n{2,99}/ig, '\n');
+        data = data.replace(/;\n/ig, ';');
+        data = data.replace(/([\}\}])\n(?!(if|let|var))/ig, '$1');
+        data = data.replace(/\s{2,99}/ig, ' ');
     }
     kimenet += '// ' + be_lista[i] + '\n' + data + '\n';
 }
@@ -54,4 +59,4 @@ for (let i = 0; i < 50 - ki.replace(/(.*)\/(.*?)\.js$/ig, '$2.js').length; i++) 
     tabok += ' ';
 }
 
-console.log( ki.replace(/(.*)\/(.*?)\.js$/ig, '$2.js') + tabok + 'KÉSZ');
+console.log( ki.replace(/(.*)\/(.*?)\.js$/ig, '$2.js') + tabok + 'KÉSZ' + (tomorites ? ' tömörítve' : ''));

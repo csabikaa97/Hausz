@@ -22,7 +22,7 @@ function belepteto_rendszer_frissult() {
 }
 
 function uj_token_igenylese() {
-    szinkron_keres("/teamspeak/teamspeak.php?uj_token_igenylese", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.php?uj_token_igenylese", "", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             token_informaciok_frissitese();
         } else {
@@ -32,17 +32,17 @@ function uj_token_igenylese() {
 }
 
 function felhasznalok_frissitese() {
-    szinkron_keres("/teamspeak/teamspeak.php?felhasznalok", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.php?felhasznalok", "", (uzenet) => {
         if( /^OK:Nincs online felhaszn/.test(uzenet) ) {
             obj('nincs_online_felhasznalo').style.display = 'block';
             obj('van_online_felhasznalo').style.display = 'none';
             return;
         }
         if( /^OK:/.test(uzenet) ) {
-            online_felhasznalok_lista = obj('online_felhasznalok_lista');
+            var online_felhasznalok_lista = obj('online_felhasznalok_lista');
             online_felhasznalok_lista.innerHTML = '';
             uzenet = uzenet.replace( /^OK:/, '' );
-            felhasznalok = uzenet.split('\\n');
+            var felhasznalok = uzenet.split('\\n');
             felhasznalok.forEach(felhasznalo => {
                 if( felhasznalo.length > 0 ) {
                     online_felhasznalok_lista.innerHTML += '<li>' + felhasznalo + '</li>';
@@ -53,15 +53,15 @@ function felhasznalok_frissitese() {
 }
 
 function token_informaciok_frissitese() {
-    szinkron_keres("/teamspeak/teamspeak.php?token_informacio", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.php?token_informacio", "", (uzenet) => {
         if( /^OK:/.test(uzenet) ) {
             obj('van_token').style.display = 'block';
             obj('nincs_token').style.display = 'none';
             uzenet = uzenet.replace(/^OK:/, '');
-            adatok = uzenet.split('|');
+            var adatok = uzenet.split('|');
 
-            token = adatok[0];
-            jogosult_uj_rokenre = adatok[1];
+            var token = adatok[0];
+            var jogosult_uj_rokenre = adatok[1];
 
             obj('token').innerHTML = token;
 
@@ -81,11 +81,11 @@ function token_informaciok_frissitese() {
 
 function szerver_statusz_frissitese() {
     // minta:   OK:folyamat ok,telnet ok,0.00;0.00;0.00;23.489336873515
-    szinkron_keres("https://hausz.stream/teamspeak/teamspeak.php?szerver_statusz", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.php?szerver_statusz", "", (uzenet) => {
         uzenet = uzenet.replace( /^OK:/, '' );
-        adatok = uzenet.split(';');
+        var adatok = uzenet.split(';');
 
-        buffer = "";
+        var buffer = "";
 
         var folyamat_ok = adatok[0] == 'folyamat ok' ? true : false;
         var telnet_ok = adatok[1] == 'telnet ok' ? true : false;
@@ -126,7 +126,7 @@ function szerver_statusz_frissitese() {
 
             if( processzor_15perc >= processzor_hasznalat_figyelmeztetes ) {
                 if( processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
-                    $buffer += '<p>🟥 Processzor terhelés - magas körülbelül 15 perce</p>';
+                    buffer += '<p>🟥 Processzor terhelés - magas körülbelül 15 perce</p>';
                 } else {
                     if( processzor_5perc < processzor_hasznalat_figyelmeztetes ) {
                         buffer += '<p>🟨 Processzor terhelés - magas volt körülbelül 15 perce, de már lecsökkent</p>';
@@ -197,18 +197,5 @@ function szerver_statusz_frissitese() {
     });
 }
 
-varakozas(
-    () => {  return ( typeof topbar_betoltese == 'function' ); }
-    , "Nem sikerült betölteni a topbar.js scriptet!"
-    , () => {
-        topbar_betoltese();
-    }
-);
-
-varakozas(
-    () => {  return ( typeof belepteto_rendszer_beallitas == 'function'); }
-    , "Nem sikerült betölteni a belepteto_rendszer.js scriptet!"
-    , () => {
-        belepteto_rendszer_beallitas( belepteto_rendszer_frissult );
-    }
-);
+topbar_betoltese();
+belepteto_rendszer_beallitas( belepteto_rendszer_frissult );

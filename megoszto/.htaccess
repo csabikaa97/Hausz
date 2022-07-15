@@ -7,10 +7,6 @@ Allow from all
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </FilesMatch>
 
-<FilesMatch ".*\.(js|html)">
-    Header add Cache-Control "public, max-age=120"
-</FilesMatch>
-
 <FilesMatch "\.htaccess">
     Order Deny,Allow
     Deny from all

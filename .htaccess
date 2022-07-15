@@ -3,3 +3,11 @@ DirectoryIndex index.html
 RewriteEngine on
 RewriteRule (.*)index\.php https://hausz.stream/
 RewriteRule (.*)\.htaccess https://hausz.stream/
+
+<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|pizzatierlist|teamspeak|webjosda).*\.(js|html|css)">
+    Header add Cache-Control "public, max-age=120"
+</FilesMatch>
+
+<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|pizzatierlist|teamspeak|webjosda)/$">
+    Header add Cache-Control "public, max-age=120"
+</FilesMatch>
