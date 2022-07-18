@@ -1,16 +1,16 @@
 belepteto_rendszer_beallitas();
 topbar_betoltese();
 
-var szamlalo = new Date("May 6, 2019 8:00:00").getTime();
+const szamlalo = new Date("May 6, 2019 8:00:00").getTime();
 
 function ido_frissitese() {
-    most = new Date().getTime();
-    var lesz = szamlalo - most;
+    let most = new Date().getTime();
+    let kulonbseg = szamlalo - most;
 
-    var nap = Math.floor(lesz / (1000 * 60 * 60 * 24));
-    var ora = Math.floor((lesz % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var perc = Math.floor((lesz % (1000 * 60 * 60)) / (1000 * 60));
-    var masodperc = Math.floor((lesz % (1000 * 60)) / 1000);
+    let nap = Math.floor(kulonbseg / (1000 * 60 * 60 * 24));
+    let ora = Math.floor((kulonbseg % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let perc = Math.floor((kulonbseg % (1000 * 60 * 60)) / (1000 * 60));
+    let masodperc = Math.floor((kulonbseg % (1000 * 60)) / 1000);
 
     obj("nap").innerHTML = nap;
     obj("ora").innerHTML = ora;
@@ -18,4 +18,4 @@ function ido_frissitese() {
     obj("masodperc").innerHTML = masodperc;
 }
 
-var x = setInterval( () => { ido_frissitese(); }, 1000);
+var frissites = setInterval( ido_frissitese(), 1000);

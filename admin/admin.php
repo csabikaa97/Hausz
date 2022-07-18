@@ -49,7 +49,7 @@
 
         echo 'OK:';
         while($row = $result->fetch_assoc()) {
-            echo '<'.$row['request_id'].'|'.$row['username'].'|'.$row['email'].'>';
+            echo '<'.$row['request_id'].'|'.$row['username'].'|'.$row['megjeleno_nev'].'|'.$row['email'].'>';
         }
         die();
     }
@@ -60,7 +60,7 @@
 
         echo 'OK:';
         while($row = $result->fetch_assoc()) {
-            echo '<'.$row['id'].'|'.$row['username'].'|'.$row['email'].'|'.$row['admin'].'>';
+            echo '<'.$row['id'].'|'.$row['username'].'|'.$row['megjeleno_nev'].'|'.$row['email'].'|'.$row['admin'].'>';
         }
         die();
     }

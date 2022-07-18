@@ -1,5 +1,7 @@
 ## 💭 Tennivalók
 
+* template literal átírás `Valami szám: ${valami}`
+* pseudo elements ::before
 * Együttnézp iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
 * Együttnézőhöz külön videó kezelés UI készítése (folyamatban)
 * Fiókokhoz megjelenő név beállítás, profil oldal /kezelo/
@@ -8,13 +10,7 @@
 	* egyuttnezo
 	* megoszto
 * Új mappastruktúra kialakítása közös kódokhoz
-	* komponensek mappa
-	* külön mappa jelszó változtatásnak és regisztrációnak
-	* Vaagy, külön fiok mappa, benne:
-		* beléptető rendszer
-		* jelszó változatás
-		* regisztráció
-		* jövőben lehetséges profil lap
+	* Profil kezelő oldal
 * Globális: előtérbe helyezés függvény
 * Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
@@ -39,6 +35,11 @@
 
 ## ✅ Implementált tennivalók
 
+* Megosztó Priváttá / publikussá tétel gomb
+* Változó lifecycle javítása minden fájlban: let, var, const
+* Új mappastruktúra kialakítása közös kódokhoz
+	* komponensek mappa
+	* külön mappa jelszó változtatásnak és regisztrációnak
 * JS oldalak kijavítása Typescript compiler üzenetei alapján
 	- [x] megosztó
 	- [x] teamspeak infó

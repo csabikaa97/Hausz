@@ -33,9 +33,9 @@ function gomb_lejatszas() {
 }
 
 function tekeres() {
-    var max = parseFloat(obj('csuszka').max);
-    var ertek = parseFloat(obj('csuszka').value);
-    var ide = player.getDuration() * (ertek / max)
+    let max = parseFloat(obj('csuszka').max);
+    let ertek = parseFloat(obj('csuszka').value);
+    let ide = player.getDuration() * (ertek / max);
     seek( ide );
     socket.send("tekeres:" + ide);
 }
@@ -153,13 +153,13 @@ function socket_csatlakozas() {
     };
     socket.onmessage = function(event) {
         if (/^pong$/.test(event.data)) {
-            for (var i = 1; i < ping_mintak_szama_FLOAT; i++) {
+            for (let i = 1; i < ping_mintak_szama_FLOAT; i++) {
                 valaszidok_ARRAY_FLOAT[ping_mintak_szama_FLOAT - i] = valaszidok_ARRAY_FLOAT[ping_mintak_szama_FLOAT - i - 1];
             }
             valaszidok_ARRAY_FLOAT[0] = (Date.now() - valaszido_kezdes_FLOAT);
             atlag_FLOAT = 0.0;
             atlag_oszto_INT = 0;
-            for (var i = 0; i < ping_mintak_szama_FLOAT; i++) {
+            for (let i = 0; i < ping_mintak_szama_FLOAT; i++) {
                 if (!isNaN(valaszidok_ARRAY_FLOAT[i])) {
                     atlag_FLOAT += valaszidok_ARRAY_FLOAT[i];
                     atlag_oszto_INT++;
@@ -179,7 +179,7 @@ function socket_csatlakozas() {
             return;
         }
         if (/^felhasznalok:/.test(event.data)) {
-            var nevek = event.data.replace(/felhasznalok:/, '').split(",");
+            let nevek = event.data.replace(/felhasznalok:/, '').split(",");
             obj('nev_lista').innerHTML = "";
             nevek.forEach(function(nev) {
                 obj('nev_lista').innerHTML += "<li>" + nev + "</li>";
@@ -200,7 +200,7 @@ function jelenlegi_ido_debug() {
 }
 
 function jelenlegi_ido() {
-    var eredmeny_FLOAT = 0.0;
+    let eredmeny_FLOAT = 0.0;
     if (valaszido_utolso_frissiteskor_FLOAT != undefined && !isNaN(valaszido_utolso_frissiteskor_FLOAT)) {
         eredmeny_FLOAT += valaszido_utolso_frissiteskor_FLOAT / 2000.0;
     } else {
@@ -288,7 +288,7 @@ function player_frissitese() {
         return;
 
     utolso_utasitas_ideje_FLOAT = Date.now();
-    var parancs_lista_buffer_STRING = '';
+    let parancs_lista_buffer_STRING = '';
 
     if (elozo_video_id_STRING != video_id_STRING) {
         if (/^[a-zA-Z0-9-_]{11}$/.test(video_id_STRING)) {
@@ -334,7 +334,7 @@ function player_frissitese() {
     }
 }
 
-function belepteto_rendszer_frissult() {
+function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) {
     socket.send("felhasznalonev:" + session_username);
     if( session_loggedin == 'yes' ) {
         obj('uj_video_doboz').style.display = 'block';

@@ -1,4 +1,4 @@
-function belepteto_rendszer_frissult() {
+function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) {
     if( session_loggedin == 'yes' ) {
         obj('token_felhasznalas').style.display = 'block';
         obj('nincs_belepve_leiras').style.display = 'none';
@@ -39,10 +39,10 @@ function felhasznalok_frissitese() {
             return;
         }
         if( /^OK:/.test(uzenet) ) {
-            var online_felhasznalok_lista = obj('online_felhasznalok_lista');
+            let online_felhasznalok_lista = obj('online_felhasznalok_lista');
             online_felhasznalok_lista.innerHTML = '';
             uzenet = uzenet.replace( /^OK:/, '' );
-            var felhasznalok = uzenet.split('\\n');
+            let felhasznalok = uzenet.split('\\n');
             felhasznalok.forEach(felhasznalo => {
                 if( felhasznalo.length > 0 ) {
                     online_felhasznalok_lista.innerHTML += '<li>' + felhasznalo + '</li>';
@@ -58,10 +58,10 @@ function token_informaciok_frissitese() {
             obj('van_token').style.display = 'block';
             obj('nincs_token').style.display = 'none';
             uzenet = uzenet.replace(/^OK:/, '');
-            var adatok = uzenet.split('|');
+            let adatok = uzenet.split('|');
 
-            var token = adatok[0];
-            var jogosult_uj_rokenre = adatok[1];
+            let token, jogosult_uj_rokenre;
+            [token, jogosult_uj_rokenre] = adatok;
 
             obj('token').innerHTML = token;
 
@@ -83,29 +83,29 @@ function szerver_statusz_frissitese() {
     // minta:   OK:folyamat ok,telnet ok,0.00;0.00;0.00;23.489336873515
     szinkron_keres("/teamspeak/teamspeak.php?szerver_statusz", "", (uzenet) => {
         uzenet = uzenet.replace( /^OK:/, '' );
-        var adatok = uzenet.split(';');
+        let adatok = uzenet.split(';');
 
-        var buffer = "";
+        let buffer = "";
 
-        var folyamat_ok = adatok[0] == 'folyamat ok' ? true : false;
-        var telnet_ok = adatok[1] == 'telnet ok' ? true : false;
-        var processzor_1perc = parseFloat(adatok[2]);
-        var processzor_5perc = parseFloat(adatok[3]);
-        var processzor_15perc = parseFloat(adatok[4]);
-        var memoria_hasznalat = parseFloat(adatok[5]);
-        var swap_hasznalat = parseFloat(adatok[6]);
-        var lemez_hasznalat = parseFloat(adatok[7]) / 100.0;
+        let folyamat_ok = adatok[0] == 'folyamat ok' ? true : false;
+        let telnet_ok = adatok[1] == 'telnet ok' ? true : false;
+        let processzor_1perc = parseFloat(adatok[2]);
+        let processzor_5perc = parseFloat(adatok[3]);
+        let processzor_15perc = parseFloat(adatok[4]);
+        let memoria_hasznalat = parseFloat(adatok[5]);
+        let swap_hasznalat = parseFloat(adatok[6]);
+        let lemez_hasznalat = parseFloat(adatok[7]) / 100.0;
 
-        var processzor_hasznalat_figyelmeztetes = 0.75;
-        var memoria_hasznalat_elfogadhato = 0.7;
-        var memoria_hasznalat_figyelmezetetes = 0.8;
-        var memoria_hasznalat_kritikus = 0.9;
-        var swap_hasznalat_elfogadhato = 0.65;
-        var swap_hasznalat_figyelmezetetes = 0.75;
-        var swap_hasznalat_kritikus = 0.85;
-        var lemez_hasznalat_elfogadhato = 0.65;
-        var lemez_hasznalat_figyelmeztetes = 0.75;
-        var lemez_hasznalat_kritikus = 0.75;
+        const processzor_hasznalat_figyelmeztetes = 0.75;
+        const memoria_hasznalat_elfogadhato = 0.7;
+        const memoria_hasznalat_figyelmezetetes = 0.8;
+        const memoria_hasznalat_kritikus = 0.9;
+        const swap_hasznalat_elfogadhato = 0.65;
+        const swap_hasznalat_figyelmezetetes = 0.75;
+        const swap_hasznalat_kritikus = 0.85;
+        const lemez_hasznalat_elfogadhato = 0.65;
+        const lemez_hasznalat_figyelmeztetes = 0.75;
+        const lemez_hasznalat_kritikus = 0.75;
 
         if( folyamat_ok 
             && telnet_ok 

@@ -46,7 +46,7 @@ server.on('error', (err) => console.error(err));
 server.listen(8090, () => console.log('A szerver sikeresen elindult a 8090-es TCP porton'));
 
 function osszes_kliens_statusz_frissitese() {
-    var uzenet = 'statusz:' + video_id + ',' + jelenlegi_masodperc() + ',' + lejatszas + ',' + sebesseg + ',' + user;
+    let uzenet = 'statusz:' + video_id + ',' + jelenlegi_masodperc() + ',' + lejatszas + ',' + sebesseg + ',' + user;
     console.log('Üzenet küldése összes kliensnek: "'+uzenet+'"');
     wss.clients.forEach(function each(client) {
         client.send(uzenet);
@@ -54,7 +54,7 @@ function osszes_kliens_statusz_frissitese() {
 }
 
 function osszes_kliens_felhasznalolista_frissitese() {
-    var felhasznalok = "";
+    let felhasznalok = "";
     wss.clients.forEach(function each(client) {
         felhasznalok += (felhasznalok == "" ? "" : ",") + (client.felhasznalonev != undefined ? client.felhasznalonev : 'Nem regisztrált felhasználó');
     });
@@ -81,9 +81,9 @@ wss.on('connection', function connection(ws, req) {
     osszes_kliens_felhasznalolista_frissitese();
 
     ws.on('message', (event) => {
-        var idopont = new Date();
-        var szoveg = (idopont.getHours() < 10 ? '0' + idopont.getHours() : idopont.getHours()) + ':' + (idopont.getMinutes() < 10 ? '0' + idopont.getMinutes() : idopont.getMinutes()) + ':' + (idopont.getSeconds() < 10 ? '0' + idopont.getSeconds() : idopont.getSeconds()) + ' ';
-        var data = event.toString();
+        let idopont = new Date();
+        let szoveg = (idopont.getHours() < 10 ? '0' + idopont.getHours() : idopont.getHours()) + ':' + (idopont.getMinutes() < 10 ? '0' + idopont.getMinutes() : idopont.getMinutes()) + ':' + (idopont.getSeconds() < 10 ? '0' + idopont.getSeconds() : idopont.getSeconds()) + ' ';
+        let data = event.toString();
         if (/^ping$/.test(data)) {
             ws.send("pong");
             return;
@@ -95,7 +95,7 @@ wss.on('connection', function connection(ws, req) {
         }
 
         if (/^felhasznalok$/.test(data)) {
-            var felhasznalok = "";
+            let felhasznalok = "";
             wss.clients.forEach(function each(client) {
                 felhasznalok += (felhasznalok == "" ? "" : ",") + (client.felhasznalonev != undefined ? client.felhasznalonev : 'Nem regisztrált felhasználó');
             });

@@ -39,7 +39,7 @@ if( !/\.js$/.test(ki) ) { throw new Error('Csak .js fájl lehet a kimenet.'); }
 var kimenet = "// Kiadás dátuma: " + String(new Date()) + '\n';
 
 for (let i = 0; i < be_elemek; i++) {
-    var data = String( fs.readFileSync(be_lista[i]) );
+    let data = String( fs.readFileSync(be_lista[i]) );
     if( tomorites ) {
         data = data.replace(/\n[\s\t]{1,99}/ig, '\n');
         data = data.replace(/(.*)\/\/(.*)\n/ig, '$1');

@@ -9,7 +9,7 @@ function topbar_betoltese() {
 
         obj('menu_div').style.visibility = 'hidden';
         document.onclick = (event) => {
-            var menure_kattintott = false;
+            let menure_kattintott = false;
             event.composedPath().forEach(element => {
                 if( element == obj('oldalak_menu_gomb') ) {
                     menure_kattintott = true;

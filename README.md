@@ -2,13 +2,9 @@
 
 Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatásainak forráskódját, tartalmát, és dokumentációjat, illetve itt található minden olyan fájl ami a Hausz szolgáltatások üzemeltetéséhez szükséges.
 
-### Haladás
-
-* A tennivalók, a megtett lépések, illetve a megvalósított funkciók a [TODO.md](TODO.md) fájlban találhatóak
-
 ### Újítások
 
-* A változtatásokat a [főoldalon](https://hausz.stream/) az újítások részen, és a git commitokban lehet követni
+* A főbb változtatásokat a [főoldalon](https://hausz.stream/) az újítások részen, és a git commitokban lehet követni, a hátralévő feladatokat és a kisebb módosításokat pedig a [TODO.md](TODO.md) fájlban 
 
 ### Szolgáltatások
 
@@ -36,16 +32,16 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
     </tr>
     <tr>
         <td><a href="https://hausz.stream/teamspeak/">TeamSpeak szerver infó</a></td>
-        <td><a href="megoszto/teamspeak.php">teamspeak.php</a></td>
-        <td><a href="megoszto/teamspeak.js">teamspeak.js</a></td>
-        <td><a href="megoszto/teamspeak.html">teamspeak.html</a></td>
+        <td><a href="teamspeak/teamspeak.php">teamspeak.php</a></td>
+        <td><a href="teamspeak/teamspeak.js">teamspeak.js</a></td>
+        <td><a href="teamspeak/teamspeak.html">teamspeak.html</a></td>
         <td></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/megoszto/">Megosztó</a></td>
         <td><a href="megoszto/megoszto.php">megoszto.php</a></td>
         <td><a href="megoszto/megoszto.js">megoszto.js</a></td>
-        <td><a href="megoszto/feltoltes.html">feltoltes.html</a></td>
+        <td><a href="megoszto/megoszto.html">feltoltes.html</a></td>
         <td><a href="dokumentáció/megosztó/leírás.md">leírás.md</a></td>
     </tr>
     <tr>

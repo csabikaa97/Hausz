@@ -8,7 +8,7 @@ function szinkron_keres(hivatkozas, parameterek, fuggveny) {
     if(typeof parameterek != 'object' && typeof parameterek != 'string')
         throw new Error('Parameterek fuggveny nem string típusú!!!');
 
-    const xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         fuggveny(this.responseText);
     }
@@ -24,8 +24,8 @@ function szinkron_keres(hivatkozas, parameterek, fuggveny) {
 }
 
 function bajt_merette_valtasa(size) {
-    var meret = parseFloat(size);
-    var eredmeny = "";
+    let meret = parseFloat(size);
+    let eredmeny = "";
     if( meret <= 1024) {
         eredmeny = String(meret) + ' B';
     } else {
@@ -64,7 +64,7 @@ function eloterbe_helyezes(object) {
 
 function masolas(event) {
     navigator.clipboard.writeText( event.target.innerHTML ).then(function() {
-        
+        uj_valasz_mutatasa(3000, "", "Token vágólapra másolva");
     }, function(err) {
         console.error('Vágólap másolás hiba "'+event.target.innerHTML+'"');
     });
@@ -89,6 +89,9 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
         document.body.innerHTML += '<div id="valasz_uzenet" class="bottom_left_corner_div kerekites-10" style="z-index: 2; bottom: 5px; left: 5px; max-width: 20%; visibility: hidden; position: fixed; padding: 10px; text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70)"></div>';
     }
 
+    obj('valasz_uzenet').style.border ='1px solid var(--szint-2-szin)';
+    obj('valasz_uzenet').style.backgroundColor ='var(--szint-1-szin)';
+
     if( /^hiba/ig.test(tipus) ) {
         obj('valasz_uzenet').style.border ='1px solid var(--piros-1)';
         obj('valasz_uzenet').style.backgroundColor ='var(--piros-0)';
@@ -108,8 +111,8 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
 }
 
 function varakozas(feltetel, hiba, fuggveny) {
-    var kezdet = Date.now();
-    var interval = setInterval(() => {
+    let kezdet = Date.now();
+    let interval = setInterval(() => {
         if( Date.now() - kezdet > 5000 ) {
             clearInterval(interval);
             throw new Error(hiba);

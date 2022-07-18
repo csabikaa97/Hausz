@@ -70,14 +70,14 @@
     }
 
     if( isset($_GET['fajlok']) ) {
-        $result = query_futtatas("SELECT files.titkositott, files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC");
+        $result = query_futtatas("SELECT users.megjeleno_nev, files.titkositott, files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC");
         if($result) {
             if($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
                     if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username'])) or (!isset($_SESSION['loggedin']) && $row['private'] == '1') )
                         continue;
                     
-                    echo '<'.$row['id'].'|'.$row['size'].'|'.$row['filename'].'|'.$row['added'].'|'.$row['username'].'|'.$row['private'].'|'.$row['titkositott'].'>';
+                    echo '<'.$row['id'].'|'.$row['size'].'|'.$row['filename'].'|'.$row['added'].'|'.$row['megjeleno_nev'].'|'.$row['private'].'|'.$row['titkositott'].'>';
                 }
             } else {
                 echo '<-|-|-|-|-|-|->';
@@ -87,6 +87,7 @@
     }
 
     if( isset($_GET['atnevezes']) ) {
+        die_if( $_SESSION['loggedin'] != 'yes', 'HIBA:Nem vagy belépve');
         header('X-Robots-Tag: noindex');
         die_if( strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0, 'HIBA:Hiányzó uj_nev vagy file_id paraméter.');
 
@@ -110,14 +111,27 @@
         $result = query_futtatas($query);
         log_bejegyzes("megoszto", "átnevezés", "[".$_GET['file_id'].'] '.$row['filename'].' -> '.$_GET['uj_nev'], $_SESSION['username']);
         exit_ok('OK:A(z) "'.$row['filename'].'" nevű fájl sikeresen át lett nevezve.');
-        
+    }
+
+    if( isset($_GET['privat_statusz_csere']) ) {
+        die_if( $_SESSION['loggedin'] != 'yes', "HIBA:Nem vagy belépve.");
+        die_if( strlen($_GET['file_id']) <= 0, "HIBA:Nincs megadva fájl azonosító.");
+        $result = query_futtatas("select * from files where id = ".$_GET['file_id']);
+        die_if( $result->num_rows <= 0, "HIBA:Nem létezik a változtatni kívánt fájl.");
+        $row = $result->fetch_assoc();
+        if( $row['private'] ) {
+            $result = query_futtatas('update files set private = 0 where id = '.$_GET['file_id']);
+            exit_ok('OK:"'.$row['filename'].'" nevű fájl publikussá tétele kész.');
+        } else {
+            $result = query_futtatas('update files set private = 1 where id = '.$_GET['file_id']);
+            exit_ok('OK:"'.$row['filename'].'" nevű fájl priváttá tétele kész.');
+        }
     }
 
     if( isset($_GET['delete']) ) {
         die_if( !isset( $_SESSION['loggedin'] ), 'HIBA:Nem vagy belépve');
         header('X-Robots-Tag: noindex');
-        $query = "SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id'];
-        $result = query_futtatas($query);
+        $result = query_futtatas("SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id']);
         die_if( $result->num_rows <= 0, 'HIBA:Nem létező fájl azonosító');
         $row = $result->fetch_assoc();
         die_if( strtolower($_SESSION['username']) != strtolower($row['username']) && strtolower($row['username']) != "ismeretlen", 'HIBA:Nem a tiéd a fájl');
@@ -198,6 +212,7 @@
         die_if( strlen($_FILES["fileToUpload"]["name"]) <= 0, 'HIBA:Nem válaszottál ki fájlt a feltöltéshez.');
         $_FILES["fileToUpload"]["name"] = preg_replace("/'/i", '', $_FILES["fileToUpload"]["name"]);
         $_FILES["fileToUpload"]["name"] = preg_replace('/"/i', '', $_FILES["fileToUpload"]["name"]);
+        $_FILES["fileToUpload"]["name"] = preg_replace('/|/i', '', $_FILES["fileToUpload"]["name"]);
         $target_file = "/var/www/html/megoszto/fajlok/" . basename($_FILES["fileToUpload"]["name"]);
         $result_check = query_futtatas('SELECT files.filename, files.user_id, users.username FROM hausz_megoszto.files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'" COLLATE utf8mb4_general_ci;');
         if($result_check->num_rows > 0) {

@@ -1,4 +1,4 @@
-function belepteto_rendszer_frissult() {
+function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) {
     if( session_loggedin == "yes" ) {
         obj('jelszo_valtoztatas_doboz').style.display = 'block';
         obj('hiba_nem_vagy_belepve_doboz').style.display = 'none';
@@ -11,7 +11,7 @@ function belepteto_rendszer_frissult() {
 function jelszo_valtoztatasa(event) {
     event.preventDefault();
 
-    var post_parameterek = "uj_jelszo=" + obj('uj_jelszo').value;
+    let post_parameterek = "uj_jelszo=" + obj('uj_jelszo').value;
     post_parameterek += "&uj_jelszo_megerosites=" + obj('uj_jelszo_megerosites').value;
     post_parameterek += "&jelenlegi_jelszo=" + obj('jelenlegi_jelszo').value;
 

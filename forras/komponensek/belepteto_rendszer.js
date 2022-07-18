@@ -20,11 +20,11 @@ function belepett_menu_gomb_kattintas(event) {
 
 function belepesgomb(event) {
     event.preventDefault();
-    var post_parameterek_belepes = "login=yes&username=" + obj('username').value + "&password=" + obj('current-password').value;
+    let post_parameterek_belepes = "login=yes&username=" + obj('username').value + "&password=" + obj('current-password').value;
     szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             if (typeof belepes_siker === 'function') {   belepes_siker(); }
-            uj_valasz_mutatasa(3000, "ok", "Sikeres belépés");
+            uj_valasz_mutatasa(3000, "", "Sikeres belépés");
             belepteto_rendszer_frissites();
         } else {
             uj_valasz_mutatasa(5000, "hiba", uzenet);
@@ -41,7 +41,7 @@ function kilepesgomb(event) {
             session_admin = "";
             session_loggedin = "";
             belepteto_rendszer_frissites();
-            uj_valasz_mutatasa(3000, "ok", "Sikeres kilépés");
+            uj_valasz_mutatasa(3000, "", "Sikeres kilépés");
         } else {
             uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
@@ -51,7 +51,7 @@ function kilepesgomb(event) {
 function belepteto_rendszer_frissites() {
     szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
-            var adatok = uzenet.replace(/^OK:/, '').split(',');
+            let adatok = uzenet.replace(/^OK:/, '').split(',');
             session_username = adatok[0];
             session_admin = adatok[1];
             session_loggedin = 'yes';
@@ -80,7 +80,7 @@ function belepteto_rendszer_frissites() {
             obj('belepes_menu_gomb').style.display = '';
         }
         
-        if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(); }
+        if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(session_loggedin, session_username, session_admin); }
     });
 }
 
