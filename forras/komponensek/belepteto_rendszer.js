@@ -20,7 +20,10 @@ function belepett_menu_gomb_kattintas(event) {
 
 function belepesgomb(event) {
     event.preventDefault();
-    let post_parameterek_belepes = "login=yes&username=" + obj('username').value + "&password=" + obj('current-password').value;
+    let post_parameterek_belepes = new FormData();
+    post_parameterek_belepes.append('login', 'yes');
+    post_parameterek_belepes.append('username', obj('username').value);
+    post_parameterek_belepes.append('password', obj('current-password').value);
     szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             if (typeof belepes_siker === 'function') {   belepes_siker(); }
@@ -55,7 +58,7 @@ function belepteto_rendszer_frissites() {
             session_username = adatok[0];
             session_admin = adatok[1];
             session_loggedin = 'yes';
-            obj('belepve_mint').innerHTML = 'Belépve mint: ' + session_username;
+            obj('belepve_mint').innerHTML = `Belépve mint: ${session_username}`;
             if(session_admin == "igen") {
                 obj('admin_felulet_gomb').style.display = 'block';
                 obj('vscode_gomb').style.display = 'block';
@@ -93,9 +96,6 @@ var belepes_fuggveny;
 var kilepes_fuggveny;
 
 function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
-    console.log('Beléptető rendszer init')
-    if(typeof szinkron_keres != 'function') {   throw new Error('Nincs importálva az alap_fuggvenyek.js!!!'); }
-
     document.body.innerHTML += '<span id="belepteto_rendszer"></span>';
 
     fetch("/forras/komponensek/belepteto_rendszer.html")

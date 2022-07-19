@@ -16,13 +16,14 @@ function topbar_betoltese() {
                 }
                 
                 if(menure_kattintott) {
-                    obj('menu_div').style.top = String(event.y) + 'px';
                     obj('menu_div').style.visibility = '';
                     obj('menu_div').style.animation = 'height-novekedes-sigmoid 0.3s ease 1 forwards';
+                    eloterbe_helyezes( [obj('menu_div')] );
                 } else {
                     if( obj('menu_div').style.visibility != 'hidden' ) {
                         obj('menu_div').style.visibility = '';
                         obj('menu_div').style.animation = 'height-csokkenes-sigmoid 0.3s ease 1 forwards';
+                        eloterbe_helyezes_vege();
                     }
                 }
             });

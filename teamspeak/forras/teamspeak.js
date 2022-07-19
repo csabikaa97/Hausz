@@ -16,7 +16,7 @@ function belepteto_rendszer_frissult( session_loggedin, session_username, sessio
         obj('online_felhasznalok').style.display = 'none';
         obj('szerver_statusz').style.display = 'none';
         obj('csatlakozas_gomb').onclick = () => {
-            location.href = 'ts3server://hausz.stream/?port=9987&nickname=' + 'ismeretlen felhasználó';
+            location.href = 'ts3server://hausz.stream/?port=9987&nickname=ismeretlen felhasználó';
         }
     }
 }
@@ -45,7 +45,7 @@ function felhasznalok_frissitese() {
             let felhasznalok = uzenet.split('\\n');
             felhasznalok.forEach(felhasznalo => {
                 if( felhasznalo.length > 0 ) {
-                    online_felhasznalok_lista.innerHTML += '<li>' + felhasznalo + '</li>';
+                    online_felhasznalok_lista.innerHTML += `<li>${felhasznalo}</li>`;
                 }
             });
         }
@@ -80,7 +80,6 @@ function token_informaciok_frissitese() {
 }
 
 function szerver_statusz_frissitese() {
-    // minta:   OK:folyamat ok,telnet ok,0.00;0.00;0.00;23.489336873515
     szinkron_keres("/teamspeak/teamspeak.php?szerver_statusz", "", (uzenet) => {
         uzenet = uzenet.replace( /^OK:/, '' );
         let adatok = uzenet.split(';');

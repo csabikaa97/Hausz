@@ -46,8 +46,8 @@ server.on('error', (err) => console.error(err));
 server.listen(8090, () => console.log('A szerver sikeresen elindult a 8090-es TCP porton'));
 
 function osszes_kliens_statusz_frissitese() {
-    let uzenet = 'statusz:' + video_id + ',' + jelenlegi_masodperc() + ',' + lejatszas + ',' + sebesseg + ',' + user;
-    console.log('Üzenet küldése összes kliensnek: "'+uzenet+'"');
+    let uzenet = `statusz:${video_id},${jelenlegi_masodperc()},${lejatszas},${sebesseg},${user}`;
+    console.log(`Üzenet küldése összes kliensnek: "${uzenet}"`);
     wss.clients.forEach(function each(client) {
         client.send(uzenet);
     });
@@ -82,7 +82,7 @@ wss.on('connection', function connection(ws, req) {
 
     ws.on('message', (event) => {
         let idopont = new Date();
-        let szoveg = (idopont.getHours() < 10 ? '0' + idopont.getHours() : idopont.getHours()) + ':' + (idopont.getMinutes() < 10 ? '0' + idopont.getMinutes() : idopont.getMinutes()) + ':' + (idopont.getSeconds() < 10 ? '0' + idopont.getSeconds() : idopont.getSeconds()) + ' ';
+        let szoveg = `${(idopont.getHours() < 10 ? '0' + idopont.getHours() : idopont.getHours())}:${(idopont.getMinutes() < 10 ? '0' + idopont.getMinutes() : idopont.getMinutes())}:${(idopont.getSeconds() < 10 ? '0${idopont.getSeconds()' : idopont.getSeconds())}`;
         let data = event.toString();
         if (/^ping$/.test(data)) {
             ws.send("pong");
@@ -90,7 +90,7 @@ wss.on('connection', function connection(ws, req) {
         }
 
         if (/^statusz$/.test(data)) {
-            ws.send('statusz:' + video_id + ',' + jelenlegi_masodperc() + ',' + lejatszas + ',' + sebesseg + ',' + ws.felhasznalonev);
+            ws.send(`statusz:${video_id},${jelenlegi_masodperc()},${lejatszas},${sebesseg},${ws.felhasznalonev}`);
             return;
         }
 
@@ -107,14 +107,14 @@ wss.on('connection', function connection(ws, req) {
             if( /^felhasznalonev:$/.test( data ) ) {
                 ws.felhasznalonev = undefined;
             } else {
-                console.log(szoveg + (ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id) + ': Felhasználóneve mostantól "' + data.replace(/^felhasznalonev:(.*)/, '$1') + '"');
+                console.log(`${szoveg + (ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id)}: Felhasználóneve mostantól "${data.replace(/^felhasznalonev:(.*)/, '$1')}"`);
                 ws.felhasznalonev = data.replace(/^felhasznalonev:(.*)/, '$1');
             }
             osszes_kliens_felhasznalolista_frissitese();
             return;
         }
 
-        console.log(szoveg + (ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id) + ':\tCsomag: "' + data + '"');
+        console.log(`${szoveg + (ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id)}:\tCsomag: "${data}"`);
         if(ws.felhasznalonev == undefined) {
             return;
         }

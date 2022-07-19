@@ -12,17 +12,17 @@ ujitasok = {
 }
 
 
-ujitasok_doboz = obj('ujitasok_doboz');
+doboz = obj('ujitasok_doboz');
 
 Object.keys(ujitasok).forEach(datum => {
-    ujitasok_doboz.innerHTML += '<p class="tab-1">'+datum+'</p>';
+    doboz.innerHTML += `<p class="tab-1">${datum}</p>`;
     ujitasok[datum].forEach(ujitas => {
         if( ujitas.length > 0 ) {
             if( /:/.test(ujitas) ) {
                 ujitas = ujitas.split(':');
-                ujitasok_doboz.innerHTML += '<li class="tab-2"><font style="text-decoration: underline">' + ujitas[0] + '</font>:' + ujitas[1] + '</li><br>';
+                doboz.innerHTML += `<li class="tab-2"><font style="text-decoration: underline">${ujitas[0]}</font>:${ujitas[1]}</li><br>`;
             } else {
-                ujitasok_doboz.innerHTML += '<li class="tab-2">' + ujitas + '</li><br>';
+                doboz.innerHTML += `<li class="tab-2">${ujitas}</li><br>`;
             }
         }
     });

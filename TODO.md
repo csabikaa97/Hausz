@@ -1,8 +1,8 @@
 ## 💭 Tennivalók
 
-* template literal átírás `Valami szám: ${valami}`
+* style="" egyszerűsítés
 * pseudo elements ::before
-* Együttnézp iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
+* Együttnéző iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
 * Együttnézőhöz külön videó kezelés UI készítése (folyamatban)
 * Fiókokhoz megjelenő név beállítás, profil oldal /kezelo/
 * /uploads mappa kivezetése Jul. 28 után
@@ -35,6 +35,7 @@
 
 ## ✅ Implementált tennivalók
 
+* Bonyolult JS részek átírása Template literal-okkal
 * Megosztó Priváttá / publikussá tétel gomb
 * Változó lifecycle javítása minden fájlban: let, var, const
 * Új mappastruktúra kialakítása közös kódokhoz

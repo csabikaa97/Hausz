@@ -32,23 +32,21 @@
 	<body>
         <script id="tag"></script>
         <script src="/egyuttnezo/egyuttnezo.js"></script>
-    	    
-		<h1 class="kozepre-szoveg">Hausz együttnéző</h1>
+    	
 		<div class="szint-2">
-            <div id="bal" class="merettol-fuggoen-inline-block">
-                <div id="player" style="width: min(100vw, 1024px); height: min(56vw, 576px)"></div>
-                <div id="iranyito_gombok" style="display: none">
-                    <div id="lejatszasgomb" class="inline" onclick="gomb_lejatszas()">▶</div>
-                    <div id="megallitasgomb" class="inline" onclick="gomb_megallitas()">⏸</div>
-                    <div id="csuszka_doboz" class="inline">
-                        <input onchange="tekeres()" id="csuszka" type="range" min="1" max="10000000000" value="50" style="width: 100%">
-                    </div>
-                    <div id="ido"></div>
+            <div class="block" style="background-color: black">
+                <div id="player" style="width: min(100vw, 1440px, 177vh); height: min(56vw, 810px, 100vh); margin: auto; display: block"></div>
+            </div>
+            <div id="iranyito_gombok" style="display: none">
+                <div id="lejatszasgomb" class="inline" onclick="gomb_lejatszas()">▶</div>
+                <div id="megallitasgomb" class="inline" onclick="gomb_megallitas()" style="display: none">⏸</div>
+                <div id="ido" class="inline"></div>
+                <div id="csuszka_doboz" class="inline">
+                    <input onclick="tekeres(obj('csuszka').value)" onchange="tekeres(obj('csuszka').value)" id="csuszka" type="range" min="1" max="10000000000" value="50" style="width: min(100vw, 1440px, 177vh)">
                 </div>
             </div>
             <div id="jobb" class="merettol-fuggoen-inline-block">
                 <div id="leiras">
-                    <h2>Videó információ</h2>
                     <div id="video_informaciok">
                         <h3>Jelenlegi videó:</h3>
                         <a style="font-size: 18px" href="" id="video_link"></a><br><br>
@@ -63,7 +61,6 @@
                         <button onclick="gomb_uj_video()">Új videó indítása</button>
                     </div>
 
-                    <br><br><button onclick="gomb_szinkronizalas()">Idő szinkronizálása (Átmeneti amíg nem lesz jobb megoldás)</button>
                     <br><br>
                     <div id="parancs_box" style="overflow-y: scroll; max-height: 300px; background-color: rgb(50,50,50);">
                         <h2>Online felhasználók</h2>

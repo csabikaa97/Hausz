@@ -1,5 +1,5 @@
 <?php
-    function printLn($string) { 
+    function printLn($string) {
         echo $string . "\n";
     }
 

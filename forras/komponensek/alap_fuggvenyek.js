@@ -1,12 +1,19 @@
 var uj_valasz_mutatasa_idozito;
+var regi_zindex;
+var regi_position;
+var eloterbe_helyezett_objectek;
+var eloterbe_helyezett_objectek_szama = 0;
 
 function szinkron_keres(hivatkozas, parameterek, fuggveny) {
-    if(typeof hivatkozas != 'string')
+    if(typeof hivatkozas != 'string') {
         throw new Error('Hivatkozás paraméter nem string típusú!!!');
-    if(typeof fuggveny != 'function')
+    }
+    if(typeof fuggveny != 'function') {
         throw new Error('Fuggveny paraméter nem függvény típusú!!!');
-    if(typeof parameterek != 'object' && typeof parameterek != 'string')
+    }
+    if(typeof parameterek != 'object' && typeof parameterek != 'string') {
         throw new Error('Parameterek fuggveny nem string típusú!!!');
+    }
 
     let xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
@@ -16,11 +23,14 @@ function szinkron_keres(hivatkozas, parameterek, fuggveny) {
         if( parameterek.length <= 0 ) {
             xhttp.open("GET", hivatkozas);
             xhttp.send();
+        } else {
+            xhttp.open("GET", hivatkozas);
+            xhttp.send();
         }
+    } else {
+        xhttp.open("POST", hivatkozas);
+        xhttp.send(parameterek);
     }
-    xhttp.open("POST", hivatkozas);
-    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhttp.send(parameterek);
 }
 
 function bajt_merette_valtasa(size) {
@@ -51,22 +61,89 @@ function bajt_merette_valtasa(size) {
     return eredmeny;
 }
 
-function eloterbe_helyezes(object) {
+function eloterbe_helyezes_vege() {
+    if( obj('sotetites_div') != null) {
+        obj('sotetites_div').remove();
+    }
+
+    let metatagek = document.getElementsByTagName('meta')
+    for (let i = 0; i < metatagek.length; i++) {
+        if( /light/ig.test(metatagek[i].media) ) {
+            metatagek[i].content = "rgb(245,245,245)";
+        }
+        if( /dark/ig.test(metatagek[i].media) ) {
+            metatagek[i].content = "rgb(30,30,30)";
+        }
+    }
+
+    if( eloterbe_helyezett_objectek_szama > 0 ) {
+        for (let i = 0; i < eloterbe_helyezett_objectek_szama; i++) {
+            jelenlegi = obj(eloterbe_helyezett_objectek[i].id);
+            if( jelenlegi != null ) {
+                jelenlegi.style.zIndex = regi_zindex[i];
+                jelenlegi.style.position = regi_position[i];
+            }
+        }
+        eloterbe_helyezett_objectek_szama = 0;
+        eloterbe_helyezett_objectek = undefined;
+    }
+}
+
+function eloterbe_helyezes(objectek, kattintassal_vege) {
+    eloterbe_helyezes_vege();
     if( obj('sotetites_div') == null ) {
-        var sotetites = document.createElement('div');
+        let sotetites = document.createElement('div');
         sotetites.id = 'sotetites_div';
-        sotetites.style = "z-index: 10; background-color: black; opacity: 0.65; display: block; width: 100%; height: 100%; top: 0; left: 0;";
+        sotetites.style = "z-index: 10; position: fixed; background-color: black; opacity: 0.65; display: block; width: 100%; height: 100%; top: 0; left: 0;";
         document.body.appendChild(sotetites);
     }
 
-    object.style.zIndex = '';
+    let metatagek = document.getElementsByTagName('meta')
+    for (let i = 0; i < metatagek.length; i++) {
+        if( /light/ig.test(metatagek[i].media) ) {
+            metatagek[i].content = "rgb(85.75, 85.75, 85.75)";
+        }
+        if( /dark/ig.test(metatagek[i].media) ) {
+            metatagek[i].content = "rgb(10.5, 10.5, 10.5)";
+        }
+    }
+
+    if( kattintassal_vege ) {
+        obj('sotetites_div').onclick = () => {
+            eloterbe_helyezes_vege();
+        }
+    } else {
+        obj('sotetites_div').onclick = null;
+    }
+
+    regi_zindex = [];
+    regi_position = [];
+    eloterbe_helyezett_objectek = [];
+    eloterbe_helyezett_objectek_szama = 0;
+    objectek.forEach(object => {
+        eloterbe_helyezett_objectek_szama += 1;
+        regi_zindex = [...regi_zindex, object.style.zIndex];
+        regi_position = [...regi_position, object.style.position];
+        eloterbe_helyezett_objectek = [...eloterbe_helyezett_objectek, object];
+
+        let van_position = false;
+        for (let i = 0; i < object.style.length; i++) {
+            if(object.style[i] == 'position') {
+                van_position = true;
+            }
+        }
+        if( !van_position ) {
+            object.style.position = 'relative';
+        }
+        object.style.zIndex = '11';
+    });
 }
 
 function masolas(event) {
     navigator.clipboard.writeText( event.target.innerHTML ).then(function() {
         uj_valasz_mutatasa(3000, "", "Token vágólapra másolva");
     }, function(err) {
-        console.error('Vágólap másolás hiba "'+event.target.innerHTML+'"');
+        console.error(`Vágólap másolás hiba "${event.target.innerHTML}"`);
     });
 }
 
@@ -75,6 +152,14 @@ function obj(szoveg) {
         return document.querySelector('#' + szoveg);
     }
     return document.querySelector(szoveg);
+}
+
+function idopontbol_datum(datum) {
+    datum.setHours(0);
+    datum.setSeconds(0);
+    datum.setMinutes(0);
+    datum.setMilliseconds(0);
+    return datum;
 }
 
 function uj_valasz_mutatasa(ido, tipus, valasz) {
@@ -102,7 +187,7 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
         obj('valasz_uzenet').style.backgroundColor ='var(--zold-0)';
     }
 
-    obj('valasz_uzenet').innerHTML = "<p>" + valasz + "</p>";
+    obj('valasz_uzenet').innerHTML = `<p>${valasz}</p>`;
     obj('valasz_uzenet').style.visibility = "visible";
     clearTimeout(uj_valasz_mutatasa_idozito);
     uj_valasz_mutatasa_idozito = setTimeout(() => {

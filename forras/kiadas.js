@@ -36,7 +36,7 @@ if(ki == '') {
 
 if( !/\.js$/.test(ki) ) { throw new Error('Csak .js fájl lehet a kimenet.'); }
 
-var kimenet = "// Kiadás dátuma: " + String(new Date()) + '\n';
+var kimenet = `// Kiadás dátuma: ${String( new Date() )}\n`;
 
 for (let i = 0; i < be_elemek; i++) {
     let data = String( fs.readFileSync(be_lista[i]) );
@@ -49,7 +49,7 @@ for (let i = 0; i < be_elemek; i++) {
         data = data.replace(/([\}\}])\n(?!(if|let|var))/ig, '$1');
         data = data.replace(/\s{2,99}/ig, ' ');
     }
-    kimenet += '// ' + be_lista[i] + '\n' + data + '\n';
+    kimenet += `// ${be_lista[i]}\n${data}\n`;
 }
 
 fs.writeFileSync(ki, kimenet);
