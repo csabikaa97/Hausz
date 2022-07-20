@@ -16,9 +16,12 @@
 /egyuttnezo/package.json
 /egyuttnezo/package-lock.json
 
-/admin/backup/
+/teszteles/node_modules
+/teszteles/package.json
+/teszteles/package-lock.json
+/teszteles/cypress/videos/
 
-/test/
+/admin/backup/
 
 # Csomagolt Javascript fájlok
 

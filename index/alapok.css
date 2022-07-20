@@ -67,6 +67,13 @@
     .szint-9 { background-color: var(--szint-9-szin); box-shadow: 0px 0px 5px 0px var(--szint-9-szin); }
 }
 
+.zold-0 { background-color: var(--zold-0); }
+.zold-1 { background-color: var(--zold-1); }
+.piros-0 { background-color: var(--piros-0); }
+.piros-1 { background-color: var(--piros-1); }
+
+.black { background-color: black; }
+
 /* Egyedi classok */
 
 h1 { font-size: 25px; }
@@ -102,6 +109,9 @@ h6 { font-size: 20px; }
 .fit-content { width: fit-content; width: -moz-fit-content; }
 .no-border { border: 0px; }
 .lathatatlan { visibility: hidden; }
+.nodisplay { display: none; }
+.max-szelesseg { width: 100%; }
+.pointer { cursor: pointer; }
 
 table.tablazat {
     border: 0.5px solid var(--szint-4-szin);
@@ -234,6 +244,20 @@ td.cella {
 .zindex-7 { z-index: 7; }
 .zindex-8 { z-index: 8; }
 .zindex-9 { z-index: 9; }
+
+/* Betűméretek */
+.f5 { font-size: 5px; }
+.f10 { font-size: 10px; }
+.f15 { font-size: 15px; }
+.f20 { font-size: 20px; }
+.f25 { font-size: 25px; }
+.f30 { font-size: 30px; }
+.f35 { font-size: 35px; }
+.f40 { font-size: 40px; }
+.f45 { font-size: 45px; }
+.f50 { font-size: 50px; }
+.f55 { font-size: 55px; }
+.f60 { font-size: 60px; }
 
 /* Animációk */
 @keyframes height-novekedes-sigmoid {

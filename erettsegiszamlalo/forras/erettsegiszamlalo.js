@@ -1,5 +1,5 @@
-belepteto_rendszer_beallitas();
 topbar_betoltese();
+belepteto_rendszer_beallitas();
 
 const szamlalo = new Date("May 6, 2019 8:00:00").getTime();
 

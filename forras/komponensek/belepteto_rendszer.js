@@ -45,6 +45,8 @@ function kilepesgomb(event) {
             session_loggedin = "";
             belepteto_rendszer_frissites();
             uj_valasz_mutatasa(3000, "", "Sikeres kilépés");
+            obj('username').value = '';
+            obj('current-password').value = '';
         } else {
             uj_valasz_mutatasa(5000, "hiba", uzenet);
         }
@@ -52,6 +54,18 @@ function kilepesgomb(event) {
 }
 
 function belepteto_rendszer_frissites() {
+    if( obj('belepes_menu_gomb') == null ) {
+        let varakozas = setInterval(() => {
+            if(obj('topbar') != null) {
+                obj('topbar').innerHTML += `
+                    <div class="nodisplay nagy-kepernyon-tiltas inline-block szint-2 gomb kerekites-15 topbar_menu fit-content" id="belepes_menu_gomb" style="float: right; margin-right: 20px" onclick='belepes_menu_gomb_kattintas(event)'>Belépés</div>
+                    <div class="nodisplay nagy-kepernyon-tiltas inline-block szint-2 gomb kerekites-15 topbar_menu fit-content" id="belepett_menu_gomb" style="float: right; margin-right: 20px" onclick='belepett_menu_gomb_kattintas(event)'></div>
+                `;
+                clearInterval(varakozas);
+            }
+        }, 15);
+    }
+
     szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             let adatok = uzenet.replace(/^OK:/, '').split(',');
@@ -68,9 +82,11 @@ function belepteto_rendszer_frissites() {
                 obj('vscode_gomb').style.display = 'none';
             }
             if(session_username != "") {
-                obj('belepett_menu_gomb').style.display = '';
+                obj('belepett_menu_gomb').innerHTML = session_username;
+                obj('belepett_menu_gomb').style.display = 'block';
                 obj('belepes_menu_gomb').style.display = 'none';
             }
+
             obj('belepett_doboz').style.visibility = 'visible';
             obj('belepes_doboz').style.visibility = 'hidden';
         } else {
@@ -80,7 +96,7 @@ function belepteto_rendszer_frissites() {
             obj('belepett_doboz').style.visibility = 'hidden';
             obj('belepes_doboz').style.visibility = 'visible';
             obj('belepett_menu_gomb').style.display = 'none';
-            obj('belepes_menu_gomb').style.display = '';
+            obj('belepes_menu_gomb').style.display = 'block';
         }
         
         if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(session_loggedin, session_username, session_admin); }
@@ -96,16 +112,17 @@ var belepes_fuggveny;
 var kilepes_fuggveny;
 
 function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
-    document.body.innerHTML += '<span id="belepteto_rendszer"></span>';
+    let span = document.createElement('span');
+    span.id = 'belepteto_rendszer';
 
     fetch("/forras/komponensek/belepteto_rendszer.html")
     .then(response => response.text())
     .then(uzenet => {
-        obj('belepteto_rendszer').innerHTML = uzenet;
+        span.innerHTML = uzenet;
+        document.body.appendChild(span);
         belepteto_rendszer_frissites();
+        if( typeof frissult == 'function' ) { frissites_fuggveny = frissult; }
+        if( typeof belepes == 'function' ) { belepes_fuggveny = belepes; }
+        if( typeof kilepes == 'function' ) { kilepes_fuggveny = kilepes; }
     });
-
-    if( typeof frissult == 'function' ) { frissites_fuggveny = frissult; }
-    if( typeof belepes == 'function' ) { belepes_fuggveny = belepes; }
-    if( typeof kilepes == 'function' ) { kilepes_fuggveny = kilepes; }
 }

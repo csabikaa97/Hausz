@@ -187,7 +187,7 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
         obj('valasz_uzenet').style.backgroundColor ='var(--zold-0)';
     }
 
-    obj('valasz_uzenet').innerHTML = `<p>${valasz}</p>`;
+    obj('valasz_uzenet').innerHTML = `<p style="color: rgb(240,240,240)">${valasz}</p>`;
     obj('valasz_uzenet').style.visibility = "visible";
     clearTimeout(uj_valasz_mutatasa_idozito);
     uj_valasz_mutatasa_idozito = setTimeout(() => {

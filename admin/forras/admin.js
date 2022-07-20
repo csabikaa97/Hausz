@@ -27,7 +27,7 @@ function admin_statusz_csere(nev, id) {
 
 function elutasitas(nev, id) {
     if( confirm('Biztosan elutasítod "'+nev+'" regisztrációs kérelmét?') ) {
-        szinkron_keres("/admin/admin.php?elutasitas&id=" + id, "", (uzenet) => {
+        szinkron_keres(`/admin/admin.php?elutasitas&id=${id}`, "", (uzenet) => {
             if( /^OK:/.test(uzenet) ) {
                 aktivalando_fiokok_betoltese();
                 log_betoltese(); 
@@ -39,8 +39,8 @@ function elutasitas(nev, id) {
 }
 
 function aktivalas(nev, id) {
-    if( confirm('Biztosan elfogadod "'+nev+'" regisztrációs kérelmét?') ) {
-        szinkron_keres("/admin/admin.php?aktivalas&request_id=" + id, "", (uzenet) => {
+    if( confirm(`Biztosan elfogadod "${nev}" regisztrációs kérelmét?`) ) {
+        szinkron_keres(`/admin/admin.php?aktivalas&id=${id}`, "", (uzenet) => {
             if( /^OK:/.test(uzenet) ) {
                 aktivalando_fiokok_betoltese();
                 fiokok_betoltese();
@@ -86,8 +86,8 @@ function aktivalando_fiokok_betoltese() {
                     buffer += `<td class="cella">${username}</td>`;
                     buffer += `<td class="cella">${megjeleno_nev}</td>`;
                     buffer += `<td class="cella">${email}</td>`;
-                    buffer += `<td class="cella"><div class="szint-2 gomb kerekites-15" onclick="elutasitas("${username}", ${request_id}')">Elutasítás</div></td>`;
-                    buffer += `<td class="cella"><div class="szint-2 gomb kerekites-15" onclick="aktivalas("${username}", ${request_id}')">Aktiválás</div></td>`;
+                    buffer += `<td class="cella"><div class="szint-2 gomb kerekites-15" onclick="elutasitas(&quot;${username}&quot;, ${request_id})">Elutasítás</div></td>`;
+                    buffer += `<td class="cella"><div class="szint-2 gomb kerekites-15" onclick="aktivalas(&quot;${username}&quot;, ${request_id})">Aktiválás</div></td>`;
                     buffer += `</tr>`;
                 });
             } else {

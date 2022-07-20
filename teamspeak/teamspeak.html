@@ -31,8 +31,8 @@
 	<body>
         <script src="/teamspeak/teamspeak.js"></script>
         
-        <h1 style="text-align: center">Hausz keresztény TeamSpeak szerver</h1>
-        <div style="max-width: 800px; width: 90%; margin: auto">
+        <h1 class="kozepre-szoveg">Hausz keresztény TeamSpeak szerver</h1>
+        <div class="kozepre" style="max-width: 800px; width: 90%">
             <h2>Lépések a csatlakozáshoz</h2>
             <div class="tab-1">
                 <h3>1. Töltsd le a TeamSpeak 3 kliens szoftvert, és telepítsd az eszközödre.</h3>
@@ -42,26 +42,26 @@
                 </div>
                 <h3>2. Kattints rá a következő gombra a csatlakozáshoz:</h3>
                 <div id="csatlakozas_gomb" class="tab-2 gomb szint-2 kerekites-15 inline">Csatlakozás a Hausz TS szerverhez</div>
-                <div id="token_felhasznalas" style="display: none">
+                <div id="token_felhasznalas" class="nodisplay">
                     <h3>3. Használd fel a jogosultsági tokened</h3>
                     <div class="tab-2">
-                        <div id="van_token" style="display: none">
+                        <div id="van_token" class="nodisplay">
                             Jelenlegi jogosultsági tokened: <abbr class="linkDekoracioTiltas" title="Kattints a tokenre a másoláshoz"><szoveg id="token" onclick="masolas(event)"></szoveg></abbr>
                             <p>Windows:  Az ablak tetején Permissions > Use Privilege Key</p>
                             <p>MacOS:       Menü bar > Permissions > Use Privilege Key</p>
                             <p>A lehetőség kiválasztásakor felugró ablakba kell beillesztened a fenti tokent ami megadja számodra a "Szabad ember" jogosultsági szintet.</p>
                         </div>
-                        <div id="nincs_token" style="display: none">
+                        <div id="nincs_token" class="nodisplay">
                             Jelenleg nincs jogosultsági tokened <div class="gomb szint-2 kerekites-15 inline" onclick="uj_token_igenylese()">Új token igénylése</div>
                         </div>
-                        <div id="jogosult_tokenre_szoveg" style="display: none">
+                        <div id="jogosult_tokenre_szoveg" class="nodisplay">
                             Jogosult vagy új token kérésére, mert a jelenlegi tokened több mint 5 napja készült: 
                             <br><br><div class="gomb szint-2 kerekites-15 inline" onclick="uj_token_igenylese()">Új token igénylése</div>
                         </div>
                     </div>
                 </div>
 
-                <div id="nincs_belepve_leiras" style="display: none">
+                <div id="nincs_belepve_leiras" class="nodisplay">
                     <h3>3. Lépj be jogosultság igényléséhez</h3>
                     <div class="tab-2">
                         Ha nem rendelkezel Hausz fiókkal, akkor meg kell várnod hogy adjon jogosultságot valaki aki online van. Abban az esetben ha regisztrálsz magadnak fiókot a jobb alsó sarokban található gombbal, akkor a jogosultságot meg tudod adni magadnak, és az online felhasználók listáját is láthatod erről a weboldalról.
@@ -71,13 +71,13 @@
             <br><br>
             
             <div>
-                <div id="online_felhasznalok" style="display: none">
+                <div id="online_felhasznalok" class="nodisplay">
                     <div id="van_online_felhasznalo">
                         <h2>Online felhasználók</h2>
                         <ul class="tab-2" id="online_felhasznalok_lista">
                         </ul>
                     </div>
-                    <div id="nincs_online_felhasznalo" style="display: none">
+                    <div id="nincs_online_felhasznalo" class="nodisplay">
                         <h2>Online felhasználók</h2>
                         <p class="tab-2">Jelenleg senki nincs csatlakozva a szerverhez.</p>
                     </div>
@@ -85,7 +85,7 @@
             </div>
             <br><br>
 
-            <div id="szerver_statusz" style="display: none">
+            <div id="szerver_statusz" class="nodisplay">
                 <h2>Szerver státusz</h2>
                 <div class="tab-2" id="szerver_statusz_szoveg">
                 </div>

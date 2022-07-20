@@ -1,40 +1,45 @@
 "use strict";
 
-function gomb_uj_video() {
+function gomb_uj_video() { console.log('CALL: gomb_uj_video()');
     socket.send('uj_video:' + obj('video_id_mezo').value);
     obj('video_id_mezo').value = "";
 }
 
-function input_uj_video() {
+function input_uj_video() { console.log('CALL: input_uj_video()');
     if (event.key === 'Enter') {
         gomb_uj_video();
     }
 }
 
-function gomb_megallitas() {
+function gomb_lejatszas() { console.log('CALL: gomb_lejatszas()');
     if(session_loggedin == 'yes') {
-        player.pauseVideo();
-        console.log(player.getCurrentTime());
-        socket.send("lejatszas:N|tekeres:" + player.getCurrentTime());
+        if( player.getPlayerState() != 1 ) {
+            player.playVideo();
+            socket.send("lejatszas:I");
+        } else {
+            player.pauseVideo();
+            socket.send("lejatszas:N|tekeres:" + player.getCurrentTime());
+        }
     }
 }
 
-function gomb_lejatszas() {
-    if(session_loggedin == 'yes') {
-        player.playVideo();
-        socket.send("lejatszas:I");
-    }
-}
-
-function tekeres(ido) {
+function tekeres(ido) { console.log('CALL: tekeres()');
     let ertek = parseFloat(ido);
+    console.log(`Tekerés ide: ${ido}`);
+    utolso_tekeres_ideje_INT = parseInt(new Date().getTime());
     let max = parseFloat(obj('csuszka').max);
     let ide = player.getDuration() * (ertek / max);
     seek( ide );
     socket.send("tekeres:" + ide);
 }
 
-function onYouTubeIframeAPIReady() {
+function onYouTubeIframeAPIReady() { console.log('CALL: onYouTubeIframeAPIReady()');
+    api_betoltve = true;if( session_loggedin == 'yes' ) {
+        obj('iranyitas_doboz').style.display = 'block';
+    } else {
+        obj('iranyitas_doboz').style.display = 'none';
+    }
+
     player = new YT.Player('player', {
         height: '390',
         width: '640',
@@ -42,7 +47,8 @@ function onYouTubeIframeAPIReady() {
         playerVars: {
             'playsinline': 1,
             'autoplay': 1,
-            'controls': 0
+            'controls': 1,
+            'mute': 1
         },
         events: {
             'onReady': onPlayerReady,
@@ -50,16 +56,26 @@ function onYouTubeIframeAPIReady() {
             'onError': onPlayerError
         }
     });
+
+    obj('csuszka').onclick = () => {
+        console.log('onclick');
+        tekeres(obj('csuszka').value);
+    }
+    obj('csuszka').onchange = () => {
+        console.log('onchange');
+        tekeres(obj('csuszka').value);
+    }
 }
 
-function onPlayerError(event) {
-    console.log('Player hiba: ' + event.data);
+function onPlayerError(event) { console.log('CALL: onPlayerError()');
+    uj_valasz_mutatasa(5000, "hiba", `Lejátszó hiba: ${event.data}`);
 }
 
-function onPlayerReady(event) {
-    console.log("PLAYER: iframe betöltve");
+function onPlayerReady(event) { console.log('CALL: onPlayerReady()');
     player_betoltott_BOOL = true;
     player_frissitese();
+
+    player.playVideo();
 
     csuszka_folyamatos_frissitese = setInterval(() => {
         if( typeof player.getCurrentTime() == 'number' ) {
@@ -73,34 +89,33 @@ function onPlayerReady(event) {
             }
         }
     }, 33);
-}
 
-function onStateChange(event) {
-    if(event.data == 1) {
-        obj('megallitasgomb').style.display = 'inline';
-        obj('lejatszasgomb').style.display = 'none';
+    if( session_loggedin == 'yes' ) {
+        obj('iranyitas_doboz').style.display = 'block';
     } else {
-        obj('megallitasgomb').style.display = 'none';
-        obj('lejatszasgomb').style.display = 'inline';
+        obj('iranyitas_doboz').style.display = 'none';
     }
 }
 
-function socket_csatlakozas() {
+function onStateChange(event) { console.log('CALL: onStateChange()');
+    if(event.data == 1) {
+        obj('lejatszasgomb').innerHTML = '⏸';
+    } else {
+        obj('lejatszasgomb').innerHTML = '▶';
+        if( lejatszas_STRING == 'I' ) {
+            player.playVideo();
+        }
+    }
+}
+
+function socket_csatlakozas() { console.log('CALL: socket_csatlakozas()');
     clearInterval(socket_ujracsatlakozas_INTERVAL);
-    console.log('WebSocket: Csatlakozás...');
     socket = new WebSocket('wss://hausz.stream:8090/echo');
     socket.onopen = function() {
-        console.log('WebSocket: Csatlakozva');
         socket_csatlakozva = true;
-        if(session_username != '') {
-            socket.send("felhasznalonev:" + session_username);
-            felhasznalonev_elkuldve = true;
-        }
-        if(!player_betoltott_BOOL) {
-            console.log('PLAYER: iframe betöltése...');
-            tag.src = "https://www.youtube.com/iframe_api";
-        }
+
         obj('csatlakozas_statusz').innerHTML = '🟩';
+
         valaszidok_ARRAY_FLOAT = Array();
         tekeres_ellenorzes_INTERVAL = setInterval(function() {
         }, 100);
@@ -109,13 +124,24 @@ function socket_csatlakozas() {
             socket.send('ping');
         }, 1000);
         socket.send('statusz');
+
+
+        if( belepteto_rendszer_betoltott ) {
+            if( !api_betoltve ) {
+                youtube_api_betoltese();
+            }
+        }
+        if(session_username != '') {
+            socket.send("felhasznalonev:" + session_username);
+            felhasznalonev_elkuldve = true;
+        }
     };
     socket.onclose = function(event) {
         socket_csatlakozva = false;
         if (event.wasClean) {
-            console.log('WebSocket: Disconnected');
+            uj_valasz_mutatasa(5000, "hiba", 'WebSocket: Lecsatlakozva');
         } else {
-            console.log('WebSocket: Connection break: ' + (event.reason || event.code));
+            uj_valasz_mutatasa(5000, "hiba", `WebSocket: Megszakadt a kapcsolat: ${(event.reason || event.code)}`);
         }
         clearInterval(valaszido_ellenorzes_INTERVAL);
         clearInterval(tekeres_ellenorzes_INTERVAL);
@@ -141,7 +167,6 @@ function socket_csatlakozas() {
             return;
         }
         utolso_utasitas_ideje_FLOAT = Date.now();
-        console.log('WebSocket: SERVER: ', event.data);
         if (/^statusz:/.test(event.data)) {
             adatok_frissitese(event.data.replace(/^statusz:(.*)/, '$1'));
             if (player && player_betoltott_BOOL) {
@@ -157,44 +182,32 @@ function socket_csatlakozas() {
             });
             return;
         }
-        console.log('KLIENS: Ismeretlen válasz csomag: ' + event.data);
+        console.log(`SZERVER: Ismeretlen válasz csomag: ${event.data}`);
     };
     socket.onerror = function(err) {
         console.error(err.message);
     };
 }
 
-function jelenlegi_ido_debug() {
-    console.log('Player: ' + player.getCurrentTime());
-    console.log('Calculated: ' + (masodperc_FLOAT + (valaszido_utolso_frissiteskor_FLOAT / 2000) + ((Date.now() - utolso_idopont_fogadasanak_ideje_FLOAT) / 1000)));
-    console.log('WebSocket: SERVER: ' + masodperc_FLOAT);
-}
-
-function jelenlegi_ido() {
+function jelenlegi_ido() { console.log('CALL: jelenlegi_ido()');
     let eredmeny_FLOAT = 0.0;
     if (valaszido_utolso_frissiteskor_FLOAT != undefined && !isNaN(valaszido_utolso_frissiteskor_FLOAT)) {
         eredmeny_FLOAT += valaszido_utolso_frissiteskor_FLOAT / 2000.0;
-    } else {
-        console.log('HIBÁS: valaszido_utolso_frissiteskor');
     }
     if (masodperc_FLOAT != undefined && !isNaN(masodperc_FLOAT)) {
         eredmeny_FLOAT += masodperc_FLOAT;
-    } else {
-        console.log('HIBÁS: masodperc');
     }
     if (lejatszas_STRING == 'N') {
         return eredmeny_FLOAT;
     } else {
         if (utolso_idopont_fogadasanak_ideje_FLOAT != undefined && !isNaN(utolso_idopont_fogadasanak_ideje_FLOAT)) {
             eredmeny_FLOAT += (Date.now() - utolso_idopont_fogadasanak_ideje_FLOAT) / 1000;
-        } else {
-            console.log('HIBÁS: utolso_idopont_fogadasanak_ideje');
         }
         return eredmeny_FLOAT;
     }
 }
 
-function adatok_frissitese(data) {
+function adatok_frissitese(data) { console.log('CALL: adatok_frissitese()');
     video_id_STRING = data.split(",")[0];
     masodperc_FLOAT = parseFloat(data.split(",")[1]);
     lejatszas_STRING = data.split(",")[2];
@@ -204,8 +217,7 @@ function adatok_frissitese(data) {
     valaszido_utolso_frissiteskor_FLOAT = atlag_FLOAT;
 }
 
-function seek(to) {
-    console.log('SEEK TO: ' + to);
+function seek(to) { console.log('CALL: seek()');
     player.seekTo(to, true);
 }
 
@@ -236,23 +248,27 @@ function masodperc_szovegge_alakitas(jelenlegi, maximum) {
     return szoveg;
 }
 
-function player_frissitese() {
-    if (!player || !player_betoltott_BOOL)
-        return;
+function player_frissitese() { console.log('CALL: player_frissitese()');
+    if (!player || !player_betoltott_BOOL) {   return; }
 
     utolso_utasitas_ideje_FLOAT = Date.now();
     let parancs_lista_buffer_STRING = '';
 
     if (elozo_video_id_STRING != video_id_STRING) {
         if (/^[a-zA-Z0-9-_]{11}$/.test(video_id_STRING)) {
-            console.log(`PLAYER: Videó betöltése: ${video_id_STRING}@${jelenlegi_ido()}`);
             player.loadVideoById(video_id_STRING);
-            setTimeout(function() {
-                seek(jelenlegi_ido());
-            }, 500);
+            obj('video_link').href = 'https://youtube.com/watch?v=' + video_id_STRING;
             parancs_lista_buffer_STRING += `<br>Új videó > <a href="https://youtube.com/watch?v=${video_id_STRING}">${video_id_STRING}</a>`;
+            let video_nev_folyamatos_frissitese = setInterval(() => {
+                if(player) {
+                    if( player.getVideoData().title != '' ) {
+                        obj('video_link').innerHTML = player.getVideoData().title;
+                        clearInterval(video_nev_folyamatos_frissitese);
+                    }
+                }
+            }, 100);
         } else {
-            console.log('Rossz videó ID formátum: ' + video_id_STRING);
+            console.log(`SZERVER: Rossz videó ID formátum: ${video_id_STRING}`);
         }
     }
 
@@ -262,7 +278,7 @@ function player_frissitese() {
     }
 
     if( elozo_masodperc_FLOAT != masodperc_FLOAT ) {
-        console.log('PLAYER: Tekerés szerver kérésére: ' + jelenlegi_ido());
+        console.log(`PLAYER: Tekerés szerver kérésére: ${jelenlegi_ido()}`);
         seek(jelenlegi_ido());
     }
 
@@ -286,21 +302,34 @@ function player_frissitese() {
     }
 }
 
-function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) {
+function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) { console.log('CALL: belepteto_rendszer_frissult()');
+    belepteto_rendszer_betoltott = true;
     if(socket_csatlakozva) {
         if(!felhasznalonev_elkuldve) {
             socket.send("felhasznalonev:" + session_username);
             felhasznalonev_elkuldve = true;
         }
+        if( !api_betoltve ) {
+            youtube_api_betoltese();
+        }
     }
+
     if( session_loggedin == 'yes' ) {
-        obj('uj_video_doboz').style.display = 'block';
-        obj('iranyito_gombok').style.display = 'block';
+        obj('iranyitas_doboz').style.display = 'inline';
     } else {
-        obj('uj_video_doboz').style.display = 'none';
-        obj('iranyito_gombok').style.display = 'none';
+        obj('iranyitas_doboz').style.display = 'none';
     }
 }
+
+function youtube_api_betoltese() { console.log('CALL: youtube_api_betoltese()');
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/player_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+
+var belepteto_rendszer_beallitva = false;
+var socket_csatlakozva = false;
 
 var debug_BOOL = true;
 var video_id_STRING = "";
@@ -311,7 +340,6 @@ var user_STRING = "";
 var atlag_FLOAT = 0.0;
 var atlag_oszto_INT = 0;
 
-var player_betoltott_BOOL = false;
 
 var elozo_title_STRING = "";
 var elozo_video_id_STRING = "";
@@ -341,17 +369,13 @@ var tekeres_ellenorzes_INTERVAL;
 
 var player;
 var socket;
-var socket_csatlakozva = false;
 var felhasznalonev_elkuldve = false;
 
-belepteto_rendszer_beallitas( belepteto_rendszer_frissult );
-topbar_betoltese();
-
+var belepteto_rendszer_betoltott = false;
+var socket_csatlakozva = false;
+var api_betoltve = false;
 var csuszka_folyamatos_frissitese;
 
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/player_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+topbar_betoltese();
+belepteto_rendszer_beallitas( belepteto_rendszer_frissult );
 socket_csatlakozas();

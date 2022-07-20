@@ -34,35 +34,33 @@
         <script src="/egyuttnezo/egyuttnezo.js"></script>
     	
 		<div class="szint-2">
-            <div class="block" style="background-color: black">
-                <div id="player" style="width: min(100vw, 1440px, 177vh); height: min(56vw, 810px, 100vh); margin: auto; display: block"></div>
+            <div class="block black">
+                <div id="player" class="kozepre" style="width: min(100vw, 1440px, 177vh); height: min(56vw, 810px, 100vh)"></div>
             </div>
-            <div id="iranyito_gombok" style="display: none">
+            <div id="iranyitas_doboz" class="nodisplay">
                 <div id="lejatszasgomb" class="inline" onclick="gomb_lejatszas()">▶</div>
-                <div id="megallitasgomb" class="inline" onclick="gomb_megallitas()" style="display: none">⏸</div>
                 <div id="ido" class="inline"></div>
                 <div id="csuszka_doboz" class="inline">
-                    <input onclick="tekeres(obj('csuszka').value)" onchange="tekeres(obj('csuszka').value)" id="csuszka" type="range" min="1" max="10000000000" value="50" style="width: min(100vw, 1440px, 177vh)">
+                    <input id="csuszka" type="range" min="1" max="10000000000" value="50" style="width: min(100vw, 1440px, 177vh)">
+                </div>
+                <div id="uj_video_doboz">
+                    <input type="text" id="video_id_mezo" onkeydown="input_uj_video()"></input>
+                    <button onclick="gomb_uj_video()">Új videó indítása</button>
                 </div>
             </div>
             <div id="jobb" class="merettol-fuggoen-inline-block">
                 <div id="leiras">
                     <div id="video_informaciok">
                         <h3>Jelenlegi videó:</h3>
-                        <a style="font-size: 18px" href="" id="video_link"></a><br><br>
+                        <a href="" id="video_link"></a><br><br>
                     </div>
                     
                     <h3>Csatlakozás státusz</h3>
                     <szoveg id="csatlakozas_statusz"></szoveg>
                     <szoveg id="valaszido"></szoveg>
 
-                    <div id="uj_video_doboz" style="display: none">
-                        <input type="text" id="video_id_mezo" onkeydown="input_uj_video()"></input>
-                        <button onclick="gomb_uj_video()">Új videó indítása</button>
-                    </div>
-
                     <br><br>
-                    <div id="parancs_box" style="overflow-y: scroll; max-height: 300px; background-color: rgb(50,50,50);">
+                    <div id="parancs_box szint-2" style="overflow-y: scroll; max-height: 300px">
                         <h2>Online felhasználók</h2>
                         <ul id="nev_lista"></ul>
                         <h2>Parancsok</h2>

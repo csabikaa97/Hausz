@@ -105,7 +105,11 @@ function fajlok_betoltese() {
             let id, size, filename, added, username, private, titkositott;
             [id, size, filename, added, username, private, titkositott] = elemek;
 
-            // EMOJI IKON
+            if( id == '-' ) {
+                buffer = `<td class="kozepre-szoveg nagy-kepernyon-tiltas" style="padding-left: 15px; padding-right: 15px"><h3>Jelenleg nincsenek fájlok a megosztón</h3></td><td colspan="5" class="mobilon-tiltas" style="padding-left: 15px; padding-right: 15px"><h3 class="kozepre-szoveg">Jelenleg nincsenek fájlok a megosztón</h3></td>`;
+                return;
+            }
+
             let kiterjesztes = filename.replace(/(.*)(\..*)/, '$2');
             let elonezet_tipus = "egyéb";
 
@@ -141,7 +145,7 @@ function fajlok_betoltese() {
 
             buffer += `onclick='bal_klikk(event)'>`;
 
-            buffer += '<td class="mobilon-tiltas"><abbr class="linkDekoracioTiltas" style="cursor: pointer" title="';
+            buffer += '<td class="mobilon-tiltas"><abbr class="linkDekoracioTiltas pointer" title="';
             switch (elonezet_tipus) {
                 case "kep":         buffer += 'Kép">📷'; break;
                 case "audio":       buffer += 'Audió">🎵'; break;
@@ -155,10 +159,10 @@ function fajlok_betoltese() {
 
             buffer += '<td class="padding-5">';
             if (private == '1') {
-                buffer += '<abbr class="linkDekoracioTiltas" style="cursor: pointer" title="Privát (csak te látod)">👁️</abbr> ';
+                buffer += '<abbr class="linkDekoracioTiltas pointer" title="Privát (csak te látod)">👁️</abbr> ';
             }
             if (titkositott == '1') {
-                buffer += '<abbr class="linkDekoracioTiltas" style="cursor: pointer" title="Jelszóval titkosított">🔒</abbr> ';
+                buffer += '<abbr class="linkDekoracioTiltas pointer" title="Jelszóval titkosított">🔒</abbr> ';
             }
             buffer += filename + '</td>';
             if( idopontbol_datum(new Date()) > idopontbol_datum(new Date(added)) ) {
@@ -565,13 +569,13 @@ function jobb_klikk_menu_kinyitas(event, tr) {
         buffer += `<div class="szint-3 gomb kerekites-10" onclick='claimeles("/megoszto/megoszto.php?claim=1&file_id=${tr.attributes['sor_id'].value}");'>Claimelés</div><br>`;
     }
     if (tr.attributes['sor_username'].value == session_username || (tr.attributes['sor_username'].value == 'ismeretlen' && session_loggedin == 'yes')) {
-        buffer += `<a class="linkDekoracioTiltas" onclick="torles('/megoszto/megoszto.php?delete=1&file_id=${tr.attributes['sor_id'].value}', '${tr.attributes['sor_filename'].value}')"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Törlés">❌</abbr></a>`;
+        buffer += `<a class="linkDekoracioTiltas" onclick="torles('/megoszto/megoszto.php?delete=1&file_id=${tr.attributes['sor_id'].value}', '${tr.attributes['sor_filename'].value}')"><abbr class="linkDekoracioTiltas pointer f40" title="Törlés">❌</abbr></a>`;
     }
     if (tr.attributes['sor_username'].value == session_username) {
-        buffer += `<a class="linkDekoracioTiltas" onclick="fajl_atnevezese(${tr.attributes['sor_id'].value}, '${tr.attributes['sor_filename'].value}')"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Átnevezés">✏️</abbr></a>`;
+        buffer += `<a class="linkDekoracioTiltas" onclick="fajl_atnevezese(${tr.attributes['sor_id'].value}, '${tr.attributes['sor_filename'].value}')"><abbr class="linkDekoracioTiltas pointer f40" title="Átnevezés">✏️</abbr></a>`;
     }
     if (tr.attributes['sor_titkositott'].value != '1') {
-        buffer += `<a class="linkDekoracioTiltas" href="/megoszto/megoszto.php?letoltes&file_id=${tr.attributes['sor_id'].value}"><abbr class="linkDekoracioTiltas" style="font-size: 40px; cursor: pointer" title="Letöltés">💾</abbr></a>`;
+        buffer += `<a class="linkDekoracioTiltas" href="/megoszto/megoszto.php?letoltes&file_id=${tr.attributes['sor_id'].value}"><abbr class="linkDekoracioTiltas pointer f40" title="Letöltés">💾</abbr></a>`;
     }
     jobb_klikk_menu.innerHTML = buffer;
 }
@@ -630,8 +634,8 @@ var dropZone;
 var dropZone_leiras;
 
 topbar_betoltese();
-fajlok_betoltese();
 belepteto_rendszer_beallitas( belepteto_rendszer_frissult, belepes_siker, kilepes_siker );
+fajlok_betoltese();
     
 window.addEventListener('dragenter', function(e) {
     drop_zona_aktivalas();

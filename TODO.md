@@ -1,20 +1,30 @@
 ## 💭 Tennivalók
 
+* Autómata tesztelés scriptek megírása
+	* együttnéző
+		* új videó
+		* megállítás / lejátszás
+	* megosztó
+	* teamspeak
+* Üzenet animáció
 * style="" egyszerűsítés
 * pseudo elements ::before
 * Együttnéző iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
+	* topbar (nem fontos)
+	* beléptető rendszer beállítása & socket
+	* Jelenlegi video_id megszerzése
+	* YouTube api
+	* Videó betöltése
 * Együttnézőhöz külön videó kezelés UI készítése (folyamatban)
-* Fiókokhoz megjelenő név beállítás, profil oldal /kezelo/
+* Profil kezelő oldal: /kezelo/
 * /uploads mappa kivezetése Jul. 28 után
 * Régi style.css kivezetése
 	* egyuttnezo
 	* megoszto
 * Új mappastruktúra kialakítása közös kódokhoz
 	* Profil kezelő oldal
-* Globális: előtérbe helyezés függvény
 * Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
-	* Google-ról SEO tool-ban leszedni a régi linkeket
 * Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
 * Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
 * Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett
@@ -35,6 +45,12 @@
 
 ## ✅ Implementált tennivalók
 
+* Autómata tesztelés scriptek megírása
+	* regisztráció
+	* főoldal
+	* beléptető rendszer (bejelentkezés / kilépés)
+* Megjelenő név és felhasználói név elkülönítése
+* Előtérbe helyezés függvény
 * Bonyolult JS részek átírása Template literal-okkal
 * Megosztó Priváttá / publikussá tétel gomb
 * Változó lifecycle javítása minden fájlban: let, var, const

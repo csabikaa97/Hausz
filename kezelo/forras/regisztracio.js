@@ -1,11 +1,12 @@
 function regisztracio_inditasa(event) {
     event.preventDefault();
     
-    let post_parameterek = "regisztracio=igen";
-    post_parameterek += "&regisztracio_username=" + obj('regisztracio_username').value;
-    post_parameterek += "&regisztracio_password=" + obj('regisztracio_password').value;
-    post_parameterek += "&regisztracio_password_confirm=" + obj('regisztracio_password_confirm').value;
-    post_parameterek += "&regisztracio_email=" + obj('regisztracio_email').value;
+    let post_parameterek = new FormData();
+    post_parameterek.append("regisztracio", "igen");
+    post_parameterek.append("regisztracio_username", obj('regisztracio_username').value);
+    post_parameterek.append("regisztracio_password", obj('regisztracio_password').value);
+    post_parameterek.append("regisztracio_password_confirm", obj('regisztracio_password_confirm').value);
+    post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
 
     szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
         if(/^OK:/.test(uzenet)) {
