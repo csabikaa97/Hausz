@@ -21,31 +21,32 @@ function belepteto_rendszer_frissult() {
     }
 }
 
-function uj_token_igenylese() {
+function uj_token_igenylese() { //
     szinkron_keres("/teamspeak/teamspeak.php?uj_token_igenylese", "", (uzenet) => {
-        if( /^OK:/.test(uzenet) ) {
+        if( uzenet.eredmeny == 'ok' ) {
             token_informaciok_frissitese();
+            uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
         } else {
-            uj_valasz_mutatasa(5000, "hiba", uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
         }
     });
 }
 
 function felhasznalok_frissitese() {
     szinkron_keres("/teamspeak/teamspeak.php?felhasznalok", "", (uzenet) => {
-        if( /^OK:Nincs online felhaszn/.test(uzenet) ) {
-            obj('nincs_online_felhasznalo').style.display = 'block';
-            obj('van_online_felhasznalo').style.display = 'none';
-            return;
-        }
-        if( /^OK:/.test(uzenet) ) {
+        console.log(uzenet);
+        if( uzenet.eredmeny == 'ok' ) {
+            if( uzenet.felhasznalok == 0 ) {
+                obj('nincs_online_felhasznalo').style.display = 'block';
+                obj('van_online_felhasznalo').style.display = 'none';
+                return;
+            }
+
             let online_felhasznalok_lista = obj('online_felhasznalok_lista');
             online_felhasznalok_lista.innerHTML = '';
-            uzenet = uzenet.replace( /^OK:/, '' );
-            let felhasznalok = uzenet.split('\\n');
-            felhasznalok.forEach(felhasznalo => {
-                if( felhasznalo.length > 0 ) {
-                    online_felhasznalok_lista.innerHTML += `<li>${felhasznalo}</li>`;
+            uzenet.felhasznalok.forEach(felhasznalo => {
+                if( felhasznalo.felhasznalonev.length > 0 ) {
+                    online_felhasznalok_lista.innerHTML += `<li>${felhasznalo.felhasznalonev}</li>`;
                 }
             });
         }
@@ -54,46 +55,36 @@ function felhasznalok_frissitese() {
 
 function token_informaciok_frissitese() {
     szinkron_keres("/teamspeak/teamspeak.php?token_informacio", "", (uzenet) => {
-        if( /^OK:/.test(uzenet) ) {
+        if( uzenet.eredmeny == 'ok' ) {
             obj('van_token').style.display = 'block';
             obj('nincs_token').style.display = 'none';
-            uzenet = uzenet.replace(/^OK:/, '');
-            let adatok = uzenet.split('|');
 
-            let token, jogosult_uj_rokenre;
-            [token, jogosult_uj_rokenre] = adatok;
+            obj('token').innerHTML = uzenet.token;
 
-            obj('token').innerHTML = token;
-
-            if( jogosult_uj_rokenre == "igen" ) {
+            if( uzenet.jogosult_uj_rokenre == "igen" ) {
                 obj('jogosult_tokenre_szoveg').style.display = 'block';
             } else {
                 obj('jogosult_tokenre_szoveg').style.display = 'none';
             }
-            return;
-        }
-        if( /^HIBA:Nincs/.test(uzenet) ) {
-            obj('van_token').style.display = 'none';
-            obj('nincs_token').style.display = 'block';
+        } else {
+            if( uzenet.valasz == 'Jelenleg nincs jogosultásgi tokened' ) {
+                obj('van_token').style.display = 'none';
+                obj('nincs_token').style.display = 'block';
+            } else {
+                uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+            }
         }
     });
 }
 
 function szerver_statusz_frissitese() {
     szinkron_keres("/teamspeak/teamspeak.php?szerver_statusz", "", (uzenet) => {
-        uzenet = uzenet.replace( /^OK:/, '' );
-        let adatok = uzenet.split(';');
+        if(uzenet.eredmeny != 'ok') {
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+            return;
+        }
 
         let buffer = "";
-
-        let folyamat_ok = adatok[0] == 'folyamat ok' ? true : false;
-        let telnet_ok = adatok[1] == 'telnet ok' ? true : false;
-        let processzor_1perc = parseFloat(adatok[2]);
-        let processzor_5perc = parseFloat(adatok[3]);
-        let processzor_15perc = parseFloat(adatok[4]);
-        let memoria_hasznalat = parseFloat(adatok[5]);
-        let swap_hasznalat = parseFloat(adatok[6]);
-        let lemez_hasznalat = parseFloat(adatok[7]) / 100.0;
 
         const processzor_hasznalat_figyelmeztetes = 0.75;
         const memoria_hasznalat_elfogadhato = 0.7;
@@ -106,42 +97,42 @@ function szerver_statusz_frissitese() {
         const lemez_hasznalat_figyelmeztetes = 0.75;
         const lemez_hasznalat_kritikus = 0.75;
 
-        if( folyamat_ok 
-            && telnet_ok 
-            && processzor_1perc < processzor_hasznalat_figyelmeztetes 
-            && processzor_5perc < processzor_hasznalat_figyelmeztetes
-            && processzor_15perc < processzor_hasznalat_figyelmeztetes
-            && memoria_hasznalat < memoria_hasznalat_elfogadhato
-            && swap_hasznalat < swap_hasznalat_elfogadhato
-            && lemez_hasznalat < lemez_hasznalat_elfogadhato ) {
+        if( uzenet.folyamat_ok
+            && uzenet.telnet_ok
+            && uzenet.processzor_1perc < processzor_hasznalat_figyelmeztetes
+            && uzenet.processzor_5perc < processzor_hasznalat_figyelmeztetes
+            && uzenet.processzor_15perc < processzor_hasznalat_figyelmeztetes
+            && uzenet.memoria_hasznalat < memoria_hasznalat_elfogadhato
+            && uzenet.swap_hasznalat < swap_hasznalat_elfogadhato
+            && uzenet.lemez_hasznalat < lemez_hasznalat_elfogadhato ) {
 
             buffer += '<p>A szerver állapota jelenleg kifogástalan 🥳</p>';
         } else {
-            if( folyamat_ok ) { buffer += '<p>🟩 TeamSpeak szerver folyamat fut</p>'; }
+            if( uzenet.folyamat_ok ) { buffer += '<p>🟩 TeamSpeak szerver folyamat fut</p>'; }
             else { buffer += '<p>🟥 TeamSpeak szerver folyamat nem fut</p>'; }
 
-            if( !telnet_ok ) { buffer += '<p>🟥 Serverquery nem elérhető</p>'; } 
+            if( !uzenet.telnet_ok ) { buffer += '<p>🟥 Serverquery nem elérhető</p>'; } 
             else { buffer += '<p>🟩 Serverquery elérhető</p>'; }
 
-            if( processzor_15perc >= processzor_hasznalat_figyelmeztetes ) {
-                if( processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
+            if( uzenet.processzor_15perc >= processzor_hasznalat_figyelmeztetes ) {
+                if( uzenet.processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
                     buffer += '<p>🟥 Processzor terhelés - magas körülbelül 15 perce</p>';
                 } else {
-                    if( processzor_5perc < processzor_hasznalat_figyelmeztetes ) {
+                    if( uzenet.processzor_5perc < processzor_hasznalat_figyelmeztetes ) {
                         buffer += '<p>🟨 Processzor terhelés - magas volt körülbelül 15 perce, de már lecsökkent</p>';
                     } else {
                         buffer += '<p>🟧 Processzor terhelés - magas volt körülbelül 5 perce, de már kezd lecsökkenni</p>';
                     }
                 }
             } else {
-                if( processzor_5perc >= processzor_hasznalat_figyelmeztetes ) {
-                    if( processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
+                if( uzenet.processzor_5perc >= processzor_hasznalat_figyelmeztetes ) {
+                    if( uzenet.processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
                         buffer += '<p>🟧 Processzor terhelés - magas körülbelül 5 perce</p>';
                     } else {
                         buffer += '<p>🟨 Processzor terhelés - magas volt körülbelül 5 perce, de most alacsony</p>';
                     }
                 } else {
-                    if( processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
+                    if( uzenet.processzor_1perc >= processzor_hasznalat_figyelmeztetes ) {
                         buffer += '<p>🟨 Processzor terhelés - elfogadható</p>';
                     } else {
                         buffer += '<p>🟩 Processzor terhelés - optimális</p>';
@@ -149,13 +140,13 @@ function szerver_statusz_frissitese() {
                 }
             }
 
-            if(memoria_hasznalat >= memoria_hasznalat_kritikus) {
+            if( uzenet.memoria_hasznalat >= memoria_hasznalat_kritikus) {
                 buffer += '<p>🟥 Memória használat - nagyon magas</p>';
             } else {
-                if(memoria_hasznalat >= memoria_hasznalat_figyelmezetetes) {
+                if( uzenet.memoria_hasznalat >= memoria_hasznalat_figyelmezetetes) {
                     buffer += '<p>🟧 Memória használat - magas</p>';
                 } else {
-                    if(memoria_hasznalat >= memoria_hasznalat_elfogadhato) {
+                    if( uzenet.memoria_hasznalat >= memoria_hasznalat_elfogadhato) {
                         buffer += '<p>🟨 Memória használat - elfogadható</p>';
                     } else {
                         buffer += '<p>🟩 Memória használat - optimális</p>';
@@ -163,13 +154,13 @@ function szerver_statusz_frissitese() {
                 }
             }
 
-            if(swap_hasznalat >= swap_hasznalat_elfogadhato) {
+            if( uzenet.swap_hasznalat >= swap_hasznalat_elfogadhato) {
                 buffer += '<p>🟥 Virtuális memória használat - nagyon magas</p>';
             } else {
-                if(swap_hasznalat >= swap_hasznalat_figyelmezetetes) {
+                if( uzenet.swap_hasznalat >= swap_hasznalat_figyelmezetetes) {
                     buffer += '<p>🟧 Virtuális memória használat - magas</p>';
                 } else {
-                    if(swap_hasznalat >= swap_hasznalat_elfogadhato) {
+                    if( uzenet.swap_hasznalat >= swap_hasznalat_elfogadhato) {
                         buffer += '<p>🟨 Virtuális memória használat - elfogadható</p>';
                     } else {
                         buffer += '<p>🟩 Virtuális memória használat - optimális</p>';
@@ -177,13 +168,13 @@ function szerver_statusz_frissitese() {
                 }
             }
 
-            if(lemez_hasznalat >= lemez_hasznalat_kritikus) {
+            if( uzenet.lemez_hasznalat >= lemez_hasznalat_kritikus) {
                 buffer += '<p>🟥 Lemezterület kihasználtság - nagyon magas</p>';
             } else {
-                if(lemez_hasznalat >= lemez_hasznalat_figyelmeztetes) {
+                if( uzenet.lemez_hasznalat >= lemez_hasznalat_figyelmeztetes) {
                     buffer += '<p>🟧 Lemezterület kihasználtság - magas</p>';
                 } else {
-                    if(lemez_hasznalat >= lemez_hasznalat_elfogadhato) {
+                    if( uzenet.lemez_hasznalat >= lemez_hasznalat_elfogadhato) {
                         buffer += '<p>🟨 Lemezterület kihasználtság - elfogadható</p>';
                     } else {
                         buffer += '<p>🟩 Lemezterület kihasználtság - optimális</p>';

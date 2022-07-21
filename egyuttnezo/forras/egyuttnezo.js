@@ -264,9 +264,11 @@ function player_frissitese() { console.log('CALL: player_frissitese()');
             parancs_lista_buffer_STRING += `Új videó > <a href="https://youtube.com/watch?v=${video_id_STRING}">${video_id_STRING}</a>`;
             let video_nev_folyamatos_frissitese = setInterval(() => {
                 if(api_betoltve) {
-                    if( player.getVideoData().title != '' ) {
-                        obj('video_link').innerHTML = player.getVideoData().title;
-                        clearInterval(video_nev_folyamatos_frissitese);
+                    if( player.getVideoData() != undefined ) {
+                        if( player.getVideoData().title != '' ) {
+                            obj('video_link').innerHTML = player.getVideoData().title;
+                            clearInterval(video_nev_folyamatos_frissitese);
+                        }
                     }
                 }
             }, 100);

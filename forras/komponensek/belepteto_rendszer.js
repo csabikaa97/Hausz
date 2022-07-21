@@ -17,12 +17,12 @@ function belepesgomb(event) {
     post_parameterek_belepes.append('username', obj('username').value);
     post_parameterek_belepes.append('password', obj('current-password').value);
     szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
-        if(/^OK:/.test(uzenet)) {
+        if(uzenet.eredmeny == 'ok') {
             if (typeof belepes_siker === 'function') {   belepes_siker(); }
             uj_valasz_mutatasa(3000, "", "Sikeres belépés");
             belepteto_rendszer_frissites();
         } else {
-            uj_valasz_mutatasa(5000, "hiba", uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
         }
     });
 }
@@ -30,7 +30,7 @@ function belepesgomb(event) {
 function kilepesgomb(event) {
     event.preventDefault();
     szinkron_keres("/include/belepteto_rendszer.php?logout=igen", "", (uzenet) => {
-        if(/^OK:/.test(uzenet)) {
+        if( uzenet.eredmeny == 'ok' ) {
             if (typeof kilepes_siker === 'function') {   kilepes_siker(); }
             session_username = "";
             session_admin = "";
@@ -40,7 +40,7 @@ function kilepesgomb(event) {
             obj('username').value = '';
             obj('current-password').value = '';
         } else {
-            uj_valasz_mutatasa(5000, "hiba", uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
         }
     });
 }
@@ -49,11 +49,10 @@ function belepteto_rendszer_frissites() {
     szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
         let varakozas = setInterval(() => {
             if( obj('felhasznalo_doboz') != null ) {
-                if(/^OK:/.test(uzenet)) {
-                    let adatok = uzenet.replace(/^OK:/, '').split(',');
-                    session_username = adatok[0];
-                    session_admin = adatok[1];
-                    session_loggedin = 'yes';
+                if( uzenet.eredmeny == 'ok' ) {
+                    session_username = uzenet.session_username;
+                    session_admin = uzenet.session_admin;
+                    session_loggedin = uzenet.session_loggedin;
                     obj('belepve_mint').innerHTML = `Belépve mint: ${session_username}`;
                     if(session_admin == "igen") {
                         obj('admin_felulet_gomb').style.display = 'block';

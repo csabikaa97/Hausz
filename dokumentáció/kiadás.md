@@ -1,8 +1,8 @@
 # Kiadás - Javascript csomagoló
 
-Ezzel az eszközzel lehet összecsomagolni külön lévő Javascript fájlokat
+Ezzel az eszközzel lehet összecsomagolni külön lévő Javascript fájlokat egy nagy fájlba
 
-## Rendszerhez hozzáadás
+## UNIX rendszerhez hozzáadás
 
     ```
     ln -s /var/www/html/forras/kiadas.js /usr/local/bin/kiadas.js
@@ -12,11 +12,11 @@ Ezzel az eszközzel lehet összecsomagolni külön lévő Javascript fájlokat
 
 ## Használat
 
-    kiadas.js [--be] < > --ki < > [--tomorites]
-                      ^        ^
-                      |        |
-                      |        +----> kimeneti fájl elérési útja 
-                      |
-                      +-------------> becsomagolandó fájlok elérési útjai szóközzel elválasztva
+    kiadas.js <   > --ki < > [--tomorites]
+                ^        ^
+                |        |
+                |        +----> kimeneti fájl elérési útja 
+                |
+                +-------------> becsomagolandó fájlok elérési útjai szóközzel elválasztva
 
-    --tomorites     Eltávolítja a kimeneti fájlból az új sorokat, szóközöket, és egyéb felesleges karaktereket hely spórolás miatt
+    --tomorites     Eltávolítja a kimeneti fájlból az új sorokat, szóközöket, és egyéb felesleges karaktereket hely spórolás érdekében

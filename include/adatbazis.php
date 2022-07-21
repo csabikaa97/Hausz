@@ -4,7 +4,7 @@
     $password = "root";
     $conn = new mysqli($servername, $username, $password, $dbname);
     $conn->set_charset("utf8mb4");
-    die_if( $conn->connect_error, "HIBA:Nem sikerült csatlakozni az SQL szerverhez: " . $conn->connect_error . "\nKérlek vedd fel a kapcsolatot a rendszergazdával a csaba@hausz.stream e-mail címen.");
+    die_if( $conn->connect_error, "Nem sikerült csatlakozni az SQL szerverhez: " . $conn->connect_error . "\nKérlek vedd fel a kapcsolatot a rendszergazdával a csaba@hausz.stream e-mail címen.");
 
     function log_bejegyzes($szolgaltatas, $bejegyzes, $komment, $felhasznalo) {
         global $conn;

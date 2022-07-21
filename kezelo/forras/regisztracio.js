@@ -9,12 +9,12 @@ function regisztracio_inditasa(event) {
     post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
 
     szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
-        if(/^OK:/.test(uzenet)) {
+        if( uzenet.eredmeny == 'ok' ) {
             obj('regisztracio_doboz').style.display = 'none';
             obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';
             obj('regisztracio_siker_doboz').style.display = 'block';
         } else {
-            uj_valasz_mutatasa(5000, "hiba", uzenet);
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
         }
     });
 }

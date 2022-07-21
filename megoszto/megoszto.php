@@ -71,92 +71,93 @@
 
     if( isset($_GET['fajlok']) ) {
         $result = query_futtatas("SELECT users.megjeleno_nev, files.titkositott, files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC");
-        if($result) {
-            if($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username'])) or (!isset($_SESSION['loggedin']) && $row['private'] == '1') )
-                        continue;
-                    
-                    echo '<'.$row['id'].'|'.$row['size'].'|'.$row['filename'].'|'.$row['added'].'|'.$row['megjeleno_nev'].'|'.$row['private'].'|'.$row['titkositott'].'>';
-                }
-            } else {
-                echo '<-|-|-|-|-|-|->';
-            }
+        die_if( $result->num_rows <= 0, "Jelenleg nincsenek feltöltve fájlok");
+
+        $voltmar = false;
+        $buffer = '"valasz": [';
+        while($row = $result->fetch_assoc()) {
+            if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username']))
+                or (!isset($_SESSION['loggedin']) && $row['private'] == '1') ) {   continue; }
+            
+            if($voltmar) {   $buffer .= ', '; }
+
+            $buffer .= '{"id": '.$row['id'].', "size": "'.$row['size'].'", "filename": "'.$row['filename'].'", "added": "'.$row['added'].'", "megjeleno_nev": "'.$row['megjeleno_nev'].'", "private": "'.$row['private'].'", "titkositott": "'.$row['titkositott'].'"}';
+            $voltmar = true;
         }
-        die();
+        exit_ok($buffer.']');
     }
 
     if( isset($_GET['atnevezes']) ) {
-        die_if( $_SESSION['loggedin'] != 'yes', 'HIBA:Nem vagy belépve');
+        die_if( $_SESSION['loggedin'] != 'yes', 'Nem vagy belépve');
         header('X-Robots-Tag: noindex');
-        die_if( strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0, 'HIBA:Hiányzó uj_nev vagy file_id paraméter.');
+        die_if( strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0, 'Hiányzó uj_nev vagy file_id paraméter.');
 
         $result = query_futtatas("select * from hausz_megoszto.files where filename='".$_GET['uj_nev']."';");
-        die_if( $result->num_rows > 0, 'HIBA:Már létezik fájl ezzel a névvel.');
+        die_if( $result->num_rows > 0, 'Már létezik fájl ezzel a névvel.');
 
         $result = query_futtatas("select * from hausz_megoszto.files where id=".$_GET['file_id'].";");
-        die_if( $result->num_rows <= 0, 'HIBA:Nem létezik az átnevezendő fájl.');
+        die_if( $result->num_rows <= 0, 'Nem létezik az átnevezendő fájl.');
         $row = $result->fetch_assoc();
-        die_if( $row['user_id'] != $_SESSION['user_id'] && $row['user_id'] != '0', 'HIBA:Nem nevezheted át más fájljait.');
-        die_if( strlen($_GET['uj_nev']) > 250, 'HIBA:Nem lehet az új név 250 karakternél hosszabb.');
-        die_if( preg_match('/[^a-zA-Z0-9_-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]/', $_GET['uj_nev'], $matches), 'HIBA:Illegális karakterek vannak az új névben: '.$matches);
-        die_if( !preg_match('/(.*)\.(.*)/', $_GET['uj_nev']), 'HIBA:Nincs kiterjesztés megadva az új névben.');
+        die_if( $row['user_id'] != $_SESSION['user_id'] && $row['user_id'] != '0', 'Nem nevezheted át más fájljait.');
+        die_if( strlen($_GET['uj_nev']) > 250, 'Nem lehet az új név 250 karakternél hosszabb.');
+        die_if( preg_match('/[^a-zA-Z0-9_-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]/', $_GET['uj_nev'], $matches), 'Illegális karakterek vannak az új névben: '.$matches);
+        die_if( !preg_match('/(.*)\.(.*)/', $_GET['uj_nev']), 'Nincs kiterjesztés megadva az új névben.');
 
         $eredmeny = "";
         $parancs = 'mv "/var/www/html/megoszto/fajlok/'.$row['filename'].'" "/var/www/html/megoszto/fajlok/'.$_GET['uj_nev'].'"';
         exec($parancs, $eredmeny, $retval);
-        die_if( $retval != 0, 'HIBA:"'.$parancs.'"');
+        die_if( $retval != 0, $parancs);
 
         $query = 'update hausz_megoszto.files set filename="'.$_GET['uj_nev'].'" where id = '.$_GET['file_id'];
         $result = query_futtatas($query);
         log_bejegyzes("megoszto", "átnevezés", "[".$_GET['file_id'].'] '.$row['filename'].' -> '.$_GET['uj_nev'], $_SESSION['username']);
-        exit_ok('OK:A(z) "'.$row['filename'].'" nevű fájl sikeresen át lett nevezve.');
+        exit_ok('"valasz": "A(z) '.$row['filename'].' nevű fájl sikeresen át lett nevezve."');
     }
 
     if( isset($_GET['privat_statusz_csere']) ) {
-        die_if( $_SESSION['loggedin'] != 'yes', "HIBA:Nem vagy belépve.");
-        die_if( strlen($_GET['file_id']) <= 0, "HIBA:Nincs megadva fájl azonosító.");
+        die_if( $_SESSION['loggedin'] != 'yes', "Nem vagy belépve.");
+        die_if( strlen($_GET['file_id']) <= 0, "Nincs megadva fájl azonosító.");
         $result = query_futtatas("select * from files where id = ".$_GET['file_id']);
-        die_if( $result->num_rows <= 0, "HIBA:Nem létezik a változtatni kívánt fájl.");
+        die_if( $result->num_rows <= 0, "Nem létezik a változtatni kívánt fájl.");
         $row = $result->fetch_assoc();
         if( $row['private'] ) {
             $result = query_futtatas('update files set private = 0 where id = '.$_GET['file_id']);
-            exit_ok('OK:"'.$row['filename'].'" nevű fájl publikussá tétele kész.');
+            exit_ok('"valasz": "'.$row['filename'].' nevű fájl publikussá tétele kész."');
         } else {
             $result = query_futtatas('update files set private = 1 where id = '.$_GET['file_id']);
-            exit_ok('OK:"'.$row['filename'].'" nevű fájl priváttá tétele kész.');
+            exit_ok('"valasz": "'.$row['filename'].' nevű fájl priváttá tétele kész."');
         }
     }
 
     if( isset($_GET['delete']) ) {
-        die_if( !isset( $_SESSION['loggedin'] ), 'HIBA:Nem vagy belépve');
+        die_if( !isset( $_SESSION['loggedin'] ), 'Nem vagy belépve');
         header('X-Robots-Tag: noindex');
         $result = query_futtatas("SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id']);
-        die_if( $result->num_rows <= 0, 'HIBA:Nem létező fájl azonosító');
+        die_if( $result->num_rows <= 0, 'Nem létező fájl azonosító');
         $row = $result->fetch_assoc();
-        die_if( strtolower($_SESSION['username']) != strtolower($row['username']) && strtolower($row['username']) != "ismeretlen", 'HIBA:Nem a tiéd a fájl');
+        die_if( strtolower($_SESSION['username']) != strtolower($row['username']) && strtolower($row['username']) != "ismeretlen", 'Nem a tiéd a fájl, ezért azt nem törölheted');
         $eredmeny = "";
         $parancs = 'rm "/var/www/html/megoszto/fajlok/'.$row['filename'].'"';
         exec($parancs, $eredmeny, $retval);
-        die_if( $retval != 0, "HIBA:".$parancs);
+        die_if( $retval != 0, "".$parancs);
         tarhely_statisztika_mentes();
         $_GET['file'] = preg_replace("/'/", "\'", $_GET['file']);
         $result_del = query_futtatas("DELETE FROM files WHERE id = ".$_GET['file_id']);
         log_bejegyzes("megoszto", "törlés", "[".$_GET['file_id'].']: '.$row['filename'], $_SESSION['username']);
-        exit_ok('OK:&quot;'.$row['filename'].'&quot; nevű fájl törölve.');
+        exit_ok('"valasz": "'.$row['filename'].' nevű fájl törölve."');
     }
 
     if( isset($_GET['claim']) ) {
-        die_if( !isset( $_SESSION['loggedin'] ), 'HIBA:Nem vagy belépve');
+        die_if( !isset( $_SESSION['loggedin'] ), 'Nem vagy belépve');
         header('X-Robots-Tag: noindex');
         $query = "UPDATE files SET user_id = (SELECT id FROM users WHERE username = '".$_SESSION['username']."') WHERE id = ".$_GET['file_id'];
         $result = query_futtatas($query);
         $query = "select filename from files WHERE id = ".$_GET['file_id'];
         $result = query_futtatas($query);
-        die_if( $result->num_rows <= 0, 'HIBA:Nem létezik a claimelendő fájl');
+        die_if( $result->num_rows <= 0, 'Nem létezik a claimelendő fájl');
         $row = $result->fetch_assoc();
         log_bejegyzes("megoszto", "claimelés", "[".$_GET['file_id'].']: '.$row['filename'], $_SESSION['username']);
-        exit_ok('OK:A "' . $row['filename'] . '" nevű fájl sikeresen hozzá lett rendelve a fiókodhoz.');
+        exit_ok('"valasz": "A ' . $row['filename'] . ' nevű fájl sikeresen hozzá lett rendelve a fiókodhoz."');
     }
 
     if( isset($_GET['tarhely']) ) {
@@ -166,36 +167,37 @@
         $row = $result_tarhely_adat->fetch_assoc();
         $szabad_tarhely = $row['szabad'];
         $foglalt_tarhely = $row['foglalt'];
-        exit_ok('OK:'.$szabad_tarhely.','.$foglalt_tarhely);
+        exit_ok('"szabad_tarhely": '.$szabad_tarhely.', "foglalt_tarhely": '.$foglalt_tarhely);
     }
 
     if( isset($_GET['letoltes']) ) {
-        die_if( strlen( $_GET['file_id'] ) <= 0, 'HIBA:Nem adtál meg fájl azonsítót.');
+        die_if( strlen( $_GET['file_id'] ) <= 0, 'Nem adtál meg fájl azonsítót.');
     
         $query = "select * from files left outer join users on users.id = files.user_id where files.id = ".$_GET['file_id'];
         $result = query_futtatas($query);
-        die_if( $result->num_rows <= 0, "HIBA:Nem létező fájl: ".$_GET['file_id']);
+        die_if( $result->num_rows <= 0, "Nem létező fájl: ".$_GET['file_id']);
 
         $row = $result->fetch_assoc();
-        die_if( ( (strtolower($row['username']) != strtolower($_SESSION['username'])) or !isset($_SESSION['loggedin']) ) && $row['private'] == "1", 'HIBA:Nem vagy jogosult a fájl eléréshez.');
+        die_if( ( (strtolower($row['username']) != strtolower($_SESSION['username'])) or !isset($_SESSION['loggedin']) ) && $row['private'] == "1", 'Nem vagy jogosult a fájl eléréshez.');
 
         header("Cache-Control: public, max-age=9999999, immutable");
         header('X-Robots-Tag: noindex');
         header("Content-Type: ".mimeType("/var/www/html/megoszto/fajlok/".$row['filename']));
         if(strlen($_POST['titkositas_feloldasa_kulcs']) > 0) {
-            die_if( $row['titkositott'] != '1', 'HIBA:A fájl nem titkosított');
-            die_if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']), 'HIBA:Nem jó titkosítási kulcs');
+            die_if( $row['titkositott'] != '1', 'A fájl nem titkosított');
+            die_if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']), 'Nem jó titkosítási kulcs');
             
-            if( $_POST['letoltes'] == "1" ) {
+            if( isset($_POST['letoltes']) ) {
                 $plaintext = file_get_contents("/var/www/html/megoszto/fajlok/".$row['filename']);
                 $plaintext = base64_decode($plaintext);
                 $plaintext = openssl_decrypt($plaintext, "aes-256-cbc", $_POST['titkositas_feloldasa_kulcs'], $options=0, "aaaaaaaaaaaaaaaa");
                 header('Content-Disposition: filename="'.$row['filename'].'"');
                 header('Content-Length: '.strlen($plaintext));
-                exit_ok($plaintext);
+                echo($plaintext);
+                die();
             }
             
-            exit_ok('OK:Titkosítás feloldva');
+            exit_ok('Titkosítás feloldva');
         }
         if($row['titkositott'] == '1') {
             header('Content-Disposition: filename="titkositott_'.$row['filename'].'"');
@@ -209,7 +211,7 @@
     }
 
     if( isset($_POST["submit"]) || ($_POST["azonnali_feltoltes"]) == "igen" ) {
-        die_if( strlen($_FILES["fileToUpload"]["name"]) <= 0, 'HIBA:Nem válaszottál ki fájlt a feltöltéshez.');
+        die_if( strlen($_FILES["fileToUpload"]["name"]) <= 0, 'Nem válaszottál ki fájlt a feltöltéshez.');
         $_FILES["fileToUpload"]["name"] = preg_replace("/'/i", '', $_FILES["fileToUpload"]["name"]);
         $_FILES["fileToUpload"]["name"] = preg_replace('/"/i', '', $_FILES["fileToUpload"]["name"]);
         $_FILES["fileToUpload"]["name"] = preg_replace('/|/i', '', $_FILES["fileToUpload"]["name"]);
@@ -217,7 +219,7 @@
         $result_check = query_futtatas('SELECT files.filename, files.user_id, users.username FROM hausz_megoszto.files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_id WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'" COLLATE utf8mb4_general_ci;');
         if($result_check->num_rows > 0) {
             $row = $result_check->fetch_assoc();
-            die_if( strtolower($row['username']) != strtolower($_SESSION['username']) || !isset($_SESSION['loggedin']), 'HIBA:Már létezik egy "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl, amely nem a tiéd, ezért a feltöltés nem lehetséges.');
+            die_if( strtolower($row['username']) != strtolower($_SESSION['username']) || !isset($_SESSION['loggedin']), 'Már létezik egy "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl, amely nem a tiéd, ezért a feltöltés nem lehetséges.');
             $result_overwrite = query_futtatas('DELETE FROM files WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"');
         }
 
@@ -226,25 +228,25 @@
         $row = $result_tarhely_adat->fetch_assoc();
         $szabad_tarhely = floatval($row['szabad']);
     
-        die_if( $szabad_tarhely - $_FILES["fileToUpload"]['size'] < 250*1024*1024, 'HIBA:Nincs elég tárhely a fájl feltöltéséhez (250 MB).');
-        die_if( $_FILES["fileToUpload"]['size'] >= 200*1024*1024, 'HIBA:A fájl meghaladja a 200 MB-os méretlimitet.');
+        die_if( $szabad_tarhely - $_FILES["fileToUpload"]['size'] < 250*1024*1024, 'Nincs elég tárhely a fájl feltöltéséhez (250 MB).');
+        die_if( $_FILES["fileToUpload"]['size'] >= 200*1024*1024, 'A fájl meghaladja a 200 MB-os méretlimitet.');
 
         if(strlen($_POST['titkositas_kulcs']) > 0) {
             $plaintext = file_get_contents($_FILES['fileToUpload']['tmp_name']);
             exec('rm "'.$_FILES['fileToUpload']['tmp_name'].'"', $output, $retval);
-            die_if( $retval != 0, 'HIBA:Eltávolítás nem sikerült.');
+            die_if( $retval != 0, 'Eltávolítás nem sikerült.');
             $key = $_POST['titkositas_kulcs'];
             $cipher = "aes-256-cbc";
-            die_if( !in_array($cipher, openssl_get_cipher_methods()), 'HIBA:Nem lehet titkosítani, mert nem jó a titkosítási algoritmus.');
+            die_if( !in_array($cipher, openssl_get_cipher_methods()), 'Nem lehet titkosítani, mert nem jó a titkosítási algoritmus.');
             $iv = "aaaaaaaaaaaaaaaa";
             $ciphertext = base64_encode(openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv));
             ini_set('display_errors', 1);
             exec('touch "'.$target_file.'"', $output, $retval);
-            die_if( $retval != 0, 'HIBA:Fájl készítése sikertelen.');
+            die_if( $retval != 0, 'Fájl készítése sikertelen.');
             
-            die_if( !file_put_contents($target_file, $ciphertext), 'HIBA:Nem sikerül kiírni a fájlba a tartalmat: "'.$target_file.'"');
+            die_if( !file_put_contents($target_file, $ciphertext), 'Nem sikerül kiírni a fájlba a tartalmat: "'.$target_file.'"');
         } else {
-            die_if( !move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file), 'HIBA:Sikertelen volt a fájl feltöltése.');
+            die_if( !move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file), 'Sikertelen volt a fájl feltöltése.');
         }
 
         $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'",';
@@ -275,8 +277,8 @@
         }
 
         log_bejegyzes("megoszto", "feltöltés", $id . ': ' . basename( $_FILES["fileToUpload"]["name"] ), strlen($_SESSION['username']) > 0 ? $_SESSION['username'] : "ismeretlen");
-        exit_ok('OK:A "' . $_FILES["fileToUpload"]["name"] . '" nevű fájl sikeresen fel lett töltve.');
+        exit_ok('"valasz": "A \'' . $_FILES["fileToUpload"]["name"] . '\' nevű fájl sikeresen fel lett töltve."');
     }
 
-    exit_ok('HIBA:Mi a parancs?');
+    die_if( true, 'Mi a parancs?');
 ?>

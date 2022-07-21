@@ -54,7 +54,7 @@
     curl -fsSL https://code-server.dev/install.sh | sh
     ```
 
-7.  Szolgáltatások létrehozása doksi alapján: <a href="dokumentáció/linux szolgáltatás készítés/szolgáltatás készítés.md">szolgáltatás készítés.md</a>
+7.  Szolgáltatások létrehozása doksi alapján: <a href="dokumentáció/linux%20szolgáltatás%20készítés/szolgáltatás%20készítés.md">szolgáltatás készítés.md</a>
 
 8.  MySQL szerveren root user jelszavának megadása
 
@@ -104,7 +104,7 @@
 
 15. kiadás eszköz és osszes_kiadasa.sh script felvétele /usr/local/bin mappába
 
-    [leírás.md](dokumentáció/kiadas/leírás.md)
+    [kiadás.md](dokumentáció/kiadás.md)
 
 16. Cypress telepítése
 

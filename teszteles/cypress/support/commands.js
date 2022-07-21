@@ -73,12 +73,31 @@ Cypress.Commands.add('belepteto_rendszer_teszteles', () => {
 
 Cypress.Commands.add('belepes', () => {
     cy.viewport(1280, 720)
-    cy.get('input[id=username]').type("automata_teszteles")
-    cy.get('input[id=current-password]').type("automata_teszteles")
-    cy.get('button[id=bejelentkezes_gomb]').click()
+    cy.get('input[id=username]').and('be.visible').type("automata_teszteles")
+    cy.get('input[id=current-password]').and('be.visible').type("automata_teszteles")
+    cy.get('button[id=bejelentkezes_gomb]').and('be.visible').click()
+    cy.get('#valasz_uzenet').contains('Sikeres belépés')
+})
+
+Cypress.Commands.add('mobil_belepes', () => {
+    cy.viewport(320, 640)
+    cy.get('#topbar').contains('Belépés').click()
+    cy.get('input[id=username]').and('be.visible').type("automata_teszteles")
+    cy.get('input[id=current-password]').and('be.visible').type("automata_teszteles")
+    cy.get('button[id=bejelentkezes_gomb]').and('be.visible').click()
+    cy.get('#valasz_uzenet').contains('Sikeres belépés').and('be.visible')
 })
 
 Cypress.Commands.add('kilepes', () => {
     cy.viewport(1280, 720)
     cy.contains('Kilépés').and('be.visible').click()
+    cy.get('#valasz_uzenet').contains('Sikeres kilépés')
+})
+
+Cypress.Commands.add('mobil_kilepes', () => {
+    cy.viewport(320, 640)
+    cy.get('#topbar').contains('automata_teszteles').and('be.visible').click()
+    cy.get('#felhasznalo_doboz').contains('Kilépés').and('be.visible').click()
+    cy.get('#valasz_uzenet').contains('Sikeres kilépés').and('be.visible')
+    cy.get('#topbar').contains('Belépés').and('be.visible').click()
 })

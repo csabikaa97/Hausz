@@ -1,5 +1,7 @@
 ## 💭 Tennivalók
 
+* Ötlet: JS szint-[0-9] classok automatikus osztása onload után
+* PHP GET és POST kérések átgondolása
 * Megjelenő név és felhasználói név elkülönítése
 	* felhasználó aktiválásnál kitöltés
 	* együttnézőn új oszlop használata
@@ -49,6 +51,13 @@
 
 ## ✅ Implementált tennivalók
 
+* PHP válaszok JSON formátumra váltása
+	* főoldal
+	* admin
+	* megosztó
+	* regisztráció
+	* jelszó változtatás
+	* teamspeak
 * Autómata tesztelés scriptek megírása
 	* együttnéző
 		* új videó
@@ -56,6 +65,7 @@
 	* regisztráció
 	* főoldal
 	* beléptető rendszer (bejelentkezés / kilépés)
+	* jelszó változtatás
 * Megjelenő név és felhasználói név elkülönítése
 	* adatbázisban kész az oszlop
 	* Megosztón átállítva a forrás megjelenő fájloknál
@@ -74,7 +84,7 @@
 * /index fájlok átrakása forras/komponensek mappába
 * index.js áthelyezése /index mappába
 * .gitignore fájlok egyesítése gyökérmappában
-* [Saját bundler létrehozása](dokumentáció/kiadas/leírás.md)
+* [Saját bundler létrehozása](dokumentáció/kiadás.md)
 * uj_valasz_mutatasa() függvény átírása az alap_fuggvenyek.js-ben, és implementáció az összes oldalon
 * alapok.css: Szín párok létrehozása ligth és dark mode-hoz
 * Régi style.css kivezetése
@@ -113,9 +123,9 @@
 * Title-ök átírása "cím - Hausz" formátumra, meta leírások átfogalmazása, és egyéb SEO tippek alkalmazása
 * Néhány fájl eltakarása keresőmotor indexelés elől (pl: forras/komponensek/topbar.html)
 	* A .htaccess fájlokban "Header add" paranccsal hozzáadva az "X-Robots-Tag: noindex" header minden eltűntetendő fájlhoz
-* Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker! -> [Migráció eredmény](dokumentáció/2022.06.15%20migráció%20teszt/jegyzetek.md)
+* Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker! -> [Migráció eredmény](dokumentáció/szerver%20létrehozás.md)
 * Git repo megtisztítva a jelszavaktól és tanúsítványoktól: [GitHub leírás](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
-* TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása: [Szolgáltatás készítés leírás](dokumentáció/linux%20szolgáltatás/szolgáltatás%20készítés.md)
+* TeamSpeak, együttnéző szerver és code-serverek bootolás utáni automatikus indítása: [Szolgáltatás készítés leírás](dokumentáció/linux%20szolgáltatás%20készítés/szolgáltatás%20készítés.md)
 * Megosztó átírás websocket alapra:
 	* Node.js alapú websocket szerver (WSS, hausz.stream certet használva)
 	* Kell hozzá a ws modul hogy működjön: "npm install ws"

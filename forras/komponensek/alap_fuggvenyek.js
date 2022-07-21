@@ -17,7 +17,9 @@ function szinkron_keres(hivatkozas, parameterek, fuggveny) {
 
     let xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        fuggveny(this.responseText);
+        console.log(hivatkozas);
+        console.log(this.responseText);
+        fuggveny( JSON.parse(this.responseText) );
     }
     if( typeof parameterek == 'string' ) {
         if( parameterek.length <= 0 ) {
@@ -89,7 +91,7 @@ function eloterbe_helyezes_vege() {
     }
 }
 
-function eloterbe_helyezes(objectek, kattintassal_vege) {
+function eloterbe_helyezes(objectek, kattintassal_vege, vege) {
     eloterbe_helyezes_vege();
     if( obj('sotetites_div') == null ) {
         let sotetites = document.createElement('div');
@@ -111,6 +113,9 @@ function eloterbe_helyezes(objectek, kattintassal_vege) {
     if( kattintassal_vege ) {
         obj('sotetites_div').onclick = () => {
             eloterbe_helyezes_vege();
+            if( typeof vege == 'function' ) {
+                vege();
+            }
         }
     } else {
         obj('sotetites_div').onclick = null;
