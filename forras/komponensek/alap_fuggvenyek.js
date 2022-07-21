@@ -169,10 +169,6 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
         throw new Error('Tipus paraméter nem string típusú!!!');
     if( typeof valasz != "string" )
         throw new Error('Valasz paraméter nem string típusú!!!');
-    
-    if( obj('valasz_uzenet') == null ) {
-        document.body.innerHTML += '<div id="valasz_uzenet" class="bottom_left_corner_div kerekites-10" style="z-index: 2; bottom: 5px; left: 5px; max-width: 20%; visibility: hidden; position: fixed; padding: 10px; text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70)"></div>';
-    }
 
     obj('valasz_uzenet').style.border ='1px solid var(--szint-2-szin)';
     obj('valasz_uzenet').style.backgroundColor ='var(--szint-1-szin)';
@@ -210,3 +206,5 @@ function varakozas(feltetel, hiba, fuggveny) {
         }
     }, 3);
 }
+
+document.body.innerHTML += '<div id="valasz_uzenet" class="bottom_left_corner_div kerekites-10" style="z-index: 2; bottom: 5px; left: 5px; max-width: 20%; visibility: hidden; position: fixed; padding: 10px; text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70)"></div>';

@@ -1,14 +1,14 @@
 # Teendők szerver példány létrehozásakor
 
-1.  Csomagok telepítése
+## 
+
+1.  Alapvető csomagok telepítése
 
     ```
-    apt install git apache2 nodejs php mysql-server letsencrypt certbot python3-certbot-apache htop php-mysql 
-    
-    libapache2-mod-xsendfile expect
+    apt install git apache2 nodejs php mysql-server letsencrypt certbot python3-certbot-apache htop php-mysql libapache2-mod-xsendfile expect libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
     ```
 
-2.  Portok nyitása
+2.  Portok nyitása szerveren / internet szolgáltató eszközén
 
 <table>
     <tbody>
@@ -35,7 +35,7 @@
 
     rm -rf html
     
-    scp -r csabikaa97@hausz.stream:/var/www/html ./
+    scp -r <felhasználó>@hausz.stream:/var/www/html ./
     ```
 
 5.  Certificate igénylése certbottal, és átmásolása priv mappába
@@ -100,9 +100,18 @@
     ./osszes_kiadasa.sh
     ```
 
-15. Ajánlott: kiadás eszköz felvétele /usr/local/bin mappába
+# Opcionális lépések
+
+15. kiadás eszköz és osszes_kiadasa.sh script felvétele /usr/local/bin mappába
 
     [leírás.md](dokumentáció/kiadas/leírás.md)
 
+16. Cypress telepítése
+
+    ```
+    cd /var/www/html/teszteles/
+
+    npm install -D cypress
+    ```
 
 2022.06.15 Teszt migrálás Ubuntu 22.04 környezetbe sikeres volt! Minden meglévő szolgáltatás működött.

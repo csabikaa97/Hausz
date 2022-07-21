@@ -130,16 +130,18 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 
 ### Jelenlegi szerver specifikációk, és használt szoftverek
 
-* Hoszt: Amazon AWS
-* Processzor: 1 mag - Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
-    * [GeekBench Single: 627 Multi: 2315](https://browser.geekbench.com/processors/intel-xeon-e5-2676-v3)
-* Memória: 1GB
-* Tárhely: 30GB SSD
-> 
-* Operációs rendszer: Ubuntu 16.04
-* Kiszolgáló: Apache2 + PHP
-* Adatbázis: MySQL
-* TeamSpeak 3 szerver
-* Együttnéző backend: Node.js
-* Kiadás (bundler)
-* Fejlesztői környezet: [code-server](https://github.com/coder/code-server)
+<table>
+    <tr><td>Szerver szolgáltató</td><td><a href="https://aws.amazon.com">Amazon AWS</a></td></tr>
+    <tr><td>Processzor</td><td>1 mag - Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
+        <br><a href="https://browser.geekbench.com/processors/intel-xeon-e5-2676-v3">GeekBench Single: 627</a></td>
+    </tr>
+    <tr><td>Memória</td><td>1GB</td></tr>
+    <tr><td>Tárhely</td><td>30GB SSD</td></tr>
+    <tr><td>Operációs rendszer</td><td><a href="https://ubuntu.com">Ubuntu 16.04</a></td></tr>
+    <tr><td>HTTP(S) kiszolgáló</td><td><a href="https://httpd.apache.org">Apache2</a> + <a href="https://www.php.net">PHP</a></td></tr>
+    <tr><td>Adatbázis</td><td><a href="https://www.mysql.com">MySQL</a></td></tr>
+    <tr><td>Együttnéző backend</td><td><a href="https://nodejs.org/en/">Node.js</a></td></tr>
+    <tr><td>Fejlesztői környezet</td><td><a href="https://github.com/coder/code-server">code-server</a> (Visual Studio Code)</td></tr>
+    <tr><td></td><td><a href="https://www.teamspeak.com/en/">TeamSpeak 3 szerver</a></td></tr>
+    <tr><td>Automatikus teszteléshez használt szoftver</td><td><a href="https://www.cypress.io">Cypress</a></td></tr>
+</table>

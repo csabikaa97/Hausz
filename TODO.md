@@ -1,11 +1,15 @@
 ## 💭 Tennivalók
 
+* Megjelenő név és felhasználói név elkülönítése
+	* felhasználó aktiválásnál kitöltés
+	* együttnézőn új oszlop használata
+	* teamspeak csatlakozás linknél új oszlop használata
 * Autómata tesztelés scriptek megírása
 	* együttnéző
-		* új videó
+		* tekerés
 		* megállítás / lejátszás
 	* megosztó
-	* teamspeak
+	* teamspeak infó
 * Üzenet animáció
 * style="" egyszerűsítés
 * pseudo elements ::before
@@ -46,10 +50,15 @@
 ## ✅ Implementált tennivalók
 
 * Autómata tesztelés scriptek megírása
+	* együttnéző
+		* új videó
+		* online felhasználók listában saját név változik
 	* regisztráció
 	* főoldal
 	* beléptető rendszer (bejelentkezés / kilépés)
 * Megjelenő név és felhasználói név elkülönítése
+	* adatbázisban kész az oszlop
+	* Megosztón átállítva a forrás megjelenő fájloknál
 * Előtérbe helyezés függvény
 * Bonyolult JS részek átírása Template literal-okkal
 * Megosztó Priváttá / publikussá tétel gomb

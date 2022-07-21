@@ -128,15 +128,17 @@ td.cella {
 
 @media screen and (min-width: 1023px) {
     .min-1024-tiltas { display: block; }
-    .nagy-kepernyon-tiltas { display: none; }
+    .nagy-kepernyon-tiltas { display: none !important; }
     .mindig-lathato-nagy-kepernyon { visibility: visible !important; }
     .merettol-fuggoen-inline-block { display: inline; }
+    .mobilon-inline { display: inline; }
 }
 
 @media screen and (max-width: 1023px) {
     .min-1024-tiltas { display: none; }
-    .mobilon-tiltas { display: none; }
+    .mobilon-tiltas { display: none !important; }
     .merettol-fuggoen-inline-block { display: block; }
+    .mobilon-lathatatlan { visibility: hidden; }
 }
 
 /* Gombok */

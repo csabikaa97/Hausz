@@ -1,4 +1,4 @@
-function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) {
+function belepteto_rendszer_frissult() {
     if( session_loggedin == "yes" ) {
         obj('jelszo_valtoztatas_doboz').style.display = 'block';
         obj('hiba_nem_vagy_belepve_doboz').style.display = 'none';

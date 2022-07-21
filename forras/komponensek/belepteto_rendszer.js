@@ -1,20 +1,12 @@
-function belepes_menu_gomb_kattintas(event) {
-    if( obj('belepes_doboz').style.visibility == 'hidden' ||
-        obj('belepes_doboz').style.visibility == 'visible') {
-        obj('belepes_doboz').style.visibility = 'visible';
-        obj('belepes_doboz').style.display = 'block';
+function topbar_fiok_gomb_kattintas() {
+    if( obj('felhasznalo_doboz').style.visibility == '') {
+        obj('felhasznalo_doboz').style.visibility = 'visible';
     } else {
-        obj('belepes_doboz').style.visibility = 'hidden';
-    }
-}
-
-function belepett_menu_gomb_kattintas(event) {
-    if( obj('belepett_doboz').style.visibility == 'hidden' || 
-        obj('belepett_doboz').style.visibility == 'visible' ) {
-        obj('belepett_doboz').style.visibility = 'visible';
-        obj('belepett_doboz').style.display = 'block';
-    } else {
-        obj('belepett_doboz').style.visibility = 'hidden';
+        if( obj('felhasznalo_doboz').style.visibility == 'hidden') {
+            obj('felhasznalo_doboz').style.visibility = 'visible';
+        } else {
+            obj('felhasznalo_doboz').style.visibility = '';
+        }
     }
 }
 
@@ -37,7 +29,7 @@ function belepesgomb(event) {
  
 function kilepesgomb(event) {
     event.preventDefault();
-    szinkron_keres("/include/belepteto_rendszer.php?logout=igen", "", (uzenet) => { 
+    szinkron_keres("/include/belepteto_rendszer.php?logout=igen", "", (uzenet) => {
         if(/^OK:/.test(uzenet)) {
             if (typeof kilepes_siker === 'function') {   kilepes_siker(); }
             session_username = "";
@@ -54,52 +46,49 @@ function kilepesgomb(event) {
 }
 
 function belepteto_rendszer_frissites() {
-    if( obj('belepes_menu_gomb') == null ) {
+    szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
         let varakozas = setInterval(() => {
-            if(obj('topbar') != null) {
-                obj('topbar').innerHTML += `
-                    <div class="nodisplay nagy-kepernyon-tiltas inline-block szint-2 gomb kerekites-15 topbar_menu fit-content" id="belepes_menu_gomb" style="float: right; margin-right: 20px" onclick='belepes_menu_gomb_kattintas(event)'>Belépés</div>
-                    <div class="nodisplay nagy-kepernyon-tiltas inline-block szint-2 gomb kerekites-15 topbar_menu fit-content" id="belepett_menu_gomb" style="float: right; margin-right: 20px" onclick='belepett_menu_gomb_kattintas(event)'></div>
-                `;
+            if( obj('felhasznalo_doboz') != null ) {
+                if(/^OK:/.test(uzenet)) {
+                    let adatok = uzenet.replace(/^OK:/, '').split(',');
+                    session_username = adatok[0];
+                    session_admin = adatok[1];
+                    session_loggedin = 'yes';
+                    obj('belepve_mint').innerHTML = `Belépve mint: ${session_username}`;
+                    if(session_admin == "igen") {
+                        obj('admin_felulet_gomb').style.display = 'block';
+                        obj('vscode_gomb').style.display = 'block';
+                    } else {
+                        session_admin = "";
+                        obj('admin_felulet_gomb').style.display = 'none';
+                        obj('vscode_gomb').style.display = 'none';
+                    }
+                    if(session_username != "") {
+                        obj('belepett_menu_gomb').innerHTML = session_username;
+                        obj('belepett_menu_gomb').style.display = 'inline';
+                        obj('belepes_menu_gomb').style.display = 'none';
+                    }
+                } else {
+                    session_admin = "";
+                    session_username = "";
+                    session_loggedin = "";
+                    obj('belepett_menu_gomb').style.display = 'none';
+                    obj('belepes_menu_gomb').style.display = 'inline';
+                }
+        
+                if( session_loggedin == 'yes' ) {
+                    obj('belepett_doboz').style.display = 'block';
+                    obj('belepes_doboz').style.display = 'none';
+                } else {
+                    obj('belepett_doboz').style.display = 'none';
+                    obj('belepes_doboz').style.display = 'block';
+                }
+                
+                if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(session_loggedin, session_username, session_admin); }
                 clearInterval(varakozas);
             }
-        }, 15);
-    }
-
-    szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
-        if(/^OK:/.test(uzenet)) {
-            let adatok = uzenet.replace(/^OK:/, '').split(',');
-            session_username = adatok[0];
-            session_admin = adatok[1];
-            session_loggedin = 'yes';
-            obj('belepve_mint').innerHTML = `Belépve mint: ${session_username}`;
-            if(session_admin == "igen") {
-                obj('admin_felulet_gomb').style.display = 'block';
-                obj('vscode_gomb').style.display = 'block';
-            } else {
-                session_admin = "";
-                obj('admin_felulet_gomb').style.display = 'none';
-                obj('vscode_gomb').style.display = 'none';
-            }
-            if(session_username != "") {
-                obj('belepett_menu_gomb').innerHTML = session_username;
-                obj('belepett_menu_gomb').style.display = 'block';
-                obj('belepes_menu_gomb').style.display = 'none';
-            }
-
-            obj('belepett_doboz').style.visibility = 'visible';
-            obj('belepes_doboz').style.visibility = 'hidden';
-        } else {
-            session_admin = "";
-            session_username = "";
-            session_loggedin = "";
-            obj('belepett_doboz').style.visibility = 'hidden';
-            obj('belepes_doboz').style.visibility = 'visible';
-            obj('belepett_menu_gomb').style.display = 'none';
-            obj('belepes_menu_gomb').style.display = 'block';
-        }
+        }, 20);
         
-        if( typeof frissites_fuggveny == 'function' ) { frissites_fuggveny(session_loggedin, session_username, session_admin); }
     });
 }
 

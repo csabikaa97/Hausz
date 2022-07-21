@@ -160,7 +160,7 @@ function log_betoltese() {
     });
 }
 
-function belepteto_rendszer_frissult( session_loggedin, session_username, session_admin ) {
+function belepteto_rendszer_frissult() {
     if(session_admin == "igen") {
         obj('aktivalando_fiokok').style.display = 'block';
         obj('fiokok').style.display = 'block';

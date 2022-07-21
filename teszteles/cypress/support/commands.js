@@ -35,29 +35,29 @@ Cypress.Commands.add('topbar_teszteles', () => {
     cy.get('#menu_div').contains('Főoldal').and('be.visible')
     cy.get('#menu_div').contains('Megosztó').and('be.visible')
     cy.get('body').click(0,0)
+    cy.wait(250)
 })
 
 Cypress.Commands.add('belepteto_rendszer_teszteles', () => {
 // Mobil
     cy.viewport(320, 640)
     // Belépés gomb látható
-    cy.contains('Belépés').and('be.visible')
+    cy.contains('Belépés').and('be.visible').click()
     // belépés funkció
-    cy.contains('Belépés').click()
     cy.contains('Bejelentkezés').and('be.visible')
     cy.contains('Regisztráció').and('be.visible')
     cy.get('input[id=username]').and('be.visible')
     cy.get('input[id=current-password]').and('be.visible')
     cy.belepes()
     cy.contains('Sikeres belépés').and('be.visible')
-    cy.contains('automata_teszteles').click().and('be.visible')
+    cy.get('#felhasznalo_doboz').contains('automata_teszteles').and('be.visible')
     cy.contains('Belépve mint:').and('be.visible')
     cy.contains('Jelszó megváltoztatása').and('be.visible')
     cy.kilepes()
 // Asztali
     cy.viewport(1280, 720)      
-    // Belépés gomb látható
-    cy.contains('Belépés').and('be.visible')
+    // Bejelentkezés gomb látható
+    cy.get('#felhasznalo_doboz').contains('Bejelentkezés').and('be.visible')
     // belépés funkció
     cy.contains('Bejelentkezés').and('be.visible')
     cy.contains('Regisztráció').and('be.visible')
@@ -65,7 +65,7 @@ Cypress.Commands.add('belepteto_rendszer_teszteles', () => {
     cy.get('input[id=current-password]').and('be.visible')
     cy.belepes()
     cy.contains('Sikeres belépés').and('be.visible')
-    cy.contains('automata_teszteles').click().and('be.visible')
+    cy.get('#felhasznalo_doboz').contains('automata_teszteles').and('be.visible')
     cy.contains('Belépve mint:').and('be.visible')
     cy.contains('Jelszó megváltoztatása').and('be.visible')
     cy.kilepes()
