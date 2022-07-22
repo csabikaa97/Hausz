@@ -3,6 +3,7 @@ belepteto_rendszer_beallitas();
 
 ujitasok_doboz = obj('ujitasok');
 ujitasok = {
+    '2022.07.22': ["Együttnéző: Már csak pár funkció befejezése, és egy kis bővítés szükséges ahhoz hogy készen álljon használatra. Jelenleg folyik a BETA tesztelés."],
     '2022.07.18': ["Megosztó: Minden felhasználó tudja a jobb-klikk menüvel változtatni a saját fájljainak privát / publikus státuszát."],
     '2022.06.30': ["Megosztó: Fájlokra lehet jobb-klikkelni egyéb opciók eléréséhez, több fájlt is fel lehet tölteni egyszerre, lehet a feltöltött állományok között keresni, és át lehet húzni a weboldalra bármilyen fájlokat a feltöltéshez."
         , "Globális: Sokkal mobilbarátabb az összes oldal"],

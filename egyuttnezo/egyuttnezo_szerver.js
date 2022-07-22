@@ -25,7 +25,7 @@ var lejatszas = 'I';
 var sebesseg = '1.0';
 var user = "szerver";
 
-var utolso_ismert_idopont = 0;
+var utolso_ismert_idopont = Date.now();
 
 const options = {
     key: fs.readFileSync('/var/www/html/priv/privkey.pem'),
@@ -54,7 +54,7 @@ function osszes_kliens_statusz_frissitese() {
 function osszes_kliens_felhasznalolista_frissitese() {
     let felhasznalok = "";
     wss.clients.forEach(function each(client) {
-        felhasznalok += (felhasznalok == "" ? "" : ",") + (client.felhasznalonev != undefined ? client.felhasznalonev : 'Nem regisztrált felhasználó');
+        felhasznalok += (felhasznalok == "" ? "" : ",") + (client.felhasznalonev != undefined ? client.felhasznalonev : 'Nem regisztrált felhasználó') + client.agent;
     });
     wss.clients.forEach(function each(client) {
         client.send('felhasznalok:' + felhasznalok);
@@ -73,8 +73,17 @@ const wss = new ws.Server({
     server,
     path: '/echo'
 });
+
 wss.on('connection', function connection(ws, req) {
     ws.id = req.headers['sec-websocket-key'];
+    console.log(req.headers['user-agent']);
+    ws.agent = '';
+    if( /Linux; Android/ig.test(req.headers['user-agent']) || 
+        /iPhone/ig.test(req.headers['user-agent'])
+    ) {
+        ws.agent = ' (mobil)';
+        console.log(ws.id + ': Mobil eszközön van (Android vagy iOS)');
+    }
     console.log((ws.felhasznalonev != undefined ? ws.felhasznalonev : ws.id) + ': csatlakozott a szerverhez');
     osszes_kliens_felhasznalolista_frissitese();
 
@@ -95,7 +104,7 @@ wss.on('connection', function connection(ws, req) {
         if (/^felhasznalok$/.test(data)) {
             let felhasznalok = "";
             wss.clients.forEach(function each(client) {
-                felhasznalok += (felhasznalok == "" ? "" : ",") + (client.felhasznalonev != undefined ? client.felhasznalonev : 'Nem regisztrált felhasználó');
+                felhasznalok += (felhasznalok == "" ? "" : ",") + (client.felhasznalonev != undefined ? client.felhasznalonev : 'Nem regisztrált felhasználó') + client.agent;
             });
             ws.send('felhasznalok:' + felhasznalok);
             return;

@@ -1,5 +1,29 @@
 ## 💭 Tennivalók
 
+* Együttnéző rossz link beírása hiba dobása
+* Együttnéző kommunikáció átírása JSON formátumra
+* GraphQL-szerű php lekérdezési forma. Egy PHP fájl amin keresztül le lehet kérdezni bármit az adatbázisból
+	* GET és POST metódusokkal lehet kiválasztani a releváns mezőket
+	* Egységes JSON választ ad mindenre
+		* OK:	{
+					"eredmeny": "ok", 
+					"valasz": {
+						"kert-valtozo-1": 1,
+						"kert-valtozo-2": 2
+					}
+				}
+		* HIBA:	{
+					"eredmeny": "hiba",
+					"valasz": "Hiba leírása, potenciális javítás tipp"
+				}
+	* Részleges lekéréseket is adjon vissza
+		* RESZLEGES:	{
+							"eredmeny": "részleges",
+							"valasz": {
+								"sikeres-valtozo-1": 1,
+								"sikeres-valtozo-2": 2
+							}
+						}
 * Ötlet: JS szint-[0-9] classok automatikus osztása onload után
 * PHP GET és POST kérések átgondolása
 * Megjelenő név és felhasználói név elkülönítése
