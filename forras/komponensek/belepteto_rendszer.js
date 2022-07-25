@@ -63,7 +63,7 @@ function belepteto_rendszer_frissites() {
                         obj('vscode_gomb').style.display = 'none';
                     }
                     if(session_username != "") {
-                        obj('belepett_menu_gomb').innerHTML = session_username;
+                        obj('belepett_menu_gomb').innerHTML = "Fiók";
                         obj('belepett_menu_gomb').style.display = 'inline';
                         obj('belepes_menu_gomb').style.display = 'none';
                     }

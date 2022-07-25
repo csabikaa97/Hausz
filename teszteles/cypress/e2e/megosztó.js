@@ -17,14 +17,14 @@ describe('Megosztó', () => {
         cy.mobil_belepes()
         cy.get('#jelszo_valtoztatas_doboz').contains('Add meg az adataid a jelszó megváltoztatásához').and('be.visible')
         //Mobil: Sikeres jelszó változtatás
-        cy.get('#topbar').contains('automata_teszteles').and('be.visible')
+        cy.get('#topbar').contains('Fiók').and('be.visible')
         cy.get('#jelenlegi_jelszo').and('be.visible').type('automata_teszteles')
         cy.get('#uj_jelszo').and('be.visible').type('uj_jelszo1234')
         cy.get('#uj_jelszo_megerosites').and('be.visible').type('uj_jelszo1234')
         cy.get('#password_reset').contains('Jelszó megváltoztatása').and('be.visible').click()
         cy.get('#ok_jelszo_valtoztatas_sikeres').contains('Jelszavad sikeresen meg lett változtatva').and('be.visible')
         //Mobil: Sikeres jelszó visszaváltoztatás
-        cy.get('#topbar').contains('automata_teszteles').and('be.visible')
+        cy.get('#topbar').contains('Fiók').and('be.visible')
         cy.get('#jelszovaltoztatasgomb').and('be.visible').click()
         cy.get('#jelenlegi_jelszo').and('be.visible').type('uj_jelszo1234')
         cy.get('#uj_jelszo').and('be.visible').type('automata_teszteles')

@@ -9,7 +9,6 @@ describe('Együttnéző', () => {
 
     it('Kilépve: Irányítások nem léteznek', () => {
         cy.get('#lejatszasgomb').and('not.be.visible');
-        cy.contains('Új videó indítása').and('not.be.visible');
         cy.get('input[id=video_id_mezo]').and('not.be.visible');
     })
     

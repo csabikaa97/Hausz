@@ -1,5 +1,8 @@
 ## 💭 Tennivalók
 
+* Általános: max 72 karakter hosszú jelszó
+* Megosztó: titkosítási és feloldási folyamat mozgatása a kliensre: https://stackoverflow.com/questions/40680431/how-can-i-encrypt-decrypt-arbitrary-binary-files-using-javascript-in-the-browser
+* camelCase-re átírni az összes függvényt és változót
 * Együttnéző rossz link beírása hiba dobása
 * Együttnéző kommunikáció átírása JSON formátumra
 * GraphQL-szerű php lekérdezési forma. Egy PHP fájl amin keresztül le lehet kérdezni bármit az adatbázisból
@@ -16,7 +19,6 @@
 					"eredmeny": "hiba",
 					"valasz": "Hiba leírása, potenciális javítás tipp"
 				}
-	* Részleges lekéréseket is adjon vissza
 		* RESZLEGES:	{
 							"eredmeny": "részleges",
 							"valasz": {
@@ -75,6 +77,7 @@
 
 ## ✅ Implementált tennivalók
 
+* Együttnéző hangerő eltárolása [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)-ben
 * PHP válaszok JSON formátumra váltása
 	* főoldal
 	* admin

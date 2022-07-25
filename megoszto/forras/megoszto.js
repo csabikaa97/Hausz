@@ -518,14 +518,14 @@ function jobb_klikk_menu_kinyitas(event, tr) {
     // menü eltűntetése máshova kattintás esetén
     document.body.onclick = (event) => {
         if (window.innerWidth > 1024) {
-            let kattintas_jobb_klikk_menun_volt = false;
+            let kattintasJobbKlikkMenunVolt = false;
             event.composedPath().forEach(element => {
                 if (element.id == 'jobb_klikk_menu') {
-                    kattintas_jobb_klikk_menun_volt = true;
+                    kattintasJobbKlikkMenunVolt = true;
                 }
             });
 
-            if (!kattintas_jobb_klikk_menun_volt) {
+            if (!kattintasJobbKlikkMenunVolt) {
                 jobb_klikk_menu_eltuntetes();
             }
         }

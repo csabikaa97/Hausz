@@ -20,18 +20,21 @@
         <div class='register'>
             <form id='password_reset' onsubmit="jelszo_valtoztatasa(event)">
                 <input class="gomb szint-1 kerekites-10" autocomplete='current-password' id='jelenlegi_jelszo' type='password' name='current-password' placeholder='Jelenlegi jelszó'><br>
-                <input class="gomb szint-1 kerekites-10" autocomplete='new-password' id='uj_jelszo' type='password' name='new-password' placeholder='Új jelszó'><br>
-                <input class="gomb szint-1 kerekites-10" autocomplete='new-password-confirm' id='uj_jelszo_megerosites' type='password' name='new-password-confirm' placeholder='Új jelszó megerősítése'><br>
+                <input oninput="jelszoErossegFrissitesUtemezese()" class="gomb szint-1 kerekites-10" autocomplete='new-password' id='uj_jelszo' type='password' name='new-password' placeholder='Új jelszó'><br>
+                <input oninput="jelszoErossegFrissitesUtemezese()" class="gomb szint-1 kerekites-10" autocomplete='new-password-confirm' id='uj_jelszo_megerosites' type='password' name='new-password-confirm' placeholder='Új jelszó megerősítése'><br>
+                <p>Javasolt irányelvek az új jelszóhoz:</p>
+                <div id="jelszoErossegTippek">⚫ Kis betű<br>⚫ Nagy betű<br>⚫ Szám<br>⚫ Különleges karakter<br>⚫ Legalább 10 karakter hosszú<br>⚫ Új jelszavak egyeznek<br></div>
                 <br><button class="gomb szint-2 kerekites-10" type="submit">Jelszó megváltoztatása</button>
             </form>
         </div>
     </div>
-    <div class="nodisplay kozepre fit-content" id="hiba_nem_vagy_belepve_doboz">
+    <div class="nodisplay kozepre fit-content" id="hibaNemVagyBelepveDoboz">
         <p>Nem vagy belépve</p>
     </div>
     <div class="nodisplay kozepre fit-content" id="ok_jelszo_valtoztatas_sikeres">
         <p>Jelszavad sikeresen meg lett változtatva</p>
     </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 
 </html>

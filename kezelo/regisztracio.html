@@ -36,14 +36,16 @@
         <div class="nodisplay kozepre" id="regisztracio_doboz">
             <form class="kozepre fit-content">
                 <input id="regisztracio_username" class="gomb szint-1 kerekites-10" autocomplete="new-username" name='regisztracio_username' type='text'  placeholder='Felhasználónév'><br>
-                <input id="regisztracio_password" class="gomb szint-1 kerekites-10" autocomplete='new-password' type='password' name='regisztracio_password' placeholder='Jelszó'><br>
-                <input id="regisztracio_password_confirm" class="gomb szint-1 kerekites-10" autocomplete='new-password' type='password' name='regisztracio_password_confirm' placeholder='Jelszó megerősítése'><br>
+                <input oninput="jelszoErossegFrissitesUtemezese()" id="regisztracio_password" class="gomb szint-1 kerekites-10" autocomplete='new-password' type='password' name='regisztracio_password' placeholder='Jelszó'><br>
+                <input oninput="jelszoErossegFrissitesUtemezese()" id="regisztracio_password_confirm" class="gomb szint-1 kerekites-10" autocomplete='new-password' type='password' name='regisztracio_password_confirm' placeholder='Jelszó megerősítése'><br>
                 <input id="regisztracio_email" class="gomb szint-1 kerekites-10" type='text' name='regisztracio_email' placeholder='E-mail cím (opcionális)'><br><br>
-                <button id="regisztracio_gomb" class="gomb szint-2 kerekites-15" onclick="regisztracio_inditasa(event)">Regisztráció</button>
+                <p>Javasolt irányelvek az új jelszóhoz:</p>
+                <div id="jelszoErossegTippek">⚫ Kis betű<br>⚫ Nagy betű<br>⚫ Szám<br>⚫ Különleges karakter<br>⚫ Legalább 10 karakter hosszú<br>⚫ Új jelszavak egyeznek<br></div>
+                <br><button id="regisztracio_gomb" class="gomb szint-2 kerekites-15" onclick="regisztracio_inditasa(event)">Regisztráció</button>
             </form>
         </div>
         <div id="regisztracio_siker_doboz" class="kozepre nodisplay" style="max-width: 900px">
-            <h2>Sikeres regisztráció</h2>
+            <br><br><br><br><h2>Sikeres regisztráció</h2>
             <p>Ha adtál meg e-mail címet, akkor azon keresztül fogunk értesíteni arról ha aktiválva lett a fiókod, egyébként pedig bármelyik aloldalon tudod próbálgatni a belépést amíg nem lesz aktív a fiókod.</p>
             <br>
             <div class="gomb kerekites-15 szint-2 fit-content" onclick='location.href = "/"'>Ugrás a főoldalra</div>

@@ -86,11 +86,47 @@ function onPlayerError(event) { console.log('CALL: onPlayerError()');
     uj_valasz_mutatasa(5000, "hiba", `Lejátszó hiba: ${event.data}`);
 }
 
+function hangero_valtozas() {
+    let uj_hangero = parseFloat(obj('csuszka_hangero').value);
+    player.setVolume( uj_hangero );
+    window.localStorage.setItem('hangero', uj_hangero);
+    if( uj_hangero > 0 ) {
+        obj('nemitasGomb').innerHTML = '🔈';
+    }
+    if( uj_hangero > 50 ) {
+        obj('nemitasGomb').innerHTML = '🔉';
+    }
+    if( uj_hangero > 75 ) {
+        obj('nemitasGomb').innerHTML = '🔊';
+    }
+}
+
+function gomb_nemitas() {
+    if( obj('csuszka_hangero').style.visibility != 'visible' ) {
+        obj('csuszka_hangero').style.visibility = 'visible';
+        player.unMute();
+        hangero_valtozas();
+    } else {
+        obj('nemitasGomb').innerHTML = '🔇';
+        obj('csuszka_hangero').style.visibility = 'hidden';
+        player.mute();
+        player.setVolume(0);
+    }
+}
+
 function onPlayerReady(event) { console.log('CALL: onPlayerReady()');
     player_betoltott_BOOL = true;
     player_frissitese();
 
     player.playVideo();
+
+    let taroltHangero = window.localStorage.getItem('hangero');
+    if( taroltHangero != null ) {
+        obj('csuszka_hangero').value = parseFloat(taroltHangero);
+    }
+
+    obj('csuszka_hangero').onchange = () => { hangero_valtozas(); }
+    obj('csuszka_hangero').onclick = () => { hangero_valtozas(); }
 
     csuszka_folyamatos_frissitese = setInterval(() => {
         if( typeof player.getCurrentTime() == 'number' ) {
@@ -238,8 +274,8 @@ function jelenlegi_ido() {
     if (lejatszas_STRING == 'N') {
         return eredmeny_FLOAT;
     } else {
-        if (utolso_idopont_fogadasanak_ideje_FLOAT != undefined && !isNaN(utolso_idopont_fogadasanak_ideje_FLOAT)) {
-            eredmeny_FLOAT += (Date.now() - utolso_idopont_fogadasanak_ideje_FLOAT) / 1000;
+        if (utolsoIdopontFogadasanakIdejeFLOAT != undefined && !isNaN(utolsoIdopontFogadasanakIdejeFLOAT)) {
+            eredmeny_FLOAT += (Date.now() - utolsoIdopontFogadasanakIdejeFLOAT) / 1000;
         }
         return eredmeny_FLOAT;
     }
@@ -251,7 +287,7 @@ function adatok_frissitese(data) { console.log('CALL: adatok_frissitese()');
     lejatszas_STRING = data.split(",")[2];
     sebesseg_FLOAT = parseFloat(data.split(",")[3]);
     user_STRING = data.split(",")[4];
-    utolso_idopont_fogadasanak_ideje_FLOAT = Date.now();
+    utolsoIdopontFogadasanakIdejeFLOAT = Date.now();
     valaszido_utolso_frissiteskor_FLOAT = atlag_FLOAT;
 }
 
@@ -389,13 +425,13 @@ var elozo_PlayerState_INT = undefined;
 var elozo_elozo_PlayerState_INT = undefined;
 
 var elozo_playerstate_ideje_FLOAT = 0.0;
-var elozo_elozo_playerstate_ideje_FLOAT = 0.0;
+var elozoElozoPlayerstateIdejeFLOAT = 0.0;
 
 var utolso_utasitas_ideje_FLOAT = 0.0;
 var utolso_tekeres_ideje_INT = 0.0;
 var valaszido_kezdes_FLOAT;
 var valaszidok_ARRAY_FLOAT;
-var utolso_idopont_fogadasanak_ideje_FLOAT;
+var utolsoIdopontFogadasanakIdejeFLOAT;
 var valaszido_utolso_frissiteskor_FLOAT;
 var ping_mintak_szama_FLOAT = 7;
 var csuszas_tolerancia_FLOAT = 1.5;
