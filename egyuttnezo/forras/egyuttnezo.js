@@ -174,7 +174,9 @@ function onStateChange(event) { console.log('CALL: onStateChange()');
 
 function socket_csatlakozas() { console.log('CALL: socket_csatlakozas()');
     clearInterval(socket_ujracsatlakozas_INTERVAL);
-    socket = new WebSocket('wss://hausz.stream:8090/echo');
+    
+    let domain = window.location.href.replace(/https?:\/\/([a-z0-9_\-\.]*).*/, '$1');
+    socket = new WebSocket(`wss://${domain}:8090/echo`);
 
     socket.onopen = function() {
         socket_csatlakozva = true;

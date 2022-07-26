@@ -12,6 +12,11 @@ function jelszo_valtoztatasa(event) {
     event.preventDefault();
 
     jelszoErossegFrissitese();
+    
+    if( obj('uj_jelszo').value.length > 72 ) {
+        alert('Túl hosszú a jelszavad. A használható karakterek maximális száma 72.');
+        return;
+    }
 
     if( !ujJelszavakEgyeznek ) {
         uj_valasz_mutatasa(5000, "hiba", "A megadott új jelszavak nem egyeznek");
@@ -23,6 +28,7 @@ function jelszo_valtoztatasa(event) {
             return;
         }
     }
+
 
     let post_parameterek = new FormData();
     post_parameterek.append('uj_jelszo', obj('uj_jelszo').value);

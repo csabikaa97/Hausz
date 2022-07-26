@@ -2,4 +2,4 @@ Order Allow,Deny
 Allow from all
 
 RewriteEngine on
-RewriteRule .* https://hausz.stream/megoszto/
+RewriteRule .* /megoszto/ [R=301,NC,L]

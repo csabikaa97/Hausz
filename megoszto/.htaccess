@@ -24,8 +24,8 @@ RewriteCond %{QUERY_STRING} (.*)
 RewriteRule request\.php /megoszto/megoszto.php?letoltes&%1
 
 # Fajlok mappa elérésének tiltása átirányítással
-RewriteRule (.*)fajlok(.*) https://hausz.stream/megoszto/
-RewriteRule (.*)feltoltes.html(.*) https://hausz.stream/megoszto/
-RewriteRule (.*)feltoltes.php(.*) https://hausz.stream/megoszto/
+RewriteRule (.*)fajlok(.*) /megoszto/ [R=301,NC,L]
+RewriteRule (.*)feltoltes.html(.*) /megoszto/ [R=301,NC,L]
+RewriteRule (.*)feltoltes.php(.*) /megoszto/ [R=301,NC,L]
 
 DirectoryIndex megoszto.html
