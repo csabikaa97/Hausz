@@ -1,1 +1,6 @@
 FROM mysql:8.0.29
+RUN mkdir /telepites
+WORKDIR /telepites
+COPY ./telepites.sh /telepites/
+COPY ./mentes.sql /telepites/
+COPY ./convert_mysql_to_mariadb.sql /telepites/

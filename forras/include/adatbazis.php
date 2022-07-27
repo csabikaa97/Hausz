@@ -1,5 +1,5 @@
 <?php
-    $servername = "172.20.128.1";
+    $servername = "172.20.128.10";
     $username = "root";
     $password = "root";
     $conn = new mysqli($servername, $username, $password, $dbname);

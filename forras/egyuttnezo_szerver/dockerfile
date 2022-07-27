@@ -1,3 +1,5 @@
-FROM node:12
-WORKDIR /var/www/forras/egyuttnezo_szerver/
-CMD ["node", "egyuttnezo_szerver.js"]
+FROM node:12.22.12
+RUN mkdir /egyuttnezo_szerver
+WORKDIR /egyuttnezo_szerver
+RUN npm install ws@8.8.1
+CMD cp /var/www/forras/egyuttnezo_szerver/egyuttnezo_szerver.js /egyuttnezo_szerver/ ; node /egyuttnezo_szerver/egyuttnezo_szerver.js

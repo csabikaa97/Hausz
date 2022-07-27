@@ -12,9 +12,9 @@
 
 # Együttnéző működéséhez generált szemetek
 
-/forras/egyuttnezo/node_modules
-/forras/egyuttnezo/package.json
-/forras/egyuttnezo/package-lock.json
+/forras/egyuttnezo_szerver/node_modules
+/forras/egyuttnezo_szerver/package.json
+/forras/egyuttnezo_szerver/package-lock.json
 
 /teszteles/node_modules
 /teszteles/package.json

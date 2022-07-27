@@ -10,7 +10,7 @@ RUN a2enmod ssl
 RUN phpenmod mysqli
 RUN sed -i '/SSLCertificateFile.*snakeoil\.pem/c\SSLCertificateFile \/var\/www\/public\/fullchain.pem' /etc/apache2/sites-available/default-ssl.conf
 RUN sed -i '/SSLCertificateKeyFile.*snakeoil\.key/cSSLCertificateKeyFile \/var\/www\/public\/privkey.pem' /etc/apache2/sites-available/default-ssl.conf
-RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-available/default-ssl.conf
+RUN sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-available/*.conf
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 RUN a2ensite default-ssl
 

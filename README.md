@@ -131,9 +131,21 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
 ### Jelenlegi szerver specifikációk, és használt szoftverek
 
 <table>
-    <tr><td>Szerver szolgáltató</td><td><a href="https://aws.amazon.com">Amazon AWS</a></td></tr>
-    <tr><td>Processzor</td><td>1 mag - Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
-        <br><a href="https://browser.geekbench.com/processors/intel-xeon-e5-2676-v3">GeekBench Single: 627</a></td>
+    <tr>
+        <td>Szerver szolgáltató (éles)</td>
+        <td>
+            <a href="https://aws.amazon.com">Amazon AWS</a>
+            <br>1 mag - Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
+            <br><a href="https://browser.geekbench.com/processors/intel-xeon-e5-2676-v3">GeekBench Single: 627</a>
+        </td>
+    </tr>
+    <tr>
+        <td>Szerver szolgáltató (teszt)</td>
+        <td>
+            <a href="https://azure.microsoft.com">Microsoft Azure</a>
+            <br>1 mag - Intel Xeon Platinum 8171M @ 2.60GHz
+            <br><a href="https://browser.geekbench.com/processors/intel-xeon-platinum-8171m">GeekBench Single: 938</a>
+        </td>
     </tr>
     <tr><td>Memória</td><td>1GB</td></tr>
     <tr><td>Tárhely</td><td>30GB SSD</td></tr>

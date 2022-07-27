@@ -1,5 +1,9 @@
 ## 💭 Tennivalók
 
+* szerver felkészítése arra a lehetőségre hogy minden táblázat üres
+* megosztó fájlok: ok: fajlok: 0
+* együttnéző felhasználók: ok: felhasznalok: 0
+* .md fájlokban linkek javítása
 * .htaccess és .gitignore fájlok újraírása a mappastruktúra változás miatt
 * Teamspeak szerver dockeresítése
 	* Új deployment tesztelése egy friss szerveren
