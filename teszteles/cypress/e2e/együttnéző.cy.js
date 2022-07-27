@@ -1,6 +1,6 @@
 describe('Együttnéző', () => {
     it('oldal betöltése', () => {
-        cy.visit('https://hausz.stream/egyuttnezo')
+        cy.visit(Cypress.env('domain') + 'egyuttnezo')
     })
 
     it('socket csatlakozva', () => {

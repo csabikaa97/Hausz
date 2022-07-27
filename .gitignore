@@ -1,6 +1,6 @@
 # Google SEO authentikáció
 
-/googlef67f98e02ef6449a.html
+/public/googlef67f98e02ef6449a.html
 
 # Privát fájlok
 
@@ -8,33 +8,37 @@
 
 # Felhasználói fájlok
 
-/megoszto/fajlok/
+/public/megoszto/fajlok/
 
 # Együttnéző működéséhez generált szemetek
 
-/egyuttnezo/node_modules
-/egyuttnezo/package.json
-/egyuttnezo/package-lock.json
+/forras/egyuttnezo/node_modules
+/forras/egyuttnezo/package.json
+/forras/egyuttnezo/package-lock.json
 
 /teszteles/node_modules
 /teszteles/package.json
 /teszteles/package-lock.json
 /teszteles/cypress/videos/
 
-/admin/backup/
 
 # Csomagolt Javascript fájlok
 
-/megoszto/megoszto.js
-/admin/admin.js
-/egyuttnezo/egyuttnezo.js
-/index/index.js
-/egyuttnezo/egyuttnezo.js
-/erettsegiszamlalo/erettsegiszamlalo.js
-/hauszkft/hauszkft.js
-/kezelo/jelszo_valtoztatas.js
-/kezelo/regisztracio.js
-/pizzatierlist/pizzatierlist.js
-/teamspeak/teamspeak.js
-/webjosda/josda.js
-/webjosda/fizetos.js
+/public/megoszto/megoszto.js
+/public/admin/admin.js
+/public/egyuttnezo/egyuttnezo.js
+/public/index/index.js
+/public/egyuttnezo/egyuttnezo.js
+/public/erettsegiszamlalo/erettsegiszamlalo.js
+/public/hauszkft/hauszkft.js
+/public/kezelo/jelszo_valtoztatas.js
+/public/kezelo/regisztracio.js
+/public/pizzatierlist/pizzatierlist.js
+/public/teamspeak/teamspeak.js
+/public/webjosda/josda.js
+/public/webjosda/fizetos.js
+
+# mentések
+
+/admin/backup/*
+/teamspeak/adatbazis/*.sql

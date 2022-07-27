@@ -1,7 +1,7 @@
 describe('Regisztráció', () => {
     it('Mobil: Navigálás főoldalról', () => {
         cy.viewport(320, 640)
-        cy.visit('https://hausz.stream/')
+        cy.visit(Cypress.env('domain'))
         cy.get('#topbar').contains('Belépés').and('be.visible').click()
         cy.get('#belepes_doboz').contains('Regisztráció').and('be.visible').click()
     })
@@ -61,7 +61,7 @@ describe('Regisztráció', () => {
         cy.get('#jelszoErossegTippek').contains('🟢 Új jelszavak egyeznek')
 
         cy.get('input[id=regisztracio_username]').and('be.visible').type(start + a + b + c + d)
-        cy.get('input[id=regisztracio_email]').and('be.visible').type(start + a + b + c + '_AUTOMATA_TESZTELES@hausz.stream')
+        cy.get('input[id=regisztracio_email]').and('be.visible').type(start + a + b + c + '_AUTOMATA_TESZTELES@' + Cypress.env('domain'))
     })
 
     it('Mobil: Regisztrációs gomb megléte és funkcionalitás', () => {

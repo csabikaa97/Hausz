@@ -115,3 +115,4 @@
     ```
 
 2022.06.15 Teszt migrálás Ubuntu 22.04 környezetbe sikeres volt! Minden meglévő szolgáltatás működött.
+2022.07.26 Következik áttérés docker-re, ezért ez a dokumentum irreleváns már

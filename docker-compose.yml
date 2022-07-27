@@ -1,0 +1,77 @@
+services:
+ adatbazis:
+  build: adatbazis
+  container_name: adatbazis
+  ports:
+   - "3306:3306"
+  environment:
+   - MYSQL_ROOT_PASSWORD=root
+  networks:
+   container_halozat:
+    ipv4_address: 172.20.128.1
+  
+ public:
+   build: public
+   container_name: public
+   ports:
+    - "80:80"
+    - "443:443"
+   volumes:
+    - /var/www:/var/www
+   networks:
+    container_halozat:
+     ipv4_address: 172.20.128.2
+   depends_on:
+    - "adatbazis"
+
+ egyuttnezo_szerver:
+   build: forras/egyuttnezo_szerver
+   container_name: egyuttnezo_szerver
+   ports:
+    - "8090:8090"
+   volumes:
+    - /var/www:/var/www
+   networks:
+    container_halozat:
+     ipv4_address: 172.20.128.3
+   depends_on:
+    - "public"
+  
+ teamspeak-adatbazis:
+    build: teamspeak/adatbazis
+    container_name: teamspeak-adatbazis
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: teamspeak
+    ports:
+    - "3307:3306"
+    networks:
+     container_halozat:
+      ipv4_address: 172.20.128.4
+
+ teamspeak:
+    build: teamspeak/szerver
+    container_name: teamspeak
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
+    environment:
+      TS3SERVER_DB_PLUGIN: ts3db_mariadb
+      TS3SERVER_DB_SQLCREATEPATH: create_mariadb
+      TS3SERVER_DB_HOST: 172.20.128.4
+      TS3SERVER_DB_USER: root
+      TS3SERVER_DB_PASSWORD: root
+      TS3SERVER_DB_NAME: teamspeak
+      TS3SERVER_DB_WAITUNTILREADY: 5
+      TS3SERVER_LICENSE: accept
+    depends_on:
+     - "teamspeak-adatbazis"
+    networks:
+     container_halozat:
+      ipv4_address: 172.20.128.5
+
+networks:
+  container_halozat:
+    name: container_halozat
+    driver: bridge

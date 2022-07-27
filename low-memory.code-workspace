@@ -1,8 +1,68 @@
 {
 	"folders": [
 		{
-			"path": "/var/www/html"
+			"path": "/var/www/"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"workbench.colorTheme": "Visual Studio Dark",
+		"workbench.startupEditor": "none",
+		"workbench.tree.indent": 19,
+		"workbench.colorCustomizations": {
+			"activityBar.background": "#145d50",
+			"activityBar.foreground": "#d1d1d1",
+			
+			"editor.background": "#0a2520",
+			"editorGutter.background": "#0f3730",
+			"editorGroupHeader.tabsBackground": "#0a2520",
+			"editorGroup.border": "#145d50",
+			"editorGroup.emptyBackground": "#145d50",
+			"editorGroup.focusedEmptyBorder": "#145d50",
+			"editorOverviewRuler.background": "#0a2520",
+			"editorPane.background": "#145d50",
+			"editorWidget.background": "#0f3730",
+	
+			"statusBar.background": "#0a2520",
+			"statusBar.foreground": "#afafaf",
+			
+			"sideBar.background": "#1f4a40",
+			"sideBar.foreground": "#6b91a5",
+			"sideBarTitle.foreground": "#afafaf",
+			
+			"titleBar.activeForeground": "#afafaf",
+			"titleBar.activeBackground": "#0a2520",
+			
+			"tab.activeBackground": "#0f3730",
+			"tab.inactiveBackground": "#0a2520",
+			"tab.activeForeground": "#ffffff",
+			"tab.inactiveForeground": "#888888",
+			
+			"breadcrumb.background": "#0f3730",
+			"breadcrumb.foreground": "#888888"
+	
+		},
+	
+		"editor.tokenColorCustomizations": {
+			"comments": "#494949"
+		},
+	
+		"git.enableSmartCommit": true,
+		"security.workspace.trust.untrustedFiles": "open",
+		"editor.inlineSuggest.enabled": true,
+		"github.copilot.enable": {
+			"*": true,
+			"yaml": false,
+			"plaintext": false,
+			"markdown": false
+		},
+		"editor.unicodeHighlight.ambiguousCharacters": false,
+		"redhat.telemetry.enabled": false,
+		"cmake.configureOnOpen": true,
+		"git.confirmSync": false,
+		"files.exclude": {
+			"**/.git": false,
+			"**/.git.bak": true
+		},
+		"explorer.confirmDragAndDrop": false
+	}
 }

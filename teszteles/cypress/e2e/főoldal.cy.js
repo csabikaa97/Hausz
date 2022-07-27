@@ -1,6 +1,6 @@
 describe('Főoldal', () => {
     it('oldal betöltése', () => {
-        cy.visit('https://hausz.stream/')
+        cy.visit(Cypress.env('domain'))
     })
 
     it('Topbar tesztek', () => {

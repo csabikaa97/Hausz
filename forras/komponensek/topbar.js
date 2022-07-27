@@ -1,5 +1,5 @@
 function topbar_betoltese() {
-    fetch("/forras/komponensek/topbar.html")
+    fetch("/komponensek/topbar.html")
     .then(response => response.text())
     .then(text => {
         document.body.innerHTML = text + document.body.innerHTML;

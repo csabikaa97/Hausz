@@ -33,42 +33,42 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
     <tr>
         <td><a href="https://hausz.stream/teamspeak/">TeamSpeak szerver infó</a></td>
         <td><a href="teamspeak/teamspeak.php">teamspeak.php</a></td>
-        <td><a href="teamspeak/teamspeak.js">teamspeak.js</a></td>
+        <td><a href="forras/teamspeak/teamspeak.js">teamspeak.js</a></td>
         <td><a href="teamspeak/teamspeak.html">teamspeak.html</a></td>
         <td></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/megoszto/">Megosztó</a></td>
         <td><a href="megoszto/megoszto.php">megoszto.php</a></td>
-        <td><a href="megoszto/megoszto.js">megoszto.js</a></td>
+        <td><a href="forras/megoszto/megoszto.js">megoszto.js</a></td>
         <td><a href="megoszto/megoszto.html">feltoltes.html</a></td>
         <td><a href="dokumentáció/megosztó.md">megosztó.md</a></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/egyuttnezo/">Együttnéző (csak tesztelésre)</a></td>
-        <td><a href="egyuttnezo/egyuttnezo_szerver.js">egyuttnezo_szerver.js<br>(Node.js websocket)</a></td>
-        <td><a href="egyuttnezo/egyuttnezo.js">egyuttnezo.js</a></td>
+        <td><a href="forras/egyuttnezo/egyuttnezo_szerver.js">egyuttnezo_szerver.js<br>(Node.js websocket)</a></td>
+        <td><a href="forras/egyuttnezo/egyuttnezo.js">egyuttnezo.js</a></td>
         <td><a href="egyuttnezo/egyuttnezo.html">egyuttnezo.html</a></td>
         <td><a href="dokumentáció/együttnéző.md">együttnéző.md</a></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/kezelo/regisztracio.html">Regisztráció</a></td>
         <td><a href="kezelo/regisztracio.php">regisztracio.php</a></td>
-        <td><a href="kezelo/regisztracio.js">regisztracio.js</a></td>
+        <td><a href="forras/kezelo/regisztracio.js">regisztracio.js</a></td>
         <td><a href="kezelo/regisztracio.html">regisztracio.html</a></td>
         <td></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/kezelo/jelszo_valtoztatas.html">Jelszó változtatás</a></td>
         <td><a href="kezelo/jelszo_valtoztatas.php">jelszo_valtoztatas.php</a></td>
-        <td><a href="kezelo/jelszo_valtoztatas.js">jelszo_valtoztatas.js</a></td>
+        <td><a href="forras/kezelo/jelszo_valtoztatas.js">jelszo_valtoztatas.js</a></td>
         <td><a href="kezelo/jelszo_valtoztatas.html">jelszo_valtoztatas.html</a></td>
         <td></td>
     </tr>
     <tr>
         <td><a href="https://hausz.stream/admin/">Rendszergazda felület</a></td>
         <td><a href="admin/admin.php">admin.php</a></td>
-        <td><a href="admin/admin.js">admin.js</a></td>
+        <td><a href="forras/admin/admin.js">admin.js</a></td>
         <td><a href="admin/admin.html">admin.html</a></td>
         <td></td>
     </tr>
@@ -86,21 +86,21 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
     </tr>
     <tr>
         <td>Beléptető rendszer</td>
-        <td><a href="include/belepteto_rendszer.php">belepteto_rendszer.php</a></td>
-        <td><a href="include/belepteto_rendszer.js">belepteto_rendszer.js</a></td>
+        <td><a href="forras/include/belepteto_rendszer.php">belepteto_rendszer.php</a></td>
+        <td><a href="forras/komponensek/belepteto_rendszer.js">belepteto_rendszer.js</a></td>
         <td></td>
         <td></td>
     </tr>
     <tr>
         <td>Adatbázis segítő (PHP)</td>
-        <td><a href="include/adatbazis.php">adatbazis.php</a></td>
+        <td><a href="forras/include/adatbazis.php">adatbazis.php</a></td>
         <td></td>
         <td></td>
         <td></td>
     </tr>
     <tr>
         <td>Alap függvények (PHP)</td>
-        <td><a href="include/alap_fuggvenyek.php">alap_fuggvenyek.php</a></td>
+        <td><a href="forras/include/alap_fuggvenyek.php">alap_fuggvenyek.php</a></td>
         <td></td>
         <td></td>
         <td></td>
@@ -108,15 +108,15 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
     <tr>
         <td>Alap függvények (JS)</td>
         <td></td>
-        <td><a href="include/alap_fuggvenyek.js">alap_fuggvenyek.js</a></td>
+        <td><a href="forras/komponensek/alap_fuggvenyek.js">alap_fuggvenyek.js</a></td>
         <td></td>
         <td></td>
     </tr>
     <tr>
         <td>Topbar betöltő (JS)</td>
         <td></td>
-        <td><a href="include/topbar.js">topbar.js</a></td>
-        <td><a href="forras/komponensek/topbar.html">topbar.html</a></td>
+        <td><a href="forras/include/topbar.js">topbar.js</a></td>
+        <td><a href="public/komponensek/topbar.html">topbar.html</a></td>
         <td></td>
     </tr>
     <tr>
@@ -144,4 +144,7 @@ Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatása
     <tr><td>Fejlesztői környezet</td><td><a href="https://github.com/coder/code-server">code-server</a> (Visual Studio Code)</td></tr>
     <tr><td></td><td><a href="https://www.teamspeak.com/en/">TeamSpeak 3 szerver</a></td></tr>
     <tr><td>Automatikus teszteléshez használt szoftver</td><td><a href="https://www.cypress.io">Cypress</a></td></tr>
+    <tr><td>Szerverre telepítéshez</td><td><a href="https://www.docker.com">Docker</a></td></tr>
 </table>
+
+* Az egész projekt [Docker](https://www.docker.com/)-kész. Indításhoz futtasd a ```docker-compose build``` és ```docker-compose up``` parancsokat bármilyen környezetben.

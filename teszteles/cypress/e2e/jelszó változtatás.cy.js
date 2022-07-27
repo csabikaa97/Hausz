@@ -1,7 +1,7 @@
 describe('Jelszó változtatás', () => {
     it('Mobil', () => {
         cy.viewport(320, 640)
-        cy.visit('https://hausz.stream/')
+        cy.visit(Cypress.env('domain'))
         cy.mobil_belepes()
         cy.get('#felhasznalo_doboz').contains('Jelszó megváltoztatása').and('be.visible').click()
         cy.contains('Hausz jelszó változtatás')
@@ -58,7 +58,7 @@ describe('Jelszó változtatás', () => {
 
     it('Asztali', () => {
         cy.viewport(1280, 720)
-        cy.visit('https://hausz.stream/')
+        cy.visit(Cypress.env('domain'))
         cy.belepes()
         cy.get('#felhasznalo_doboz').contains('Jelszó megváltoztatása').and('be.visible').click()
         cy.contains('Hausz jelszó változtatás')

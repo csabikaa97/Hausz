@@ -1,0 +1,23 @@
+DirectoryIndex index.html
+
+RewriteEngine on
+RewriteRule (.*)index\.php / [R=301,NC,L]
+RewriteRule (.*)\.htaccess / [R=301,NC,L]
+RewriteRule .*docker.* / [R=301,NC,L]
+# magyarázat:
+# R=301 - 301-es kóddal átirányítás (permanent redirect)
+# NC - nocase, case insensitive matchelés
+# L - last, ezután az átirányítás után nem történik más
+
+<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|pizzatierlist|teamspeak|webjosda).*\.(js|html|css)">
+    Header add Cache-Control "public, max-age=120"
+</FilesMatch>
+
+<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|pizzatierlist|teamspeak|webjosda)/$">
+    Header add Cache-Control "public, max-age=120"
+</FilesMatch>
+
+<FilesMatch "\.pem">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

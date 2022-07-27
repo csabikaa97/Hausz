@@ -103,7 +103,7 @@ function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
     let span = document.createElement('span');
     span.id = 'belepteto_rendszer';
 
-    fetch("/forras/komponensek/belepteto_rendszer.html")
+    fetch(`/komponensek/belepteto_rendszer.html`)
     .then(response => response.text())
     .then(uzenet => {
         span.innerHTML = uzenet;

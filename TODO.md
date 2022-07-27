@@ -1,8 +1,10 @@
 ## 💭 Tennivalók
 
-* Általános: max 72 karakter hosszú jelszó
+* .htaccess és .gitignore fájlok újraírása a mappastruktúra változás miatt
+* Teamspeak szerver dockeresítése
+	* Új deployment tesztelése egy friss szerveren
+* Együttnéző: Hangerő állításhoz, és megtartáshoz tesztelés script
 * Megosztó: titkosítási és feloldási folyamat mozgatása a kliensre: https://stackoverflow.com/questions/40680431/how-can-i-encrypt-decrypt-arbitrary-binary-files-using-javascript-in-the-browser
-* camelCase-re átírni az összes függvényt és változót
 * Együttnéző rossz link beírása hiba dobása
 * Együttnéző kommunikáció átírása JSON formátumra
 * GraphQL-szerű php lekérdezési forma. Egy PHP fájl amin keresztül le lehet kérdezni bármit az adatbázisból
@@ -53,8 +55,7 @@
 * Régi style.css kivezetése
 	* egyuttnezo
 	* megoszto
-* Új mappastruktúra kialakítása közös kódokhoz
-	* Profil kezelő oldal
+* Profil kezelő oldal
 * Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
 * Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
@@ -77,6 +78,17 @@
 
 ## ✅ Implementált tennivalók
 
+* Teamspeak szerver dockeresítése
+	* https://noirth.com/threads/teamspeak-how-to-transfer-sqlite-to-mariadb.7784/
+* Docker-kész az egész projekt: docker-compose build & up a főkönyvtárban minden modul futtatásához
+* Új mappastruktúra:
+	* public: A HTTPS kiszolgáló által közölt fájlok
+	* forras: Az oldalak forráskódjai, és egyéb forráskódok
+	* dokumentáció: -||-
+	* priv: infrastruktúra egyedi fájljai, pl teamspeak szerver, és a vscode adatok is ott vannak
+	* admin: mentések
+	* adatbazis: Táblázatok elkészítéséhez mysql dump scriptek
+* Általános: max 72 karakter hosszú jelszó
 * Együttnéző hangerő eltárolása [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)-ben
 * PHP válaszok JSON formátumra váltása
 	* főoldal
@@ -148,7 +160,7 @@
 * Megosztón titkosított fájlfeltöltés jelszóvédelemmel: [php.net OpenSSL encrypt](https://www.php.net/manual/en/function.openssl-encrypt.php) [php.net OpenSSL decrypt](https://www.php.net/manual/en/function.openssl-decrypt.php)
 * Megosztón utolsó parancs üzenete 3 mp-ig a sarokban jelenjen meg
 * Title-ök átírása "cím - Hausz" formátumra, meta leírások átfogalmazása, és egyéb SEO tippek alkalmazása
-* Néhány fájl eltakarása keresőmotor indexelés elől (pl: forras/komponensek/topbar.html)
+* Néhány fájl eltakarása keresőmotor indexelés elől (pl: public/komponensek/topbar.html)
 	* A .htaccess fájlokban "Header add" paranccsal hozzáadva az "X-Robots-Tag: noindex" header minden eltűntetendő fájlhoz
 * Migrálás tesztelése új Ubuntu 22.04 server rendszerre: Siker! -> [Migráció eredmény](dokumentáció/szerver%20létrehozás.md)
 * Git repo megtisztítva a jelszavaktól és tanúsítványoktól: [GitHub leírás](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)

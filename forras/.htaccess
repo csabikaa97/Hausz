@@ -1,7 +1,0 @@
-Order deny,allow
-Deny from all
-
-<FilesMatch "\.html">
-    Order allow,deny
-    Allow from all
-</FilesMatch>

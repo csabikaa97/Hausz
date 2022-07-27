@@ -212,4 +212,6 @@ function varakozas(feltetel, hiba, fuggveny) {
     }, 3);
 }
 
+var domain = window.location.href.replace(/https?:\/\/([a-z0-9_\-\.]*).*/, '$1');
+
 document.body.innerHTML += '<div id="valasz_uzenet" class="bottom_left_corner_div kerekites-10" style="z-index: 2; bottom: 5px; left: 5px; max-width: 20%; visibility: hidden; position: fixed; padding: 10px; text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70)"></div>';

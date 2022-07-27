@@ -1,0 +1,42 @@
+# Google SEO authentikáció
+
+/public/googlef67f98e02ef6449a.html
+
+# Privát fájlok
+
+/priv
+
+# Felhasználói fájlok
+
+/public/megoszto/fajlok/
+
+# Együttnéző működéséhez generált szemetek
+
+/public/egyuttnezo/node_modules
+/public/egyuttnezo/package.json
+/public/egyuttnezo/package-lock.json
+
+/public/teszteles/node_modules
+/public/teszteles/package.json
+/public/teszteles/package-lock.json
+/public/teszteles/cypress/videos/
+
+/public/admin/backup/
+
+# Csomagolt Javascript fájlok
+
+/public/megoszto/megoszto.js
+/public/admin/admin.js
+/public/egyuttnezo/egyuttnezo.js
+/public/index/index.js
+/public/egyuttnezo/egyuttnezo.js
+/public/erettsegiszamlalo/erettsegiszamlalo.js
+/public/hauszkft/hauszkft.js
+/public/kezelo/jelszo_valtoztatas.js
+/public/kezelo/regisztracio.js
+/public/pizzatierlist/pizzatierlist.js
+/public/teamspeak/teamspeak.js
+/public/webjosda/josda.js
+/public/webjosda/fizetos.js
+
+*.pem

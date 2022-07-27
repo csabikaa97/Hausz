@@ -6,9 +6,9 @@ var parameterek = process.argv;
 var be_lista = Array();
 var be_elemek = 0;
 var alap_komponensek = [
-    '/var/www/html/forras/komponensek/belepteto_rendszer.js',
-    '/var/www/html/forras/komponensek/alap_fuggvenyek.js',
-    '/var/www/html/forras/komponensek/topbar.js'
+    '/var/www/forras/komponensek/belepteto_rendszer.js',
+    '/var/www/forras/komponensek/alap_fuggvenyek.js',
+    '/var/www/forras/komponensek/topbar.js'
 ];
 alap_komponensek.forEach(komponens => {
     be_lista[ be_elemek ] = komponens;
