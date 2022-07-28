@@ -34,7 +34,7 @@
     <script src="/megoszto/megoszto.js"></script>
     
     <div id='preview_box' class="preview_box lathatatlan" style="max-width: 60%; max-height: 60%;display: inline-block"></div>
-    <div id='jobb_klikk_menu' class="nodisplay szint-2 kerekites-15 padding-10" style="max-width: 240px; position: absolute"></div>
+    <div id='jobb_klikk_menu' class="nodisplay szint-2 kerekites-15 padding-10" style="max-width: 240px; position: fixed"></div>
     <div id='atnevezes_box' class="preview_box kozepre lathatatlan" style="max-width: 60%; max-height: 60%;display: inline-block">
         <h3>Fájl átnevezése</h3>
         <label for="atnevezes_uj_nev">Add meg a fájl új nevét (kiterjesztéssel együtt)</label><br><br>
@@ -111,14 +111,20 @@
                 <h3 class="kozepre-szoveg">Nem létezik a keresett fájl</h3>
             </td>
         </tr>
+        <tr class="nodisplay kozepre-szoveg" id="nincs_fajl_sor">
+            <td colspan="5">
+                <h3 class="kozepre-szoveg">Jelenleg nincs feltöltve fájl</h3>
+            </td>
+        </tr>
     </table>
 
+    <br><br><br>
     <h2 class="kozepre-szoveg">Tárhely kihasználtsága</h2>
-    <div class="kozepre zold-0" style="border: 1px solid black; border-radius: 10px; display: flex; width: 55%; height: auto">
+    <div class="kozepre zold-0" style="border: 1px solid black; border-radius: 10px; display: flex; width: 96%; max-width: 550px; height: auto">
         <div id="div_hasznalt_tarhely" class="piros-0" style="text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70); border-radius: 10px; padding: 10px"> </div>
         <div id="div_szabad_tarhely" style="text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70); border-radius: 10px; padding: 10px; text-align: right"></div>
     </div>
-    <br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 
 </html>

@@ -8,7 +8,7 @@
 ```
 apt update
 
-apt install git docker.io docker-compose letsencrypt certbot python3-certbot-apache
+apt install git docker.io docker-compose git
 ```
 
 2.  Repository letöltése
@@ -21,55 +21,43 @@ git clone https://github.com/csabikaa97/hausz
 mv hausz www
 ```
 
-3. Certificate beszerzése
+3. Certificate beszerzése, és elhelyezése a ```priv``` mappában
 
 ```
-mkdir /var/www/priv
+cert.pem
 
-cd /var/www/priv
+chain.pem
 
-certbot --apache --domains <domain ide>
+fullchain.pem
 
-cp /etc/letsencrypt/live/<domain ide>/* /var/www/priv/
-cp /etc/letsencrypt/live/<domain ide>/* /var/www/public/
+privkey.pem
 ```
 
-4. code-server telepítése
+4.  Adatbázisok telepítése
 
 ```
-curl -fsSL https://code-server.dev/install.sh | sh
+>>> docker-compose build adatbazis teamspeak_adatbazis
+
+>>> docker-compose start adatbazis teamspeak_adatbazis
+
+>>> docker exec -it teamspeak_adatbazis /bin/bash /telepites/telepites.sh
+
+>>> docker exec -it adatbazis /bin/bash /telepites/telepites.sh
+
+>>> docker-compose stop adatbazis teamspeak_adatbazis
 ```
 
-5.  Adatbázisok telepítése
-
+5. JS fájlok kiadása: 
 ```
->>> docker-compose build adatbazis teamspeak-adatbazis
+>>> docker-compose build kiadas
 
->>> docker container ls
-
-CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS         PORTS                                                  NAMES
-0241cef9b51c   www_adatbazis             "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   adatbazis
-d0055c6ac5f1   www_teamspeak-adatbazis   "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   33060/tcp, 0.0.0.0:3307->3306/tcp, :::3307->3306/tcp   teamspeak-adatbazis
-
->>> docker exec -it <adatbázis container ID ide> /bin/bash
-
-bash-4.4# >>> /telepites/telepites.sh
-
-bash-4.4# >>> exit
-
->>> docker exec -it <teamspeak adatbázis container ID ide> /bin/bash
-
-bash-4.4# >>> /telepites/telepites.sh
-
-bash-4.4# >>> exit
+>>> docker-compose up kiadas
 ```
 
-6. JS fájlok kiadása: ```/var/www/forras/osszes_kiadasa.sh```
-
-7. Docker futtatása
+6. Docker futtatása
 
 ```
 docker-compose build
 
-docker-compose up
+docker-compose start
 ```

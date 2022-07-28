@@ -3,12 +3,20 @@ services:
   build: adatbazis
   container_name: adatbazis
   volumes:
-   - /var/www:/var/www
+   - .:/var/www
   ports:
    - "3306:3306"
+  environment:
+   - MYSQL_ROOT_PASSWORD=root
   networks:
    container_halozat:
     ipv4_address: 172.20.128.10
+    
+ kiadas:
+  build: forras/kiadas
+  container_name: kiadas
+  volumes:
+   - .:/var/www
   
  public:
    build: public
@@ -17,7 +25,7 @@ services:
     - "80:80"
     - "443:443"
    volumes:
-    - /var/www:/var/www
+    - .:/var/www
    networks:
     container_halozat:
      ipv4_address: 172.20.128.12
@@ -30,23 +38,25 @@ services:
    ports:
     - "8090:8090"
    volumes:
-    - /var/www:/var/www
+    - .:/var/www
    networks:
     container_halozat:
      ipv4_address: 172.20.128.13
    depends_on:
     - "public"
   
- teamspeak-adatbazis:
+ teamspeak_adatbazis:
     build: teamspeak/adatbazis
-    container_name: teamspeak-adatbazis
+    container_name: teamspeak_adatbazis
     ports:
     - "3307:3306"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.14
+    environment:
+     - MYSQL_ROOT_PASSWORD=root
     volumes:
-     - /var/www:/var/www
+     - .:/var/www
 
  teamspeak:
     build: teamspeak/szerver
@@ -65,7 +75,7 @@ services:
       TS3SERVER_DB_WAITUNTILREADY: 30
       TS3SERVER_LICENSE: accept
     depends_on:
-     - "teamspeak-adatbazis"
+     - "teamspeak_adatbazis"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.15

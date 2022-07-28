@@ -8,7 +8,7 @@
 
 # Felhasználói fájlok
 
-/public/megoszto/fajlok/
+/public/megoszto/fajlok/*
 
 # Együttnéző működéséhez generált szemetek
 

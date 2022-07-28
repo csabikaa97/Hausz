@@ -79,7 +79,7 @@ function filter_frissites() {
 
 function fajlok_betoltese() {
     if(obj('jobb_klikk_menu') != null) {
-        jobb_klikk_menu_eltuntetes();
+        obj('jobb_klikk_menu').style.display = '';
     }
 
     let filter_fajlnev = "";
@@ -101,8 +101,11 @@ function fajlok_betoltese() {
             return;
         }
 
+        obj('nincs_fajl_sor').style.display = uzenet.fajlok_szama <= 0 ? 'table-row' : '';
+
         let buffer = "";
-        uzenet.valasz.forEach(fajl => {
+        for (let i = 0; i < uzenet.fajlok_szama; i++) {
+            fajl = uzenet.fajlok[i];
             if( fajl.id == '-' ) {
                 buffer = `<td class="kozepre-szoveg nagy-kepernyon-tiltas" style="padding-left: 15px; padding-right: 15px"><h3>Jelenleg nincsenek fájlok a megosztón</h3></td>`;
                 buffer += `<td colspan="5" class="mobilon-tiltas" style="padding-left: 15px; padding-right: 15px"><h3 class="kozepre-szoveg">Jelenleg nincsenek fájlok a megosztón</h3></td>`;
@@ -173,14 +176,19 @@ function fajlok_betoltese() {
 
             buffer += `<td class="mobilon-tiltas">${bajt_merette_valtasa(fajl.size)}</td>`;
             buffer += `<td class="mobilon-tiltas">${fajl.megjeleno_nev}</td>`;
-        });
+        }
 
         let hossz = document.getElementById('tablazat').children[0].children.length;
         let torlendo_reszek = document.getElementById('tablazat').children[0].children;
+        let torles_index = 0;
 
-        for (let i = 3; i < hossz; i++) {
-            if(typeof torlendo_reszek[3] != "undefined") {
-                torlendo_reszek[3].remove();
+        for (let i = 0; i < hossz; i++) {
+            if(typeof torlendo_reszek[torles_index] != "undefined") {
+                if(torlendo_reszek[torles_index].attributes.sor_id != undefined) {
+                    torlendo_reszek[torles_index].remove();
+                } else {
+                    torles_index++;
+                }
             }
         }
 
@@ -212,6 +220,7 @@ function fajlok_betoltese() {
 }
 
 function torles(link, fajlnev) {
+    obj('jobb_klikk_menu').style.display = '';
     if (confirm('Biztosan szeretnéd törölni a "' + fajlnev + '" nevű fájlt?')) {
         uj_valasz_mutatasa(9999999, "", fajlnev + " nevű fájl törlése...");
         szinkron_keres(link, "", (uzenet) => {
@@ -502,17 +511,12 @@ function privat_statusz_csere(link) {
     })
 }
 
-function jobb_klikk_menu_eltuntetes() {
-    obj('jobb_klikk_menu').style.display = 'none';
-}
-
 function jobb_klikk_menu_kinyitas(event, tr) {
-    let jobb_klikk_menu = obj('jobb_klikk_menu');
-    jobb_klikk_menu.style.display = 'block';
+    obj('jobb_klikk_menu').style.display = 'block';
 
     // menü eltűntetése tekerés esetén
     document.body.onscroll = () => {
-        jobb_klikk_menu_eltuntetes();
+        obj('jobb_klikk_menu').style.display = '';
     };
 
     // menü eltűntetése máshova kattintás esetén
@@ -526,17 +530,11 @@ function jobb_klikk_menu_kinyitas(event, tr) {
             });
 
             if (!kattintasJobbKlikkMenunVolt) {
-                jobb_klikk_menu_eltuntetes();
+                obj('jobb_klikk_menu').style.display = '';
             }
         }
     };
 
-    if (window.innerWidth > 1024) {
-        jobb_klikk_menu.style.left = event.pageX + 'px';
-    } else {
-        jobb_klikk_menu.style.left = '30px';
-    }
-    jobb_klikk_menu.style.top = event.pageY + 'px';
     let buffer = '';
     buffer += `<h1 class="kozepre-szoveg" style="word-break: break-word">${tr.attributes['sor_filename'].value}</h1>`;
     if (tr.attributes['sor_private'].value == '1') {
@@ -577,6 +575,20 @@ function jobb_klikk_menu_kinyitas(event, tr) {
         buffer += `<a class="linkDekoracioTiltas" href="/megoszto/megoszto.php?letoltes&file_id=${tr.attributes['sor_id'].value}"><abbr class="linkDekoracioTiltas pointer f40" title="Letöltés">💾</abbr></a>`;
     }
     jobb_klikk_menu.innerHTML = buffer;
+
+    if (window.innerWidth > 1024) {
+        if( obj('jobb_klikk_menu').clientHeight + 10 + event.pageY > window.innerHeight + window.pageYOffset ) {
+            obj('jobb_klikk_menu').style.top = (window.innerHeight + window.pageYOffset - obj('jobb_klikk_menu').clientHeight - 10) + 'px';
+        } else {
+            obj('jobb_klikk_menu').style.top = event.pageY + 'px';
+        }
+        obj('jobb_klikk_menu').style.left = event.pageX + 'px';
+        obj('jobb_klikk_menu').style.position = 'absolute';
+    } else {
+        obj('jobb_klikk_menu').style.top = '100px';
+        obj('jobb_klikk_menu').style.left = '30px';
+        obj('jobb_klikk_menu').style.position = 'fixed';
+    }
 }
 
 function drop_zona_aktivalas() {

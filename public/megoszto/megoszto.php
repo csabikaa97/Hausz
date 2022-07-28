@@ -58,39 +58,22 @@
         return 'unknown/' . trim($fileSuffix[0], '.');
     }
 
-    function tarhely_statisztika_mentes() {
-        global $conn;
-        $df_eredmeny = "";
-        $df_eredmeny = exec("df -B1 | grep /dev/root");
-        if( preg_match("/dev/root", $df_eredmeny) ) {
-            $df_eredmeny = preg_replace("|/dev/root *([0-9]*) *([0-9]*) *([0-9]*) *([0-9]*%)(.*)|", "$3", $df_eredmeny);
-        } else {
-            $df_eredmeny = exec("df -B1 | grep /dev/xvda1");
-            $df_eredmeny = preg_replace("|/dev/xvda1 *([0-9]*) *([0-9]*) *([0-9]*) *([0-9]*%)(.*)|", "$3", $df_eredmeny);
-        }
-
-        $du_eredmeny = exec("du -b /var/www/public/megoszto/fajlok/");
-        $du_eredmeny = preg_replace("/[^0-9]/", "", $du_eredmeny);
-
-        $result_statisztika_mentes = query_futtatas("INSERT INTO hausz_megoszto.tarhely_statisztika (datum, szabad, foglalt) values (now(), '".$df_eredmeny."', '".$du_eredmeny."')");
-    }
-
     if( isset($_GET['fajlok']) ) {
         $result = query_futtatas("SELECT users.megjeleno_nev, files.titkositott, files.id as 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC");
-        die_if( $result->num_rows <= 0, "Jelenleg nincsenek feltöltve fájlok");
+        if( $result->num_rows <= 0 ) {   exit_ok('"fajlok_szama": 0'); }
 
-        $voltmar = false;
-        $buffer = '"valasz": [';
+        $buffer = '"fajlok": [';
+        $fajlok_szama = 0;
         while($row = $result->fetch_assoc()) {
             if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username']))
                 or (!isset($_SESSION['loggedin']) && $row['private'] == '1') ) {   continue; }
             
-            if($voltmar) {   $buffer .= ', '; }
+            if($fajlok_szama > 0) {   $buffer .= ', '; }
 
             $buffer .= '{"id": '.$row['id'].', "size": "'.$row['size'].'", "filename": "'.$row['filename'].'", "added": "'.$row['added'].'", "megjeleno_nev": "'.$row['megjeleno_nev'].'", "private": "'.$row['private'].'", "titkositott": "'.$row['titkositott'].'"}';
-            $voltmar = true;
+            $fajlok_szama++;
         }
-        exit_ok($buffer.']');
+        exit_ok('"fajlok_szama":'.$fajlok_szama.','.$buffer.']');
     }
 
     if( isset($_GET['atnevezes']) ) {
@@ -146,7 +129,6 @@
         $parancs = 'rm "/var/www/public/megoszto/fajlok/'.$row['filename'].'"';
         exec($parancs, $eredmeny, $retval);
         die_if( $retval != 0, "".$parancs);
-        tarhely_statisztika_mentes();
         $_GET['file'] = preg_replace("/'/", "\'", $_GET['file']);
         $result_del = query_futtatas("DELETE FROM files WHERE id = ".$_GET['file_id']);
         log_bejegyzes("megoszto", "törlés", "[".$_GET['file_id'].']: '.$row['filename'], $_SESSION['username']);
@@ -167,17 +149,10 @@
     }
 
     if( isset($_GET['tarhely']) ) {
-        $tarhely2 = shell_exec('df');
+        $tarhely2 = shell_exec('df -B1');
         $tarhely2 = preg_replace('/[\n\r]/', '', $tarhely2);
-        $hasznalt = "";
-        $elerheto = "";
-        if( preg_match('/\/dev\/root/', $tarhely2) ) {
-            $hasznalt = preg_replace('/.*\/dev\/root[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$2', $tarhely2);
-            $elerheto = preg_replace('/.*\/dev\/root[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
-        } else {
-            $hasznalt = preg_replace('/.*\/dev\/xvda1[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$2', $tarhely2);
-            $elerheto = preg_replace('/.*\/dev\/xvda1[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
-        }
+        $hasznalt = preg_replace('/.*(\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
+        $elerheto = preg_replace('/.*(\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$4', $tarhely2);
         $hasznalt = floatval($hasznalt);
         $elerheto = floatval($elerheto);
         exit_ok('"szabad_tarhely": '.$elerheto.', "foglalt_tarhely": '.$hasznalt);
@@ -236,12 +211,15 @@
             $result_overwrite = query_futtatas('DELETE FROM files WHERE filename = "'.basename( $_FILES["fileToUpload"]["name"] ).'"');
         }
 
-        $result_tarhely_adat = query_futtatas("select * from hausz_megoszto.tarhely_statisztika order by datum desc limit 1;");
-        $szabad_tarhely = "";
-        $row = $result_tarhely_adat->fetch_assoc();
-        $szabad_tarhely = floatval($row['szabad']);
+        $tarhely2 = shell_exec('df -B1');
+        $tarhely2 = preg_replace('/[\n\r]/', '', $tarhely2);
+        $hasznalt = preg_replace('/.*(\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
+        $elerheto = preg_replace('/.*(\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$4', $tarhely2);
+        $hasznalt = floatval($hasznalt);
+        $elerheto = floatval($elerheto);
+        $tarhely_beteltseg = $hasznalt / ($hasznalt + $elerheto);
     
-        die_if( $szabad_tarhely - $_FILES["fileToUpload"]['size'] < 250*1024*1024, 'Nincs elég tárhely a fájl feltöltéséhez (250 MB).');
+        die_if( $elerheto - $_FILES["fileToUpload"]['size'] < 250*1024*1024, 'Nincs elég tárhely a fájl feltöltéséhez (250 MB).');
         die_if( $_FILES["fileToUpload"]['size'] >= 200*1024*1024, 'A fájl meghaladja a 200 MB-os méretlimitet.');
 
         if(strlen($_POST['titkositas_kulcs']) > 0) {
@@ -280,18 +258,16 @@
 
         $result_del2 = query_futtatas($query_del2);
         
-        tarhely_statisztika_mentes();
-
         $result = query_futtatas("(select id from hausz_megoszto.files where filename = '".basename( $_FILES["fileToUpload"]["name"] )."');");
         $id = "[???]";
         if($result) {
             $row = $result->fetch_assoc();
-            $id = '['.$row[id].']';
+            $id = '['.$row['id'].']';
         }
-
+        
         log_bejegyzes("megoszto", "feltöltés", $id . ': ' . basename( $_FILES["fileToUpload"]["name"] ), strlen($_SESSION['username']) > 0 ? $_SESSION['username'] : "ismeretlen");
         exit_ok('"valasz": "A \'' . $_FILES["fileToUpload"]["name"] . '\' nevű fájl sikeresen fel lett töltve."');
     }
 
-    die_if( true, 'Mi a parancs?');
+    die_if( true, 'Mi a parancs?: "'.$_POST.'", "'.$_GET.'"');
 ?>

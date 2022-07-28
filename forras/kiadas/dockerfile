@@ -1,0 +1,3 @@
+FROM node:12.22.12
+RUN ln -s /var/www/forras/kiadas/kiadas.js /usr/local/bin/kiadas.js
+CMD /var/www/forras/kiadas/osszes_kiadasa.sh

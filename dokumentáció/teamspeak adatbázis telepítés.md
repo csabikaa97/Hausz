@@ -1,4 +1,4 @@
-1. Futtatni kell a ```docker-compose start teamspeak-adatbazis``` paranccsal a TeamSpeak szerver MySQL adatbázisát
+1. Futtatni kell a ```docker-compose start teamspeak_adatbazis``` paranccsal a TeamSpeak szerver MySQL adatbázisát
 
 2. (Opcionális) Be kell tölteni az adatokat a korábbi szerverből: ```mysql -u root -p -h 172.20.128.14 < mentes.sql```
 

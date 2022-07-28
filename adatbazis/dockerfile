@@ -2,4 +2,7 @@ FROM mysql:8.0.30
 RUN mkdir /telepites
 WORKDIR /telepites
 COPY ./telepites.sh /telepites/
-COPY ./*.sql /telepites/
+COPY ./hausz_egyuttnezo.sql /telepites/
+COPY ./hausz_megoszto.sql /telepites/
+COPY ./hausz_ts.sql /telepites/
+COPY ./hausz_log.sql /telepites/
