@@ -24,6 +24,8 @@ mv hausz www
 3. Certificate beszerzése, és elhelyezése a ```priv``` mappában
 
 ```
+openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out cert.pem -sha256 -days 365
+
 cert.pem
 
 chain.pem

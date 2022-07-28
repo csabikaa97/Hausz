@@ -1,0 +1,5 @@
+FROM cypress/base:12
+RUN mkdir /teszteles
+WORKDIR /teszteles
+RUN npm install cypress@10.3.1
+CMD cp -r /var/www/teszteles/cypress /teszteles/ ; cp /var/www/teszteles/cypress.config.js /teszteles/ ; cp /var/www/teszteles/cypress.env.json /teszteles/ ; npx cypress run --spec cypress/e2e/összes.cy.js --browser electron

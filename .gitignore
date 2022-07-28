@@ -6,10 +6,6 @@
 
 /priv
 
-# Felhasználói fájlok
-
-/public/megoszto/fajlok/*
-
 # Együttnéző működéséhez generált szemetek
 
 /forras/egyuttnezo_szerver/node_modules

@@ -90,8 +90,8 @@
         
         $tarhely2 = shell_exec('df -B1');
         $tarhely2 = preg_replace('/[\n\r]/', '', $tarhely2);
-        $hasznalt = preg_replace('/.*(\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
-        $elerheto = preg_replace('/.*(\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$4', $tarhely2);
+        $hasznalt = preg_replace('/.*(overlay|\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
+        $elerheto = preg_replace('/.*(overlay|\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$4', $tarhely2);
         $hasznalt = floatval($hasznalt);
         $elerheto = floatval($elerheto);
         $tarhely_beteltseg = $hasznalt / ($hasznalt + $elerheto);

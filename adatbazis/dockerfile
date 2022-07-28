@@ -6,3 +6,4 @@ COPY ./hausz_egyuttnezo.sql /telepites/
 COPY ./hausz_megoszto.sql /telepites/
 COPY ./hausz_ts.sql /telepites/
 COPY ./hausz_log.sql /telepites/
+RUN sed -i 's/\r$//' /telepites/telepites.sh

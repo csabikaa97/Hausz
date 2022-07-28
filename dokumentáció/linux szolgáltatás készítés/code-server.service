@@ -8,7 +8,7 @@ StartLimitBurst=5
 Type=simple
 Restart=always
 RestartSec=1
-ExecStart=/usr/bin/code-server --cert /var/www/priv/cert.pem --cert-key /var/www/priv/privkey.pem --bind-addr=0.0.0.0:8080 --user-data-dir /var/www/priv/vscode/code-server/ --config /var/www/priv/vscode/config.yaml
+ExecStart=/usr/bin/code-server --cert /var/www/public/cert.pem --cert-key /var/www/public/privkey.pem --bind-addr=0.0.0.0:8080 --user-data-dir /var/www/priv/vscode/code-server/ --config /var/www/priv/vscode/config.yaml
 
 [Install]
 WantedBy=multi-user.target
