@@ -1,5 +1,0 @@
-Order Allow,Deny
-Allow from all
-
-RewriteEngine on
-RewriteRule .* /megoszto/ [R=301,NC,L]

@@ -1,11 +1,11 @@
+version: "3"
+
 services:
  adatbazis:
   build: adatbazis
   container_name: adatbazis
   volumes:
    - "./:/var/www"
-  ports:
-   - "3306:3306"
   environment:
    - MYSQL_ROOT_PASSWORD=root
   networks:
@@ -48,8 +48,6 @@ services:
  teamspeak_adatbazis:
     build: teamspeak/adatbazis
     container_name: teamspeak_adatbazis
-    ports:
-    - "3307:3306"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.14
@@ -88,12 +86,11 @@ services:
   volumes:
      - "./:/var/www"
   networks:
-    container_halozat:
-     ipv4_address: 172.20.128.16
+     container_halozat:
+      ipv4_address: 172.20.128.16
      
 networks:
   container_halozat:
-    name: container_halozat
     driver: bridge
     ipam:
      config:

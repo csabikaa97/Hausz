@@ -5,6 +5,7 @@
 # Privát fájlok
 
 /priv
+/teamspeak/adatbazis/*.sqlitedb
 
 # Együttnéző működéséhez generált szemetek
 
@@ -36,5 +37,5 @@
 
 # mentések
 
-/admin/backup/*
+/admin/backup/*.tar
 /teamspeak/adatbazis/*.sql

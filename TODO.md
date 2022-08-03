@@ -1,5 +1,6 @@
 ## 💭 Tennivalók
 
+* megosztón fájl akciók megjelenítése az előnézet alatt is
 * szerver felkészítése arra a lehetőségre hogy minden táblázat üres
 * megosztó fájlok: ok: fajlok: 0
 * együttnéző felhasználók: ok: felhasznalok: 0
