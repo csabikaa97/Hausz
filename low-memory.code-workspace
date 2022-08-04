@@ -4,6 +4,16 @@
 			"path": "./"
 		}
 	],
+	"extensions": {
+		"recommendations": [
+			"donjayamanne.githistory",
+			"lonefy.vscode-JS-CSS-HTML-formatter",
+			"zaaack.markdown-editor",
+			"PKief.material-icon-theme",
+			"cweijan.vscode-mysql-client2",
+			"mblode.pretty-formatter"
+		]
+	},
 	"settings": {
 		"workbench.colorTheme": "Visual Studio Dark",
 		"workbench.startupEditor": "none",
@@ -47,22 +57,15 @@
 		},
 	
 		"git.enableSmartCommit": true,
-		"security.workspace.trust.untrustedFiles": "open",
 		"editor.inlineSuggest.enabled": true,
-		"github.copilot.enable": {
-			"*": true,
-			"yaml": false,
-			"plaintext": false,
-			"markdown": false
-		},
 		"editor.unicodeHighlight.ambiguousCharacters": false,
-		"redhat.telemetry.enabled": false,
-		"cmake.configureOnOpen": true,
 		"git.confirmSync": false,
 		"files.exclude": {
 			"**/.git": false,
 			"**/.git.bak": true
 		},
-		"explorer.confirmDragAndDrop": false
+		"explorer.confirmDragAndDrop": false,
+		"editor.unicodeHighlight.nonBasicASCII": false,
+    	"explorer.compactFolders": false
 	}
 }

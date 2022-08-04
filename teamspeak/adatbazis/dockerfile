@@ -1,6 +1,5 @@
 FROM mysql:8.0.30
 RUN mkdir /telepites
 WORKDIR /telepites
-COPY ./telepites.sh /telepites/
-COPY ./mentes_visszaallitasa.sh /telepites/
+COPY telepites.sh *.sql /telepites/
 RUN sed -i 's/\r$//' /telepites/telepites.sh

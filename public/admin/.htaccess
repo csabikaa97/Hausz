@@ -7,7 +7,7 @@ Allow from all
     Header add X-Robots-Tag "otherbot: noindex, nofollow"
 </FilesMatch>
 
-<FilesMatch "backup|backup\.sh">
+<FilesMatch "mentes|mentes\.sh">
     Order deny,allow
     Deny from all
 </FilesMatch>

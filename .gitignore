@@ -37,5 +37,5 @@
 
 # mentések
 
-/admin/backup/*.tar
+/admin/mentes/*.tar
 /teamspeak/adatbazis/*.sql

@@ -4,10 +4,11 @@ services:
  adatbazis:
   build: adatbazis
   container_name: adatbazis
-  volumes:
-   - "./:/var/www"
   environment:
    - MYSQL_ROOT_PASSWORD=root
+  volumes:
+   - "./adatbazis/adatok:/var/lib/mysql"
+   - "./admin/mentes/:/mentes"
   networks:
    container_halozat:
     ipv4_address: 172.20.128.10
@@ -51,10 +52,11 @@ services:
     networks:
      container_halozat:
       ipv4_address: 172.20.128.14
+    volumes:
+     - "./teamspeak/adatbazis/adatok:/var/lib/mysql"
+     - "./admin/mentes/:/mentes"
     environment:
      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-     - "./:/var/www"
 
  teamspeak:
     build: teamspeak/szerver
@@ -74,6 +76,8 @@ services:
       TS3SERVER_LICENSE: accept
     depends_on:
      - "teamspeak_adatbazis"
+    volumes:
+     - "./teamspeak/szerver/adatok:/var/ts3server/files"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.15
@@ -84,7 +88,7 @@ services:
   depends_on:
      - "public"
   volumes:
-     - "./:/var/www"
+     - "./:/var/www/"
   networks:
      container_halozat:
       ipv4_address: 172.20.128.16
