@@ -7,11 +7,10 @@
 	"extensions": {
 		"recommendations": [
 			"donjayamanne.githistory",
-			"lonefy.vscode-JS-CSS-HTML-formatter",
 			"zaaack.markdown-editor",
-			"PKief.material-icon-theme",
 			"cweijan.vscode-mysql-client2",
-			"mblode.pretty-formatter"
+			"mblode.pretty-formatter",
+			"ms-azuretools.vscode-docker"
 		]
 	},
 	"settings": {

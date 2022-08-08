@@ -63,6 +63,10 @@ function filter_frissites() {
             }
         }
 
+        if (tr_tagek[i].id == 'nincs_fajl_sor') {
+            sors = 'none';
+        }
+
         tr_tagek[i].style.display = sors;
 
         if (sors == 'table-row') {

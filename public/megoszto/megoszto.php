@@ -194,7 +194,9 @@
         }
         header_remove("Pragma"); 
         header('Cache-control: public, max-age=9999999');
-        readfile('/var/www/public/megoszto/fajlok/'.$row['filename']);
+        $fajl = file_get_contents("/var/www/public/megoszto/fajlok/".$row['filename']);
+        header('Content-Length: '.strlen($fajl));
+        echo($fajl);
         die();
     }
 

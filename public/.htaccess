@@ -9,11 +9,11 @@ RewriteRule .*docker.* / [R=301,NC,L]
 # NC - nocase, case insensitive matchelés
 # L - last, ezután az átirányítás után nem történik más
 
-<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|pizzatierlist|teamspeak|webjosda).*\.(js|html|css)">
+<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|teamspeak|webjosda).*\.(js|html|css)">
     Header add Cache-Control "public, max-age=120"
 </FilesMatch>
 
-<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|pizzatierlist|teamspeak|webjosda)/$">
+<FilesMatch "(megoszto|erettsegiszamlalo|hauszkft|index|kezelo|teamspeak|webjosda)/$">
     Header add Cache-Control "public, max-age=120"
 </FilesMatch>
 

@@ -11,7 +11,6 @@ kiadas.js $1 forras/erettsegiszamlalo/erettsegiszamlalo.js --ki public/erettsegi
 kiadas.js $1 forras/hauszkft/hauszkft.js --ki public/hauszkft/hauszkft.js
 kiadas.js $1 forras/kezelo/jelszo_valtoztatas.js --ki public/kezelo/jelszo_valtoztatas.js
 kiadas.js $1 forras/kezelo/regisztracio.js --ki public/kezelo/regisztracio.js
-kiadas.js $1 forras/pizzatierlist/pizzatierlist.js --ki public/pizzatierlist/pizzatierlist.js
 kiadas.js $1 forras/teamspeak/teamspeak.js --ki public/teamspeak/teamspeak.js
 kiadas.js $1 forras/webjosda/josda.js --ki public/webjosda/josda.js
 kiadas.js $1 forras/webjosda/fizetos.js --ki public/webjosda/fizetos.js

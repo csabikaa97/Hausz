@@ -42,3 +42,5 @@ echo "[teamspeak_adatbazis_fajlok] kész"
 echo "[megoszto_fajlok] Biztonsági mentés készítése public/megoszto/fajlok mappáról"
 tar -zcvf "admin/mentes/$DATUM/megoszto_fajlok.tar" "public/megoszto/fajlok" > /dev/null
 echo "[megoszto_fajlok] kész"
+
+du -sh $FOMAPPA/admin/mentes/$DATUM

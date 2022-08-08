@@ -81,17 +81,6 @@ services:
     networks:
      container_halozat:
       ipv4_address: 172.20.128.15
-
- teszteles:
-  build: teszteles
-  container_name: teszteles
-  depends_on:
-     - "public"
-  volumes:
-     - "./:/var/www/"
-  networks:
-     container_halozat:
-      ipv4_address: 172.20.128.16
      
 networks:
   container_halozat:

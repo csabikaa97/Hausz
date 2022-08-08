@@ -1,17 +1,58 @@
-## 💭 Tennivalók
+## 👤 Felhasználói érdekű teendő
 
-* megosztón fájl akciók megjelenítése az előnézet alatt is
+* Együttnéző
+	* websocket kommunikáció átírása JSON formátumra
+		* felhasználók: ok: felhasznalok: 0
+	* Hangerő állításhoz, és megtartáshoz tesztelés script
+	* Videó link kérése közvetlen URL-el, lejátszó betöltése nélkül
+	* YouTube natív lejátszóra hasonlító videó kezelés UI készítése (folyamatban)
+	* rossz link beírása esetén hiba dobása
+* Megosztó
+	* törlés / egyéb cselekvés után filter megtartása
+	* fájl akciók megjelenítése az előnézet alatt is
+	* titkosítási és feloldási folyamat áthelyezése a kliensre: https://stackoverflow.com/questions/40680431/how-can-i-encrypt-decrypt-arbitrary-binary-files-using-javascript-in-the-browser
+	* feltöltendő fájl paramétereit egy előugró ablakban lehessen megadni
+	* törölt fájlok kukába helyezése végleges törlés helyett
+	* Előnézet átalakítása
+		* középen legyen
+		* A lehető legtöbb helyet kitöltse
+		* Látszódjanak rajta a fájlhoz tartozó akciók
+	* feltöltés töltés animáció
+	* nagy fájl esetén letöltés felajánlása hibára futás helyett
+* Globális
+	* szerveren swap növelése 4 GB-ra
+	* .md fájlokban linkek javítása
+	* Megjelenő név és felhasználói név elkülönítése
+		* felhasználó aktiválásnál kitöltés
+		* együttnézőn új oszlop használata
+		* teamspeak csatlakozás linknél új oszlop használata
+	* Új üzenet animáció
+	* Profil kezelő oldal
+	* Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
+	* Belépéshez használt felhasználónevek tárolása hash-ként, és sehol ne jelenjen meg
+
+## 👨🏻‍💻 Fejlesztői érdekű teendó
+
 * szerver felkészítése arra a lehetőségre hogy minden táblázat üres
-* megosztó fájlok: ok: fajlok: 0
-* együttnéző felhasználók: ok: felhasznalok: 0
-* .md fájlokban linkek javítása
-* .htaccess és .gitignore fájlok újraírása a mappastruktúra változás miatt
-* Teamspeak szerver dockeresítése
-	* Új deployment tesztelése egy friss szerveren
-* Együttnéző: Hangerő állításhoz, és megtartáshoz tesztelés script
-* Megosztó: titkosítási és feloldási folyamat mozgatása a kliensre: https://stackoverflow.com/questions/40680431/how-can-i-encrypt-decrypt-arbitrary-binary-files-using-javascript-in-the-browser
-* Együttnéző rossz link beírása hiba dobása
-* Együttnéző kommunikáció átírása JSON formátumra
+* Autómata tesztelés scriptek megírása
+	* együttnéző
+		* tekerés
+		* megállítás / lejátszás
+	* megosztó
+	* teamspeak infó
+* Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is belefér)
+* Saját hibaoldalak írása: 500, 404, stb...
+* Backend cseréje Apache-ról saját fejlesztésű Node.js backend-re
+* Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál [guru99.com cookie mentés leírás](https://www.guru99.com/cookies-and-sessions.html)
+* PHP GET és POST kérések használatának átgondolása
+
+## 🧮 Adatszerkezeti és strukturális változtatások, egyszerűítések
+
+* Régi style.css kivezetése
+	* egyuttnezo
+	* megoszto
+* style="" egyszerűsítés ahol lehetséges, ismétlődő minták elnevezése és cseréje új class-ra
+* pseudo elements ::before használásnak lehetőségét felmérni
 * GraphQL-szerű php lekérdezési forma. Egy PHP fájl amin keresztül le lehet kérdezni bármit az adatbázisból
 	* GET és POST metódusokkal lehet kiválasztani a releváns mezőket
 	* Egységes JSON választ ad mindenre
@@ -33,56 +74,19 @@
 								"sikeres-valtozo-2": 2
 							}
 						}
-* Ötlet: JS szint-[0-9] classok automatikus osztása onload után
-* PHP GET és POST kérések átgondolása
-* Megjelenő név és felhasználói név elkülönítése
-	* felhasználó aktiválásnál kitöltés
-	* együttnézőn új oszlop használata
-	* teamspeak csatlakozás linknél új oszlop használata
-* Autómata tesztelés scriptek megírása
-	* együttnéző
-		* tekerés
-		* megállítás / lejátszás
-	* megosztó
-	* teamspeak infó
-* Üzenet animáció
-* style="" egyszerűsítés
-* pseudo elements ::before
-* Együttnéző iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
-	* topbar (nem fontos)
-	* beléptető rendszer beállítása & socket
-	* Jelenlegi video_id megszerzése
-	* YouTube api
-	* Videó betöltése
-* Együttnézőhöz külön videó kezelés UI készítése (folyamatban)
-* Profil kezelő oldal: /kezelo/
-* /uploads mappa kivezetése Jul. 28 után
-* Régi style.css kivezetése
-	* egyuttnezo
-	* megoszto
-* Profil kezelő oldal
-* Megosztó: feltöltés paramétereit egy előugró ablakban lehessen megadni
-* Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
-* Megosztó: törölt fájlok kukába helyezése végleges törlés helyett
-* Beléptető rendszer módosítása mobilon: jobb-felső sarokban legyen, és jelenjen meg úgy mint a hausz oldalak gomb
-* Megosztó: nagy fájl esetén letöltés felajánlása hibára futás helyett
-* Megosztó feltöltés töltés animáció
-* LIDL pizza tier list leírás (személyes vélemények leírása egyes pizzákról)
-* Megosztó előnézet középre igazítás
-* Backend cseréje Apache-ról saját fejlesztésű Node.js backend-re
-* Saját hibaoldalak írása: 500, 404, stb...
-* Header tagek használatát áttervezni
-* Együttnéző széleskörű tesztelése és bugok javítása
-	* Csúszás megoldása belső kliens oldali számlálóval
-* Dokumentációk írása az adott oldalakhoz, és fordítás Magyar nyelvre (potenciális reformatolás és takarítás is belefér)
-* Adatbázisban belépés sessionöket kezelni, és kiléptetni minden felhasználót jelszó változtatásnál [guru99.com cookie mentés leírás](https://www.guru99.com/cookies-and-sessions.html)
-* Google Search Console (SEO) hibák javítása és javasolt lépések megtétele
-	* Mobil barát oldalak (már csak a megosztó van hátra)
-	* Rich results hibák
+* Ötlet: JS szint-[0-9] classok automatikus osztása onload után DOM elhelyezkedés alapján ahol még nincs
 
 
 ## ✅ Implementált tennivalók
 
+* Lidl pizza tier list kivezetése
+* Együttnéző iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
+* Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
+* /uploads mappa kivezetése Jul. 28 után
+* .htaccess és .gitignore fájlok újraírása a mappastruktúra változás miatt
+* Teamspeak szerver dockeresítése
+* "megosztó?fajlok=1" -> ok: fajlok_szama: 0
+* megosztón "jelenleg nincs feltöltve fájl" sor keresés után megjelenik
 * Teamspeak szerver dockeresítése
 	* https://noirth.com/threads/teamspeak-how-to-transfer-sqlite-to-mariadb.7784/
 * Docker-kész az egész projekt: docker-compose build & up a főkönyvtárban minden modul futtatásához
