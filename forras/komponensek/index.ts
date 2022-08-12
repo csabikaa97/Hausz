@@ -1,8 +1,12 @@
+/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
+/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+
 topbar_betoltese();
 belepteto_rendszer_beallitas();
 
-ujitasok_doboz = obj('ujitasok');
-ujitasok = {
+var ujitasok_doboz = obj('ujitasok');
+var ujitasok = {
     '2022.07.22': ["Együttnéző: Már csak pár funkció befejezése, és egy kis bővítés szükséges ahhoz hogy készen álljon használatra. Jelenleg folyik a BETA tesztelés."],
     '2022.07.18': ["Megosztó: Minden felhasználó tudja a jobb-klikk menüvel változtatni a saját fájljainak privát / publikus státuszát."],
     '2022.06.30': ["Megosztó: Fájlokra lehet jobb-klikkelni egyéb opciók eléréséhez, több fájlt is fel lehet tölteni egyszerre, lehet a feltöltött állományok között keresni, és át lehet húzni a weboldalra bármilyen fájlokat a feltöltéshez."
@@ -13,7 +17,7 @@ ujitasok = {
 }
 
 
-doboz = obj('ujitasok_doboz');
+var doboz = obj('ujitasok_doboz');
 
 Object.keys(ujitasok).forEach(datum => {
     doboz.innerHTML += `<p class="tab-1">${datum}</p>`;

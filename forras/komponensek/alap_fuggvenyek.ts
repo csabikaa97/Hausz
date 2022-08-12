@@ -80,7 +80,7 @@ function eloterbe_helyezes_vege() {
 
     if( eloterbe_helyezett_objectek_szama > 0 ) {
         for (let i = 0; i < eloterbe_helyezett_objectek_szama; i++) {
-            jelenlegi = obj(eloterbe_helyezett_objectek[i].id);
+            let jelenlegi = obj(eloterbe_helyezett_objectek[i].id);
             if( jelenlegi != null ) {
                 jelenlegi.style.zIndex = regi_zindex[i];
                 jelenlegi.style.position = regi_position[i];
@@ -96,11 +96,11 @@ function eloterbe_helyezes(objectek, kattintassal_vege, vege) {
     if( obj('sotetites_div') == null ) {
         let sotetites = document.createElement('div');
         sotetites.id = 'sotetites_div';
-        sotetites.style = "z-index: 10; position: fixed; background-color: black; opacity: 0.65; display: block; width: 100%; height: 100%; top: 0; left: 0;";
+        sotetites.setAttribute('style', 'z-index: 10; position: fixed; background-color: black; opacity: 0.65; display: block; width: 100%; height: 100%; top: 0; left: 0;');
         document.body.appendChild(sotetites);
     }
 
-    let metatagek = document.getElementsByTagName('meta')
+    let metatagek = document.getElementsByTagName('meta');
     for (let i = 0; i < metatagek.length; i++) {
         if( /light/ig.test(metatagek[i].media) ) {
             metatagek[i].content = "rgb(85.75, 85.75, 85.75)";
@@ -175,24 +175,26 @@ function uj_valasz_mutatasa(ido, tipus, valasz) {
     if( typeof valasz != "string" )
         throw new Error('Valasz paraméter nem string típusú!!!');
 
-    obj('valasz_uzenet').style.border ='1px solid var(--szint-2-szin)';
-    obj('valasz_uzenet').style.backgroundColor ='var(--szint-1-szin)';
+    let valasz_uzenet = obj('valasz_uzenet');
+
+    valasz_uzenet.style.border ='1px solid var(--szint-2-szin)';
+    valasz_uzenet.style.backgroundColor ='var(--szint-1-szin)';
 
     if( /^hiba/ig.test(tipus) ) {
-        obj('valasz_uzenet').style.border ='1px solid var(--piros-1)';
-        obj('valasz_uzenet').style.backgroundColor ='var(--piros-0)';
+        valasz_uzenet.style.border ='1px solid var(--piros-1)';
+        valasz_uzenet.style.backgroundColor ='var(--piros-0)';
     }
     
     if( /^ok/ig.test(tipus) ) {
-        obj('valasz_uzenet').style.border ='1px solid var(--zold-1)';
-        obj('valasz_uzenet').style.backgroundColor ='var(--zold-0)';
+        valasz_uzenet.style.border ='1px solid var(--zold-1)';
+        valasz_uzenet.style.backgroundColor ='var(--zold-0)';
     }
 
-    obj('valasz_uzenet').innerHTML = `<p style="color: rgb(240,240,240)">${valasz}</p>`;
-    obj('valasz_uzenet').style.visibility = "visible";
+    valasz_uzenet.innerHTML = `<p style="color: rgb(240,240,240)">${valasz}</p>`;
+    valasz_uzenet.style.visibility = "visible";
     clearTimeout(uj_valasz_mutatasa_idozito);
     uj_valasz_mutatasa_idozito = setTimeout(() => {
-        obj('valasz_uzenet').style.visibility = 'hidden';
+        valasz_uzenet.style.visibility = 'hidden';
     }, ido);
 }
 

@@ -1,3 +1,6 @@
+/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+
+
 function topbar_betoltese() {
     fetch("/komponensek/topbar.html")
     .then(response => response.text())
@@ -7,7 +10,8 @@ function topbar_betoltese() {
         document.head.innerHTML += '<meta name="theme-color" media="(prefers-color-scheme: light)" content="rgb(245,245,245)">';
         document.head.innerHTML += '<meta name="theme-color" media="(prefers-color-scheme: dark)" content="rgb(30,30,30)">';
 
-        obj('menu_div').style.visibility = 'hidden';
+        let menu_div = obj('menu_div');
+        menu_div.style.visibility = 'hidden';
         document.onclick = (event) => {
             let menure_kattintott = false;
             event.composedPath().forEach(element => {
@@ -16,13 +20,13 @@ function topbar_betoltese() {
                 }
                 
                 if(menure_kattintott) {
-                    obj('menu_div').style.visibility = 'visible';
-                    obj('menu_div').style.animation = 'height-novekedes-sigmoid 0.3s ease 1 forwards';
-                    eloterbe_helyezes( [obj('menu_div')] );
+                    menu_div.style.visibility = 'visible';
+                    menu_div.style.animation = 'height-novekedes-sigmoid 0.3s ease 1 forwards';
+                    eloterbe_helyezes( [obj('menu_div')], true, undefined );
                 } else {
-                    if( obj('menu_div').style.visibility != 'hidden' ) {
-                        obj('menu_div').style.visibility = 'visible';
-                        obj('menu_div').style.animation = 'height-csokkenes-sigmoid 0.3s ease 1 forwards';
+                    if( menu_div.style.visibility != 'hidden' ) {
+                        menu_div.style.visibility = 'visible';
+                        menu_div.style.animation = 'height-csokkenes-sigmoid 0.3s ease 1 forwards';
                         eloterbe_helyezes_vege();
                     }
                 }

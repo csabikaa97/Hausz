@@ -1,3 +1,7 @@
+/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
+/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+
 var joslatok = ["Nemsoká pénz áll a házhoz."
     , "Meglepetés fog érni."
     , "Levegőt fogsz venni."
@@ -21,8 +25,7 @@ var joslatok = ["Nemsoká pénz áll a házhoz."
 ];
 
 function joslas() {
-    let szam = Math.floor( Math.random() * (joslatok.length) + 1 );
-    alert(joslatok[szam]);
+    alert(joslatok[Math.floor( Math.random() * (joslatok.length) + 1 )]);
 }
 
 topbar_betoltese();

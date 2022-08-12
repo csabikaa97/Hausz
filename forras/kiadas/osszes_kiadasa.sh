@@ -1,16 +1,19 @@
 #!/bin/bash
 
+set -e
+
 cd /var/www/
 
-kiadas.js $1 forras/megoszto/megoszto.js --ki public/megoszto/megoszto.js
-kiadas.js $1 forras/admin/admin.js --ki public/admin/admin.js
-kiadas.js $1 forras/egyuttnezo/egyuttnezo.js --ki public/egyuttnezo/egyuttnezo.js
-kiadas.js $1 forras/komponensek/index.js --ki public/index/index.js
-kiadas.js $1 forras/egyuttnezo/egyuttnezo.js --ki public/egyuttnezo/egyuttnezo.js
-kiadas.js $1 forras/erettsegiszamlalo/erettsegiszamlalo.js --ki public/erettsegiszamlalo/erettsegiszamlalo.js
-kiadas.js $1 forras/hauszkft/hauszkft.js --ki public/hauszkft/hauszkft.js
-kiadas.js $1 forras/kezelo/jelszo_valtoztatas.js --ki public/kezelo/jelszo_valtoztatas.js
-kiadas.js $1 forras/kezelo/regisztracio.js --ki public/kezelo/regisztracio.js
-kiadas.js $1 forras/teamspeak/teamspeak.js --ki public/teamspeak/teamspeak.js
-kiadas.js $1 forras/webjosda/josda.js --ki public/webjosda/josda.js
-kiadas.js $1 forras/webjosda/fizetos.js --ki public/webjosda/fizetos.js
+# tsc --showConfig
+
+kiadas.js forras/erettsegiszamlalo/erettsegiszamlalo.ts public/erettsegiszamlalo/erettsegiszamlalo.js
+kiadas.js forras/megoszto/megoszto.ts public/megoszto/megoszto.js
+kiadas.js forras/admin/admin.ts public/admin/admin.js
+kiadas.js forras/egyuttnezo/egyuttnezo.ts public/egyuttnezo/egyuttnezo.js
+kiadas.js forras/hauszkft/hauszkft.ts public/hauszkft/hauszkft.js
+kiadas.js forras/kezelo/jelszo_valtoztatas.ts public/kezelo/jelszo_valtoztatas.js
+kiadas.js forras/kezelo/regisztracio.ts public/kezelo/regisztracio.js
+kiadas.js forras/teamspeak/teamspeak.ts public/teamspeak/teamspeak.js
+kiadas.js forras/webjosda/josda.ts public/webjosda/josda.js
+kiadas.js forras/komponensek/index.ts public/index/index.js
+kiadas.js forras/webjosda/fizetos.ts public/webjosda/fizetos.js

@@ -1,11 +1,15 @@
+/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+
+
 function topbar_fiok_gomb_kattintas() {
-    if( obj('felhasznalo_doboz').style.visibility == '') {
-        obj('felhasznalo_doboz').style.visibility = 'visible';
+    let felhasznalo_doboz = obj('felhasznalo_doboz');
+    if( felhasznalo_doboz.style.visibility == '') {
+        felhasznalo_doboz.style.visibility = 'visible';
     } else {
-        if( obj('felhasznalo_doboz').style.visibility == 'hidden') {
-            obj('felhasznalo_doboz').style.visibility = 'visible';
+        if( felhasznalo_doboz.style.visibility == 'hidden') {
+            felhasznalo_doboz.style.visibility = 'visible';
         } else {
-            obj('felhasznalo_doboz').style.visibility = '';
+            felhasznalo_doboz.style.visibility = '';
         }
     }
 }
@@ -99,7 +103,10 @@ var frissites_fuggveny;
 var belepes_fuggveny;
 var kilepes_fuggveny;
 
-function belepteto_rendszer_beallitas(frissult, belepes, kilepes) {
+var kilepes_siker;
+var belepes_siker;
+
+function belepteto_rendszer_beallitas(frissult?, belepes?, kilepes?) {
     let span = document.createElement('span');
     span.id = 'belepteto_rendszer';
 

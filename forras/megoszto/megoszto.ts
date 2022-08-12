@@ -1,3 +1,7 @@
+/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
+/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+
 function belepteto_rendszer_frissult() {
     if( session_loggedin == "yes" ) {
         obj('privat_doboz').style.visibility = 'visible';
@@ -67,7 +71,7 @@ function filter_frissites() {
             sors = 'none';
         }
 
-        tr_tagek[i].style.display = sors;
+        tr_tagek[i].setAttribute('style', 'display: ' + sors);
 
         if (sors == 'table-row') {
             maradt_sorok_szama += 1;
@@ -109,7 +113,7 @@ function fajlok_betoltese() {
 
         let buffer = "";
         for (let i = 0; i < uzenet.fajlok_szama; i++) {
-            fajl = uzenet.fajlok[i];
+            let fajl = uzenet.fajlok[i];
             if( fajl.id == '-' ) {
                 buffer = `<td class="kozepre-szoveg nagy-kepernyon-tiltas" style="padding-left: 15px; padding-right: 15px"><h3>Jelenleg nincsenek fájlok a megosztón</h3></td>`;
                 buffer += `<td colspan="5" class="mobilon-tiltas" style="padding-left: 15px; padding-right: 15px"><h3 class="kozepre-szoveg">Jelenleg nincsenek fájlok a megosztón</h3></td>`;
@@ -188,7 +192,7 @@ function fajlok_betoltese() {
 
         for (let i = 0; i < hossz; i++) {
             if(typeof torlendo_reszek[torles_index] != "undefined") {
-                if(torlendo_reszek[torles_index].attributes.sor_id != undefined) {
+                if(torlendo_reszek[torles_index].getAttribute('sor_id') != null) {
                     torlendo_reszek[torles_index].remove();
                 } else {
                     torles_index++;
@@ -255,7 +259,7 @@ function elonezet(hivatkozas, tipus, meret) {
             return;
         }
         let iframe = document.createElement('iframe');
-        iframe.style = "height: 100%; width: 100%; background-color: white; color: black";
+        iframe.setAttribute('style', "height: 100%; width: 100%; background-color: white; color: black");
         iframe.id = "elonezet_iframe";
         iframe.src = hivatkozas;
         iframe.title = "Előnézet";
@@ -270,7 +274,7 @@ function elonezet(hivatkozas, tipus, meret) {
 function titkositas_feloldasa(file_id, fajlnev) {
     let caller = event.target;
     if (!caller) {
-        if( !caller.outerHTML.match(/^<td/)) {
+        if( !(<HTMLElement>caller).outerHTML.match(/^<td/)) {
             return;
         }
     }
@@ -374,7 +378,7 @@ function feltoltes() {
     feltoltes_statusz_doboz.style.top = '50%';
     document.body.appendChild(feltoltes_statusz_doboz);
 
-    eloterbe_helyezes( [ feltoltes_statusz_doboz ] );
+    eloterbe_helyezes( [ feltoltes_statusz_doboz ], false, undefined );
 
     obj('fileToUpload').type = '';
     obj('fileToUpload_label').innerHTML = 'Feltöltés folyamatban...';
@@ -400,7 +404,9 @@ function feltoltes() {
         let keres = new XMLHttpRequest();
         keres.onload = function() {
             console.log(this.responseText);
-            uzenet = JSON.parse(this.responseText);
+            console.log({formData});
+            console.log(formData.get('submit'));
+            let uzenet = JSON.parse(this.responseText);
             if( uzenet.eredmeny == 'ok' ) {
                 kesz_fajlok_szama++;
                 if (kesz_fajlok_szama == valid_fajlok_szama) {
@@ -426,8 +432,8 @@ function feltoltes() {
         if(obj('private').checked) {
             formData.append("private", "1");
         }
-        formData.append("fileToUpload", fajl);
         formData.append("submit", "1");
+        formData.append("fileToUpload", fajl);
         keres.open("POST", '/megoszto/megoszto.php');
         keres.send(formData);
     }
@@ -478,7 +484,7 @@ function fajlnev_frissitese() {
         obj('fileToUpload_label').innerHTML = fajlnevek;
         obj('SubmitGomb').style.visibility = 'visible';
 
-        eloterbe_helyezes( [obj('privat_doboz'), obj('fileToUpload_label'), obj('SubmitGomb'), obj('titkositasi_kulcs_doboz')], true );
+        eloterbe_helyezes( [obj('privat_doboz'), obj('fileToUpload_label'), obj('SubmitGomb'), obj('titkositasi_kulcs_doboz')], true, undefined );
     }
 }
 
@@ -516,11 +522,12 @@ function privat_statusz_csere(link) {
 }
 
 function jobb_klikk_menu_kinyitas(event, tr) {
-    obj('jobb_klikk_menu').style.display = 'block';
+    let jobb_klikk_menu = obj('jobb_klikk_menu');
+    jobb_klikk_menu.style.display = 'block';
 
     // menü eltűntetése tekerés esetén
     document.body.onscroll = () => {
-        obj('jobb_klikk_menu').style.display = '';
+        jobb_klikk_menu.style.display = '';
     };
 
     // menü eltűntetése máshova kattintás esetén
@@ -528,13 +535,13 @@ function jobb_klikk_menu_kinyitas(event, tr) {
         if (window.innerWidth > 1024) {
             let kattintasJobbKlikkMenunVolt = false;
             event.composedPath().forEach(element => {
-                if (element.id == 'jobb_klikk_menu') {
+                if ((<HTMLElement>element).id == 'jobb_klikk_menu') {
                     kattintasJobbKlikkMenunVolt = true;
                 }
             });
 
             if (!kattintasJobbKlikkMenunVolt) {
-                obj('jobb_klikk_menu').style.display = '';
+                jobb_klikk_menu.style.display = '';
             }
         }
     };
@@ -554,7 +561,14 @@ function jobb_klikk_menu_kinyitas(event, tr) {
     if (tr.attributes['sor_titkositott'].value == '1') {
         buffer += `<div class="szint-3 gomb kerekites-10" onclick="titkositas_feloldasa('${tr.attributes['sor_id'].value}', '${tr.attributes['sor_filename'].value}');">Fájl feloldása</div><br>`;
     } else {
-        if (parseInt(tr.attributes['sor_size'].value) <= 1024 * 1024 * 10 && ['kep', 'audio', 'video', 'dokumentum'].includes(tr.attributes['sor_elonezet_tipus'].value)) {
+        let ismert_elonezet_tipus = false;
+        let ismert_elonezet_tipusok = ['kep', 'audio', 'video', 'dokumentum'];
+        for (let i = 0; i < ismert_elonezet_tipusok.length; i++) {
+            if( tr.attributes['sor_elonezet_tipus'].value == ismert_elonezet_tipusok[i] ) {
+                ismert_elonezet_tipus = true;
+            }
+        }
+        if (parseInt(tr.attributes['sor_size'].value) <= 1024 * 1024 * 10 && ismert_elonezet_tipus) {
             buffer += `<div class="szint-3 gomb kerekites-10" onclick='elonezet("/megoszto/megoszto.php?letoltes&file_id=${tr.attributes['sor_id'].value}", "${tr.attributes['sor_elonezet_tipus'].value}", "${tr.attributes['sor_size'].value}");'>Megnyitás</div><br>`;
         }
     }
@@ -581,17 +595,17 @@ function jobb_klikk_menu_kinyitas(event, tr) {
     jobb_klikk_menu.innerHTML = buffer;
 
     if (window.innerWidth > 1024) {
-        if( obj('jobb_klikk_menu').clientHeight + 10 + event.pageY > window.innerHeight + window.pageYOffset ) {
-            obj('jobb_klikk_menu').style.top = (window.innerHeight + window.pageYOffset - obj('jobb_klikk_menu').clientHeight - 10) + 'px';
+        if( jobb_klikk_menu.clientHeight + 10 + event.pageY > window.innerHeight + window.pageYOffset ) {
+            jobb_klikk_menu.style.top = (window.innerHeight + window.pageYOffset - jobb_klikk_menu.clientHeight - 10) + 'px';
         } else {
-            obj('jobb_klikk_menu').style.top = event.pageY + 'px';
+            jobb_klikk_menu.style.top = event.pageY + 'px';
         }
-        obj('jobb_klikk_menu').style.left = event.pageX + 'px';
-        obj('jobb_klikk_menu').style.position = 'absolute';
+        jobb_klikk_menu.style.left = event.pageX + 'px';
+        jobb_klikk_menu.style.position = 'absolute';
     } else {
-        obj('jobb_klikk_menu').style.top = '100px';
-        obj('jobb_klikk_menu').style.left = '30px';
-        obj('jobb_klikk_menu').style.position = 'fixed';
+        jobb_klikk_menu.style.top = '100px';
+        jobb_klikk_menu.style.left = '30px';
+        jobb_klikk_menu.style.position = 'fixed';
     }
 }
 
@@ -634,13 +648,8 @@ function handleDrop(e) {
     hideDropZone();
 }
 
-function belepes_siker() {
-    fajlok_betoltese();
-}
-
-function kilepes_siker() {
-    belepes_siker();
-}
+belepes_siker = fajlok_betoltese;
+kilepes_siker = belepes_siker;
 
 // main()
 
@@ -660,9 +669,9 @@ document.addEventListener('contextmenu', function(event) {
     let volt_tr = false;
     let tr;
     event.composedPath().forEach(element => {
-        if (element.tagName == 'TD') {
+        if ((<HTMLElement>element).tagName == 'TD') {
             volt_tr = true;
-            tr = element.parentElement;
+            tr = (<HTMLElement>element).parentElement;
         }
     });
     if (volt_tr) {

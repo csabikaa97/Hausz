@@ -1,3 +1,7 @@
+/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
+/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+
 function futtatas() {
     szinkron_keres(`/admin/admin.php?parancs=${obj("parancs").value}`, "", (uzenet) => {
         obj("parancssor").innerHTML += uzenet.valasz;
@@ -5,7 +9,7 @@ function futtatas() {
     });
 }
 
-function futtatas_enter() {
+function futtatas_enter(event: KeyboardEvent) {
     if (event.key === 'Enter') {   futtatas(); }
 }
 

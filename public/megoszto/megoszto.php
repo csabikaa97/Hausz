@@ -271,5 +271,5 @@
         exit_ok('"valasz": "A \'' . $_FILES["fileToUpload"]["name"] . '\' nevű fájl sikeresen fel lett töltve."');
     }
 
-    die_if( true, 'Mi a parancs?: "'.$_POST.'", "'.$_GET.'"');
+    die_if( true, 'Mi a parancs?: ');
 ?>

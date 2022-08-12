@@ -1,8 +1,6 @@
 ## 👤 Felhasználói érdekű teendő
 
 * Együttnéző
-	* websocket kommunikáció átírása JSON formátumra
-		* felhasználók: ok: felhasznalok: 0
 	* Hangerő állításhoz, és megtartáshoz tesztelés script
 	* Videó link kérése közvetlen URL-el, lejátszó betöltése nélkül
 	* YouTube natív lejátszóra hasonlító videó kezelés UI készítése (folyamatban)
@@ -19,6 +17,8 @@
 		* Látszódjanak rajta a fájlhoz tartozó akciók
 	* feltöltés töltés animáció
 	* nagy fájl esetén letöltés felajánlása hibára futás helyett
+* TeamSpeak infó
+	* Online felhasználók jelenlegi csatornáinak neveit mutassa simán név helyett
 * Globális
 	* szerveren swap növelése 4 GB-ra
 	* .md fájlokban linkek javítása
@@ -34,6 +34,9 @@
 ## 👨🏻‍💻 Fejlesztői érdekű teendó
 
 * szerver felkészítése arra a lehetőségre hogy minden táblázat üres
+* Együttnéző
+	* websocket kommunikáció átírása JSON formátumra
+		* felhasználók: ok: felhasznalok: 0
 * Autómata tesztelés scriptek megírása
 	* együttnéző
 		* tekerés
@@ -79,6 +82,8 @@
 
 ## ✅ Implementált tennivalók
 
+* Kiadas.js: Fájlok compileolásának mellőzése ha létezik friss fájl (checksum ellenőrzéssel, minden forrásfájlhoz)
+* Typescript használata minden oldalhoz
 * Lidl pizza tier list kivezetése
 * Együttnéző iframe, player, YouTube api, és egyéb komponensek betöltési sorrendjének javítása
 * Megosztó link módosítása /uploads-ról /megoszto-ra .htaccess átirányítással
