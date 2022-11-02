@@ -1,6 +1,7 @@
 /// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
 /// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
 /// <reference path="/var/www/forras/komponensek/topbar.ts" />
+/// <reference path="/var/www/priv/szurendo_szavak.ts" />
 
 function belepteto_rendszer_frissult() {
     if( session_loggedin == "yes" ) {
@@ -140,6 +141,15 @@ function fajlok_betoltese() {
                         return;
                     }
                 });
+            });
+
+            szurendo_szavak.forEach(szo => {
+                let jelenlegi_szo_regexe = new RegExp(`${szo}`, 'i');
+                if( jelenlegi_szo_regexe.test(fajl.filename) ) {
+                    let csere = "";
+                    for (let i = 0; i < szo.length; i++) {   csere += "*"; }
+                    fajl.filename = fajl.filename.replace( jelenlegi_szo_regexe, csere );
+                }
             });
 
             buffer += "<tr";
@@ -392,8 +402,6 @@ function feltoltes() {
 
     let kesz_fajlok_szama = 0;
 
-    let upload_progress_interval;
-
     for (let i = 0; i < fajlok.length; i++) {
         let fajl = fajlok[i];
 
@@ -428,6 +436,15 @@ function feltoltes() {
         let formData = new FormData();
         if (obj('titkositas_kulcs').value.length > 0) {
             formData.append("titkositas_kulcs", obj('titkositas_kulcs').value);
+            var iv = crypto.getRandomValues(new Uint8Array(16));
+
+            let password = "";
+
+            crypto.subtle.generateKey({ 'name': 'AES-CBC', 'length': 256 }, false, [ 'encrypt', 'decrypt' ])
+                .then(key => crypto.subtle.encrypt({ 'name': 'aes-256-cbc', iv }, key, fajl))
+                .then(encrypted => {
+                    fajl = encrypted;
+                });
         }
         if(obj('private').checked) {
             formData.append("private", "1");

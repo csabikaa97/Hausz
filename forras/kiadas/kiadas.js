@@ -52,8 +52,8 @@ try {
             let sor = referenciak[i];
             let fajlnev = sor.replace( /^\/\/\/ <reference path="(.*)" \/>/, '$1');
             let valos_checksum = checksum_szamitasa_fajlhoz( fajlnev );
-            if( /^\/\/ Checksum: /.test( referenciak[i+1] ) ) {
-                let mentett_checksum = referenciak[i+1].replace( /^\/\/ Checksum: (.*)/, '$1');
+            if( /^\/\/\/ Checksum: /.test( referenciak[i+1] ) ) {
+                let mentett_checksum = referenciak[i+1].replace( /^\/\/\/ Checksum: (.*)/, '$1');
                 if( mentett_checksum != valos_checksum ) {
                     console.log('\tNem egyezik a valós és a mentett checksum: ' + fajlnev);
                     kilephet = false;
@@ -104,7 +104,7 @@ for (let i = 0; i < referenciak.length; i++) {
         let sor = referenciak[i];
         let fajlnev = sor.replace( /^\/\/\/ <reference path="(.*)" \/>/, '$1');
         let generalt_checksum = checksum_szamitasa_fajlhoz(fajlnev);
-        let item = "// Checksum: " + generalt_checksum;
+        let item = "/// Checksum: " + generalt_checksum;
         referenciak.splice(i+1, 0, item);
     }
 }

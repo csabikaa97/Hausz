@@ -91,15 +91,15 @@ function szerver_statusz_frissitese() {
         let buffer = "";
 
         const processzor_hasznalat_figyelmeztetes = 0.75;
-        const memoria_hasznalat_elfogadhato = 0.7;
-        const memoria_hasznalat_figyelmezetetes = 0.8;
-        const memoria_hasznalat_kritikus = 0.9;
+        const memoria_hasznalat_elfogadhato = 0.75;
+        const memoria_hasznalat_figyelmezetetes = 0.85;
+        const memoria_hasznalat_kritikus = 0.95;
         const swap_hasznalat_elfogadhato = 0.65;
         const swap_hasznalat_figyelmezetetes = 0.75;
         const swap_hasznalat_kritikus = 0.85;
-        const lemez_hasznalat_elfogadhato = 0.65;
-        const lemez_hasznalat_figyelmeztetes = 0.75;
-        const lemez_hasznalat_kritikus = 0.75;
+        const lemez_hasznalat_elfogadhato = 0.75;
+        const lemez_hasznalat_figyelmeztetes = 0.85;
+        const lemez_hasznalat_kritikus = 0.95;
 
         if( uzenet.folyamat_ok
             && uzenet.telnet_ok

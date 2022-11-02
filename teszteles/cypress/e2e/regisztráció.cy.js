@@ -73,6 +73,6 @@ describe('Regisztráció', () => {
     it('Mobil: Ugrás a főoldalra gomb és funkcionalitása', () => {
         cy.viewport(320, 640)
         cy.contains('Ugrás a főoldalra').and('be.visible').click()
-        cy.contains('Keressed').and('be.visible')
+        cy.contains('Keresés').and('be.visible')
     })
 })

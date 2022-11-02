@@ -1,7 +1,8 @@
 {
 	"folders": [
 		{
-			"path": "./"
+			"path": "./",
+			"name": "Hausz"
 		}
 	],
 	"extensions": {
@@ -10,7 +11,8 @@
 			"zaaack.markdown-editor",
 			"cweijan.vscode-mysql-client2",
 			"mblode.pretty-formatter",
-			"ms-azuretools.vscode-docker"
+			"ms-azuretools.vscode-docker",
+			"hediet.vscode-drawio"
 		]
 	},
 	"settings": {

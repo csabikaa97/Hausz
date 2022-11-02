@@ -12,11 +12,11 @@ describe('Főoldal', () => {
     })
     
     it('Keresés gomb látható', () => {
-        cy.contains('Keressed more')
+        cy.contains('Keresés')
     })
     
     it('Jó napom van gomb látható', () => {
-        cy.contains('Jó napom van more')
+        cy.contains('Jó napom van!')
     })
 
     it('Asztali: Hausz újítások lista', () => {

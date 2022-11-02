@@ -20,6 +20,7 @@
 * TeamSpeak infó
 	* Online felhasználók jelenlegi csatornáinak neveit mutassa simán név helyett
 * Globális
+	* Belépés töltés, és eredmény animáció
 	* szerveren swap növelése 4 GB-ra
 	* .md fájlokban linkek javítása
 	* Megjelenő név és felhasználói név elkülönítése

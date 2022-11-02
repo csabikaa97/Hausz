@@ -17,3 +17,6 @@ kiadas.js forras/teamspeak/teamspeak.ts public/teamspeak/teamspeak.js
 kiadas.js forras/webjosda/josda.ts public/webjosda/josda.js
 kiadas.js forras/komponensek/index.ts public/index/index.js
 kiadas.js forras/webjosda/fizetos.ts public/webjosda/fizetos.js
+
+# privát
+kiadas.js forras/ruhaszamlalo/ruhaszamlalo.ts public/ruhaszamlalo/ruhaszamlalo.js

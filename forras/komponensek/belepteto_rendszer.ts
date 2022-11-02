@@ -22,7 +22,7 @@ function belepesgomb(event) {
     post_parameterek_belepes.append('password', obj('current-password').value);
     szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
         if(uzenet.eredmeny == 'ok') {
-            if (typeof belepes_siker === 'function') {   belepes_siker(); }
+            if (typeof belepes_fuggveny === 'function') {   belepes_fuggveny(); }
             uj_valasz_mutatasa(3000, "", "Sikeres belépés");
             belepteto_rendszer_frissites();
         } else {
@@ -35,7 +35,7 @@ function kilepesgomb(event) {
     event.preventDefault();
     szinkron_keres("/include/belepteto_rendszer.php?logout=igen", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
-            if (typeof kilepes_siker === 'function') {   kilepes_siker(); }
+            if (typeof kilepes_fuggveny === 'function') {   kilepes_fuggveny(); }
             session_username = "";
             session_admin = "";
             session_loggedin = "";
