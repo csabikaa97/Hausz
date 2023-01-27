@@ -1,7 +1,8 @@
 <?php
-    $dbname = "hausz_megoszto";
-    include '../../forras/include/alap_fuggvenyek.php';
     include '../../forras/include/adatbazis.php';
+    include '../../forras/include/alap_fuggvenyek.php';
+    
+    adatbazis_csatlakozas("", "", "", "");
 
     die_if( $_POST['regisztracio'] != "igen", "Mi a parancs?");
 
@@ -15,11 +16,11 @@
     die_if( $_POST['regisztracio_password'] != $_POST['regisztracio_password_confirm'], 'Nem egyeznek a megadott jelszavak');
     die_if( !preg_match('/^\S+@\S+\.\S+$/', $_POST['regisztracio_email']) && strlen($_POST['regisztracio_email']) > 0, 'Helytelen e-mail cím formátum');
 
-    $result_username_check = query_futtatas("select * from users where username = '".$_POST['regisztracio_username']."'");
+    $result_username_check = query_futtatas("SELECT * FROM users WHERE username = '".$_POST['regisztracio_username']."'");
     $row = $result_username_check->fetch_assoc();
     die_if( mysqli_num_rows($result_username_check) > 0, 'Ez a felhasználónév már foglalt');
 
-    $result_username_check = query_futtatas("select * from users_requested where username = '".$_POST['regisztracio_username']."'");
+    $result_username_check = query_futtatas("SELECT * FROM users_requested WHERE username = '".$_POST['regisztracio_username']."'");
     $row = $result_username_check->fetch_assoc();
     die_if( mysqli_num_rows($result_username_check) > 0, 'Ez a felhasználónév már meg lett igényelve');
     

@@ -1,9 +1,9 @@
 <?php
     session_start();
-
-    $dbname = "hausz_megoszto";
-    include '../../forras/include/alap_fuggvenyek.php';
     include '../../forras/include/adatbazis.php';
+    include '../../forras/include/alap_fuggvenyek.php';
+
+    adatbazis_csatlakozas("", "", "", "");
 
     die_if( !isset($_SESSION['loggedin']), "Nem vagy belépve.");
     die_if( strlen($_POST['jelenlegi_jelszo']) == 0, 'Nem adtad meg a jelenlegi jelszavad');
@@ -12,7 +12,7 @@
     die_if( strlen($_POST['uj_jelszo']) < 3, 'Túl rövid a jelszavad (minimum 3 karakter hosszúnak kell lennie)');
     die_if( $_POST['uj_jelszo'] != $_POST['uj_jelszo_megerosites'], 'Nem egyeznek az új jelszavak');
     
-    $result_username_check = query_futtatas("select * from users where username = '" . $_SESSION['username'] . "'");
+    $result_username_check = query_futtatas("SELECT * FROM users WHERE username = '" . $_SESSION['username'] . "'");
 
 
     $row = $result_username_check->fetch_assoc();

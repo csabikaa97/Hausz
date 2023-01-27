@@ -25,9 +25,12 @@
         die();
     }
 
-    function query_futtatas($query) {
+    function query_futtatas($query, $dbname = "hausz_megoszto") {
         global $conn;
-        $result = $conn->query($query);
+        if( $dbname == "" )
+            $dbname = "hausz_megoszto";
+        
+        $result = $conn[$dbname]->query($query);
         die_if( !$result, 'Query '.$query);
         return $result;
     }

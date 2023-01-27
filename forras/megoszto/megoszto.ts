@@ -128,7 +128,7 @@ function fajlok_betoltese() {
                 'kep': ['jpg', 'png', 'heic', 'gif', 'svg', 'webp', 'bmp', 'jpeg'],
                 'audio': ['mp3', 'wav'],
                 'video': ['mkv', 'avi', 'mp4', 'webm'],
-                'dokumentum': ['pdf', 'csv', 'c', 'cpp', 'm', 'py', 'css', 'txt', 'sql', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx', 'ahk', 'md'],
+                'dokumentum': ['pdf', 'csv', 'c', 'cpp', 'm', 'py', 'css', 'txt', 'sql', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx', 'ahk', 'md', 'sh'],
                 'szoftver': ['exe', 'msi', 'iso', 'apk', 'rpm', 'deb', 'dmg', 'pkg'],
                 'csomagolt': ['torrent', 'zip', '7z', 'tar', 'rar', 'gz']
             }
@@ -542,12 +542,10 @@ function jobb_klikk_menu_kinyitas(event, tr) {
     let jobb_klikk_menu = obj('jobb_klikk_menu');
     jobb_klikk_menu.style.display = 'block';
 
-    // menü eltűntetése tekerés esetén
     document.body.onscroll = () => {
         jobb_klikk_menu.style.display = '';
     };
 
-    // menü eltűntetése máshova kattintás esetén
     document.body.onclick = (event) => {
         if (window.innerWidth > 1024) {
             let kattintasJobbKlikkMenunVolt = false;
@@ -667,8 +665,6 @@ function handleDrop(e) {
 
 belepes_siker = fajlok_betoltese;
 kilepes_siker = belepes_siker;
-
-// main()
 
 var dropZone;
 var dropZone_leiras;

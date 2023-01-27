@@ -1,9 +1,9 @@
 <?php
     session_start();
-
-    $dbname = "hausz_megoszto";
-    include '../../forras/include/alap_fuggvenyek.php';
     include '../../forras/include/adatbazis.php';
+    include '../../forras/include/alap_fuggvenyek.php';
+
+    adatbazis_csatlakozas("", "", "", "");
     
     if( isset($_GET['statusz']) ) {
         die_if( !isset($_SESSION['loggedin']), 'Nem vagy belépve');

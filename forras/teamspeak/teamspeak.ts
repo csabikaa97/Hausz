@@ -8,6 +8,7 @@ function belepteto_rendszer_frissult() {
         obj('nincs_belepve_leiras').style.display = 'none';
         obj('online_felhasznalok').style.display = 'block';
         obj('szerver_statusz').style.display = 'block';
+        obj('korabbi_fiok_gomb').style.display = 'block';
         obj('csatlakozas_gomb').onclick = () => {
             location.href = `ts3server://${domain}/?port=9987&nickname=${session_username}`;
         }
@@ -19,6 +20,7 @@ function belepteto_rendszer_frissult() {
         obj('nincs_belepve_leiras').style.display = 'block';
         obj('online_felhasznalok').style.display = 'none';
         obj('szerver_statusz').style.display = 'none';
+        obj('korabbi_fiok_gomb').style.display = 'none';
         obj('csatlakozas_gomb').onclick = () => {
             location.href = `ts3server://${domain}/?port=9987&nickname=ismeretlen felhasználó`;
         }

@@ -34,6 +34,7 @@
 
 ## 👨🏻‍💻 Fejlesztői érdekű teendó
 
+* Mentés visszaállításához használható scriptek automatikus létrehozása mentés készítésekor
 * szerver felkészítése arra a lehetőségre hogy minden táblázat üres
 * Együttnéző
 	* websocket kommunikáció átírása JSON formátumra

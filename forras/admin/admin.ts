@@ -141,6 +141,55 @@ function log_betoltese() {
     });
 }
 
+function teamspeak_jogosultsag_igenylesek_betoltese() {
+    let buffer = '<h3>Teamspeak jogosultság igénylések</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">id</th><th class="cella">felhasználó</th><th class="cella">igenyelt fiókok</th><th class="cella">igenyelt fiók idk</th><th class="cella">igenyelt időpont</th><th class="cella"></th><th class="cella"></th></tr>';
+    szinkron_keres("/admin/admin.php?teamspeak_jogosultsag_igenylesek", "", (uzenet) => {
+        if( uzenet.eredmeny == 'ok' ) {
+            if( uzenet.igenylesek_szama == 0 ) {
+                buffer += '<tr><td class="cella" colspan="7">Nincs igénylés</td></tr>';
+            } else {
+                uzenet.valasz.forEach(sor => {
+                    buffer += '<tr>';
+                    buffer += `<td class="cella">${sor.id}</td>`;
+                    buffer += `<td class="cella">${sor.username}</td>`;
+                    buffer += `<td class="cella">${sor.igenyelt_fiokok}</td>`;
+                    buffer += `<td class="cella">${sor.igenyelt_fiok_idk}</td>`;
+                    buffer += `<td class="cella">${sor.igenyles_datuma}</td>`;
+                    buffer += `<td class='cella'><div class='szint-2 gomb kerekites-15' onclick='teamspeak_jogosultsag_jovahagyas("${sor.id}")'>Jóváhagyás</div></td>`;
+                    buffer += `<td class='cella'><div class='szint-2 gomb kerekites-15' onclick='teamspeak_jogosultsag_elutasitas("${sor.id}")'>Elutasítás</div></td>`;
+                    buffer += '</tr>';
+                });
+            }
+        } else {
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+        }
+
+        obj('teamspeak_jogosultsag_igenylesek').innerHTML = `${buffer}</tbody></table>`;
+    });
+}
+
+function teamspeak_jogosultsag_jovahagyas(id) {
+    szinkron_keres("/admin/admin.php?teamspeak_jogosultsag_jovahagyas&id="+id, "", (uzenet) => {
+        if( uzenet.eredmeny == 'ok' ) {
+            uj_valasz_mutatasa(5000, "siker", uzenet.valasz);
+            teamspeak_jogosultsag_igenylesek_betoltese();
+        } else {
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+        }
+    });
+}
+
+function teamspeak_jogosultsag_elutasitas(id) {
+    szinkron_keres("/admin/admin.php?teamspeak_jogosultsag_elutasitas&id="+id, "", (uzenet) => {
+        if( uzenet.eredmeny == 'ok' ) {
+            uj_valasz_mutatasa(5000, "siker", uzenet.valasz);
+            teamspeak_jogosultsag_igenylesek_betoltese();
+        } else {
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+        }
+    });
+}
+
 function belepteto_rendszer_frissult() {
     if(session_admin == "igen") {
         obj('aktivalando_fiokok').style.display = 'block';
@@ -148,15 +197,18 @@ function belepteto_rendszer_frissult() {
         obj('log').style.display = 'block';
         obj('shell').style.display = 'block';
         obj('hibauzenet').style.display = 'none';
+        obj('teamspeak_jogosultsag_igenylesek').style.display = 'block';
         aktivalando_fiokok_betoltese();
         fiokok_betoltese();
         log_betoltese();
+        teamspeak_jogosultsag_igenylesek_betoltese();
     } else {
         obj('aktivalando_fiokok').style.display = 'none';
         obj('fiokok').style.display = 'none';
         obj('log').style.display = 'none';
         obj('shell').style.display = 'none';
         obj('hibauzenet').style.display = 'block';
+        obj('teamspeak_jogosultsag_igenylesek').style.display = 'none';
     }
 }
 

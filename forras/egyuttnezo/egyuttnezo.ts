@@ -44,29 +44,20 @@ function onYouTubeIframeAPIReady() {
         obj('uj_video_doboz').style.display = 'none';
     }
 
-    // error TS2304: Cannot find name 'YT'.
-    // Megoldás: YT.Player...   ->   window['YT'].Player...
     player = new window['YT'].Player('player', {
         height: '390',
         width: '640',
         videoId: video_id_STRING,
         playerVars: {
-            // az oldalon játszódik le, nem fullscreenben
             'playsinline': 1,
-            // ennél a másodpercnél induljon
             'start': jelenlegi_ido(),
             'autoplay': 1,
             'controls': 1,
             'mute': 1,
-            // billentyűzettel irányítás tiltása
             'disablekb': 1,
-            // fullscreen gomb
             'fs': 1,
-            // nyelv
             'hl': 'hu',
-            // youtube gomb eltávolítása
             'modestbranding': 1,
-            // ne mutasson kapcsolódó videókat
             'rel': 0
         },
         events: {
@@ -82,11 +73,6 @@ function onYouTubeIframeAPIReady() {
         console.log(event);
         tekeres( parseFloat(ide_koordinata) / parseFloat(csuszka_hossz) );
     }
-    /*
-    obj('csuszka').onchange = () => {
-        console.log('onchange');
-        tekeres(parseFloat(obj('csuszka').value) / parseFloat(obj('csuszka').max));
-    } */
 }
 
 function onPlayerError(event) {
@@ -313,19 +299,16 @@ function masodperc_szovegge_alakitas(jelenlegi: number) {
     
     let szoveg = "";
 
-    // óra
     if( player.getDuration() > 60*60 ) {
         szoveg = Math.floor(jelenlegi / (60*60)).toString() + ":";
     }
     
-    // perc
     if( Math.floor(jelenlegi / 60) % 60 < 10 ) {
         szoveg += '0' + (Math.floor(jelenlegi / 60) % 60).toString();
     } else {
         szoveg += (Math.floor(jelenlegi / 60) % 60).toString();
     }
 
-    // másodperc
     if( Math.floor(jelenlegi % 60) < 10 ) {
         szoveg += ':0' + Math.floor(jelenlegi % 60).toString();
     } else {

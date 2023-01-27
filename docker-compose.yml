@@ -49,6 +49,7 @@ services:
  teamspeak_adatbazis:
     build: teamspeak/adatbazis
     container_name: teamspeak_adatbazis
+    command: [ "mysqld" ]
     networks:
      container_halozat:
       ipv4_address: 172.20.128.14
@@ -61,6 +62,7 @@ services:
  teamspeak:
     build: teamspeak/szerver
     container_name: teamspeak
+    #command: [ "/opt/ts3server/ts3server" ]
     ports:
       - 9987:9987/udp
       - 10011:10011

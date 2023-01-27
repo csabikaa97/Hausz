@@ -29,6 +29,8 @@ CREATE TABLE `users` (
 -- automata_teszteles   /   automata_teszteles
 INSERT INTO `users` (`username`, `password`, `megjeleno_nev`, `admin`) VALUES ('admin', '$2y$10$I9Dw229eAERVxLdaFPmAuer.Q0XHeK4yIz50epqbBAXySm5yx/MpS', 'admin', 'igen');
 INSERT INTO `users` (`username`, `password`, `megjeleno_nev`) VALUES ('automata_teszteles', '$2y$10$IU947uFHA9.9JjFq2qhD/uPmJ4Ugmz4C3amLJ7nTEUZ5JGJOMidCW', 'automata_teszteles');
+INSERT INTO `users` (`username`, `megjeleno_nev`) VALUES ('ismeretlen', 'ismeretlen');
+UPDATE `users` SET id = 0 WHERE username LIKE 'ismeretlen';
 
 DROP TABLE IF EXISTS `users_requested`;
 
