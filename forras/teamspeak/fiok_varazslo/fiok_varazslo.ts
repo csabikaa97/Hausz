@@ -38,11 +38,35 @@ function fiok_lista_frissitese() {
     });
 }
 
+function szoveg_tartalmazas(szoveg1: string, szoveg2: string) {
+    let cserelendo_karakterek = [
+        ['á', 'a'],
+        ['é', 'e'],
+        ['í', 'i'],
+        ['ó', 'o'],
+        ['ö', 'o'],
+        ['ő', 'o'],
+        ['ú', 'u'],
+        ['ü', 'u'],
+        ['ű', 'u']
+    ];
+
+    szoveg1 = szoveg1.toLowerCase();
+    szoveg2 = szoveg2.toLowerCase();
+
+    cserelendo_karakterek.forEach(karakter => {
+        szoveg1 = szoveg1.replace(karakter[0], karakter[1]);
+        szoveg2 = szoveg2.replace(karakter[0], karakter[1]);
+    });
+
+    return szoveg1.indexOf(szoveg2) != -1;
+}
+
 function fiok_filter_frissites() {
     let fiokok = document.querySelectorAll('#fiok_lista input');
     let filter = obj('fiok_szures_mezo').value.toLowerCase();
     fiokok.forEach(fiok => {
-        if( fiok.getAttribute('value').toLowerCase().indexOf(filter) > -1 ) {
+        if( szoveg_tartalmazas(fiok.getAttribute('value'), filter) || filter == '' ) {
             fiok.parentElement.parentElement.setAttribute('style', 'display: table-row');
         } else {
             fiok.parentElement.parentElement.setAttribute('style', 'display: none');

@@ -139,8 +139,10 @@
         die_if( strlen($_GET['id']) <= 0, "Hibás igénylés azonosító");
         
         $row = $result->fetch_assoc();
+        $igenyelt_fiok_idk = $row['igenyelt_fiok_idk'];
+
         $jelenlegi_fiok_kivalasztott = $row['jelenlegi_fiok_kivalasztott'];
-        $result = query_futtatas("SELECT DISTINCT group_server_to_client.group_id, groups_server.name FROM group_server_to_client LEFT OUTER JOIN groups_server ON groups_server.group_id = group_server_to_client.group_id WHERE id1 IN (".$row['igenyelt_fiok_idk'].")", "teamspeak");
+        $result = query_futtatas("SELECT DISTINCT group_server_to_client.group_id, groups_server.name FROM group_server_to_client LEFT OUTER JOIN groups_server ON groups_server.group_id = group_server_to_client.group_id WHERE id1 IN (".$igenyelt_fiok_idk.")", "teamspeak");
         
         $parancs = <<< PARANCS_VEGE
         expect << EOF
@@ -167,6 +169,14 @@
 
         exec($parancs, $eredmeny, $retval);
         die_if( $retval != 0, "Parancs futtatás hiba!!!: ".$parancs);
+        
+        $result = query_futtatas("SELECT DISTINCT group_server_to_client.group_id, groups_server.name FROM group_server_to_client LEFT OUTER JOIN groups_server ON groups_server.group_id = group_server_to_client.group_id WHERE id1 IN (".$igenyelt_fiok_idk.")", "teamspeak");
+        $torlendo_kliensek = explode(",", $igenyelt_fiok_idk);
+        foreach($torlendo_kliensek as $kliens_id) {
+            if( $kliens_id != $jelenlegi_fiok_kivalasztott && strlen($kliens_id) > 0 ) {
+                $result = query_futtatas("DELETE FROM clients WHERE client_id = ".$kliens_id, "teamspeak");
+            }
+        }
 
         $result = query_futtatas("DELETE FROM hausz_ts.jogosultsag_igenylesek WHERE id = ".$_GET['id']);
         exit_ok("DONE");
