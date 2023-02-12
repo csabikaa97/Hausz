@@ -46,6 +46,7 @@
     }
 
     if( isset($_GET['aktivalando_fiokok']) ) {
+        $buffer = "";
         $result = query_futtatas("SELECT * FROM hausz_megoszto.users_requested");
         die_if( $result->num_rows <= 0, "Nincs aktiválandó fiók");
 
@@ -58,6 +59,7 @@
     }
 
     if( isset($_GET['fiokok']) ) {
+        $buffer = "";
         $result = query_futtatas("SELECT * FROM hausz_megoszto.users");
         die_if( $result->num_rows <= 0, "Nincs aktív felhasználó");
 

@@ -42,3 +42,12 @@ CREATE TABLE `users_requested` (
   `megjeleno_nev` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`request_id`)
 );
+
+DELIMITER //
+CREATE PROCEDURE add_user(IN igenyles_azonosito INT)
+BEGIN
+    INSERT INTO users (username, password, email, megjeleno_nev)
+    SELECT username, password, email, megjeleno_nev FROM users_requested WHERE request_id = igenyles_azonosito;
+    DELETE FROM users_requested WHERE request_id = igenyles_azonosito;
+END //
+DELIMITER ;

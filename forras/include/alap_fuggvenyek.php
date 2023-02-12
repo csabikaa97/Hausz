@@ -14,6 +14,18 @@
             die();
         }
     }
+    
+    function simpleStringHash($string) {
+        // https://linuxhint.com/javascript-hash-function/
+        $hash = 0;
+        if (strlen($string) == 0) return $hash;
+        for ($x = 0; $x < strlen($string); $x++) {
+            $ch = ord($string[$x]);
+            $hash = (($hash <<5) - $hash) + $ch;
+            $hash = $hash & $hash;
+        }
+        return $hash;
+    }
 
     function exit_ok($szoveg) {
         echo('{"eredmeny": "ok", ');

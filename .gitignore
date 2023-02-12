@@ -6,6 +6,7 @@
 
 /priv
 /teamspeak/adatbazis/*.sqlitedb
+/public/megoszto/fajlok/*
 
 # Együttnéző működéséhez generált szemetek
 
@@ -18,6 +19,11 @@
 /teszteles/package-lock.json
 /teszteles/cypress/videos/
 
+# Docker container adatok
+
+/adatbazis/adatok/*
+/teamspeak/adatbazis/adatok/*
+/teamspeak/szerver/adatok/*
 
 # Csomagolt Javascript fájlok
 
@@ -37,7 +43,7 @@
 
 # mentések
 
-/admin/mentes/*.tar
+/admin/mentes/*
 /teamspeak/adatbazis/*.sql
 
 # VSCode beállítások

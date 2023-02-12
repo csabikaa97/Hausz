@@ -54,6 +54,7 @@ describe('Jelszó változtatás', () => {
         cy.get('#uj_jelszo_megerosites').and('be.visible').type('automata_teszteles')
         cy.get('#jelszo_valtoztatas_doboz').contains('Jelszó megváltoztatása').and('be.visible').click()
         cy.get('#ok_jelszo_valtoztatas_sikeres').contains('Jelszavad sikeresen meg lett változtatva').and('be.visible')
+        cy.mobil_kilepes()
     })
 
     it('Asztali', () => {

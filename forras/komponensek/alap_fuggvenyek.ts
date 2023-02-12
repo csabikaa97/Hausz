@@ -35,6 +35,18 @@ function szinkron_keres(hivatkozas, parameterek, fuggveny) {
     }
 }
 
+function simpleStringHash(string: string) {
+    // https://linuxhint.com/javascript-hash-function/
+    var hash = 0;
+    if (string.length == 0) return hash;
+    for (let x = 0; x <string.length; x++) {
+        let ch = string.charCodeAt(x);
+        hash = ((hash <<5) - hash) + ch;
+        hash = hash & hash;
+    }
+    return hash;
+}
+
 function bajt_merette_valtasa(size) {
     let meret = parseFloat(size);
     let eredmeny = "";

@@ -81,21 +81,23 @@
         header("Cache-Control: public, max-age=9999999, immutable");
         header('X-Robots-Tag: noindex');
         header("Content-Type: ".mimeType("/var/www/public/megoszto/fajlok/".$row['filename']));
-        if(strlen($_POST['titkositas_feloldasa_kulcs']) > 0) {
-            die_if( $row['titkositott'] != '1', 'A fájl nem titkosított');
-            die_if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']), 'Nem jó titkosítási kulcs');
-            
-            if( isset($_POST['letoltes']) ) {
-                $plaintext = file_get_contents("/var/www/public/megoszto/fajlok/".$row['filename']);
-                $plaintext = base64_decode($plaintext);
-                $plaintext = openssl_decrypt($plaintext, "aes-256-cbc", $_POST['titkositas_feloldasa_kulcs'], $options=0, "aaaaaaaaaaaaaaaa");
-                header('Content-Disposition: filename="'.$row['filename'].'"');
-                header('Content-Length: '.strlen($plaintext));
-                echo($plaintext);
-                die();
+        if(isset($_POST['titkositas_feloldasa_kulcs'])) {
+            if(strlen($_POST['titkositas_feloldasa_kulcs']) > 0) {
+                die_if( $row['titkositott'] != '1', 'A fájl nem titkosított');
+                die_if( !password_verify($_POST['titkositas_feloldasa_kulcs'], $row['titkositas_kulcs']), 'Nem jó titkosítási kulcs');
+                
+                if( isset($_POST['letoltes']) ) {
+                    $plaintext = file_get_contents("/var/www/public/megoszto/fajlok/".$row['filename']);
+                    $plaintext = base64_decode($plaintext);
+                    $plaintext = openssl_decrypt($plaintext, "aes-256-cbc", $_POST['titkositas_feloldasa_kulcs'], $options=0, "aaaaaaaaaaaaaaaa");
+                    header('Content-Disposition: filename="'.$row['filename'].'"');
+                    header('Content-Length: '.strlen($plaintext));
+                    echo($plaintext);
+                    die();
+                }
+                
+                exit_ok('Titkosítás feloldva');
             }
-            
-            exit_ok('Titkosítás feloldva');
         }
         if($row['titkositott'] == '1') {
             header('Content-Disposition: filename="titkositott_'.$row['filename'].'"');
@@ -110,7 +112,7 @@
         die();
     }
 
-    if( isset($_POST["submit"]) || ($_POST["azonnali_feltoltes"]) == "igen" ) {
+    if( isset($_POST["submit"]) || isset($_POST["azonnali_feltoltes"]) ) {
         die_if( strlen($_FILES["fileToUpload"]["name"]) <= 0, 'Nem válaszottál ki fájlt a feltöltéshez.');
         $_FILES["fileToUpload"]["name"] = preg_replace("/'/i", '', $_FILES["fileToUpload"]["name"]);
         $_FILES["fileToUpload"]["name"] = preg_replace('/"/i', '', $_FILES["fileToUpload"]["name"]);
@@ -188,8 +190,15 @@
         $buffer = '"fajlok": [';
         $fajlok_szama = 0;
         while($row = $result->fetch_assoc()) {
-            if( ($row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username']))
-                or (!isset($_SESSION['loggedin']) && $row['private'] == '1') ) {   continue; }
+            if( isset($_SESSION['username']) ) {
+                if( $row['private'] == '1' && strtolower($_SESSION['username']) != strtolower($row['username']) ) {   
+                    continue;
+                }
+            } else {
+                if( $row['private'] == '1' ) {
+                    continue;
+                }
+            }
             
             if($fajlok_szama > 0) {   $buffer .= ', '; }
 
