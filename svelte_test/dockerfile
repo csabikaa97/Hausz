@@ -1,0 +1,11 @@
+FROM node:12.22.12 as node
+FROM node
+WORKDIR /temp_build_dir
+RUN npx degit sveltejs/template svelte-typescript-app
+WORKDIR /temp_build_dir/svelte-typescript-app
+RUN node scripts/setupTypeScript.js
+RUN npm install
+COPY ./src/* ./src/
+RUN ls -l /temp_build_dir/svelte-typescript-app/
+RUN npm run build
+CMD ["cp", "-a", "/temp_build_dir/svelte-typescript-app/public/", "/build/"]

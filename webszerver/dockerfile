@@ -1,0 +1,29 @@
+FROM rust:1.67.0 as rust
+
+FROM rust as planner
+WORKDIR /webszerver
+RUN cargo install cargo-chef
+COPY . .
+RUN cargo chef prepare  --recipe-path recipe.json
+
+FROM rust as cacher
+WORKDIR /webszerver
+COPY --from=planner /usr/local/cargo /usr/local/cargo
+RUN cargo install cargo-chef
+COPY --from=planner /webszerver/recipe.json recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
+
+FROM rust as builder
+WORKDIR /webszerver
+COPY --from=cacher /usr/local/cargo /usr/local/cargo
+COPY --from=cacher /webszerver/target target
+COPY . .
+RUN cargo build --release --bin webszerver
+
+FROM rust as runtime
+WORKDIR /webszerver
+COPY --from=builder /webszerver/target/release/webszerver .
+RUN chmod 777 /webszerver/webszerver
+EXPOSE 80
+EXPOSE 443
+ENTRYPOINT ["./webszerver"]

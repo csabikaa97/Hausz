@@ -59,3 +59,11 @@
 # Privát 
 /forras/ruhaszamlalo/*.*
 /public/ruhaszamlalo/*.*
+
+# Rust webszerver fájlok
+/webszerver/target/*
+/webszerver/registry/*
+
+# Svelte test build fájlok
+/svelte_test/build/*
+!/svelte_test/build/.gitkeep
