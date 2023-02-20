@@ -20,10 +20,19 @@ COPY --from=cacher /webszerver/target target
 COPY . .
 RUN cargo build --release --bin webszerver
 
-FROM rust as runtime
+FROM ubuntu:22.04 as runtime
 WORKDIR /webszerver
+RUN echo "deb http://security.ubuntu.com/ubuntu focal-security main" >> /etc/apt/sources.list
+RUN apt update 
+RUN apt install -y telnet 
+RUN apt install -y libssl1.1
 COPY --from=builder /webszerver/target/release/webszerver .
 RUN chmod 777 /webszerver/webszerver
+RUN free
+RUN uptime
+# Use these to find library dependencies:
+# RUN apt install readelf
+# RUN readelf -a ./webszerver | grep interpreter
 EXPOSE 80
 EXPOSE 443
 ENTRYPOINT ["./webszerver"]

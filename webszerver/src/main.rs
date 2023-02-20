@@ -21,6 +21,7 @@ static PORT_HTTPS: u16                          = 443;
 pub static DOMAIN: &str                         = "hausz.stream";
 pub static SESSION_LEJÁRATI_IDEJE_MP: &str      = "604800";
 pub static SESSSION_AZONOSÍTÓ_HOSSZ: usize      = 94;
+pub const MAX_FÁJL_MÉRET: usize                 = 1024*1024*10;
 pub static MEGOSZTO_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_megoszto";
 pub static FELHASZNALOK_ADATBAZIS_URL: &str     = "mysql://root:root@172.20.128.10/hausz_felhasznalok";
 
@@ -54,7 +55,6 @@ fn form_adat_érték_kereső(form_adat: &str, kulcs: &str) -> Option<String> {
         Some(index) => index + format!("name=\"{}\"\r\n\r\n", kulcs).len()
     };
 
-    // save characters until \r\n
     let mut érték = String::new();
     for karakter in form_adat[start_index..].chars() {
         if karakter == '\r' || karakter == '\n' {
@@ -62,8 +62,6 @@ fn form_adat_érték_kereső(form_adat: &str, kulcs: &str) -> Option<String> {
         }
         érték.push(karakter);
     }
-
-    println!("form_adat_érték_kereső: {} = {}", kulcs, érték);
     Some(érték)
 }
 
@@ -145,6 +143,11 @@ async fn kérés_kezelő(request: HttpRequest) -> HttpResponse {
     let query_string = request.query_string();
     let query_elemek = query_szöveg_feldolgozása(request.query_string());
 
+    let felhasználó_jelenlegi_cookie_azonosítója = match request.cookie("session_azonosito") {
+        None => None,
+        Some(cookie) => Some(cookie.value().to_owned()),
+    };
+
     if !authority.contains(DOMAIN) {
         let new_uri = format!("https://{}{}{}{}",
             DOMAIN,
@@ -171,12 +174,20 @@ async fn kérés_kezelő(request: HttpRequest) -> HttpResponse {
             .finish();
     }
 
-    for elem in query_elemek {
+    for elem in &query_elemek {
         match elem.0 {
-            "fajlok" => return backend::fájlok_lekérdezése(),
+            "fajlok" => return backend::fájlok_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója),
             "tarhely" => return backend::szerver_tarhely_statusz_lekérdezése(),
             "statusz" => return backend::beléptető_rendszer_állapot_lekérdezése(request),
-            "logout" => return backend::kijelentkezés(request),
+            "logout" => return backend::kijelentkezés(felhasználó_jelenlegi_cookie_azonosítója),
+            "szerver_statusz" => return backend::teamspeak_szerver_státusz_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója),
+            "letoltes" => return match backend::megosztó_fájl_letöltés(query_elemek, felhasználó_jelenlegi_cookie_azonosítója) {
+                Err(e) => {
+                    println!("{}letoltes hiba: {}", LOG_PREFIX, e);
+                    HttpResponse::BadRequest().body(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: {}\"}}", e))
+                },
+                Ok(válasz) => válasz,
+            },
             _ => (),
         }
     }

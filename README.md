@@ -17,7 +17,7 @@ Jelenleg folyamatban lévő feladatok:
 <tbody>
   <tr>
     <td>alap HTML, CSS, JS fájlok</td>
-    <td>Részleges: Kell egy lightweight megoldás az engedélyezett fájlok nyilvántartásához</td>
+    <td>Részleges: Kell egy lightweight megoldás az engedélyezett fájlok nyilvántartásához: Lehet config fájl is amit a szerver olvas be betöltéskor</td>
   </tr>
   <tr>
     <td>Belépés</td>
@@ -41,7 +41,7 @@ Jelenleg folyamatban lévő feladatok:
   </tr>
   <tr>
     <td>Megosztó: Fájl letöltése</td>
-    <td></td>
+    <td>Kész</td>
   </tr>
   <tr>
     <td>Jelszó változtatás</td>
@@ -101,7 +101,7 @@ Jelenleg folyamatban lévő feladatok:
   </tr>
   <tr>
     <td>Teamspeak: Szerver státusz</td>
-    <td></td>
+    <td>Folyamatban</td>
   </tr>
 </tbody>
 </table>

@@ -2316,6 +2316,7 @@ dependencies = [
  "mysql",
  "openssl",
  "rand",
+ "rand_chacha",
  "regex",
  "serde",
  "time",

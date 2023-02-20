@@ -1,3 +1,5 @@
+static LOG_PREFIX: &str = "[ FÁJLOK  ] ";
+
 pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
     match útvonal {
         ""                                      => "index.html",
@@ -12,6 +14,10 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "megoszto/megoszto.js"                  => "megoszto/megoszto.js",
         "komponensek/topbar.html"               => "komponensek/topbar.html",
         "komponensek/belepteto_rendszer.html"   => "komponensek/belepteto_rendszer.html",
-        _                                       => "404.html",
+        "teamspeak/teamspeak.js"                => "teamspeak/teamspeak.js",
+        _                                       => {
+            println!("{}Nincs hozzáadva a listához a fájl: {}", LOG_PREFIX, útvonal);
+            "404.html"
+        },
     }
 }

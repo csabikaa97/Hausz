@@ -1,18 +1,15 @@
 use rand::prelude::*;
+use rand_chacha::ChaCha20Rng;
+
+static LOG_PREFIX: &str = "[COOKIEGEN] ";
 
 pub fn random_új_session_azonosító() -> String {
-    let mut rng = rand::thread_rng();
+    let mut rng = ChaCha20Rng::from_entropy();
     let mut session_azonosító = String::new();
+    let használható_karakterek = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     for _ in 0..64 {
-        let karakter = rng.gen_range(0..crate::SESSSION_AZONOSÍTÓ_HOSSZ);
-        if karakter < 10 {
-            session_azonosító.push((karakter + 48) as u8 as char);
-        } else if karakter < 36 {
-            session_azonosító.push((karakter + 55) as u8 as char);
-        } else {
-            session_azonosító.push((karakter + 61) as u8 as char);
-        }
+        session_azonosító.push(használható_karakterek.chars().nth(rng.gen_range(0..használható_karakterek.len())).unwrap());
     }
-
+    println!("{}Generált cookie: {}", LOG_PREFIX, session_azonosító);
     return session_azonosító;
 }
