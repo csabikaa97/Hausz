@@ -67,13 +67,13 @@ function token_informaciok_frissitese() {
 
             obj('token').innerHTML = uzenet.token;
 
-            if( uzenet.jogosult_uj_rokenre == "igen" ) {
+            if( uzenet.jogosult_uj_token_keresere == "igen" ) {
                 obj('jogosult_tokenre_szoveg').style.display = 'block';
             } else {
                 obj('jogosult_tokenre_szoveg').style.display = 'none';
             }
         } else {
-            if( uzenet.valasz == 'Jelenleg nincs jogosultásgi tokened' ) {
+            if( uzenet.valasz == 'Jelenleg nincs jogosultsági tokened.' ) {
                 obj('van_token').style.display = 'none';
                 obj('nincs_token').style.display = 'block';
             } else {

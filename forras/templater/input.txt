@@ -1,0 +1,3 @@
+h1 "link to YouTube" {gomb} -> "https://youtube.com"
+h2 "Ez csak egy szöveg"
+h3 "Ez egy link" {blue} -> "https://google.com"

@@ -104,8 +104,8 @@ services:
     build: webszerver
     container_name: webszerver
     ports:
-     - "80:80"
-     - "443:443"
+     - "8080:8080"
+     - "4443:4443"
     volumes:
      - "./public:/public"
     networks:

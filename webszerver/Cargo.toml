@@ -7,10 +7,13 @@ edition = "2021"
 
 [dependencies]
 actix-form-data = "0.6.2"
+actix-multipart = "0.5.0"
 actix-web = { version = "4.3.0", features = ["openssl"] }
 bcrypt = "0.14.0"
+chrono = "0.4.23"
 env_logger = "0.10.0"
 futures = "0.3.26"
+futures-util = "0.3.26"
 mysql = "23.0.1"
 openssl = "0.10.45"
 rand = "0.8.5"

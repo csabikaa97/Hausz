@@ -26,13 +26,14 @@ RUN echo "deb http://security.ubuntu.com/ubuntu focal-security main" >> /etc/apt
 RUN apt update 
 RUN apt install -y telnet 
 RUN apt install -y libssl1.1
+RUN apt install -y expect
 COPY --from=builder /webszerver/target/release/webszerver .
+COPY check_telnet.sh .
+COPY create_token.sh .
 RUN chmod 777 /webszerver/webszerver
-RUN free
-RUN uptime
 # Use these to find library dependencies:
 # RUN apt install readelf
 # RUN readelf -a ./webszerver | grep interpreter
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
+EXPOSE 4443
 ENTRYPOINT ["./webszerver"]

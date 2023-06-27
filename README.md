@@ -44,6 +44,10 @@ Jelenleg folyamatban lévő feladatok:
     <td>Kész</td>
   </tr>
   <tr>
+    <td>Megosztó: Fájl feltöltése</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
     <td>Jelszó változtatás</td>
     <td></td>
   </tr>
@@ -89,7 +93,7 @@ Jelenleg folyamatban lévő feladatok:
   </tr>
   <tr>
     <td>Teamspeak: token információ</td>
-    <td></td>
+    <td>Kész</td>
   </tr>
   <tr>
     <td>Teamspeak: Online felhasználó lista</td>
@@ -97,11 +101,11 @@ Jelenleg folyamatban lévő feladatok:
   </tr>
   <tr>
     <td>Teamspeak: Új token igénylése</td>
-    <td></td>
+    <td>Kész</td>
   </tr>
   <tr>
     <td>Teamspeak: Szerver státusz</td>
-    <td>Folyamatban</td>
+    <td>Kész</td>
   </tr>
 </tbody>
 </table>

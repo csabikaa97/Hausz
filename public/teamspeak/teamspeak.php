@@ -9,7 +9,7 @@
 
     if( isset($_GET['token_informacio']) ) {
         $result = query_futtatas('select *, datediff(now(), generalasi_datum) as kulonbseg from hausz_ts.felhasznalo_tokenek where user_id = '.$_SESSION['user_id']);
-        die_if( $result->num_rows <= 0, "Jelenleg nincs jogosultásgi tokened");
+        die_if( $result->num_rows <= 0, "Jelenleg nincs jogosultsági tokened.");
         $row = $result->fetch_assoc();
         exit_ok('"token": "'.$row['token'].'", "jogosult_uj_token_keresere": "'.(intval($row['kulonbseg']) > 5 ? 'igen' : 'nem').'"');
     }

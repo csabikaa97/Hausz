@@ -16,30 +16,16 @@ mod fajlok;
  
 static LOG_PREFIX: &str                         = "[ SZERVER ] ";
 static IP: &str                                 = "0.0.0.0";
-static PORT_HTTP: u16                           = 80;
-static PORT_HTTPS: u16                          = 443;
+static PORT_HTTP: u16                           = 8080;
+static PORT_HTTPS: u16                          = 4443;
 pub static DOMAIN: &str                         = "hausz.stream";
-pub static SESSION_LEJÁRATI_IDEJE_MP: &str      = "604800";
+pub static SESSION_LEJÁRATI_IDEJE_MP: i64       = 60*60*24*7;
 pub static SESSSION_AZONOSÍTÓ_HOSSZ: usize      = 94;
+pub static HAUSZ_TS_TOKEN_IGENYLES_CD: i64      = 60*60*24*3;
 pub const MAX_FÁJL_MÉRET: usize                 = 1024*1024*10;
 pub static MEGOSZTO_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_megoszto";
 pub static FELHASZNALOK_ADATBAZIS_URL: &str     = "mysql://root:root@172.20.128.10/hausz_felhasznalok";
-
-fn query_szöveg_feldolgozása(query_string: &str) -> Vec<(&str, &str)> {
-    let mut vektor: Vec<(&str, &str)> = Vec::new();
-    for elem in query_string.split('&') {
-        if elem.len() == 0 {
-            continue;
-        }
-        if !elem.contains('=') {
-            vektor.push((elem, ""));
-            continue;
-        }
-        let kulcs_érték: Vec<&str> = elem.split('=').collect();
-        vektor.push((kulcs_érték[0], kulcs_érték[1]));
-    }
-    vektor
-}
+pub static HAUSZ_TS_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_ts";
 
 async fn post_kérés_kezelő(request: HttpRequest) -> HttpResponse {
     println!("NEW POST REQUEST: {:?}", request);
@@ -108,7 +94,11 @@ async fn belépés_kezelő(request: HttpRequest, form: String) -> HttpResponse {
             HttpResponse::BadRequest().body(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: {}\"}}", e))
         },
         Ok((válasz, session_azonosító)) => {
-            let session_azonosító_cookie = Cookie::new("session_azonosito", format!("{}; Domain={}; Max-age={};", session_azonosító, DOMAIN, SESSION_LEJÁRATI_IDEJE_MP));
+            let session_azonosító_cookie = Cookie::build("session_azonosito", session_azonosító)
+                .domain(DOMAIN)
+                .path("/")
+                .expires(time::OffsetDateTime::now_utc() + time::Duration::seconds(SESSION_LEJÁRATI_IDEJE_MP))
+                .finish();
             let mut visszatérési_érték = HttpResponse::Ok().body(válasz);
             match visszatérési_érték.add_cookie(&session_azonosító_cookie) {
                 Err(e) => {
@@ -141,7 +131,7 @@ async fn kérés_kezelő(request: HttpRequest) -> HttpResponse {
     }.as_str();
     let path = request.path();
     let query_string = request.query_string();
-    let query_elemek = query_szöveg_feldolgozása(request.query_string());
+    let query_elemek = backend::query_szöveg_feldolgozása(request.query_string());
 
     let felhasználó_jelenlegi_cookie_azonosítója = match request.cookie("session_azonosito") {
         None => None,
@@ -181,6 +171,8 @@ async fn kérés_kezelő(request: HttpRequest) -> HttpResponse {
             "statusz" => return backend::beléptető_rendszer_állapot_lekérdezése(request),
             "logout" => return backend::kijelentkezés(felhasználó_jelenlegi_cookie_azonosítója),
             "szerver_statusz" => return backend::teamspeak_szerver_státusz_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója),
+            "token_informacio" => return backend::teamspeak_token_információ_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója),
+            "uj_token_igenylese" => return backend::teamspeak_új_token_igénylése(felhasználó_jelenlegi_cookie_azonosítója),
             "letoltes" => return match backend::megosztó_fájl_letöltés(query_elemek, felhasználó_jelenlegi_cookie_azonosítója) {
                 Err(e) => {
                     println!("{}letoltes hiba: {}", LOG_PREFIX, e);
@@ -237,13 +229,18 @@ async fn main() -> std::io::Result<()> {
     };
     builder.set_private_key_file("../public/privkey.pem", SslFiletype::PEM).expect(&format!("{}Hiba a titkosítókulcs beállításakor", LOG_PREFIX));
    
-    builder.set_certificate_chain_file("../public/cert.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
+    builder.set_certificate_chain_file("../public/fullchain.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
 
     let https_server = match HttpServer::new(move || {
             App::new()
             .service(
                 web::resource("/include/belepteto_rendszer.php")
                     .route(web::post().to(belépés_kezelő))
+                    .route(web::get().to(kérés_kezelő)),
+            )
+            .service(
+                web::resource("/megoszto/megoszto.php")
+                    .route(web::post().to(backend::megosztó_kezelő))
                     .route(web::get().to(kérés_kezelő)),
             )
             .service(

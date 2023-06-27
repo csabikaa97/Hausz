@@ -1,0 +1,4 @@
+DirectoryIndex osszehasonlito.html
+
+RewriteEngine on
+RewriteRule (.*)\.htaccess /osszehasonlito/ [R=301,NC,L]
