@@ -23,8 +23,17 @@
     $result_username_check = query_futtatas("SELECT * FROM users_requested WHERE username = '".$_POST['regisztracio_username']."'");
     $row = $result_username_check->fetch_assoc();
     die_if( mysqli_num_rows($result_username_check) > 0, 'Ez a felhasználónév már meg lett igényelve');
+
+    $use_meghivo = false;
+    $db_table = 'hausz_megoszto.users_requested';
+    if( strlen( $_POST['regisztracio_meghivo'] ) > 0 ) {
+        $result_check_meghivo = query_futtatas("SELECT * FROM meghivok WHERE meghivo = '".$_POST['regisztracio_meghivo']."'");
+        die_if( $result_check_meghivo->num_rows <= 0, 'Hibás meghívókód');
+        $use_meghivo = true;
+        $db_table = 'hausz_megoszto.users';
+    }
     
-    $query_add = 'insert into hausz_megoszto.users_requested (username, password, email) values ("'.$_POST['regisztracio_username'].'", "'.password_hash($_POST['regisztracio_password'], PASSWORD_DEFAULT).'", ';
+    $query_add = 'insert into '.$db_table.' (username, password, email) values ("'.$_POST['regisztracio_username'].'", "'.password_hash($_POST['regisztracio_password'], PASSWORD_DEFAULT).'", ';
     if( strlen($_POST['regisztracio_email']) > 0 ) {
         $query_add = $query_add.'"'.$_POST['regisztracio_email'].'");';
     } else {
@@ -32,6 +41,12 @@
     }
     $result_add = query_futtatas($query_add);
 
-    log_bejegyzes("hausz_alap", "regisztráció", $_POST['regisztracio_username'].' - '.$_POST['regisztracio_email'], "");
+    $buffer = $_POST['regisztracio_username'].' - '.$_POST['regisztracio_email'];
+    if($use_meghivo) {
+        query_futtatas("DELETE FROM meghivok WHERE meghivo = '".$_POST['regisztracio_meghivo']."'");
+        $buffer = $buffer.' - Meghivo: '.$_POST['regisztracio_meghivo'];
+    }
+
+    log_bejegyzes("hausz_alap", "regisztráció", $buffer, "");
     exit_ok("Sikeres regisztráció");
 ?>

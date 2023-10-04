@@ -24,6 +24,7 @@ function regisztracio_inditasa(event) {
     post_parameterek.append("regisztracio_password", obj('regisztracio_password').value);
     post_parameterek.append("regisztracio_password_confirm", obj('regisztracio_password_confirm').value);
     post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
+    post_parameterek.append("regisztracio_meghivo", obj('regisztracio_meghivo').value);
 
     szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {

@@ -1,0 +1,2 @@
+FROM lednerb/opentracker-docker:latest
+

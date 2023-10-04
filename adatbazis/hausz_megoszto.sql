@@ -23,6 +23,7 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `admin` varchar(10) DEFAULT NULL,
   `megjeleno_nev` varchar(255) DEFAULT NULL,
+  `minecraft_username` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 -- admin                /   admin
@@ -51,3 +52,10 @@ BEGIN
     DELETE FROM users_requested WHERE request_id = igenyles_azonosito;
 END //
 DELIMITER ;
+
+CREATE TABLE `meghivok` (
+  `user_id` int(10) NOT NULL,
+  `meghivo` varchar(255) NOT NULL,
+  `request_date` datetime NOT NULL,
+  PRIMARY KEY (`user_id`)
+);

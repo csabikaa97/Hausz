@@ -7,7 +7,9 @@ belepteto_rendszer_beallitas();
 
 var ujitasok_doboz = obj('ujitasok');
 var ujitasok = {
-    '2023.01.27': ["TeamSpeak oldal: Egy új 'Fiók varázsló' nevű funkcióval vissza lehet állítani a korábbi fiókokkal elveszett rangokat."]
+    '2023.10.14': ["Minecraft: Letöltési linkeket és csatlakozási lépéseket lehet megtekinteni a Minecraft oldalon."]
+    , '2023.10.04': ["Alap: Minden meglévő felhasználó tud meghívót generálni, amivel a regisztráló felhasználó fiókja azonnal aktiválódik."]
+    , '2023.01.27': ["TeamSpeak oldal: Egy új 'Fiók varázsló' nevű funkcióval vissza lehet állítani a korábbi fiókokkal elveszett rangokat."]
     , '2022.07.22': ["Együttnéző: Már csak pár funkció befejezése, és egy kis bővítés szükséges ahhoz hogy készen álljon használatra. Jelenleg folyik a BETA tesztelés."]
     , '2022.07.18': ["Megosztó: Minden felhasználó tudja a jobb-klikk menüvel változtatni a saját fájljainak privát / publikus státuszát."]
     , '2022.06.30': [   

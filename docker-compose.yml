@@ -9,6 +9,8 @@ services:
   volumes:
    - "./adatbazis/adatok:/var/lib/mysql"
    - "./admin/mentes/:/mentes"
+  ports:
+   - "3306:3306"
   networks:
    container_halozat:
     ipv4_address: 172.20.128.10
@@ -83,6 +85,15 @@ services:
     networks:
      container_halozat:
       ipv4_address: 172.20.128.15
+
+ torrent-tracker:
+  build: torrent-tracker
+  container_name: torrent-tracker
+  ports:
+   - "58371:6969"
+  networks:
+   container_halozat:
+    ipv4_address: 172.20.128.16
      
 networks:
   container_halozat:

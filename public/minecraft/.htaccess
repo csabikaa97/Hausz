@@ -1,0 +1,4 @@
+DirectoryIndex minecraft.html
+
+RewriteEngine on
+RewriteRule (.*)\.htaccess /minecraft/ [R=301,NC,L]

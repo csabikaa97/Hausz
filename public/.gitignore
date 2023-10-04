@@ -37,5 +37,6 @@
 /public/teamspeak/teamspeak.js
 /public/webjosda/josda.js
 /public/webjosda/fizetos.js
+/public/minecraft/minecraft.js
 
 *.pem
