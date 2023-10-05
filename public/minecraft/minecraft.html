@@ -15,33 +15,20 @@
 
     <h1 class="kozepre-szoveg">Hausz Minecraft szerver</h1>
 
-    <div class="kozepre fit-content">
+    <div class="kozepre fit-content" style="max-width: 60%">
         <h2>Hivatalos Hausz Minecraft szerver</h2>
-        <div class="tab-1">
+        <div class="kozepre" id="szerver-info">
             <p>Szerver címe: minecraft.hausz.stream</p>
             <p>Verzió: 1.20.1</p>
             <p>Működési idő: Minden nap 09:00 - 23:59</p>
+            <div class="tab-1" id="jatekos-lista"></div>
         </div>
         <br>
-        <h2>Launcher letöltése</h2>
-        <div class="tab-1">
-            <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=952')">Windows.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:579e516d894dca1ac389d820616cc2d5b0ebee94&dn=Legacy-Launcher.exe&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
-            <br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=951')">macOS.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:a388b3a2c38922615e316c0ffc80a66e8c09b883&dn=Legacy-Launcher.dmg&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
-            <br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=950')">Manual Jar.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:2c8f853a6ce0fa69a4e0070216f2264975f5b289&dn=Legacy-Launcher.jar&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
-            <br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=949')">Ubuntu.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:093916605e62524b53309c80ccafd09e97b9a070&dn=Lagacy-Launcher.deb&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
-        </div>
-        <br>
-        <h2>Fabric modpack</h2>
-        <div class="tab-1">
-            <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=941')">Minecraft 1.20.1 Fabric FPS csomag.zip - Hausz megosztó</div>
-            <br>
-        </div>
-        <br>
-        <h2>Csatlakozási lépések</h2>
-        <div class="tab-1">
+        <h2>- Csatlakozási lépések <button class="gomb szint-2 kerekites-15 f15 inline" onclick="toggle_visibility(event, 'csatlakozasi-lepesek')">Mutat</button></h2>
+        <div class="tab-2 nodisplay" id="csatlakozasi-lepesek">
             <ol>
-                <li>Ha nincsen Java a gépeden, akkor töltsd le a következő linkről: <a href="https://www.java.com/download/ie_manual.jsp">https://java.com/download</a></li>
-                <li>Töltsd le a felső linkek közül a Legacy Launchert</li>
+                <li>Ha nincsen telepítve Java a gépeden, akkor töltsd le a következő linkről: <a href="https://www.java.com/download/ie_manual.jsp">https://java.com/download</a></li>
+                <li>Töltsd le az alul található linkek közül a Legacy Launchert</li>
                 <li>Indítsd el a fájlt, telepítsd a programot, majd indítsd el</li>
                 <li>Kattints bele a felső mezőbe, és válaszd a "Create and manage accounts.." opciót</li>
                 <li>Kattints a "+" ikonra a bal alsó sarokban</li>
@@ -56,13 +43,99 @@
                 <li>A belépést követően a "/login &lt;jelszó&gt;" paranccsal be kell jelentkezni a Hausz fiókodba.</li>
             </ol>
         </div>
-        <p class="without-login">A játékosnevedet belépést követően tudod megváltoztatni</p>
-        <br>
-        <h2 class="require-login nodisplay">Játékosnév változtatás</h2>
-        <div class="tab-1">
+        <h2>- Launcher letöltése <button class="gomb szint-2 kerekites-15 f15 inline" onclick="toggle_visibility(event, 'launcher-letoltes')">Mutat</button></h2>
+        <div class="tab-2 nodisplay" id="launcher-letoltes">
+            <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=952')">Windows.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:579e516d894dca1ac389d820616cc2d5b0ebee94&dn=Legacy-Launcher.exe&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
+            <br><br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=951')">macOS.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:a388b3a2c38922615e316c0ffc80a66e8c09b883&dn=Legacy-Launcher.dmg&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
+            <br><br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=950')">Manual Jar.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:2c8f853a6ce0fa69a4e0070216f2264975f5b289&dn=Legacy-Launcher.jar&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
+            <br><br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=949')">Ubuntu.torrent - Hausz megosztó</div> vagy <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:093916605e62524b53309c80ccafd09e97b9a070&dn=Lagacy-Launcher.deb&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
+            <br>
+        </div>
+        <h2>- Játékosnév beállítása <button class="gomb szint-2 kerekites-15 f15 inline" onclick="toggle_visibility(event, 'jatekosnev-valtoztatas')">Mutat</button></h2>
+        <div class="tab-2 nodisplay" id="jatekosnev-valtoztatas">
+            <p class="without-login">A játékosnevedet belépést követően tudod megváltoztatni</p>
             <div class="nodisplay fit-content require-login">
                 <div id="felhasznalonev_doboz"></div>
             </div>
+        </div>
+        <h2>- FPS javító Fabric modpack (~600% +FPS) <button class="gomb szint-2 kerekites-15 f15 inline" onclick="toggle_visibility(event, 'fabric-modpack')">Mutat</button></h2>
+        <div class="tab-2 nodisplay" id="fabric-modpack">
+            <p>Ez a mod csomag dramatikusan növeli az FPS-t, és lehetőve teszi Shader csomagok használatát.</p>
+            <p>A csomag ezeket a modokat tartalmazza:</p>
+            <ul>
+                <li>Shader motor:
+                    <ul>
+                        <li>iris-mc1.20.1-1.6.9.jar</li>
+                    </ul>
+                </li>
+                <li>Hatalmas látótávolságot adó mod:
+                    <ul>
+                        <li>distanthorizons-fabric-2.0.0-a-dev-1.20.1.jar</li>
+                    </ul>
+                </li>
+                <li>Hangeffekt feljavítás:
+                    <ul>
+                        <li>soundphysics-fabric-1.20.1-1.2.1.jar</li>
+                    </ul>
+                </li>
+                <li>Függőségi csomagok:
+                    <ul>
+                        <li>fabric-api-0.89.0+1.20.1.jar</li>
+                        <li>indium-1.0.27+mc1.20.1.jar</li>
+                    </ul>
+                </li>
+                <li>Optimalizációs modok:
+                    <ul>
+                        <li>culleaves-fabric-3.2.0.jar</li>
+                        <li>echancedblockentities-0.9+1.20.jar</li>
+                        <li>entityculling-fabric-1.6.2-mc1.20.1.jar</li>
+                        <li>fabric-chunkpregen-0.3.7.jar</li>
+                        <li>fastload-reforged-mc1.20.1-3.4.0.jar</li>
+                        <li>ferritecore-6.0.0.jar</li>
+                        <li>immediatelyfast-1.2.5+1.20.2.jar</li>
+                        <li>krypton-0.2.3.jar</li>
+                        <li>lazydfu-0.1.3.jar</li>
+                        <li>lithium-fabric-mc1.20.1-0.11.2.jar</li>
+                        <li>lunade-fastanim-1.6-1.20.jar</li>
+                        <li>sodium-fabric-mc.1.20.1-0.5.3.jar</li>
+                        <li>starlight-1.1.2+fabric.dbc156f.jar</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Telepítési lépések:</p>
+            <ol>
+                <li>Töltsd le a csomagot
+                    <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=956')">Minecraft 1.20.1 Fabric FPS csomag.zip - Hausz megosztó</div>
+                </li>
+                <li>Nyisd meg a Launchert, és a főmenüben kattints a Mappa ikonra</li>
+                <li>Nyisd meg a "mods" mappát</li>
+                <li>Másold ebbe a mappába a letöltött zip fájlt</li>
+                <li>Kattints jobb klikkel a zip fájlra, és utána a kicsomagolás opcióra</li>
+            </ol>
+        </div>
+        <h2>- Hatalmas view distance a szerveren (Distant Horizons Fabric mod) <button class="gomb szint-2 kerekites-15 f15 inline" onclick="toggle_visibility(event, 'distant-horizons')">Mutat</button></h2>
+        <div class="tab-2 nodisplay" id="distant-horizons">
+            <p>A Distant Horizons mod a szerveren csak akkor mutat egy területet messziről, ha ott már jártál korábban úgy hogy a mod közben be is volt kapcsolva. Emiatt sok időbe telhet hogy egy jelentős területet be tudj gyorsítótárazni a moddal.</p>
+            <p>Ebben a szekcióban le tudod tölteni a Hausz szerverhez készült gyorsítótárat, így a telepítése után 256-os view distance-ed lesz egyből a szerveren, vagy néhány irányba akár 1024 is.</p>
+            <p>Telepítési lépések:</p>
+            <ol>
+                <li>Töltsd le a gyorsítótárat<br><br>
+                    <div class="gomb szint-2 kerekites-15 inline" onclick="window.open('https://hausz.stream/megoszto/megoszto.php?letoltes&file_id=957')">Distant Horizons Data - Hausz Szerver (1.38 GB) (2023.05.10).zip.torrent - Hausz megosztó</div><br>vagy<br><div class="gomb szint-2 kerekites-15 inline" onclick="window.open('magnet:?xt=urn:btih:b8cbb033268179cecaeaeba35262f8be65e2c22e&dn=Distant%20Horizons%20Data%20-%20Hausz%20Szerver%20(1.38%20GB)%20(2023.05.10).zip&tr=http%3a%2f%2fhausz.stream%3a58371%2fannounce&tr=http%3a%2f%2fminecraft.hausz.stream%3a58371%2fannounce')">Torrent mágnes link 🧲</div>
+                    <br>
+                    <br>
+                </li>
+                <li>Nyisd meg a Launchert, és a főmenüben kattints a Mappa ikonra</li>
+                <li>Másold ebbe a mappába a letöltött zip fájlt</li>
+                <li>Kattints jobb klikkel a zip fájlra, és utána a kicsomagolás opcióra</li>
+                <li>Ha a kicsomagolás közben hiba lép fel, akkor válaszd a "Fájlok kihagyása" opciót</li>
+                <li>A játékon belül a szerver kiválasztásánál hozzá kell adni a listához a Hausz szervert a következő adatokkal
+                    <ul>
+                        <li>Server Name: Hausz Szerver (Fontos hogy pontosan ez legyen!!!)</li>
+                        <li>Szerver Address: minecraft.hausz.stream</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Telepítés után a mod továbbra is működni fog, és tovább gyorsítótárazza az újonnan felfedezett területeket.</p>
         </div>
     </div>
     <br><br><br><br><br><br><br><br><br><br><br><br><br>

@@ -24,6 +24,8 @@ CREATE TABLE `users` (
   `admin` varchar(10) DEFAULT NULL,
   `megjeleno_nev` varchar(255) DEFAULT NULL,
   `minecraft_username` varchar(255) DEFAULT NULL,
+  `minecraft_isLogged` SMALLINT(5) DEFAULT 0,
+  `minecraft_lastlogin` BIGINT(19) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 -- admin                /   admin

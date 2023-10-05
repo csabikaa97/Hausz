@@ -30,5 +30,23 @@
         exit_ok('Felhasználónév változtatás sikeres');
     }
 
+    if( isset($_GET['jatekos_lista'])) {
+        $jatekosok = query_futtatas("SELECT username, minecraft_username, minecraft_isLogged, minecraft_lastlogin FROM hausz_megoszto.users WHERE minecraft_lastlogin IS NOT NULL ORDER BY minecraft_isLogged DESC, minecraft_lastlogin DESC");
+        
+        if( $jatekosok -> num_rows <= 0) {
+            exit_ok('"jatekosok_szama": '.$jatekosok -> num_rows.'');
+        }
+        
+        $eredmeny = '"jatekosok": [';
+            
+        $jatekos = $jatekosok -> fetch_assoc();
+        $eredmeny .= '{"username": "'.$jatekos['username'].'", "minecraft_username": "'.$jatekos['minecraft_username'].'", "minecraft_isLogged": '.$jatekos['minecraft_isLogged'].', "minecraft_lastlogin": '.$jatekos['minecraft_lastlogin'].'}';
+        while( $jatekos = $jatekosok -> fetch_assoc() ) {
+            $eredmeny .= ', {"username": "'.$jatekos['username'].'", "minecraft_username": "'.$jatekos['minecraft_username'].'", "minecraft_isLogged": '.$jatekos['minecraft_isLogged'].', "minecraft_lastlogin": '.$jatekos['minecraft_lastlogin'].'}';
+        }
 
+        $eredmeny .= ']';
+
+        exit_ok($eredmeny);
+    }
 ?>
