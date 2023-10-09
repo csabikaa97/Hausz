@@ -11,6 +11,7 @@ CREATE TABLE `files` (
   `private` tinyint(1) NOT NULL DEFAULT '0',
   `titkositott` tinyint(1) DEFAULT NULL,
   `titkositas_kulcs` varchar(1000) DEFAULT NULL,
+  `members_only` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 );
 

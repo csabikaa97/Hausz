@@ -84,6 +84,7 @@
 
 ## ✅ Implementált tennivalók
 
+* Opcionális beállítás: "Fájlok letöltésének engedélyezése csak tagok számára"
 * Kiadas.js: Fájlok compileolásának mellőzése ha létezik friss fájl (checksum ellenőrzéssel, minden forrásfájlhoz)
 * Typescript használata minden oldalhoz
 * Lidl pizza tier list kivezetése

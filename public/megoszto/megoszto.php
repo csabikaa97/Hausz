@@ -77,6 +77,7 @@
 
         $row = $result->fetch_assoc();
         die_if( ( (strtolower($row['username']) != strtolower($_SESSION['username'])) or !isset($_SESSION['loggedin']) ) && $row['private'] == "1", 'Nem vagy jogosult a fájl eléréshez.');
+        die_if( !isset($_SESSION['loggedin']) && $row['members_only'] == "1", 'Nem vagy jogosult a fájl eléréshez.');
 
         header("Cache-Control: public, max-age=9999999, immutable");
         header('X-Robots-Tag: noindex');
@@ -154,21 +155,22 @@
             die_if( !move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file), 'Sikertelen volt a fájl feltöltése.');
         }
 
-        $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'",';
+        $query_del2 = 'INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs, members_only) VALUES ("'.basename( $_FILES["fileToUpload"]["name"] ).'", "'.date("Y-m-d H:i:s").'",';
 
         if( isset($_SESSION['loggedin']) ) {
             $query_del2 .= ' (SELECT id FROM users WHERE username = "'.$_SESSION['username'].'"), ';
         } else {
             $query_del2 .= ' 0, ';
         }
-        $_POST['private'] = isset($_POST['private']) ? "1" : "0";
         $query_del2 .= $_FILES["fileToUpload"]["size"].', '.$_POST['private'].', ';
         $titkositas = "0";
         if(strlen($_POST['titkositas_kulcs']) > 0) {
             $query_del2 .= '1, "'.password_hash($_POST['titkositas_kulcs'], PASSWORD_DEFAULT).'");';
         } else {
-            $query_del2 .= '0, "");';
+            $query_del2 .= '0, ""';
         }
+
+        $query_del2 .= ', '.$_POST['members_only'].');';
 
         $result_del2 = query_futtatas($query_del2);
         
@@ -184,7 +186,12 @@
     }
     
     if( isset($_GET['fajlok']) ) {
-        $result = query_futtatas("SELECT users.megjeleno_nev, files.titkositott, files.id AS 'id', files.size, filename, added, username, private FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC");
+        $query = "SELECT users.megjeleno_nev, files.titkositott, files.id AS 'id', files.size, filename, added, username, private, members_only FROM files LEFT OUTER JOIN users ON files.user_id = users.id";
+        if( $_SESSION['loggedin'] != 'yes') {
+            $query .= " WHERE members_only = 0";
+        }
+        $query .= " ORDER BY files.added DESC";
+        $result = query_futtatas($query);
         if( $result->num_rows <= 0 ) {   exit_ok('"fajlok_szama": 0'); }
 
         $buffer = '"fajlok": [';
@@ -202,7 +209,7 @@
             
             if($fajlok_szama > 0) {   $buffer .= ', '; }
 
-            $buffer .= '{"id": '.$row['id'].', "size": "'.$row['size'].'", "filename": "'.$row['filename'].'", "added": "'.$row['added'].'", "megjeleno_nev": "'.$row['megjeleno_nev'].'", "private": "'.$row['private'].'", "titkositott": "'.$row['titkositott'].'"}';
+            $buffer .= '{"id": '.$row['id'].', "size": "'.$row['size'].'", "filename": "'.$row['filename'].'", "added": "'.$row['added'].'", "megjeleno_nev": "'.$row['megjeleno_nev'].'", "private": "'.$row['private'].'", "titkositott": "'.$row['titkositott'].'", "members_only": '.$row['members_only'].'}';
             $fajlok_szama++;
         }
         exit_ok('"fajlok_szama":'.$fajlok_szama.','.$buffer.']');
@@ -250,6 +257,20 @@
         } else {
             $result = query_futtatas('update files set private = 1 where id = '.$_GET['file_id']);
             exit_ok('"valasz": "'.$row['filename'].' nevű fájl priváttá tétele kész."');
+        }
+    }
+
+    if( isset($_GET['members_only_csere']) ) {
+        die_if( strlen($_GET['file_id']) <= 0, "Nincs megadva fájl azonosító.");
+        $result = query_futtatas("SELECT * FROM files WHERE id = ".$_GET['file_id']);
+        die_if( $result->num_rows <= 0, "Nem létezik a változtatni kívánt fájl.");
+        $row = $result->fetch_assoc();
+        if( $row['members_only'] ) {
+            $result = query_futtatas('update files set members_only = 0 where id = '.$_GET['file_id']);
+            exit_ok('"valasz": "'.$row['filename'].' nevű fájl mostantól mindenki számára elérhető."');
+        } else {
+            $result = query_futtatas('update files set members_only = 1 where id = '.$_GET['file_id']);
+            exit_ok('"valasz": "'.$row['filename'].' nevű fájl mostantól csak Hausz tagok számára elérhető."');
         }
     }
 

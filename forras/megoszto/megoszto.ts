@@ -6,8 +6,10 @@
 function belepteto_rendszer_frissult() {
     if( session_loggedin == "yes" ) {
         obj('privat_doboz').style.visibility = 'visible';
+        obj('members_only_doboz').style.visibility = 'visible';
     } else {
         obj('privat_doboz').style.visibility = 'hidden';
+        obj('members_only_doboz').style.visibility = 'hidden';
     }
 }
 
@@ -162,6 +164,7 @@ function fajlok_betoltese() {
             buffer += ` sor_private="${fajl.private}"`;
             buffer += ` sor_titkositott="${fajl.titkositott}"`;
             buffer += ` sor_elonezet_tipus="${elonezet_tipus}"`;
+            buffer += ` sor_members_only="${fajl.members_only}"`;
 
             buffer += `onclick='bal_klikk(event)'>`;
 
@@ -184,6 +187,10 @@ function fajlok_betoltese() {
             if (fajl.titkositott == '1') {
                 buffer += '<abbr class="linkDekoracioTiltas pointer" title="Jelszóval titkosított">🔒</abbr> ';
             }
+            if (fajl.members_only == '1') {
+                buffer += '<abbr class="linkDekoracioTiltas pointer" title="Csak Hausz tagok számára elérhető"><img src="/index/favicon.png" width="14px"></abbr> ';
+            }
+
             buffer += fajl.filename + '</td>';
 
             if( idopontbol_datum(new Date()) > idopontbol_datum(new Date(fajl.added)) ) {
@@ -448,6 +455,13 @@ function feltoltes() {
         }
         if(obj('private').checked) {
             formData.append("private", "1");
+        } else {
+            formData.append("private", "0");
+        }
+        if(obj('members_only').checked) {
+            formData.append("members_only", "1");
+        } else {
+            formData.append("members_only", "0");
         }
         formData.append("submit", "1");
         formData.append("fileToUpload", fajl);
@@ -501,7 +515,7 @@ function fajlnev_frissitese() {
         obj('fileToUpload_label').innerHTML = fajlnevek;
         obj('SubmitGomb').style.visibility = 'visible';
 
-        eloterbe_helyezes( [obj('privat_doboz'), obj('fileToUpload_label'), obj('SubmitGomb'), obj('titkositasi_kulcs_doboz')], true, undefined );
+        eloterbe_helyezes( [obj('privat_doboz'), obj('members_only_doboz'), obj('fileToUpload_label'), obj('SubmitGomb'), obj('titkositasi_kulcs_doboz')], true, undefined );
     }
 }
 
@@ -528,6 +542,17 @@ function bal_klikk(event) {
 }
 
 function privat_statusz_csere(link) {
+    szinkron_keres(link, "", (uzenet) => {
+        if( uzenet.eredmeny == 'ok' ) {
+            uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
+            fajlok_betoltese();
+        } else {
+            uj_valasz_mutatasa(3000, "hiba", uzenet.valasz);
+        }
+    })
+}
+
+function members_only_csere(link) {
     szinkron_keres(link, "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
@@ -566,6 +591,9 @@ function jobb_klikk_menu_kinyitas(event, tr) {
     if (tr.attributes['sor_private'].value == '1') {
         buffer += '👁️ Privát fájl (csak te látod)<br><br>';
     }
+    if (tr.attributes['sor_members_only'].value == '1') {
+        buffer += '<img src="/index/favicon.png" width="14px"> Csak Hausz tagok számára elérhető<br><br>';
+    }
     if (tr.attributes['sor_titkositott'].value == '1') {
         buffer += '🔒 Jelszóval védett<br><br>';
     }
@@ -593,6 +621,13 @@ function jobb_klikk_menu_kinyitas(event, tr) {
             buffer += `Publikussá tétel</div><br>`;
         } else {
             buffer += `Priváttá tétel</div><br>`;
+        }
+
+        buffer += `<div class="szint-3 gomb kerekites-10" onclick='members_only_csere("/megoszto/megoszto.php?members_only_csere&file_id=${tr.attributes['sor_id'].value}");'>`;
+        if(tr.attributes['sor_members_only'].value == '1') {
+            buffer += `Legyen mindenki számára elérhető</div><br>`;
+        } else {
+            buffer += `Csak Hausz tagok számára legyen elérhető</div><br>`;
         }
     }
     if (tr.attributes['sor_username'].value == 'ismeretlen' && session_loggedin == 'yes') {
