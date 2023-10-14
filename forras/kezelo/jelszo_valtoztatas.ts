@@ -33,18 +33,50 @@ function jelszo_valtoztatasa(event) {
         }
     }
 
-
-    let post_parameterek = new FormData();
-    post_parameterek.append('uj_jelszo', obj('uj_jelszo').value);
-    post_parameterek.append('uj_jelszo_megerosites', obj('uj_jelszo_megerosites').value);
-    post_parameterek.append('jelenlegi_jelszo', obj('jelenlegi_jelszo').value);
-
-    szinkron_keres("/kezelo/jelszo_valtoztatas.php", post_parameterek, (uzenet) => {
+    szinkron_keres("/kezelo/regisztracio.php?generate_salt", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
-            obj('jelszo_valtoztatas_doboz').style.display = 'none';
-            obj('hibaNemVagyBelepveDoboz').style.display = 'none';
-            obj('ok_jelszo_valtoztatas_sikeres').style.display = 'block';
-            uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
+            let uj_jelszo_salt = uzenet.valasz;
+            let post_parameterek = new FormData();
+
+            post_parameterek.append('uj_jelszo_sha256_salt', uj_jelszo_salt);
+
+            let jelszo_hash = sha256_library.hash_keszites( obj('uj_jelszo').value );
+            let salted_hash = sha256_library.hash_keszites( jelszo_hash + uj_jelszo_salt );
+            post_parameterek.append('uj_jelszo_sha256', salted_hash);
+            
+            let jelszo_hash_megerosites = sha256_library.hash_keszites( obj('uj_jelszo_megerosites').value );
+            let salted_hash_megerosites = sha256_library.hash_keszites( jelszo_hash_megerosites + uj_jelszo_salt );
+            post_parameterek.append('uj_jelszo_sha256_megerosites', salted_hash_megerosites);
+            
+            let post_parameterek_salt_keres = new FormData();
+            post_parameterek_salt_keres.append('get_salt', 'yes');
+            
+            szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_salt_keres, (uzenet) => {
+                if(uzenet.eredmeny == 'ok') {
+                    let jelenlegi_salt = uzenet.salt;
+
+                    let jelenlegi_jelszo_hash = sha256_library.hash_keszites( obj('jelenlegi_jelszo').value );
+                    let jelenlegi_salted_hash = sha256_library.hash_keszites( jelenlegi_jelszo_hash + jelenlegi_salt );
+
+                    post_parameterek.append('jelenlegi_jelszo_sha256', jelenlegi_salted_hash);
+                } else {
+                    post_parameterek.append('jelenlegi_jelszo', obj('jelenlegi_jelszo').value);
+                }
+
+                post_parameterek.append('uj_jelszo', obj('uj_jelszo').value);
+                post_parameterek.append('uj_jelszo_megerosites', obj('uj_jelszo_megerosites').value);
+
+                szinkron_keres("/kezelo/jelszo_valtoztatas.php", post_parameterek, (uzenet) => {
+                    if( uzenet.eredmeny == 'ok' ) {
+                        obj('jelszo_valtoztatas_doboz').style.display = 'none';
+                        obj('hibaNemVagyBelepveDoboz').style.display = 'none';
+                        obj('ok_jelszo_valtoztatas_sikeres').style.display = 'block';
+                        uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
+                    } else {
+                        uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+                    }
+                });
+            });
         } else {
             uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
         }

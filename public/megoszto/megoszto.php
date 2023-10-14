@@ -165,7 +165,7 @@
         $query_del2 .= $_FILES["fileToUpload"]["size"].', '.$_POST['private'].', ';
         $titkositas = "0";
         if(strlen($_POST['titkositas_kulcs']) > 0) {
-            $query_del2 .= '1, "'.password_hash($_POST['titkositas_kulcs'], PASSWORD_DEFAULT).'");';
+            $query_del2 .= '1, "'.password_hash($_POST['titkositas_kulcs'], PASSWORD_BCRYPT).'");';
         } else {
             $query_del2 .= '0, ""';
         }

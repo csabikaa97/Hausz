@@ -1,0 +1,3 @@
+FROM node:12.22.12
+WORKDIR /var/www/forras/csomagolas
+CMD /bin/bash /var/www/forras/csomagolas/osszes_csomagolasa.sh

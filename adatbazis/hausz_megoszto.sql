@@ -21,6 +21,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(1000) DEFAULT NULL,
+  `sha256_password` varchar(1000) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `admin` varchar(10) DEFAULT NULL,
   `megjeleno_nev` varchar(255) DEFAULT NULL,
@@ -42,6 +43,7 @@ CREATE TABLE `users_requested` (
   `request_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
+  `sha256_password` varchar(1000) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `megjeleno_nev` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`request_id`)
@@ -50,8 +52,8 @@ CREATE TABLE `users_requested` (
 DELIMITER //
 CREATE PROCEDURE add_user(IN igenyles_azonosito INT)
 BEGIN
-    INSERT INTO users (username, password, email, megjeleno_nev)
-    SELECT username, password, email, megjeleno_nev FROM users_requested WHERE request_id = igenyles_azonosito;
+    INSERT INTO users (username, sha256_password, email, megjeleno_nev)
+    SELECT username, sha256_password, email, megjeleno_nev FROM users_requested WHERE request_id = igenyles_azonosito;
     DELETE FROM users_requested WHERE request_id = igenyles_azonosito;
 END //
 DELIMITER ;

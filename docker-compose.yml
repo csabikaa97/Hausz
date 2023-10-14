@@ -20,7 +20,13 @@ services:
   container_name: kiadas
   volumes:
    - "./:/var/www"
-  
+
+ csomagolas:
+  build: forras/csomagolas
+  container_name: csomagolas
+  volumes:
+   - "./:/var/www"
+
  public:
    build: public
    container_name: public

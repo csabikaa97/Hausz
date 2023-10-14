@@ -1,5 +1,4 @@
 /// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
-/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
 /// <reference path="/var/www/forras/komponensek/topbar.ts" />
 
 function regisztracio_inditasa(event) {
@@ -17,24 +16,54 @@ function regisztracio_inditasa(event) {
             return;
         }
     }
-    
+
     let post_parameterek = new FormData();
     post_parameterek.append("regisztracio", "igen");
     post_parameterek.append("regisztracio_username", obj('regisztracio_username').value);
-    post_parameterek.append("regisztracio_password", obj('regisztracio_password').value);
-    post_parameterek.append("regisztracio_password_confirm", obj('regisztracio_password_confirm').value);
-    post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
-    post_parameterek.append("regisztracio_meghivo", obj('regisztracio_meghivo').value);
+    if( typeof sha256_library !== 'undefined' ) {
+        szinkron_keres("/kezelo/regisztracio.php?generate_salt", "", (uzenet) => {
+            if( uzenet.eredmeny == 'ok' ) {
+                let salt = uzenet.valasz;
+                let jelszo_hash = sha256_library.hash_keszites(obj('regisztracio_password').value);
+                let salted_hash = sha256_library.hash_keszites(jelszo_hash + salt);
+                post_parameterek.append("regisztracio_password", salted_hash);
+                post_parameterek.append("regisztracio_password_confirm", salted_hash);
+                post_parameterek.append("regisztracio_password_salt", salt);
 
-    szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
-        if( uzenet.eredmeny == 'ok' ) {
-            obj('regisztracio_doboz').style.display = 'none';
-            obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';
-            obj('regisztracio_siker_doboz').style.display = 'block';
-        } else {
-            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
-        }
-    });
+                post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
+                post_parameterek.append("regisztracio_meghivo", obj('regisztracio_meghivo').value);
+
+                szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
+                    if( uzenet.eredmeny == 'ok' ) {
+                        obj('regisztracio_doboz').style.display = 'none';
+                        obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';
+                        obj('regisztracio_siker_doboz').style.display = 'block';
+                    } else {
+                        uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+                    }
+                });
+            } else {
+                uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+            }
+        });
+    } else {
+        post_parameterek.append("regisztracio_password", obj('regisztracio_password').value);
+        post_parameterek.append("regisztracio_password_confirm", obj('regisztracio_password_confirm').value);
+        post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
+        post_parameterek.append("regisztracio_meghivo", obj('regisztracio_meghivo').value);
+        
+        szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
+            if( uzenet.eredmeny == 'ok' ) {
+                obj('regisztracio_doboz').style.display = 'none';
+                obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';
+                obj('regisztracio_siker_doboz').style.display = 'block';
+            } else {
+                uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+            }
+        });
+    }
+
+
 }
 
 function adatvedelmi_tajekoztato_elolvasva() {
@@ -113,4 +142,5 @@ var vanKulonlegesKarakter = false;
 var ujJelszavakEgyeznek = false;
 var jelszoErossegFrissitesIdozito;
 
+let sha256_library;
 topbar_betoltese();
