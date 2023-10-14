@@ -21,6 +21,8 @@ kiadas.js forras/webjosda/fizetos.ts public/webjosda/fizetos.js
 kiadas.js forras/kezelo/meghivo.ts public/kezelo/meghivo.js
 kiadas.js forras/minecraft/minecraft.ts public/minecraft/minecraft.js
 kiadas.js forras/kettoezernegyvennyolc/kettoezernegyvennyolc.ts public/kettoezernegyvennyolc/kettoezernegyvennyolc.js
+kiadas.js forras/kezelo/meghivo.ts public/kezelo/meghivo.js
+kiadas.js forras/minecraft/minecraft.ts public/minecraft/minecraft.js
 
 # privát
 kiadas.js forras/ruhaszamlalo/ruhaszamlalo.ts public/ruhaszamlalo/ruhaszamlalo.js
