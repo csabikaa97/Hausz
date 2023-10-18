@@ -64,3 +64,9 @@ CREATE TABLE `meghivok` (
   `request_date` datetime NOT NULL,
   PRIMARY KEY (`user_id`)
 );
+
+CREATE TABLE `sessionok` (
+  `azonosito` int(11) NOT NULL,
+  `session_kulcs` varchar(1000) DEFAULT NULL,
+  `datum` datetime(6) DEFAULT NULL
+);

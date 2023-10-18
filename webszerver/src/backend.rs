@@ -17,11 +17,11 @@ use futures_util::StreamExt as _;
 
 use crate::mime_types;
 
-mod session_azonosito_generator;
+pub mod session_azonosito_generator;
+pub mod lekerdezesek;
 
 static LOG_PREFIX: &str = "[ BACKEND ] ";
 pub static ERVENYTELEN_COOKIE: &str = "ez_a_cookie_nem_letezik";
-
 pub struct AdatbázisEredményFájl {
     azonosító: u32,
     felhasználó_azonosító: u32,
@@ -42,12 +42,16 @@ pub struct AdatbázisEredményFelhasználóToken {
 }
 
 pub struct AdatbázisEredményFelhasználó {
-    azonosító: u32,
-    felhasználónév: String,
-    jelszó: String,
-    email: String,
-    admin: String,
-    megjelenő_név: String,
+    pub azonosító: u32,
+    pub felhasználónév: String,
+    pub jelszó: String,
+    pub sha256_jelszó: String,
+    pub email: String,
+    pub admin: String,
+    pub megjelenő_név: String,
+    pub minecraft_username: String,
+    pub minecraft_islogged: i16,
+    pub minecraft_lastlogin: i64,
 }
 
 pub struct AdatbázisEredménySession {
@@ -180,7 +184,7 @@ pub fn fájlok_lekérdezése(felhasználó_cookie_azonosítója: Option<String>)
 }
 
 pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<AdatbázisEredményFelhasználó> {
-    let mut conn = match csatlakozás(crate::FELHASZNALOK_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
@@ -217,15 +221,19 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
     };
 
     match conn.query_map(
-        format!("SELECT azonosito, felhasznalonev, jelszo, COALESCE(email, ''), COALESCE(admin, ''), megjeleno_nev FROM felhasznalok WHERE azonosito = {}", session.azonosító),
-        |(azonosito, felhasznalonev, jelszo, email, admin, megjeleno_nev)| {
+        format!("SELECT id, username, password, email, admin, megjeleno_nev, sha256_password, minecraft_username, minecraft_islogged, minecraft_lastlogin FROM users WHERE id = {}", session.azonosító),
+        |(azonosito, felhasznalonev, jelszo, email, admin, megjeleno_nev, sha256_password, minecraft_username, minecraft_islogged, minecraft_lastlogin)| {
             AdatbázisEredményFelhasználó {
                 azonosító: azonosito,
                 felhasználónév: felhasznalonev,
                 jelszó: jelszo,
-                email: email,
-                admin: admin,
+                email,
+                admin,
                 megjelenő_név: megjeleno_nev,
+                sha256_jelszó: sha256_password,
+                minecraft_username,
+                minecraft_islogged,
+                minecraft_lastlogin
             }
         }
     ) {
@@ -234,7 +242,7 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
             Some(felhasználó) => { return Some(felhasználó); },
         },
         Err(err) => {
-            println!("{}Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
+            println!("{}cooki_gazdájának_lekérdezése: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
             return None;
         }
     };
@@ -546,17 +554,17 @@ pub fn beléptető_rendszer_állapot_lekérdezése(request: HttpRequest) -> Http
 }
 
 pub fn belépés(megadott_felhasználónév: String, megadott_jelszó: String, felhasználó_session_azonosítója: Option<String>) -> std::result::Result<(String, String), String> {
-    let mut conn = match csatlakozás(crate::FELHASZNALOK_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
-            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
-            return Err(format!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err));
+            println!("{}belépés: Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
+            return Err(format!("{}belépés: Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err));
         }
     };
 
     let felhasználók = match conn.query_map(
-            format!("SELECT COALESCE(azonosito, ''), COALESCE(felhasznalonev, ''), COALESCE(jelszo, ''), COALESCE(email, ''), COALESCE(admin, ''), COALESCE(megjeleno_nev, '') FROM felhasznalok WHERE felhasznalonev = '{}'", megadott_felhasználónév),
-            |(azonosito, felhasznalonev, jelszo, email, admin, megjeleno_nev)| {
+            format!("SELECT id, username, password, sha256_password, email, admin, megjeleno_nev, minecraft_username, minecraft_islogged, minecraft_lastlogin FROM users WHERE felhasznalonev = '{}'", megadott_felhasználónév),
+            |(azonosito, felhasznalonev, jelszo, email, admin, megjeleno_nev, sha256_password, minecraft_username, minecraft_islogged, minecraft_lastlogin)| {
                 AdatbázisEredményFelhasználó {
                     azonosító: azonosito,
                     felhasználónév: felhasznalonev,
@@ -564,13 +572,17 @@ pub fn belépés(megadott_felhasználónév: String, megadott_jelszó: String, f
                     email: email,
                     admin: admin,
                     megjelenő_név: megjeleno_nev,
+                    sha256_jelszó: sha256_password,
+                    minecraft_username,
+                    minecraft_islogged,
+                    minecraft_lastlogin
                 }
             }
     ) {
         Ok(felhasználók) => felhasználók,
         Err(err) => {
-            println!("{}Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
-            return Err(format!("{}Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err));
+            println!("{}belépés: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
+            return Err(format!("{}belépés: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err));
         }
     };
 
@@ -741,7 +753,7 @@ pub fn kijelentkezés(felhasználó_cookie_azonosítója: Option<String>) -> Htt
         },
     }
 
-    let mut conn = match csatlakozás(crate::FELHASZNALOK_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
             let hiba = format!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
