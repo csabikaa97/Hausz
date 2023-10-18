@@ -109,8 +109,6 @@ Jelenleg folyamatban lévő feladatok:
   </tr>
 </tbody>
 </table>
-- Svelte pilot oldal elkészítése
-  - svelte_test mappában van egy Svelte app builder docker container
 - Adatbázis átalakítása új igényeknek megfelelően
     - Felhasználói adatok megosztó adatbázisból különbe mozgatása
 

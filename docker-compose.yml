@@ -100,6 +100,7 @@ services:
   networks:
    container_halozat:
     ipv4_address: 172.20.128.16
+    
  webszerver:
     build: webszerver
     container_name: webszerver
@@ -110,15 +111,9 @@ services:
      - "./public:/public"
     networks:
      container_halozat:
-      ipv4_address: 172.20.128.16
+      ipv4_address: 172.20.128.17
     depends_on:
       - "adatbazis"
-
- svelte_test:
-    build: svelte_test
-    container_name: svelte_test
-    volumes:
-     - "./svelte_test/build:/build"
      
 networks:
   container_halozat:
