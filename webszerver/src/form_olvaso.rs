@@ -50,8 +50,5 @@ pub fn get_olvasó(query: String) -> Vec<(String, String)> {
         returnvalue.push((key, value));
     }
 
-    println!("query string: ({:?})", query);
-    println!("Eredmény: ({:?})", returnvalue);
-
     return returnvalue;
 }

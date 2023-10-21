@@ -1,10 +1,23 @@
-static LOG_PREFIX: &str = "[ FÁJLOK  ] ";
+static LOG_PREFIX: &str = "[fájlok   ] ";
 
 pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
+    let útvonal = if útvonal.starts_with("/") {
+        &útvonal[1..]
+    } else {
+        útvonal
+    };
+
+    let útvonal = if útvonal.ends_with("/") {
+        &útvonal[..útvonal.len()-1]
+    } else {
+        útvonal
+    };
+
     match útvonal {
         ""                                      => "index.html",
         "index"                                 => "index.html",
         "minecraft"                             => "minecraft/minecraft.html",
+        "minecraft/minecraft.js"                => "minecraft/minecraft.js",
         "megoszto"                              => "megoszto/megoszto.html",
         "teamspeak"                             => "teamspeak/teamspeak.html",
         "index/favicon.png"                     => "index/favicon.png",

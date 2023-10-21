@@ -1,17 +1,11 @@
-use actix_web::cookie::Cookie;
-use actix_web::web::post;
 use actix_web::{
     web, App, HttpServer, 
-    HttpRequest, HttpResponse, 
-    http::uri::Authority
+    HttpRequest, HttpResponse
 };
-use actix_form_data::{Field, Form};
-use env_logger::Env;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use std::io::Error;
 use std::io::ErrorKind;
-use serde::Deserialize;
-use actix_multipart::Multipart;
+use crate::alap_fuggvenyek::exit_error;
 
 mod mime_types;
 mod backend;
@@ -21,8 +15,8 @@ mod keres_kezelo;
 mod session;
 mod alap_fuggvenyek;
 mod oldalak;
- 
-static LOG_PREFIX: &str                         = "[ SZERVER ] ";
+
+static LOG_PREFIX: &str                         = "[szerver  ] ";
 static IP: &str                                 = "0.0.0.0";
 static PORT_HTTP: u16                           = 8080;
 static PORT_HTTPS: u16                          = 4443;
@@ -36,33 +30,30 @@ pub static HAUSZ_TS_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.
 
 async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpResponse {
     let content_type = match request.headers().get("content-type") {
-        None => return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Nincs content-type header\"}"),
+        None => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Nincs content-type header\"}}"))),
         Some(content_type) => content_type,
     };
 
     let content_type = match content_type.to_str() {
-        Err(e) => return HttpResponse::BadRequest().body(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"{}\"}}", e)),
+        Err(e) => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"{}\"}}", e))),
         Ok(content_type) => content_type,
     };
     if !content_type.starts_with("multipart/form-data;") {
-        return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Nem multipart/form-data\"}");
+        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Nem multipart/form-data\"}}")));
     }
 
     let boundary = match content_type.split("boundary=").last() {
-        None => return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Nincs boundary megadva\"}"),
+        None => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Nincs boundary megadva\"}}"))),
         Some(boundary) => boundary,
     };
 
     let cookie: String = match request.cookie("hausz_session") {
         None => {
-            println!("Nincs cookie megadva");
-
             "".to_string()
         }
         Some(cookies) => {
             if cookies.value().len() == 0 {
-                println!("Üres cookie :(");
-                return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Üres cookie\"}");
+                return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Üres cookie\"}}")));
             }
 
             cookies.value().to_string()
@@ -98,7 +89,7 @@ async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpRespons
     let form_adatok = form_olvaso::form_olvasó(form.clone(), boundary.to_owned());
     let get_adatok = form_olvaso::get_olvasó(request.query_string().to_string());
 
-    keres_kezelo::keres_kezelo(form_adatok, get_adatok, session_adatok)
+    keres_kezelo::keres_kezelo(form_adatok, get_adatok, session_adatok, request)
 }
 
 async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
@@ -109,14 +100,11 @@ async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
 
     let cookie: String = match request.cookie("hausz_session") {
         None => {
-            println!("Nincs cookie megadva");
-
             "".to_string()
         }
         Some(cookies) => {
             if cookies.value().len() == 0 {
-                println!("Üres cookie :(");
-                return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Üres cookie\"}");
+                return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Üres cookie\"}}")));
             }
 
             cookies.value().to_string()
@@ -148,15 +136,15 @@ async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
         },
     }
 
-    keres_kezelo::keres_kezelo(form_adatok, get_adatok, session_adatok)
+    keres_kezelo::keres_kezelo(form_adatok, get_adatok, session_adatok, request)
 }
 
-async fn kérés_kezelő(request: HttpRequest, form: String) -> HttpResponse {
+async fn kérés_metódus_választó(request: HttpRequest, form: String) -> HttpResponse {
     let method = request.method();
     match method.to_owned() {
         actix_web::http::Method::GET => return get_kérés_kezelő(request).await,
         actix_web::http::Method::POST => return post_kérés_kezelő(request, form).await,
-        _ => return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Ismeretlen metódus\"}"),
+        _ => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Ismeretlen metódus\"}}"))),
     }
 }
 
@@ -177,7 +165,7 @@ async fn main() -> std::io::Result<()> {
 
     let https_server = match HttpServer::new(move || {
             App::new()
-            .default_service(web::route().to(kérés_kezelő))
+            .default_service(web::route().to(kérés_metódus_választó))
         })
         .workers(10)
         .bind_openssl(format!("{}:{}", IP, PORT_HTTPS), builder) {
@@ -193,7 +181,7 @@ async fn main() -> std::io::Result<()> {
 
     let http_server = match HttpServer::new(|| {
         App::new()
-        .default_service(web::route().to(kérés_kezelő))
+        .default_service(web::route().to(kérés_metódus_választó))
     }) 
         .workers(10)
         .bind(format!("{}:{}", IP, PORT_HTTP)) {

@@ -1,11 +1,9 @@
-use actix_web::HttpResponse;
 use mysql::MySqlError;
 use crate::alap_fuggvenyek::get_password_part;
 use crate::alap_fuggvenyek::FelhasználóAzonosítóAdatok;
 use crate::backend::csatlakozás;
 use mysql::*;
 use mysql::prelude::*;
-use mysql::prelude;
 
 use super::AdatbázisEredményFelhasználó;
 
@@ -192,19 +190,12 @@ pub fn salt_lekerdezese(salt_username: &str) -> Result<String> {
         }
     };
 
-    // get the salt from $SHA$salt$password_hash
-    let sha_password = &felhasználó.sha256_jelszó;
-    if &sha_password[0..5] != "$SHA$" {
-        println!("{}Nem megfelelő a jelszó formátuma az adatbázisban ({})", crate::LOG_PREFIX, salt_username);
-        return Err(mysql::Error::MySqlError(MySqlError {
-            state: "HY000".to_owned(),
-            code: 0,
-            message: "Nem megfelelő a jelszó formátuma az adatbázisban".to_owned(),
-        }));
-    }
+    let salt = match get_password_part(crate::alap_fuggvenyek::JelszoReszek::Salt, felhasználó.sha256_jelszó.as_str()) {
+        Ok(result) => result,
+        Err(hiba) => {
+            return Err(hiba);
+        }
+    };
 
-    let password_in_db = sha_password.split("$").collect::<Vec<&str>>();
-    let salt_in_db = password_in_db[2];
-
-    Ok(salt_in_db.to_owned())
+    Ok(salt)
 }

@@ -1,5 +1,6 @@
-use actix_web::HttpResponse;
 use mysql::MySqlError;
+
+static LOG_PREFIX: &str = "[alap_függ] ";
 
 #[derive(Debug)]
 pub enum JelszoReszek {
@@ -47,12 +48,33 @@ pub fn get_password_part(resz: JelszoReszek, password: &str) -> Result<String, m
 
     match resz {
         JelszoReszek::Salt => {
-            println!("Get password part ({}) ({:?}) = ({})", password, resz, password[6..70].to_owned());
-            return Ok(password[6..70].to_owned());
+            let salt = password[5..69].to_owned();
+            return Ok(salt);
         },
         JelszoReszek::Password => {
-            println!("Get password part ({}) ({:?}) = ({})", password, resz, password[71..133].to_owned());
-            return Ok(password[70..134].to_owned());
+            let jelszo = password[70..134].to_owned();
+            return Ok(jelszo);
         },
     }
+}
+
+pub fn exit_ok(szoveg: String) -> String {
+    let buffer = String::new();
+    let buffer = buffer + "{\"eredmeny\": \"ok\", ";
+    let buffer = if szoveg.chars().nth(0) != "\"".chars().nth(0) && szoveg.chars().nth(0) != "'".chars().nth(0) && szoveg.chars().nth(0) != "[".chars().nth(0) {
+        buffer + "\"valasz\":\"" + &szoveg + "\"}"
+    } else {
+        buffer + &szoveg + "}"
+    };
+    return buffer;
+}
+
+pub fn exit_error(szoveg: String) -> String {
+    let mut buffer = "{\"eredmeny\": \"hiba\", ".to_string();
+    if szoveg.chars().nth(0) != "\"".chars().nth(0) && szoveg.chars().nth(0) != "'".chars().nth(0) { 
+        buffer = buffer + "\"valasz\":\"" + &szoveg + "\"}";
+    } else {
+        buffer = buffer + &szoveg + "}";
+    }
+    return buffer;
 }

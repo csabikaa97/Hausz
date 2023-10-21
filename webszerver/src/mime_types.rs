@@ -1,4 +1,4 @@
-static LOG_PREFIX: &str = "[MIMETYPES] ";
+static LOG_PREFIX: &str = "[mimetypes] ";
 
 pub fn mime_type_megállapítása(kiterjesztés: &str) -> &str {
     match kiterjesztés {

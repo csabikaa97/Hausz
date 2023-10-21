@@ -1,11 +1,9 @@
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
-use actix_web::http::header::ContentDisposition;
 use mysql::*;
 use mysql::prelude::*;
 use std::process::Command;
 use regex::Regex;
-use bcrypt;
 use actix_web::cookie::Cookie;
 use std::fs::File;
 use std::io::Read;
@@ -14,14 +12,16 @@ use chrono::offset::Utc;
 use std::os::unix::prelude::FileExt;
 use actix_multipart::*;
 use futures_util::StreamExt as _;
+use crate::alap_fuggvenyek::exit_error;
+use crate::alap_fuggvenyek::exit_ok;
 
 use crate::mime_types;
 
 pub mod session_azonosito_generator;
 pub mod lekerdezesek;
 
-static LOG_PREFIX: &str = "[ BACKEND ] ";
-pub static ERVENYTELEN_COOKIE: &str = "ez_a_cookie_nem_letezik";
+static LOG_PREFIX: &str = "[backend  ] ";
+static ERVENYTELEN_COOKIE: &str = "ervenytelen_cookie";
 pub struct AdatbázisEredményFájl {
     azonosító: u32,
     felhasználó_azonosító: u32,
@@ -71,22 +71,6 @@ fn csatlakozás(url: &str) -> Result<mysql::PooledConn> {
         Ok(conn) => Ok(conn),
         Err(err) => Err(err),
     }
-}
-
-pub fn query_szöveg_feldolgozása(query_string: &str) -> Vec<(&str, &str)> {
-    let mut vektor: Vec<(&str, &str)> = Vec::new();
-    for elem in query_string.split('&') {
-        if elem.len() == 0 {
-            continue;
-        }
-        if !elem.contains('=') {
-            vektor.push((elem, ""));
-            continue;
-        }
-        let kulcs_érték: Vec<&str> = elem.split('=').collect();
-        vektor.push((kulcs_érték[0], kulcs_érték[1]));
-    }
-    vektor
 }
 
 pub fn fájlok_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
@@ -251,7 +235,7 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
 pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
     let felhasználó_jelenlegi_cookie_azonosítója = match felhasználó_cookie_azonosítója {
         None => {
-            return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}");
+            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
         },
         Some(cookie) => cookie,
     };
@@ -260,7 +244,7 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
 
     match felhasználó {
         None => {
-            return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}");
+            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
         },
         Some(_) => {},
     }
@@ -269,7 +253,7 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az adatbázishoz való csatlakozáskor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az adatbázishoz való csatlakozáskor.\"}}")));
         }
     };
 
@@ -292,16 +276,16 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
 
     let felhasználó_tokenje = match felhasználó_tokenek.into_iter().nth(0) {
         None => {
-            return HttpResponse::Ok().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Jelenleg nincs jogosultsági tokened.\"}");
+            return HttpResponse::Ok().body(exit_ok(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Jelenleg nincs jogosultsági tokened.\"}}")));
         },
         Some(első_token) => első_token,
     };
 
-    let generálás_dátuma = match Utc.datetime_from_str(&felhasználó_tokenje.generálás_dátuma.as_str(), "%Y-%m-%d %H:%M:%S") {
+    let generálás_dátuma = match DateTime::parse_from_str(&felhasználó_tokenje.generálás_dátuma.as_str(), "%Y-%m-%d %H:%M:%S") {
         Ok(generálás_dátuma) => generálás_dátuma,
         Err(err) => {
             println!("{}Hiba a generálás dátumának lekérdezésekor: dátum: {} Err: {}", LOG_PREFIX, felhasználó_tokenje.generálás_dátuma, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a generálás dátumának lekérdezésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a generálás dátumának lekérdezésekor.\"}}")));
         }
     };
     let token_cd_lejárt: bool = ( generálás_dátuma + chrono::Duration::seconds(crate::HAUSZ_TS_TOKEN_IGENYLES_CD) ) < Utc::now();
@@ -313,14 +297,14 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
 pub fn teamspeak_szerver_státusz_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
     let felhasználó_jelenlegi_cookie_azonosítója = match felhasználó_cookie_azonosítója {
         None => {
-            return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}");
+            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
         },
         Some(cookie) => cookie,
     };
 
     match cookie_gazdájának_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója) {
         None => {
-            return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}");
+            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
         },
         Some(_) => {},
     }
@@ -346,35 +330,35 @@ pub fn teamspeak_szerver_státusz_lekérdezése(felhasználó_cookie_azonosító
         Ok(regex) => regex,
         Err(err) => {
             println!("{}Uptime regex elkészítése sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
         },
     };
     let uptime_load_averages = match uptime_load_average_regex.captures(&uptime_kimenete.as_str()) {
         Some(captures) => captures,
         None => {
             println!("{}Uptime regex nem talált egyezést: '{}'", LOG_PREFIX, uptime_kimenete);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
         },
     };
     let processzor_1perc = match uptime_load_averages.get(1).unwrap().as_str().parse::<f32>() {
         Ok(perc) => perc,
         Err(err) => {
             println!("{}Uptime kimenet processzor_1perc-re alakítása sikertelen: '{}'", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
         },
     };
     let processzor_5perc = match uptime_load_averages.get(2).unwrap().as_str().parse::<f32>() {
         Ok(perc) => perc,
         Err(err) => {
             println!("{}Uptime kimenet processzor_5perc-re alakítása sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
         },
     };
     let processzor_15perc = match uptime_load_averages.get(3).unwrap().as_str().parse::<f32>() {
         Ok(perc) => perc,
         Err(err) => {
             println!("{}Uptime kimenet processzor_15perc-re alakítása sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
         },
     };
 
@@ -424,10 +408,10 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
 
     match (felhasználó_cookie_azonosítója, &felhasználó) {
         (None, _) => {
-            return HttpResponse::Unauthorized().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}");
+            return HttpResponse::Unauthorized().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
         }
         (Some(_), None) => {
-            return HttpResponse::Unauthorized().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}");
+            return HttpResponse::Unauthorized().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
         }
         (_, _) => (),
     }
@@ -435,7 +419,7 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     let mut conn = match csatlakozás(crate::HAUSZ_TS_ADATBAZIS_URL) {
         Err(err) => {
             println!("{}Hiba a Teamspeak adatbázishoz való csatlakozás során: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
         },
         Ok(conn) => conn,
     };
@@ -445,7 +429,7 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     match conn.query_drop(format!("DELETE FROM `felhasznalo_tokenek` WHERE `user_id` = {}", felhasználó.azonosító)) {
         Err(err) => {
             println!("{}Hiba a Teamspeak token törlésekor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
         },
         Ok(_) => (),
     }
@@ -462,14 +446,14 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     let token = match token_regex.captures(&create_token_sh_kimenete) {
         None => {
             println!("{}Hiba a Teamspeak token létrehozásakor: Nem sikerült a token lekérdezése a create_token.sh kimenetéből. Kimenet: '{}'", LOG_PREFIX, create_token_sh_kimenete);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
         },
         Some(token) => token,
     };
     let token = match token.get(1) {
         None => {
             println!("{}Hiba a Teamspeak token létrehozásakor: Nem sikerült a token kinyerése a Captures-ből", LOG_PREFIX);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
         },
         Some(token) => token.as_str().replace("\r", ""),
     };
@@ -477,7 +461,7 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     match conn.query_drop(format!("INSERT INTO `felhasznalo_tokenek` (`user_id`, `token`, `generalasi_datum`) VALUES ({}, '{}', now(6))", felhasználó.azonosító, token)) {
         Err(err) => {
             println!("{}Hiba a Teamspeak token létrehozásakor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body("{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}");
+            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
         },
         Ok(_) => (),
     }
@@ -530,104 +514,6 @@ pub fn szerver_tarhely_statusz_lekérdezése() -> HttpResponse {
 
     return HttpResponse::Ok()
         .body(format!("{{\"eredmeny\": \"ok\", \"szabad_tarhely\": {}, \"foglalt_tarhely\": {}}}", elérhető, foglalt));
-}
-
-pub fn beléptető_rendszer_állapot_lekérdezése(request: HttpRequest) -> HttpResponse {
-    let felhasználó_session_azonosítója = match request.cookie("session_azonosito") {
-        None => {
-            return HttpResponse::Ok()
-            .body("{\"eredmeny\": \"hiba\", \"valasz\":\"Nem vagy belépve\"}");
-        },
-        Some(cookie) => cookie.value().to_owned(),
-    };
-
-    match cookie_gazdájának_lekérdezése(felhasználó_session_azonosítója) {
-        Some(felhasználó) => {
-            return HttpResponse::Ok()
-            .body(format!("{{\"eredmeny\": \"ok\", \"session_loggedin\": \"yes\", \"session_username\": \"{}\", \"megjeleno_nev\": \"{}\", \"session_admin\": \"{}\"}}", felhasználó.felhasználónév, felhasználó.megjelenő_név, felhasználó.admin));
-        },
-        None => {
-            return HttpResponse::Ok()
-            .body("{\"eredmeny\": \"hiba\", \"valasz\":\"Nem vagy belépve\"}");
-        }
-    }
-}
-
-pub fn belépés(megadott_felhasználónév: String, megadott_jelszó: String, felhasználó_session_azonosítója: Option<String>) -> std::result::Result<(String, String), String> {
-    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
-        Ok(conn) => conn,
-        Err(err) => {
-            println!("{}belépés: Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
-            return Err(format!("{}belépés: Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err));
-        }
-    };
-
-    let felhasználók = match conn.query_map(
-            format!("SELECT id, username, password, sha256_password, email, admin, megjeleno_nev, minecraft_username, minecraft_islogged, minecraft_lastlogin FROM users WHERE felhasznalonev = '{}'", megadott_felhasználónév),
-            |(azonosito, felhasznalonev, jelszo, email, admin, megjeleno_nev, sha256_password, minecraft_username, minecraft_islogged, minecraft_lastlogin)| {
-                AdatbázisEredményFelhasználó {
-                    azonosító: azonosito,
-                    felhasználónév: felhasznalonev,
-                    jelszó: jelszo,
-                    email: email,
-                    admin: admin,
-                    megjelenő_név: megjeleno_nev,
-                    sha256_jelszó: sha256_password,
-                    minecraft_username,
-                    minecraft_islogged,
-                    minecraft_lastlogin
-                }
-            }
-    ) {
-        Ok(felhasználók) => felhasználók,
-        Err(err) => {
-            println!("{}belépés: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
-            return Err(format!("{}belépés: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err));
-        }
-    };
-
-    if felhasználók.len() <= 0 {
-        println!("{}Nincs ilyen felhasználó: {}", LOG_PREFIX, megadott_felhasználónév);
-        return Err(format!("{}Nincs ilyen felhasználó: {}", LOG_PREFIX, megadott_felhasználónév));
-    }
-
-    let felhasználó = match felhasználók.into_iter().nth(0) {
-        None => {
-            println!("{}Nincs ilyen felhasználó: {}", LOG_PREFIX, megadott_felhasználónév);
-            return Err(format!("{}Nincs ilyen felhasználó: {}", LOG_PREFIX, megadott_felhasználónév));
-        },
-        Some(felhasználó) => felhasználó,
-    };
-
-    let felhasználó_tényleges_jelszava = felhasználó.jelszó;
-
-    match bcrypt::verify(megadott_jelszó, &felhasználó_tényleges_jelszava) {
-        Ok(verified) => {
-            if !verified {
-                println!("{}Hibás megadott_jelszó", LOG_PREFIX);
-                return Err(format!("{}Hibás megadott_jelszó", LOG_PREFIX));
-            }
-        },
-        Err(err) => {
-            println!("{}Hiba a megadott_jelszó ellenőrzésekor: {}", LOG_PREFIX, err);
-            return Err(format!("{}Hiba a megadott_jelszó ellenőrzésekor: {}", LOG_PREFIX, err));
-        }
-    }
-
-    let használandó_session_azonosító = match felhasználó_session_azonosítója {
-        None => session_azonosito_generator::random_új_session_azonosító(),
-        Some(azonosító) => azonosító,
-    };
-
-    match conn.query_drop(format!("INSERT INTO sessionok (azonosito, session_kulcs, datum) VALUES ({}, '{}', now(6))", felhasználó.azonosító, használandó_session_azonosító)) {
-        Ok(_) => {},
-        Err(err) => {
-            println!("{}Hiba a session táblába való beszúráskor: {}", LOG_PREFIX, err);
-            return Err(format!("{}Hiba a session táblába való beszúráskor: {}", LOG_PREFIX, err));
-        }
-    }
-
-    return Ok((format!("{{\"eredmeny\": \"ok\", \"uzenet\":\"Sikeres belépés\"}}"), használandó_session_azonosító));
 }
 
 pub fn megosztó_fájl_letöltés(query_elemek: Vec<(&str, &str)>, felhasználó_cookie_azonosítója: Option<String>) -> std::result::Result<HttpResponse, String> {    
@@ -740,61 +626,16 @@ pub fn megosztó_fájl_letöltés(query_elemek: Vec<(&str, &str)>, felhasználó
     )
 }
 
-pub fn kijelentkezés(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
-    let felhasználó_jelenlegi_cookie_azonosítója: String;
-    match felhasználó_cookie_azonosítója {
-        None => {
-            let hiba = format!("{}Nincs megadva session azonosító", LOG_PREFIX);
-            println!("{}", hiba);
-            return HttpResponse::InternalServerError().body(format!("{}", hiba));
-        },
-        Some(érték) => {
-            felhasználó_jelenlegi_cookie_azonosítója = érték;
-        },
-    }
-
-    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
-        Ok(conn) => conn,
-        Err(err) => {
-            let hiba = format!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
-            println!("{}", hiba);
-            return HttpResponse::InternalServerError().body(format!("{}", hiba));
-        }
-    };
-
-    match conn.query_drop(format!("DELETE FROM sessionok WHERE session_kulcs = '{}'", &felhasználó_jelenlegi_cookie_azonosítója)) {
-        Ok(_) => {},
-        Err(err) => {
-            let hiba = format!("{}Hiba a session táblából való törléskor: {}", LOG_PREFIX, err);
-            println!("{}", hiba);
-            return HttpResponse::InternalServerError().body(format!("{}", hiba));
-        }
-    }
-
-    let session_azonosító_cookie = Cookie::new("session_azonosito", format!("; Domain={}; Max-age=0;", crate::DOMAIN));
-    let mut visszatérési_érték = HttpResponse::Ok()
-        .body("{\"eredmeny\": \"ok\", \"uzenet\":\"Sikeres kijelentkezés\"}");
-
-    match visszatérési_érték.add_cookie(&session_azonosító_cookie) {
-        Err(hiba) => {
-            let hiba = format!("{}Hiba a cookie hozzáadásakor: {}", LOG_PREFIX, hiba);
-            println!("{}", hiba);
-            HttpResponse::InternalServerError().body(hiba)
-        },
-        Ok(_) => return visszatérési_érték,
-    }
-}
-
 pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multipart) -> HttpResponse {
-    let mut fájl_méret = 0;
-    let mut fájl_privát = "0";
-    let mut fájl_titkosított = 0;
-    let mut fájl_titkosítási_kulcs = "";
+    let mut _fájl_méret = 0;
+    let mut _fájl_privát = "0";
+    let mut _fájl_titkosított = 0;
+    let mut _fájl_titkosítási_kulcs = "";
     let mut _titkosítási_kulcs_chunk: actix_web::web::Bytes = actix_web::web::Bytes::new();
     let mut _private_chunk: actix_web::web::Bytes = actix_web::web::Bytes::new();
     let mut fájl_content_disposition;
-    let mut fájl_név = "";
-    let mut titkosítas_feloldása_kulcs: &str = "";
+    let mut _fájl_név = "";
+    let mut _titkosítas_feloldása_kulcs: &str = "";
     let mut _titkosítas_feloldása_kulcs_chunk;
 
     while let Some(item) = küldött_adatok.next().await {
@@ -802,7 +643,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
             Ok(field) => field,
             Err(_) => {
                 println!("{}küldött_adatok.next() hiba", LOG_PREFIX);
-                return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: küldött_adatok.next() hiba\"}");
+                return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: küldött_adatok.next() hiba\"}}")));
             }
         };
 
@@ -813,33 +654,33 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                 Ok(chunk) => chunk,
                 Err(_) => {
                     println!("{}field.next() hiba", LOG_PREFIX);
-                    return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: field.next() hiba\"}");
+                    return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: field.next() hiba\"}}")));
                 }
             };
 
             let mut fájl_field_van = false;
             
-            println!("-- FIELD: {:?}", match content_disposition.get_name() {
+            println!("{}-- FIELD: {:?}", LOG_PREFIX, match content_disposition.get_name() {
                 Some(name) => {
                     if name == "titkositas_feloldasa_kulcs" {
                         _titkosítas_feloldása_kulcs_chunk = chunk.clone();
                         match std::str::from_utf8(&_titkosítas_feloldása_kulcs_chunk) {
-                            Ok(s) => { titkosítas_feloldása_kulcs = s; },
-                            Err(_) => { titkosítas_feloldása_kulcs = "(Nem UTF-8 karakterek)" },
+                            Ok(s) => { _titkosítas_feloldása_kulcs = s; },
+                            Err(_) => { _titkosítas_feloldása_kulcs = "(Nem UTF-8 karakterek)" },
                         };
                     }
                     if name == "fileToUpload" { fájl_field_van = true; }
                     if name == "titkositas_kulcs" {
-                        fájl_titkosított = 1;
+                        _fájl_titkosított = 1;
                         _titkosítási_kulcs_chunk = chunk.clone();
                         match std::str::from_utf8(&_titkosítási_kulcs_chunk) {
-                            Ok(s) => { fájl_titkosítási_kulcs = s; },
-                            Err(_) => { fájl_titkosítási_kulcs = "(Nem UTF-8 karakterek)" },
+                            Ok(s) => { _fájl_titkosítási_kulcs = s; },
+                            Err(_) => { _fájl_titkosítási_kulcs = "(Nem UTF-8 karakterek)" },
                         }; 
                     }
                     if name == "private" {
                         _private_chunk = chunk.clone();
-                        fájl_privát = match std::str::from_utf8(&_private_chunk) {
+                        _fájl_privát = match std::str::from_utf8(&_private_chunk) {
                             Ok(s) => s,
                             Err(_) => "(Nem UTF-8 karakterek)",
                         }; 
@@ -850,7 +691,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
             });
 
             if !fájl_field_van {
-                println!("-- ÉRTÉK: {}", match std::str::from_utf8(&chunk) {
+                println!("{}-- ÉRTÉK: {}", LOG_PREFIX, match std::str::from_utf8(&chunk) {
                     Ok(s) => s,
                     Err(_) => "(Nem UTF-8 karakterek)",
                 });
@@ -860,22 +701,20 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                     Some(name) => name,
                     None => {
                         println!("{}fájl név megállapítása hiba", LOG_PREFIX);
-                        return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl név hiba\"}");
+                        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl név hiba\"}}")));
                     }
                 };
 
-                let fájlnév = fájlnév.clone();
+                _fájl_név = fájlnév;
 
-                fájl_név = fájlnév;
-
-                println!("-- FÁJL: '{}', Méret: {} B", fájlnév, chunk.len());
-                fájl_méret = chunk.len();
+                println!("{}-- FÁJL: '{}', Méret: {} B", LOG_PREFIX, fájlnév, chunk.len());
+                _fájl_méret = chunk.len();
 
                 let fájl = match std::fs::File::create(format!("/public/megoszto/fajlok/{}", fájlnév)) {
                     Ok(fájl) => fájl,
                     Err(_) => {
                         println!("{}fájl létrehozása hiba", LOG_PREFIX);
-                        return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl létrehozása hiba\"}");
+                        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl létrehozása hiba\"}}")));
                     }
                 };
 
@@ -883,7 +722,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                     Ok(_) => (),
                     Err(_) => {
                         println!("{}fájl írása hiba", LOG_PREFIX);
-                        return HttpResponse::BadRequest().body("{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl írása hiba\"}");
+                        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl írása hiba\"}}")));
                     }
                 };
             }
@@ -894,24 +733,11 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
         Some(cookie) => cookie.value().to_owned(),
         None => ERVENYTELEN_COOKIE.to_string(),
     };
-
-    let query_elemek = query_szöveg_feldolgozása(request.query_string());
-    
-    let felhasználó = cookie_gazdájának_lekérdezése(String::from(cookie_azonosító));
-
-    if titkosítas_feloldása_kulcs.len() > 0 {
-        letöltés_kezelő().await
-    } else {
-        feltöltés_kezelése(felhasználó, fájl_név, fájl_méret, fájl_privát, fájl_titkosított, fájl_titkosítási_kulcs, "").await
-    }
+    HttpResponse::Ok().body(exit_ok(format!("BACKEND: Letölés kezelő TODO")))
 
 }
 
-pub async fn letöltés_kezelő() -> HttpResponse {
-    HttpResponse::Ok().body("TODO")
-}
-
-pub async fn feltöltés_kezelése(felhasználó: Option<AdatbázisEredményFelhasználó>, fájl_név: &str, fájl_méret: usize, fájl_privát: &str, fájl_titkosított: i32, fájl_titkosítási_kulcs: &str, query_values_felhasználó_kiegészítés: &str) -> HttpResponse {
+pub async fn feltöltés_kezelése(felhasználó: Option<AdatbázisEredményFelhasználó>, fájl_név: &str, fájl_méret: usize, fájl_privát: &str, fájl_titkosított: i32, fájl_titkosítási_kulcs: &str, _query_values_felhasználó_kiegészítés: &str) -> HttpResponse {
     let (query_values_felhasználó_kiegészítés, query_insert_felhasználó_kiegészítés) = match felhasználó {
         Some(felhasználó) => (format!(", {}", felhasználó.azonosító), format!(", user_id")),
         None => (String::from(""), String::from("")),
@@ -922,7 +748,7 @@ pub async fn feltöltés_kezelése(felhasználó: Option<AdatbázisEredményFelh
         Err(err) => {
             let hiba = format!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
             println!("{}", hiba);
-            return HttpResponse::InternalServerError().body(format!("{}", hiba));
+            return HttpResponse::InternalServerError().body(exit_error(format!("{}", hiba)));
         }
     };
 
@@ -932,7 +758,7 @@ pub async fn feltöltés_kezelése(felhasználó: Option<AdatbázisEredményFelh
             Err(err) => {
                 let hiba = format!("{}Hiba a fájl táblába való beszúráskor: {}", LOG_PREFIX, err);
                 println!("{}", hiba);
-                return HttpResponse::InternalServerError().body(format!("{}", hiba));
+                return HttpResponse::InternalServerError().body(exit_error(format!("{}", hiba)));
             }
     }
 
