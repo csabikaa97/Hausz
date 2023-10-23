@@ -54,6 +54,15 @@ pub struct AdatbázisEredményFelhasználó {
     pub minecraft_lastlogin: i64,
 }
 
+pub struct AdatbázisEredményIgényeltFelhasználó {
+    request_id: u32,
+    username: String,
+    password: String,
+    sha256_password: String,
+    email: String,
+    megjeleno_nev: String,
+}
+
 pub struct AdatbázisEredménySession {
     azonosító: u32,
     session_kulcs: String,
@@ -235,7 +244,7 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
 pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
     let felhasználó_jelenlegi_cookie_azonosítója = match felhasználó_cookie_azonosítója {
         None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
         },
         Some(cookie) => cookie,
     };
@@ -244,7 +253,7 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
 
     match felhasználó {
         None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
         },
         Some(_) => {},
     }
@@ -253,7 +262,7 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az adatbázishoz való csatlakozáskor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az adatbázishoz való csatlakozáskor.")));
         }
     };
 
@@ -276,7 +285,7 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
 
     let felhasználó_tokenje = match felhasználó_tokenek.into_iter().nth(0) {
         None => {
-            return HttpResponse::Ok().body(exit_ok(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Jelenleg nincs jogosultsági tokened.\"}}")));
+            return HttpResponse::Ok().body(exit_ok(format!("Jelenleg nincs jogosultsági tokened.")));
         },
         Some(első_token) => első_token,
     };
@@ -285,7 +294,7 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
         Ok(generálás_dátuma) => generálás_dátuma,
         Err(err) => {
             println!("{}Hiba a generálás dátumának lekérdezésekor: dátum: {} Err: {}", LOG_PREFIX, felhasználó_tokenje.generálás_dátuma, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a generálás dátumának lekérdezésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a generálás dátumának lekérdezésekor.")));
         }
     };
     let token_cd_lejárt: bool = ( generálás_dátuma + chrono::Duration::seconds(crate::HAUSZ_TS_TOKEN_IGENYLES_CD) ) < Utc::now();
@@ -297,14 +306,14 @@ pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosít
 pub fn teamspeak_szerver_státusz_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
     let felhasználó_jelenlegi_cookie_azonosítója = match felhasználó_cookie_azonosítója {
         None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
         },
         Some(cookie) => cookie,
     };
 
     match cookie_gazdájának_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója) {
         None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
         },
         Some(_) => {},
     }
@@ -330,35 +339,35 @@ pub fn teamspeak_szerver_státusz_lekérdezése(felhasználó_cookie_azonosító
         Ok(regex) => regex,
         Err(err) => {
             println!("{}Uptime regex elkészítése sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
         },
     };
     let uptime_load_averages = match uptime_load_average_regex.captures(&uptime_kimenete.as_str()) {
         Some(captures) => captures,
         None => {
             println!("{}Uptime regex nem talált egyezést: '{}'", LOG_PREFIX, uptime_kimenete);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
         },
     };
     let processzor_1perc = match uptime_load_averages.get(1).unwrap().as_str().parse::<f32>() {
         Ok(perc) => perc,
         Err(err) => {
             println!("{}Uptime kimenet processzor_1perc-re alakítása sikertelen: '{}'", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
         },
     };
     let processzor_5perc = match uptime_load_averages.get(2).unwrap().as_str().parse::<f32>() {
         Ok(perc) => perc,
         Err(err) => {
             println!("{}Uptime kimenet processzor_5perc-re alakítása sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
         },
     };
     let processzor_15perc = match uptime_load_averages.get(3).unwrap().as_str().parse::<f32>() {
         Ok(perc) => perc,
         Err(err) => {
             println!("{}Uptime kimenet processzor_15perc-re alakítása sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba a szerver státuszának lekérdezésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
         },
     };
 
@@ -408,10 +417,10 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
 
     match (felhasználó_cookie_azonosítója, &felhasználó) {
         (None, _) => {
-            return HttpResponse::Unauthorized().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
+            return HttpResponse::Unauthorized().body(exit_error(format!("Nem vagy belépve.")));
         }
         (Some(_), None) => {
-            return HttpResponse::Unauthorized().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Nem vagy belépve.\"}}")));
+            return HttpResponse::Unauthorized().body(exit_error(format!("Nem vagy belépve.")));
         }
         (_, _) => (),
     }
@@ -419,7 +428,7 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     let mut conn = match csatlakozás(crate::HAUSZ_TS_ADATBAZIS_URL) {
         Err(err) => {
             println!("{}Hiba a Teamspeak adatbázishoz való csatlakozás során: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
         },
         Ok(conn) => conn,
     };
@@ -429,7 +438,7 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     match conn.query_drop(format!("DELETE FROM `felhasznalo_tokenek` WHERE `user_id` = {}", felhasználó.azonosító)) {
         Err(err) => {
             println!("{}Hiba a Teamspeak token törlésekor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
         },
         Ok(_) => (),
     }
@@ -446,14 +455,14 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     let token = match token_regex.captures(&create_token_sh_kimenete) {
         None => {
             println!("{}Hiba a Teamspeak token létrehozásakor: Nem sikerült a token lekérdezése a create_token.sh kimenetéből. Kimenet: '{}'", LOG_PREFIX, create_token_sh_kimenete);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
         },
         Some(token) => token,
     };
     let token = match token.get(1) {
         None => {
             println!("{}Hiba a Teamspeak token létrehozásakor: Nem sikerült a token kinyerése a Captures-ből", LOG_PREFIX);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
         },
         Some(token) => token.as_str().replace("\r", ""),
     };
@@ -461,7 +470,7 @@ pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Optio
     match conn.query_drop(format!("INSERT INTO `felhasznalo_tokenek` (`user_id`, `token`, `generalasi_datum`) VALUES ({}, '{}', now(6))", felhasználó.azonosító, token)) {
         Err(err) => {
             println!("{}Hiba a Teamspeak token létrehozásakor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\": \"Hiba az új TeamSpeak token igénylésekor.\"}}")));
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
         },
         Ok(_) => (),
     }
@@ -643,7 +652,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
             Ok(field) => field,
             Err(_) => {
                 println!("{}küldött_adatok.next() hiba", LOG_PREFIX);
-                return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: küldött_adatok.next() hiba\"}}")));
+                return HttpResponse::BadRequest().body(exit_error(format!("Szerver hiba: küldött_adatok.next() hiba")));
             }
         };
 
@@ -654,7 +663,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                 Ok(chunk) => chunk,
                 Err(_) => {
                     println!("{}field.next() hiba", LOG_PREFIX);
-                    return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: field.next() hiba\"}}")));
+                    return HttpResponse::BadRequest().body(exit_error(format!("Szerver hiba: field.next() hiba")));
                 }
             };
 
@@ -701,7 +710,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                     Some(name) => name,
                     None => {
                         println!("{}fájl név megállapítása hiba", LOG_PREFIX);
-                        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl név hiba\"}}")));
+                        return HttpResponse::BadRequest().body(exit_error(format!("Szerver hiba: fájl név hiba")));
                     }
                 };
 
@@ -714,7 +723,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                     Ok(fájl) => fájl,
                     Err(_) => {
                         println!("{}fájl létrehozása hiba", LOG_PREFIX);
-                        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl létrehozása hiba\"}}")));
+                        return HttpResponse::BadRequest().body(exit_error(format!("Szerver hiba: fájl létrehozása hiba")));
                     }
                 };
 
@@ -722,7 +731,7 @@ pub async fn megosztó_kezelő(request: HttpRequest, mut küldött_adatok: Multi
                     Ok(_) => (),
                     Err(_) => {
                         println!("{}fájl írása hiba", LOG_PREFIX);
-                        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Szerver hiba: fájl írása hiba\"}}")));
+                        return HttpResponse::BadRequest().body(exit_error(format!("Szerver hiba: fájl írása hiba")));
                     }
                 };
             }

@@ -30,20 +30,20 @@ pub static HAUSZ_TS_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.
 
 async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpResponse {
     let content_type = match request.headers().get("content-type") {
-        None => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Nincs content-type header\"}}"))),
+        None => return HttpResponse::BadRequest().body(exit_error(format!("Nincs content-type header"))),
         Some(content_type) => content_type,
     };
 
     let content_type = match content_type.to_str() {
-        Err(e) => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"{}\"}}", e))),
+        Err(e) => return HttpResponse::BadRequest().body(exit_error(format!("{}", e))),
         Ok(content_type) => content_type,
     };
     if !content_type.starts_with("multipart/form-data;") {
-        return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Nem multipart/form-data\"}}")));
+        return HttpResponse::BadRequest().body(exit_error(format!("Nem multipart/form-data")));
     }
 
     let boundary = match content_type.split("boundary=").last() {
-        None => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Nincs boundary megadva\"}}"))),
+        None => return HttpResponse::BadRequest().body(exit_error(format!("Nincs boundary megadva"))),
         Some(boundary) => boundary,
     };
 
@@ -53,7 +53,7 @@ async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpRespons
         }
         Some(cookies) => {
             if cookies.value().len() == 0 {
-                return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Üres cookie\"}}")));
+                return HttpResponse::BadRequest().body(exit_error(format!("Üres cookie")));
             }
 
             cookies.value().to_string()
@@ -104,7 +104,7 @@ async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
         }
         Some(cookies) => {
             if cookies.value().len() == 0 {
-                return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Üres cookie\"}}")));
+                return HttpResponse::BadRequest().body(exit_error(format!("Üres cookie")));
             }
 
             cookies.value().to_string()
@@ -144,7 +144,7 @@ async fn kérés_metódus_választó(request: HttpRequest, form: String) -> Http
     match method.to_owned() {
         actix_web::http::Method::GET => return get_kérés_kezelő(request).await,
         actix_web::http::Method::POST => return post_kérés_kezelő(request, form).await,
-        _ => return HttpResponse::BadRequest().body(exit_error(format!("{{\"eredmeny\": \"hiba\", \"valasz\":\"Ismeretlen metódus\"}}"))),
+        _ => return HttpResponse::BadRequest().body(exit_error(format!("Ismeretlen metódus"))),
     }
 }
 

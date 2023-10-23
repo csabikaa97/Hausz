@@ -6,10 +6,12 @@ use crate::fajlok::hozzárendelt_fájl;
 use crate::mime_types::mime_type_megállapítása;
 
 use crate::oldalak::belepteto_rendszer::*;
+use crate::oldalak::regisztracio::*;
 
 static LOG_PREFIX: &str = "[kérés_kez] ";
 
 pub fn keres_kezelo(post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {
+    // beléptető rendszer
     if isset("login", post.clone()) {
         return belepteto_rendszer(post, get, session);
     }
@@ -21,6 +23,14 @@ pub fn keres_kezelo(post: Vec<(String, String)>, get: Vec<(String, String)>, ses
     }
     if isset("logout", get.clone()) {
         return belepteto_rendszer(post, get, session);
+    }
+
+    // regisztráció
+    if isset("regisztracio", post.clone()) {
+        return regisztráció(post, get, session);
+    }
+    if isset("generate_salt", get.clone()) {
+        return regisztráció(post, get, session);
     }
 
     for (key, _) in get.clone() {

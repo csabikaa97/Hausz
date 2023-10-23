@@ -1,5 +1,7 @@
 use mysql::MySqlError;
 
+use crate::backend::lekerdezesek::általános_query_futtatás;
+
 static LOG_PREFIX: &str = "[alap_függ] ";
 
 #[derive(Debug)]
@@ -77,4 +79,14 @@ pub fn exit_error(szoveg: String) -> String {
         buffer = buffer + &szoveg + "}";
     }
     return buffer;
+}
+
+pub fn log_bejegyzes(szolgaltatas: &str, bejegyzes: &str, komment: &str, felhasznalo: String) {
+    let query = format!("insert into hausz_log.log (szolgaltatas, bejegyzes, komment, felhasznalo, datum) values ('{}', '{}', '{}', '{}', now(6));", szolgaltatas, bejegyzes, komment, felhasznalo);
+    match általános_query_futtatás(query.clone()) {
+        Ok(_) => {},
+        Err(err) => {
+            println!("{}Nem sikerült a log bejegyzés: ({}) ({})", LOG_PREFIX, query, err);
+        },
+    }
 }
