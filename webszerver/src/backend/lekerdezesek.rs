@@ -8,6 +8,29 @@ use mysql::prelude::*;
 use super::AdatbázisEredményFelhasználó;
 use super::AdatbázisEredményIgényeltFelhasználó;
 
+pub fn saját_meghívók_lekérése(user_id: u32) -> Result<Vec<String>> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    let meghívók = match conn.query_map(
+            format!("SELECT meghivo FROM meghivok WHERE user_id = '{}'", user_id),
+            |meghivo: String| meghivo
+        ) {
+            Ok(eredmény) => eredmény,
+            Err(err) => {
+                println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+                return Err(err);
+            }
+        };
+
+    return Ok(meghívók);
+}
+
 pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,

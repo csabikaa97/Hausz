@@ -1,5 +1,6 @@
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
+use crate::oldalak::meghivo::meghívó;
 use crate::session::Session;
 use crate::alap_fuggvenyek::isset;
 use crate::fajlok::hozzárendelt_fájl;
@@ -31,6 +32,14 @@ pub fn keres_kezelo(post: Vec<(String, String)>, get: Vec<(String, String)>, ses
     }
     if isset("generate_salt", get.clone()) {
         return regisztráció(post, get, session);
+    }
+
+    // meghívó
+    if isset("meghivo_adatok", get.clone()) {
+        return meghívó(post, get, session);
+    }
+    if isset("uj_meghivo", get.clone()) {
+        return meghívó(post, get, session);
     }
 
     for (key, _) in get.clone() {

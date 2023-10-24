@@ -47,6 +47,8 @@ async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpRespons
         Some(boundary) => boundary,
     };
 
+    println!("{} DEBUG: Boundary=({})", LOG_PREFIX, boundary);
+
     let cookie: String = match request.cookie("hausz_session") {
         None => {
             "".to_string()
