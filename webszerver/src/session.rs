@@ -4,4 +4,5 @@ pub struct Session {
     pub admin: String,
     pub user_id: u32,
     pub cookie: String,
+    pub minecraft_username: String,
 }

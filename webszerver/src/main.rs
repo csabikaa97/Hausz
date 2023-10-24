@@ -75,6 +75,7 @@ async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpRespons
                 admin: adatok.admin,
                 user_id: adatok.azonosító,
                 cookie: cookie.clone(),
+                minecraft_username: adatok.minecraft_username,
             };
         }
         None => {
@@ -84,6 +85,7 @@ async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpRespons
                 admin: "".to_string(),
                 user_id: 0,
                 cookie: "".to_string(),
+                minecraft_username: "".to_string(),
             };
         },
     }
@@ -125,6 +127,7 @@ async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
                 admin: adatok.admin,
                 user_id: adatok.azonosító,
                 cookie: cookie.clone(),
+                minecraft_username: adatok.minecraft_username,
             };
         }
         None => {
@@ -134,6 +137,7 @@ async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
                 admin: "".to_string(),
                 user_id: 0,
                 cookie: "".to_string(),
+                minecraft_username: "".to_string(),
             };
         },
     }

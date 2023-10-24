@@ -4,9 +4,71 @@ use crate::alap_fuggvenyek::FelhasználóAzonosítóAdatok;
 use crate::backend::csatlakozás;
 use mysql::*;
 use mysql::prelude::*;
+use crate::backend::AdatbázisEredményMinecraftFelhasználó;
 
 use super::AdatbázisEredményFelhasználó;
 use super::AdatbázisEredményIgényeltFelhasználó;
+
+pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMinecraftFelhasználó>> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    match conn.query_map(
+        format!("SELECT username, COALESCE(minecraft_username, ''), minecraft_isLogged, minecraft_lastlogin FROM users WHERE minecraft_lastlogin IS NOT NULL ORDER BY minecraft_isLogged DESC, minecraft_lastlogin DESC"),
+        |(
+            username,
+            minecraft_username,
+            minecraft_islogged,
+            minecraft_lastlogin
+        )| AdatbázisEredményMinecraftFelhasználó {
+            username,
+            minecraft_username,
+            minecraft_islogged,
+            minecraft_lastlogin
+        }
+    ) {
+        Ok(eredmény) => { return Ok(eredmény); },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+}
+
+pub fn minecraft_felhasználó_létezik(felhasználónév: String) -> Result<bool> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    let felhasználók = match conn.query_map(
+        format!("SELECT minecraft_username FROM users WHERE minecraft_username = '{}'", felhasználónév),
+        |felhasználónév: String| felhasználónév
+    ) {
+        Ok(eredmény) => eredmény,
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    match felhasználók.first() {
+        Some(felhasználó) => {
+            return Ok(true);
+        },
+        None => {
+            return Ok(false);
+        }
+    };
+}
 
 pub fn saját_meghívók_lekérése(user_id: u32) -> Result<Vec<String>> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {

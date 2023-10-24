@@ -54,6 +54,13 @@ pub struct AdatbázisEredményFelhasználó {
     pub minecraft_lastlogin: i64,
 }
 
+pub struct AdatbázisEredményMinecraftFelhasználó {
+    pub username: String,
+    pub minecraft_username: String,
+    pub minecraft_islogged: i16,
+    pub minecraft_lastlogin: i64
+}
+
 pub struct AdatbázisEredményIgényeltFelhasználó {
     request_id: u32,
     username: String,

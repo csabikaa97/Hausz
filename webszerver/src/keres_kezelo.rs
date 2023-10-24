@@ -1,6 +1,7 @@
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 use crate::oldalak::meghivo::meghívó;
+use crate::oldalak::minecraft;
 use crate::session::Session;
 use crate::alap_fuggvenyek::isset;
 use crate::fajlok::hozzárendelt_fájl;
@@ -41,6 +42,18 @@ pub fn keres_kezelo(post: Vec<(String, String)>, get: Vec<(String, String)>, ses
     if isset("uj_meghivo", get.clone()) {
         return meghívó(post, get, session);
     }
+
+    // minecraft
+    if isset("felhasznalonev_info", get.clone()) {
+        return crate::oldalak::minecraft::minecraft(post, get, session);
+    }
+    if isset("felhasznalonev_valtoztatas", get.clone()) {
+        return crate::oldalak::minecraft::minecraft(post, get, session);
+    }
+    if isset("jatekos_lista", get.clone()) {
+        return crate::oldalak::minecraft::minecraft(post, get, session);
+    }
+
 
     for (key, _) in get.clone() {
         if key.len() == 0 {
