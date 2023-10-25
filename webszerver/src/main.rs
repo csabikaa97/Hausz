@@ -5,6 +5,7 @@ use actix_web::{
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use std::io::Error;
 use std::io::ErrorKind;
+use std::sync::Mutex;
 use crate::alap_fuggvenyek::exit_error;
 
 mod mime_types;
@@ -28,7 +29,8 @@ pub const MAX_FÁJL_MÉRET: usize                 = 1024*1024*10;
 pub static MEGOSZTO_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_megoszto";
 pub static HAUSZ_TS_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_ts";
 
-async fn post_kérés_kezelő(request: HttpRequest, form: String) -> HttpResponse {
+static STATIKUS_FÁJL_GYORSÍTÓTÁR: Mutex<Vec<(String, Vec<u8>)>> = Mutex::new(Vec::new());
+
     let content_type = match request.headers().get("content-type") {
         None => return HttpResponse::BadRequest().body(exit_error(format!("Nincs content-type header"))),
         Some(content_type) => content_type,

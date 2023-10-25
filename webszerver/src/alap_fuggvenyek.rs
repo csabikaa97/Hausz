@@ -24,6 +24,25 @@ pub fn isset(keresett_kulcs: &str, post: Vec<(String, String)>) -> bool {
     return false;
 }
 
+pub fn get_gyorsítótár(keresett_kulcs: &str) -> Result<Vec<u8>, String> {
+    let dsa = match crate::STATIKUS_FÁJL_GYORSÍTÓTÁR.lock() {
+        Ok(dsa) => dsa.clone(),
+        Err(err) => {
+            return Err(format!("Nem sikerült elérni a gyorsítótárat: {}", err));
+        },
+    };
+    for (kulcs, érték) in dsa {
+        if kulcs == keresett_kulcs.to_owned() {
+            return Ok(érték);
+        }
+    }
+    return Err("Nincs ilyen kulcs a gyorsítótárban".to_owned());
+}
+
+pub fn save_gyorsítótár(kulcs: String, érték: Vec<u8>) {
+    crate::STATIKUS_FÁJL_GYORSÍTÓTÁR.lock().unwrap().push((kulcs, érték));
+}
+
 pub fn list_key(key: &str, post: Vec<(String, String)>) -> String {
     for (kulcs, ertek) in post {
         if kulcs == key.to_string() { return ertek; }
