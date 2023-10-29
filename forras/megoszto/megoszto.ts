@@ -465,6 +465,7 @@ function feltoltes() {
         }
         formData.append("submit", "1");
         formData.append("fileToUpload", fajl);
+        formData.append("filename", fajl.name);
         keres.open("POST", '/megoszto/megoszto.php');
         keres.send(formData);
     }

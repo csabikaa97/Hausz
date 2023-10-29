@@ -1,24 +1,57 @@
+use std::{str::from_utf8, io::Write};
+
+use actix_form_data::Field;
+use actix_multipart::Multipart;
+use actix_web::web::Bytes;
+use futures_util::{TryStreamExt, StreamExt};
 use regex::Regex;
 
-pub fn form_olvasó(form: String, boundary: String) -> Vec<(String, String)> {
+static LOG_PREFIX: &str = "[form_olva] ";
+
+pub async fn form_olvasó(payload: &mut Multipart, boundary: String) -> Vec<(String, String)> {
     let mut returnvalue = Vec::new();
 
-    let mut jelenlegi_kulcs = String::new();
+    let mut jelenlegi_kulcs: String = String::new();
 
-    for line in form.lines() {
-        if line.starts_with(boundary.as_str()) {
-            continue;
+    while let Some(mut field) = payload.try_next().await.unwrap_or(None) {
+        let content_disposition;
+        {
+            content_disposition = (&field).content_disposition(); 
         }
-        if line.starts_with("Content-Disposition: form-data;") {
-            let re = Regex::new(r#"name="(.*)""#).unwrap();
-            let captures = re.captures(line).unwrap();
-            let name = captures.get(1).unwrap().as_str();
-            jelenlegi_kulcs = name.to_string();
-            continue;
-        }
-        if line.len() == 0 { continue; }
 
-        returnvalue.push((jelenlegi_kulcs.clone(), line.to_string()));
+        let name = match content_disposition.get_name() {
+            Some(name) => {
+                jelenlegi_kulcs = format!("{name}");
+                name.to_string()
+            },
+            None => {
+                continue;
+            }
+        };
+        
+        if name.as_str() == "fileToUpload" {
+            panic!("{}Rossz POST sorrend: Jelenlegi: (fileToUpload) ({:?})", LOG_PREFIX, returnvalue);
+        }
+
+        let mut bytes = Vec::new();
+
+        while let Some(chunk) = field.next().await {
+            let data = chunk.unwrap();
+            bytes.append(&mut data.to_vec());
+        }
+        
+        let bytes_string = match from_utf8(&bytes) {
+            Ok(v) => v,
+            Err(e) =>{
+                println!("{}Invalid UTF-8 sequence: ({})", LOG_PREFIX, e);
+                continue;
+            }
+        };
+        returnvalue.push((jelenlegi_kulcs.clone(), bytes_string.to_string()));
+
+        if name.as_str() == "filename" {
+            return returnvalue;
+        }
     }
 
     return returnvalue;

@@ -7,7 +7,74 @@ use mysql::prelude::*;
 use crate::backend::AdatbázisEredményMinecraftFelhasználó;
 
 use super::AdatbázisEredményFelhasználó;
+use super::AdatbázisEredményFájl;
 use super::AdatbázisEredményIgényeltFelhasználó;
+
+pub fn fájl_lekérdezése(file_id: String) -> Option<AdatbázisEredményFájl> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return None;
+        }
+    };
+
+    match conn.query_map(
+        // SELECT id, user_id, from files left outer join users ON users.id = files.user_id WHERE files.id = {}
+        format!("SELECT id, user_id, megjeleno_nev, username, filename, added, size, private, titkositott, titkositas_kulcs FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE id = {}", file_id),
+        |(
+            azonosító,
+            felhasználó_azonosító,
+            felhasználó_megjelenő_név,
+            felhasználónév,
+            fájlnév,
+            hozzáadás_dátuma,
+            méret, 
+            privát,
+            titkosított,
+            titkosítás_kulcs,
+        )| AdatbázisEredményFájl {
+            azonosító,
+            felhasználó_azonosító,
+            felhasználó_megjelenő_név,
+            felhasználónév,
+            fájlnév,
+            hozzáadás_dátuma,
+            méret, 
+            privát,
+            titkosított,
+            titkosítás_kulcs,
+        }
+    ) {
+        Ok(eredmény) => {
+            match eredmény.first() {
+                None => {
+                    return None;
+                },
+                Some(x) => {
+                    return Some(
+                        AdatbázisEredményFájl { 
+                            azonosító: x.azonosító,
+                            felhasználó_azonosító: x.felhasználó_azonosító,
+                            felhasználó_megjelenő_név: x.felhasználó_megjelenő_név.clone(),
+                            felhasználónév: x.felhasználónév.clone(),
+                            fájlnév: x.fájlnév.clone(),
+                            hozzáadás_dátuma: x.hozzáadás_dátuma.clone(),
+                            méret: x.méret,
+                            privát: x.privát,
+                            titkosított: x.titkosított,
+                            titkosítás_kulcs: x.titkosítás_kulcs.clone(),
+                        }
+                    );
+                }
+            }
+        },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+            return None;
+        }
+    };
+}
 
 pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMinecraftFelhasználó>> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {

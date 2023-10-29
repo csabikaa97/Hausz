@@ -1,14 +1,16 @@
+use actix_multipart::Multipart;
 use actix_web::{
     web, App, HttpServer, 
     HttpRequest, HttpResponse
 };
+use futures_util::StreamExt;
+use futures_util::TryStreamExt;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use std::io::Error;
 use std::io::ErrorKind;
 use std::sync::Mutex;
 use crate::alap_fuggvenyek::exit_error;
 
-mod mime_types;
 mod backend;
 mod fajlok;
 mod form_olvaso;
@@ -16,6 +18,7 @@ mod keres_kezelo;
 mod session;
 mod alap_fuggvenyek;
 mod oldalak;
+pub mod mime_types;
 
 static LOG_PREFIX: &str                         = "[szerver  ] ";
 static IP: &str                                 = "0.0.0.0";
@@ -31,6 +34,7 @@ pub static HAUSZ_TS_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.
 
 static STATIKUS_FÁJL_GYORSÍTÓTÁR: Mutex<Vec<(String, Vec<u8>)>> = Mutex::new(Vec::new());
 
+async fn post_kérés_kezelő(request: HttpRequest, mut payload: Multipart) -> HttpResponse {
     let content_type = match request.headers().get("content-type") {
         None => return HttpResponse::BadRequest().body(exit_error(format!("Nincs content-type header"))),
         Some(content_type) => content_type,
@@ -92,13 +96,13 @@ static STATIKUS_FÁJL_GYORSÍTÓTÁR: Mutex<Vec<(String, Vec<u8>)>> = Mutex::new
         },
     }
 
-    let form_adatok = form_olvaso::form_olvasó(form.clone(), boundary.to_owned());
+    let form_adatok = form_olvaso::form_olvasó(&mut payload, boundary.to_owned()).await;
     let get_adatok = form_olvaso::get_olvasó(request.query_string().to_string());
 
-    keres_kezelo::keres_kezelo(form_adatok, get_adatok, session_adatok, request)
+    keres_kezelo::keres_kezelo(payload, form_adatok, get_adatok, session_adatok, request).await
 }
 
-async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
+async fn get_kérés_kezelő(request: HttpRequest, payload: Multipart) -> HttpResponse {
     let form_adatok = Vec::new();
     let get_adatok = form_olvaso::get_olvasó(request.query_string().to_string());
 
@@ -144,14 +148,15 @@ async fn get_kérés_kezelő(request: HttpRequest) -> HttpResponse {
         },
     }
 
-    keres_kezelo::keres_kezelo(form_adatok, get_adatok, session_adatok, request)
+    keres_kezelo::keres_kezelo(payload, form_adatok, get_adatok, session_adatok, request).await
 }
 
-async fn kérés_metódus_választó(request: HttpRequest, form: String) -> HttpResponse {
+async fn kérés_metódus_választó(request: HttpRequest, payload: Multipart) -> HttpResponse {
     let method = request.method();
+
     match method.to_owned() {
-        actix_web::http::Method::GET => return get_kérés_kezelő(request).await,
-        actix_web::http::Method::POST => return post_kérés_kezelő(request, form).await,
+        actix_web::http::Method::GET => return get_kérés_kezelő(request, payload).await,
+        actix_web::http::Method::POST => return post_kérés_kezelő(request, payload).await,
         _ => return HttpResponse::BadRequest().body(exit_error(format!("Ismeretlen metódus"))),
     }
 }
