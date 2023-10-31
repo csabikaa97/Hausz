@@ -6,6 +6,7 @@ use actix_web::body::MessageBody;
 use actix_web::web::Bytes;
 use crate::alap_fuggvenyek::get_gyorsítótár;
 use crate::alap_fuggvenyek::save_gyorsítótár;
+use crate::oldalak::jelszo_valtoztatas::jelszó_változtatás;
 use crate::oldalak::meghivo::meghívó;
 use crate::oldalak::megoszto::megosztó;
 use crate::oldalak::minecraft::minecraft;
@@ -97,6 +98,11 @@ pub async fn tenyleges_keres_kezelo(mut payload: Multipart, post: Vec<(String, S
     }
     if isset("delete", get.clone()) {
         return megosztó(payload, post, get, session).await;
+    }
+
+    // jelszó változatás
+    if isset("uj_jelszo_sha256_salt", post.clone()) {
+        return jelszó_változtatás(payload, post, get, session).await;
     }
 
     let path = request.path();

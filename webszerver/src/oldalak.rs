@@ -3,3 +3,4 @@ pub mod regisztracio;
 pub mod meghivo;
 pub mod minecraft;
 pub mod megoszto;
+pub mod jelszo_valtoztatas;

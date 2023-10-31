@@ -31,7 +31,9 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "komponensek/sha256.js"                 => "komponensek/sha256.js",
         "teamspeak/teamspeak.js"                => "teamspeak/teamspeak.js",
         "favicon.ico"                           => "favicon.ico",
-        _                                       => {
+        "kezelo/jelszo_valtoztatas.html"        => "kezelo/jelszo_valtoztatas.html",
+        "kezelo/jelszo_valtoztatas.js"          => "kezelo/jelszo_valtoztatas.js",
+        _ => {
             println!("{}Nincs hozzáadva a listához a fájl: {}", LOG_PREFIX, útvonal);
             "404.html"
         },
