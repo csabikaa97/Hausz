@@ -12,7 +12,7 @@ pub enum JelszoReszek {
 
 pub enum FelhasználóAzonosítóAdatok {
     Felhasználónév(String),
-    Azonosító(i32),
+    Azonosító(u32),
 }
 
 pub fn isset(keresett_kulcs: &str, post: Vec<(String, String)>) -> bool {

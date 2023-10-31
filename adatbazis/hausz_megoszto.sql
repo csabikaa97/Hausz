@@ -23,17 +23,17 @@ CREATE TABLE `users` (
   `password` varchar(1000) DEFAULT NULL,
   `sha256_password` varchar(1000) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `admin` varchar(10) DEFAULT NULL,
+  `admin` varchar(10) DEFAULT 'nem',
   `megjeleno_nev` varchar(255) DEFAULT NULL,
   `minecraft_username` varchar(255) DEFAULT NULL,
   `minecraft_isLogged` SMALLINT(5) DEFAULT 0,
-  `minecraft_lastlogin` BIGINT(19) DEFAULT NULL,
+  `minecraft_lastlogin` BIGINT(19) DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 -- admin                /   admin
 -- automata_teszteles   /   automata_teszteles
-INSERT INTO `users` (`username`, `password`, `megjeleno_nev`, `admin`) VALUES ('admin', '$2y$10$I9Dw229eAERVxLdaFPmAuer.Q0XHeK4yIz50epqbBAXySm5yx/MpS', 'admin', 'igen');
-INSERT INTO `users` (`username`, `password`, `megjeleno_nev`) VALUES ('automata_teszteles', '$2y$10$IU947uFHA9.9JjFq2qhD/uPmJ4Ugmz4C3amLJ7nTEUZ5JGJOMidCW', 'automata_teszteles');
+INSERT INTO `users` (`username`, `sha256_password`, `megjeleno_nev`, `admin`) VALUES ('admin', '$SHA$8d93e8f0deed91097f4ae80a8e5ae79181ae7ba61d404f53a2e79fb0f21ac822$82dfe312db9a233c9ff5d9c01dbf4fc364be6f77fa75b8dc418818fb4d690f83', 'admin', 'igen');
+INSERT INTO `users` (`username`, `sha256_password`, `megjeleno_nev`) VALUES ('automata_teszteles', '$SHA$e2470dea81024809960afbbccc1a3accde248520fb3040d90af3c6e38218e4b5$f8896ae7a7729ffd4e803371d0a1bd37c57b84db2bbcf4b2f26613653acb0016', 'automata_teszteles');
 INSERT INTO `users` (`username`, `megjeleno_nev`) VALUES ('ismeretlen', 'ismeretlen');
 UPDATE `users` SET id = 0 WHERE username LIKE 'ismeretlen';
 

@@ -2,8 +2,6 @@ use std::io::Write;
 use actix_multipart::Multipart;
 use actix_web::HttpResponse;
 use actix_web::HttpRequest;
-use actix_web::body::MessageBody;
-use actix_web::web::Bytes;
 use crate::alap_fuggvenyek::get_gyorsítótár;
 use crate::alap_fuggvenyek::save_gyorsítótár;
 use crate::oldalak::jelszo_valtoztatas::jelszó_változtatás;
@@ -22,17 +20,17 @@ use crate::oldalak::regisztracio::*;
 
 static LOG_PREFIX: &str = "[kérés_kez] ";
 
-pub async fn keres_kezelo(mut payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {
+pub async fn keres_kezelo(payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {
     let start = std::time::Instant::now();
 
     let returnvalue = tenyleges_keres_kezelo(payload, post, get, session, request.clone());
 
-    let elapsed = start.elapsed();
+    let _elapsed = start.elapsed();
 
     return returnvalue.await;
 }
 
-pub async fn tenyleges_keres_kezelo(mut payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {  
+pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {  
     // beléptető rendszer
     if isset("login", post.clone()) {
         return belepteto_rendszer(post, get, session);
@@ -102,7 +100,7 @@ pub async fn tenyleges_keres_kezelo(mut payload: Multipart, post: Vec<(String, S
 
     // jelszó változatás
     if isset("uj_jelszo_sha256_salt", post.clone()) {
-        return jelszó_változtatás(payload, post, get, session).await;
+        return jelszó_változtatás(post, session).await;
     }
 
     let path = request.path();

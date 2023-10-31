@@ -1,17 +1,14 @@
-use std::{str::from_utf8, io::Write};
+use std::str::from_utf8;
 
-use actix_form_data::Field;
 use actix_multipart::Multipart;
-use actix_web::web::Bytes;
 use futures_util::{TryStreamExt, StreamExt};
-use regex::Regex;
 
 static LOG_PREFIX: &str = "[form_olva] ";
 
-pub async fn form_olvasó(payload: &mut Multipart, boundary: String) -> Vec<(String, String)> {
+pub async fn form_olvasó(payload: &mut Multipart) -> Vec<(String, String)> {
     let mut returnvalue = Vec::new();
 
-    let mut jelenlegi_kulcs: String = String::new();
+    let mut jelenlegi_kulcs: String;
 
     while let Some(mut field) = payload.try_next().await.unwrap_or(None) {
         let content_disposition;
@@ -47,7 +44,7 @@ pub async fn form_olvasó(payload: &mut Multipart, boundary: String) -> Vec<(Str
                 continue;
             }
         };
-        returnvalue.push((jelenlegi_kulcs.clone(), bytes_string.to_string()));
+        returnvalue.push((jelenlegi_kulcs, bytes_string.to_string()));
 
         if name.as_str() == "filename" {
             return returnvalue;

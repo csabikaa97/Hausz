@@ -1,5 +1,5 @@
 use actix_web::HttpResponse;
-use crate::{session::Session, alap_fuggvenyek::{isset, list_key, log_bejegyzes}, backend::{lekerdezesek::{új_session_beillesztése, session_törlése, felhasznalo_lekerdezese, igényelt_felhasznalo_lekerdezese, általános_query_futtatás, meghívó_létezik}, session_azonosito_generator::random_új_session_azonosító}};
+use crate::{session::Session, alap_fuggvenyek::{isset, list_key, log_bejegyzes}, backend::{lekerdezesek::{felhasznalo_lekerdezese, igényelt_felhasznalo_lekerdezese, általános_query_futtatás, meghívó_létezik}, session_azonosito_generator::random_új_session_azonosító}};
 use crate::alap_fuggvenyek::exit_error;
 use crate::alap_fuggvenyek::exit_ok;
 
@@ -45,7 +45,7 @@ pub fn regisztráció(post: Vec<(String, String)>, get: Vec<(String, String)>, s
     if regex.is_match(&username) {
         return HttpResponse::BadRequest().body(exit_error(format!("Illegális karaktert tartalmaz a felhasználóneved ( \' \" ` ).")));
     }
-    let regex = regex::Regex::new(r#"[^a-zA-Z0-9-\.#áűőúüóöéí]"#).unwrap();
+    let regex = regex::Regex::new(r#"[^a-zA-Z0-9-_\.#áűőúüóöéí]"#).unwrap();
     if regex.is_match(&username) {
         return HttpResponse::BadRequest().body(exit_error(format!("Illegális karaktert tartalmaz a felhasználóneved")));
     }
@@ -60,7 +60,8 @@ pub fn regisztráció(post: Vec<(String, String)>, get: Vec<(String, String)>, s
 
     match felhasznalo_lekerdezese(crate::alap_fuggvenyek::FelhasználóAzonosítóAdatok::Felhasználónév(list_key("regisztracio_username", post.clone()))) {
         Err(_) => {},
-        Ok(_) => {
+        Ok(None) => {},
+        Ok(Some(_)) => {
             return HttpResponse::BadRequest().body(exit_error(format!("Már létezik ilyen felhasználó")));
         },
     }

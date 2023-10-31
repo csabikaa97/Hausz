@@ -33,6 +33,9 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "favicon.ico"                           => "favicon.ico",
         "kezelo/jelszo_valtoztatas.html"        => "kezelo/jelszo_valtoztatas.html",
         "kezelo/jelszo_valtoztatas.js"          => "kezelo/jelszo_valtoztatas.js",
+        "kezelo/regisztracio.html"              => "/kezelo/regisztracio.html",
+        "kezelo/regisztracio.js"                => "/kezelo/regisztracio.js",
+        // "" => "",
         _ => {
             println!("{}Nincs hozzáadva a listához a fájl: {}", LOG_PREFIX, útvonal);
             "404.html"

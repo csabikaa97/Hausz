@@ -10,6 +10,7 @@ use super::AdatbázisEredményFelhasználó;
 use super::AdatbázisEredményFájl;
 use super::AdatbázisEredményIgényeltFelhasználó;
 
+/*
 pub fn felhasználó_lekérdezése_id_alapján(user_id: u32) -> Result<Option<AdatbázisEredményFelhasználó>> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
@@ -20,7 +21,7 @@ pub fn felhasználó_lekérdezése_id_alapján(user_id: u32) -> Result<Option<Ad
     };
 
     match conn.query_map(
-        format!("SELECT id, username, password, COALESCE(sha256_password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users WHERE id = {}", user_id),
+        format!("SELECT id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users WHERE id = {}", user_id),
         |(
             id,
             username,
@@ -73,6 +74,7 @@ pub fn felhasználó_lekérdezése_id_alapján(user_id: u32) -> Result<Option<Ad
         }
     }
 }
+*/
 
 pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEredményFájl> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
@@ -85,7 +87,7 @@ pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEred
 
     match conn.query_map(
         // SELECT id, user_id, from files left outer join users ON users.id = files.user_id WHERE files.id = {}
-        format!("SELECT files.id, files.user_id, megjeleno_nev, username, filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE files.id = {}", file_id),
+        format!("SELECT files.id, files.user_id, COALESCE(megjeleno_nev, ''), COALESCE(username, ''), filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE files.id = {}", file_id),
         |(
             azonosító,
             felhasználó_azonosító,
@@ -154,7 +156,7 @@ pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisE
 
     match conn.query_map(
         // SELECT id, user_id, from files left outer join users ON users.id = files.user_id WHERE files.id = {}
-        format!("SELECT files.id, user_id, megjeleno_nev, username, filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE filename = '{}'", filename),
+        format!("SELECT files.id, user_id, COALESCE(megjeleno_nev, ''), COALESCE(username, ''), filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE filename = '{}'", filename),
         |(
             azonosító,
             felhasználó_azonosító,
@@ -222,7 +224,7 @@ pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMi
     };
 
     match conn.query_map(
-        format!("SELECT username, COALESCE(minecraft_username, ''), minecraft_isLogged, minecraft_lastlogin FROM users WHERE minecraft_lastlogin IS NOT NULL ORDER BY minecraft_isLogged DESC, minecraft_lastlogin DESC"),
+        format!("SELECT COALESCE(username, ''), COALESCE(minecraft_username, ''), minecraft_isLogged, minecraft_lastlogin FROM users WHERE minecraft_lastlogin IS NOT NULL ORDER BY minecraft_isLogged DESC, minecraft_lastlogin DESC"),
         |(
             username,
             minecraft_username,
@@ -264,7 +266,7 @@ pub fn minecraft_felhasználó_létezik(felhasználónév: String) -> Result<boo
     };
 
     match felhasználók.first() {
-        Some(felhasználó) => {
+        Some(_) => {
             return Ok(true);
         },
         None => {
@@ -340,7 +342,7 @@ pub fn igényelt_felhasznalo_lekerdezese(felhasználónév: String) -> Result<Ad
     let lekérdezés_szűrés: String = format!("WHERE username='{}'", felhasználónév);
 
     let felhasználók = match conn.query_map(
-            format!("SELECT request_id, username, COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), COALESCE(megjeleno_nev, '') FROM users_requested {}", lekérdezés_szűrés),
+            format!("SELECT request_id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), COALESCE(megjeleno_nev, '') FROM users_requested {}", lekérdezés_szűrés),
             |(
                 request_id,
                 username,
@@ -430,7 +432,7 @@ pub fn session_törlése(cookie: String, user_id: u32) -> Result<String> {
 
 }
 
-pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok) -> Result<AdatbázisEredményFelhasználó> {
+pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok) -> Result<Option<AdatbázisEredményFelhasználó>> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
@@ -440,23 +442,21 @@ pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok)
     };
 
     let username: String;
-    let azonosító_szám: i32;
+    let azonosító_szám;
     let lekérdezés_szűrés: String;
     match azonosító_adat {
         FelhasználóAzonosítóAdatok::Azonosító(eredmény) => {
-            username = "".to_owned();
             azonosító_szám = eredmény;
             lekérdezés_szűrés = "WHERE id=".to_owned() + &azonosító_szám.to_string();
         },
         FelhasználóAzonosítóAdatok::Felhasználónév(felhasználónév) => {
-            azonosító_szám = 0;
             username = felhasználónév;
             lekérdezés_szűrés = "WHERE username='".to_owned() + &username + "'";
         },
     };
 
     let felhasználók = match conn.query_map(
-            format!("SELECT id, username, password, COALESCE(sha256_password, ''), COALESCE(email, ''), admin, megjeleno_nev, COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users {}", lekérdezés_szűrés),
+            format!("SELECT id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users {}", lekérdezés_szűrés),
             |(
                 id,
                 username,
@@ -491,15 +491,11 @@ pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok)
     let felhasználó = match felhasználók.first() {
         Some(felhasználó) => felhasználó,
         None => {
-            return Err(mysql::Error::MySqlError(MySqlError {
-                state: "HY000".to_owned(),
-                code: 0,
-                message: "Nincs ilyen felhasználó".to_owned(),
-            }));
+            return Ok(None);
         }
     };
 
-    Ok(AdatbázisEredményFelhasználó {
+    Ok(Some(AdatbázisEredményFelhasználó {
         azonosító: felhasználó.azonosító,
         felhasználónév: felhasználó.felhasználónév.clone(),
         jelszó: felhasználó.jelszó.clone(),
@@ -510,7 +506,7 @@ pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok)
         minecraft_username: felhasználó.minecraft_username.clone(),
         minecraft_islogged: felhasználó.minecraft_islogged.clone(),
         minecraft_lastlogin: felhasználó.minecraft_lastlogin.clone(),
-    })
+    }))
 }
 
 pub fn salt_lekerdezese(salt_username: &str) -> Result<String> {
@@ -523,7 +519,7 @@ pub fn salt_lekerdezese(salt_username: &str) -> Result<String> {
     };
 
     let felhasználók = match conn.query_map(
-            format!("SELECT id, username, password, COALESCE(sha256_password, ''), COALESCE(email, ''), admin, megjeleno_nev, COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users WHERE username='{}'", salt_username),
+            format!("SELECT id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users WHERE username='{}'", salt_username),
             |(
                 id,
                 username,

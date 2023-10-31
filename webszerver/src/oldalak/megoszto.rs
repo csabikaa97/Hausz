@@ -1,10 +1,10 @@
-use std::{process::Command, fs::{File, self}, io::Write, fmt::format};
+use std::{process::Command, fs::{File, self}, io::Write};
 
 use actix_multipart::Multipart;
-use actix_web::{HttpResponse, web::Bytes};
-use futures_util::{TryStreamExt, StreamExt};
+use actix_web::HttpResponse;
+use futures_util::TryStreamExt;
 use regex::Regex;
-use crate::{session::Session, alap_fuggvenyek::{isset, log_bejegyzes, list_key}, backend::{lekerdezesek::{általános_query_futtatás, saját_meghívók_lekérése, fájl_lekérdezése_név_alapján, fájl_lekérdezése_id_alapján}, session_azonosito_generator::random_új_session_azonosító, saját_fájlok_lekérdezése}, mime_types::mime_type_megállapítása};
+use crate::{session::Session, alap_fuggvenyek::{isset, log_bejegyzes, list_key}, backend::{lekerdezesek::{általános_query_futtatás, fájl_lekérdezése_név_alapján, fájl_lekérdezése_id_alapján}, saját_fájlok_lekérdezése}, mime_types::mime_type_megállapítása};
 use crate::alap_fuggvenyek::exit_error;
 use crate::alap_fuggvenyek::exit_ok;
 use std::io::Read;
@@ -383,10 +383,10 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
     // if( isset($_GET['atnevezes']) ) {
     if isset("atnevezes", get.clone()) {
         //     die_if( strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0, 'Hiányzó uj_nev vagy file_id paraméter.');
-        if( list_key("uj_nev", get.clone()).len() <= 0 ) {
+        if list_key("uj_nev", get.clone()).len() <= 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Hiányzó uj_nev paraméter.")));
         }
-        if( list_key("file_id", get.clone()).len() <= 0 ) {
+        if list_key("file_id", get.clone()).len() <= 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Hiányzó file_id paraméter.")));
         }
         //     $result = query_futtatas("SELECT * FROM hausz_megoszto.files WHERE filename='".$_GET['uj_nev']."';");

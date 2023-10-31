@@ -65,8 +65,6 @@ pub struct AdatbázisEredményIgényeltFelhasználó {
 
 pub struct AdatbázisEredménySession {
     azonosító: u32,
-    session_kulcs: String,
-    dátum: String,
 }
 
 fn csatlakozás(url: &str) -> Result<mysql::PooledConn> {
@@ -173,12 +171,10 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
     };
 
     let session = match conn.query_map(
-        format!("SELECT azonosito, session_kulcs, datum AS eltelt_masodpercek FROM sessionok WHERE session_kulcs = '{}' AND TIMESTAMPDIFF(SECOND, datum, now(6)) < {}", cookie_azonosító, crate::SESSION_LEJÁRATI_IDEJE_MP),
-        |(azonosito, session_azonosito, datum)| {
+        format!("SELECT azonosito AS eltelt_masodpercek FROM sessionok WHERE session_kulcs = '{}' AND TIMESTAMPDIFF(SECOND, datum, now(6)) < {}", cookie_azonosító, crate::SESSION_LEJÁRATI_IDEJE_MP),
+        |azonosito| {
             AdatbázisEredménySession {
                 azonosító: azonosito,
-                session_kulcs: session_azonosito,
-                dátum: datum,
             }
         }
     ) {
@@ -201,7 +197,7 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
     };
 
     match conn.query_map(
-        format!("SELECT id, username, password, email, admin, megjeleno_nev, sha256_password, minecraft_username, minecraft_islogged, minecraft_lastlogin FROM users WHERE id = {}", session.azonosító),
+        format!("SELECT id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(sha256_password, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users WHERE id = {}", session.azonosító),
         |(azonosito, felhasznalonev, jelszo, email, admin, megjeleno_nev, sha256_password, minecraft_username, minecraft_islogged, minecraft_lastlogin)| {
             AdatbázisEredményFelhasználó {
                 azonosító: azonosito,

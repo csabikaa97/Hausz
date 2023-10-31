@@ -1,10 +1,9 @@
 use actix_multipart::Multipart;
+use actix_web::middleware;
 use actix_web::{
     web, App, HttpServer, 
     HttpRequest, HttpResponse
 };
-use futures_util::StreamExt;
-use futures_util::TryStreamExt;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use std::io::Error;
 use std::io::ErrorKind;
@@ -22,8 +21,8 @@ pub mod mime_types;
 
 static LOG_PREFIX: &str                         = "[szerver  ] ";
 static IP: &str                                 = "0.0.0.0";
-static PORT_HTTP: u16                           = 8080;
-static PORT_HTTPS: u16                          = 4443;
+static PORT_HTTP: u16                           = 80;
+static PORT_HTTPS: u16                          = 443;
 pub static DOMAIN: &str                         = "hausz.stream";
 pub static SESSION_LEJÁRATI_IDEJE_MP: i64       = 60*60*24*7;
 pub static SESSSION_AZONOSÍTÓ_HOSSZ: usize      = 94;
@@ -47,13 +46,6 @@ async fn post_kérés_kezelő(request: HttpRequest, mut payload: Multipart) -> H
     if !content_type.starts_with("multipart/form-data;") {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem multipart/form-data")));
     }
-
-    let boundary = match content_type.split("boundary=").last() {
-        None => return HttpResponse::BadRequest().body(exit_error(format!("Nincs boundary megadva"))),
-        Some(boundary) => boundary,
-    };
-
-    println!("{} DEBUG: Boundary=({})", LOG_PREFIX, boundary);
 
     let cookie: String = match request.cookie("hausz_session") {
         None => {
@@ -96,7 +88,7 @@ async fn post_kérés_kezelő(request: HttpRequest, mut payload: Multipart) -> H
         },
     }
 
-    let form_adatok = form_olvaso::form_olvasó(&mut payload, boundary.to_owned()).await;
+    let form_adatok = form_olvaso::form_olvasó(&mut payload).await;
     let get_adatok = form_olvaso::get_olvasó(request.query_string().to_string());
 
     keres_kezelo::keres_kezelo(payload, form_adatok, get_adatok, session_adatok, request).await
@@ -172,12 +164,13 @@ async fn main() -> std::io::Result<()> {
             return Err(Error::new(ErrorKind::Other, e));
         }
     };
-    builder.set_private_key_file("../public/privkey.pem", SslFiletype::PEM).expect(&format!("{}Hiba a titkosítókulcs beállításakor", LOG_PREFIX));
+    builder.set_private_key_file("/public/privkey.pem", SslFiletype::PEM).expect(&format!("{}Hiba a titkosítókulcs beállításakor", LOG_PREFIX));
    
-    builder.set_certificate_chain_file("../public/fullchain.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
+    builder.set_certificate_chain_file("/public/fullchain.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
 
     let https_server = match HttpServer::new(move || {
             App::new()
+            .wrap(middleware::Compress::default())
             .default_service(web::route().to(kérés_metódus_választó))
         })
         .workers(10)
@@ -194,6 +187,7 @@ async fn main() -> std::io::Result<()> {
 
     let http_server = match HttpServer::new(|| {
         App::new()
+        .wrap(middleware::Compress::default())
         .default_service(web::route().to(kérés_metódus_választó))
     }) 
         .workers(10)

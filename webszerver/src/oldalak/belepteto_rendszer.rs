@@ -37,10 +37,13 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
         let password = list_key("sha256_password", post.clone());
         
         let felhasznalo = match crate::backend::lekerdezesek::felhasznalo_lekerdezese(crate::alap_fuggvenyek::FelhasználóAzonosítóAdatok::Felhasználónév(username.clone())) {
-            Ok(result) => result,
+            Ok(Some(result)) => result,
+            Ok(None) => {
+                return HttpResponse::BadRequest().body(exit_error(format!("Nem létezik ilyen felhasználó.")));
+            },
             Err(err) => {
                 println!("{}\"error\": \"{}\"", LOG_PREFIX, err);
-                return HttpResponse::BadRequest().body(exit_error(format!("\"hiba\": \"Nem sikerült a salt lekérdezése.\"")));
+                return HttpResponse::BadRequest().body(exit_error(format!("Nem sikerült a salt lekérdezése az adatbázisból.")));
             }
         };
 

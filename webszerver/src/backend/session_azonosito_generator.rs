@@ -1,8 +1,6 @@
 use rand::prelude::*;
 use rand_chacha::ChaCha20Rng;
 
-static LOG_PREFIX: &str = "[cookiegen] ";
-
 pub fn random_új_session_azonosító() -> String {
     let mut rng = ChaCha20Rng::from_entropy();
     let mut session_azonosító = String::new();

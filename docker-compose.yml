@@ -31,8 +31,8 @@ services:
    build: public
    container_name: public
    ports:
-    - "80:80"
-    - "443:443"
+    - "80:8080"
+    - "443:4443"
    volumes:
     - "./:/var/www"
    networks:
@@ -105,8 +105,8 @@ services:
     build: webszerver
     container_name: webszerver
     ports:
-     - "8080:8080"
-     - "4443:4443"
+     - "80:80"
+     - "443:443"
     volumes:
      - "./public:/public"
     networks:

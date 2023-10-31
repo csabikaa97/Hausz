@@ -1,26 +1,19 @@
-use std::{process::Command, fs::{File, self}, io::Write, fmt::format};
-
-use actix_multipart::Multipart;
-use actix_web::{HttpResponse, web::Bytes};
-use futures_util::{TryStreamExt, StreamExt};
+use actix_web::HttpResponse;
 use regex::Regex;
-use crate::{session::Session, alap_fuggvenyek::{isset, log_bejegyzes, list_key, JelszoReszek, get_password_part}, backend::{lekerdezesek::{általános_query_futtatás, saját_meghívók_lekérése, fájl_lekérdezése_név_alapján, fájl_lekérdezése_id_alapján, felhasználó_lekérdezése_id_alapján}, session_azonosito_generator::random_új_session_azonosító, saját_fájlok_lekérdezése}, mime_types::mime_type_megállapítása};
+use crate::{session::Session, alap_fuggvenyek::{isset, log_bejegyzes, list_key, JelszoReszek, get_password_part}, backend::lekerdezesek::{általános_query_futtatás, felhasznalo_lekerdezese}};
 use crate::alap_fuggvenyek::exit_error;
 use crate::alap_fuggvenyek::exit_ok;
-use std::io::Read;
-use base64::prelude::*;
+use crate::alap_fuggvenyek::FelhasználóAzonosítóAdatok;
 
-static LOG_PREFIX: &str = "[megoszto ] ";
-static MAX_FÁJL_MÉRET: usize = 1024 * 1024 * 10;
-static MIN_ELÉRHETŐ_TÁRHELY_FELTÖLTÉSHEZ: f64 = 250.0 * 1024.0 * 1024.0;
+static LOG_PREFIX: &str = "[jelsz_vál] ";
 
-pub async fn jelszó_változtatás(mut payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
+pub async fn jelszó_változtatás(post: Vec<(String, String)>, session: Session) -> HttpResponse {
     // die_if( !isset($_SESSION['loggedin']), "Nem vagy belépve.");
     if session.loggedin != "yes" {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
     }
     //     $result_username_check = query_futtatas("SELECT * FROM users WHERE id = '" . $_SESSION['user_id'] . "'");
-    let felhasználó = match felhasználó_lekérdezése_id_alapján(session.user_id) {
+    let felhasználó = match felhasznalo_lekerdezese(FelhasználóAzonosítóAdatok::Azonosító(session.user_id)) {
         Ok(Some(x)) => x,
         Ok(None) => {
             println!("{}Nincs ilyen felhasználó az adatbázisban: {}", LOG_PREFIX, session.user_id);
