@@ -83,6 +83,21 @@ pub async fn tenyleges_keres_kezelo(mut payload: Multipart, post: Vec<(String, S
     if isset("submit", post.clone()) {
         return megosztó(payload, post, get, session).await;
     }
+    if isset("letoltes", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
+    if isset("atnevezes", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
+    if isset("members_only_csere", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
+    if isset("privat_status_csere", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
+    if isset("delete", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
 
     let path = request.path();
     let fájlnév = "../public/".to_owned() + hozzárendelt_fájl(path);

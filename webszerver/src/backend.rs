@@ -25,6 +25,7 @@ pub struct AdatbázisEredményFájl {
     pub privát: u8,
     pub titkosított: u8,
     pub titkosítás_kulcs: String,
+    pub members_only: u8,
 }
 
 pub struct AdatbázisEredményFelhasználóToken {
@@ -92,7 +93,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
     };
 
     let fájlok = match conn.query_map(
-            format!("SELECT COALESCE(users.megjeleno_nev, ''), COALESCE(user_id, 0), files.titkositott, files.id AS 'id', files.size, filename, added, COALESCE(username, ''), private, COALESCE(files.titkositas_kulcs, '') FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC"),
+            format!("SELECT COALESCE(users.megjeleno_nev, ''), COALESCE(user_id, 0), files.titkositott, files.id AS 'id', files.size, filename, added, COALESCE(username, ''), private, COALESCE(files.titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC"),
             |(
                 megjeleno_nev,
                 user_id, 
@@ -103,7 +104,8 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
                 added, 
                 username, 
                 private, 
-                titkositas_kulcs)|
+                titkositas_kulcs,
+                members_only)|
             AdatbázisEredményFájl {
                 felhasználó_megjelenő_név: megjeleno_nev,
                 felhasználó_azonosító: user_id,
@@ -115,11 +117,12 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
                 felhasználónév: username,
                 privát: private,
                 titkosítás_kulcs: titkositas_kulcs,
+                members_only,
             },
         ) {
             Ok(fájlok) => fájlok,
             Err(err) => {
-                println!("{}Hiba az adatbázis lekérdezésekor: {}", LOG_PREFIX, err);
+                println!("{}Hiba az adatbázis lekérdezésekor: (10) {}", LOG_PREFIX, err);
                 return HttpResponse::InternalServerError().finish();
             }
         };

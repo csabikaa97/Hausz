@@ -101,8 +101,8 @@ pub fn regisztráció(post: Vec<(String, String)>, get: Vec<(String, String)>, s
     match általános_query_futtatás(query_add.clone()) {
         Ok(_) => {},
         Err(err) => {
-            println!("{}Hiba az adatbázis lekérdezésekor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az adatbázis lekérdezésekor: {}", err)));
+            println!("{}Hiba az adatbázis lekérdezésekor: (9) {}", LOG_PREFIX, err);
+            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az adatbázis lekérdezésekor: (9) {}", err)));
         },
     };
 

@@ -10,7 +10,7 @@ use super::AdatbázisEredményFelhasználó;
 use super::AdatbázisEredményFájl;
 use super::AdatbázisEredményIgényeltFelhasználó;
 
-pub fn fájl_lekérdezése(file_id: String) -> Option<AdatbázisEredményFájl> {
+pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEredményFájl> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
@@ -21,7 +21,7 @@ pub fn fájl_lekérdezése(file_id: String) -> Option<AdatbázisEredményFájl> 
 
     match conn.query_map(
         // SELECT id, user_id, from files left outer join users ON users.id = files.user_id WHERE files.id = {}
-        format!("SELECT id, user_id, megjeleno_nev, username, filename, added, size, private, titkositott, titkositas_kulcs FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE id = {}", file_id),
+        format!("SELECT files.id, files.user_id, megjeleno_nev, username, filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE files.id = {}", file_id),
         |(
             azonosító,
             felhasználó_azonosító,
@@ -33,6 +33,7 @@ pub fn fájl_lekérdezése(file_id: String) -> Option<AdatbázisEredményFájl> 
             privát,
             titkosított,
             titkosítás_kulcs,
+            members_only,
         )| AdatbázisEredményFájl {
             azonosító,
             felhasználó_azonosító,
@@ -44,6 +45,7 @@ pub fn fájl_lekérdezése(file_id: String) -> Option<AdatbázisEredményFájl> 
             privát,
             titkosított,
             titkosítás_kulcs,
+            members_only,
         }
     ) {
         Ok(eredmény) => {
@@ -64,13 +66,83 @@ pub fn fájl_lekérdezése(file_id: String) -> Option<AdatbázisEredményFájl> 
                             privát: x.privát,
                             titkosított: x.titkosított,
                             titkosítás_kulcs: x.titkosítás_kulcs.clone(),
+                            members_only: x.members_only,
                         }
                     );
                 }
             }
         },
         Err(err) => {
-            println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+            println!("{}Hiba az adatbázis lekérdezésekor: (11) {}", crate::LOG_PREFIX, err);
+            return None;
+        }
+    };
+}
+
+pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisEredményFájl> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return None;
+        }
+    };
+
+    match conn.query_map(
+        // SELECT id, user_id, from files left outer join users ON users.id = files.user_id WHERE files.id = {}
+        format!("SELECT files.id, user_id, megjeleno_nev, username, filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE filename = '{}'", filename),
+        |(
+            azonosító,
+            felhasználó_azonosító,
+            felhasználó_megjelenő_név,
+            felhasználónév,
+            fájlnév,
+            hozzáadás_dátuma,
+            méret, 
+            privát,
+            titkosított,
+            titkosítás_kulcs,
+            members_only,
+        )| AdatbázisEredményFájl {
+            azonosító,
+            felhasználó_azonosító,
+            felhasználó_megjelenő_név,
+            felhasználónév,
+            fájlnév,
+            hozzáadás_dátuma,
+            méret, 
+            privát,
+            titkosított,
+            titkosítás_kulcs,
+            members_only,
+        }
+    ) {
+        Ok(eredmény) => {
+            match eredmény.first() {
+                None => {
+                    return None;
+                },
+                Some(x) => {
+                    return Some(
+                        AdatbázisEredményFájl { 
+                            azonosító: x.azonosító,
+                            felhasználó_azonosító: x.felhasználó_azonosító,
+                            felhasználó_megjelenő_név: x.felhasználó_megjelenő_név.clone(),
+                            felhasználónév: x.felhasználónév.clone(),
+                            fájlnév: x.fájlnév.clone(),
+                            hozzáadás_dátuma: x.hozzáadás_dátuma.clone(),
+                            méret: x.méret,
+                            privát: x.privát,
+                            titkosított: x.titkosított,
+                            titkosítás_kulcs: x.titkosítás_kulcs.clone(),
+                            members_only: x.members_only,
+                        }
+                    );
+                }
+            }
+        },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: (1) {}", crate::LOG_PREFIX, err);
             return None;
         }
     };
@@ -101,7 +173,7 @@ pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMi
     ) {
         Ok(eredmény) => { return Ok(eredmény); },
         Err(err) => {
-            println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+            println!("{}Hiba az adatbázis lekérdezésekor: (2) {}", crate::LOG_PREFIX, err);
             return Err(err);
         }
     };
@@ -122,7 +194,7 @@ pub fn minecraft_felhasználó_létezik(felhasználónév: String) -> Result<boo
     ) {
         Ok(eredmény) => eredmény,
         Err(err) => {
-            println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+            println!("{}Hiba az adatbázis lekérdezésekor: (3) {}", crate::LOG_PREFIX, err);
             return Err(err);
         }
     };
@@ -152,7 +224,7 @@ pub fn saját_meghívók_lekérése(user_id: u32) -> Result<Vec<String>> {
         ) {
             Ok(eredmény) => eredmény,
             Err(err) => {
-                println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+                println!("{}Hiba az adatbázis lekérdezésekor: (4) {}", crate::LOG_PREFIX, err);
                 return Err(err);
             }
         };
@@ -176,7 +248,7 @@ pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
         ) {
             Ok(eredmény) => eredmény,
             Err(err) => {
-                println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+                println!("{}Hiba az adatbázis lekérdezésekor: (5) {}", crate::LOG_PREFIX, err);
                 return Err(err);
             }
         };
@@ -223,7 +295,7 @@ pub fn igényelt_felhasznalo_lekerdezese(felhasználónév: String) -> Result<Ad
         ) {
             Ok(eredmény) => eredmény,
             Err(err) => {
-                println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+                println!("{}Hiba az adatbázis lekérdezésekor: (6) {}", crate::LOG_PREFIX, err);
                 return Err(err);
             }
         };
@@ -347,7 +419,7 @@ pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok)
         ) {
             Ok(eredmény) => eredmény,
             Err(err) => {
-                println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+                println!("{}Hiba az adatbázis lekérdezésekor: (7) {}", crate::LOG_PREFIX, err);
                 return Err(err);
             }
         };
@@ -414,7 +486,7 @@ pub fn salt_lekerdezese(salt_username: &str) -> Result<String> {
         ) {
             Ok(felhasználók) => felhasználók,
             Err(err) => {
-                println!("{}Hiba az adatbázis lekérdezésekor: {}", crate::LOG_PREFIX, err);
+                println!("{}Hiba az adatbázis lekérdezésekor: (8) {}", crate::LOG_PREFIX, err);
                 return Err(err);
             }
         };
