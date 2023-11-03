@@ -1,12 +1,7 @@
 use actix_web::HttpResponse;
 use mysql::*;
 use mysql::prelude::*;
-use std::process::Command;
-use regex::Regex;
-use chrono::*;
-use chrono::offset::Utc;
 use crate::alap_fuggvenyek::exit_error;
-use crate::alap_fuggvenyek::exit_ok;
 
 use crate::session::Session;
 
@@ -14,6 +9,11 @@ pub mod session_azonosito_generator;
 pub mod lekerdezesek;
 
 static LOG_PREFIX: &str = "[backend  ] ";
+
+pub struct AdatbázisEredményTeamspeakFelhasználó {
+    pub client_id: u32,
+    pub client_nickname: String,
+}
 pub struct AdatbázisEredményFájl {
     pub azonosító: u32,
     pub felhasználó_azonosító: u32,
@@ -29,9 +29,9 @@ pub struct AdatbázisEredményFájl {
 }
 
 pub struct AdatbázisEredményFelhasználóToken {
-    felhasználó_azonosító: u32,
-    token: String,
-    generálás_dátuma: String,
+    pub felhasználó_azonosító: u32,
+    pub token: String,
+    pub datediff: u32,
 }
 
 pub struct AdatbázisEredményFelhasználó {
@@ -55,12 +55,12 @@ pub struct AdatbázisEredményMinecraftFelhasználó {
 }
 
 pub struct AdatbázisEredményIgényeltFelhasználó {
-    request_id: u32,
-    username: String,
-    password: String,
-    sha256_password: String,
-    email: String,
-    megjeleno_nev: String,
+    pub request_id: u32,
+    pub username: String,
+    pub password: String,
+    pub sha256_password: String,
+    pub email: String,
+    pub megjeleno_nev: String,
 }
 
 pub struct AdatbázisEredménySession {
@@ -222,242 +222,4 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
             return None;
         }
     };
-}
-
-pub fn teamspeak_token_információ_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
-    let felhasználó_jelenlegi_cookie_azonosítója = match felhasználó_cookie_azonosítója {
-        None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
-        },
-        Some(cookie) => cookie,
-    };
-
-    let felhasználó = cookie_gazdájának_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója);
-
-    match felhasználó {
-        None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
-        },
-        Some(_) => {},
-    }
-
-    let mut conn = match csatlakozás(crate::HAUSZ_TS_ADATBAZIS_URL) {
-        Ok(conn) => conn,
-        Err(err) => {
-            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az adatbázishoz való csatlakozáskor.")));
-        }
-    };
-
-    let felhasználó_tokenek = match conn.query_map(
-        format!("SELECT user_id, token, generalasi_datum FROM felhasznalo_tokenek WHERE user_id = {}", felhasználó.unwrap().azonosító),
-        |(user_id, token, generalasi_datum)| {
-            AdatbázisEredményFelhasználóToken {
-                felhasználó_azonosító: user_id,
-                token: token,
-                generálás_dátuma: generalasi_datum,
-            }
-        }
-    ) {
-        Ok(felhasználó_tokenek) => felhasználó_tokenek,
-        Err(err) => {
-            println!("{}Hiba a felhasználó tokenek lekérdezésekor: {}", LOG_PREFIX, err);
-            Vec::new()
-        },
-    };
-
-    let felhasználó_tokenje = match felhasználó_tokenek.into_iter().nth(0) {
-        None => {
-            return HttpResponse::Ok().body(exit_ok(format!("Jelenleg nincs jogosultsági tokened.")));
-        },
-        Some(első_token) => első_token,
-    };
-
-    let generálás_dátuma = match DateTime::parse_from_str(&felhasználó_tokenje.generálás_dátuma.as_str(), "%Y-%m-%d %H:%M:%S") {
-        Ok(generálás_dátuma) => generálás_dátuma,
-        Err(err) => {
-            println!("{}Hiba a generálás dátumának lekérdezésekor: dátum: {} Err: {}", LOG_PREFIX, felhasználó_tokenje.generálás_dátuma, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a generálás dátumának lekérdezésekor.")));
-        }
-    };
-    let token_cd_lejárt: bool = ( generálás_dátuma + chrono::Duration::seconds(crate::HAUSZ_TS_TOKEN_IGENYLES_CD) ) < Utc::now();
-
-    HttpResponse::Ok()
-        .body(format!("{{\"eredmeny\": \"ok\", \"token\": \"{}\", \"jogosult_uj_token_keresere\": \"{}\"}}", felhasználó_tokenje.token, if token_cd_lejárt { "igen" } else { "nem" }))
-}
-
-pub fn teamspeak_szerver_státusz_lekérdezése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
-    let felhasználó_jelenlegi_cookie_azonosítója = match felhasználó_cookie_azonosítója {
-        None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
-        },
-        Some(cookie) => cookie,
-    };
-
-    match cookie_gazdájának_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója) {
-        None => {
-            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
-        },
-        Some(_) => {},
-    }
-
-    let check_telnet_kimenete = Command::new("/bin/sh")
-        .arg("/webszerver/check_telnet.sh")
-        .output()
-        .expect("Hiba a telnet ellenőrzéséhez szükséges parancs futtatásakor!");
-
-    let telnet_kimenet_regex = Regex::new(r"(.*)elcome to the TeamSpeak 3 ServerQuery interface(.*)").unwrap();
-    let telnet_státusz = telnet_kimenet_regex.is_match(String::from_utf8_lossy(&check_telnet_kimenete.stdout).into_owned().as_str());
-
-    let uptime_kimenete = match Command::new("uptime")
-        .output() {
-            Ok(output) => String::from_utf8_lossy(&output.stdout).into_owned(),
-            Err(err) => {
-                println!("{}Uptime parancs futtatása sikertelen!: {}", LOG_PREFIX, err);
-                String::from("21:30  up 7 days,  6:34, 1 user, load average: 2.60 2.38 2.40")
-            },
-        };
-
-    let uptime_load_average_regex = match Regex::new(r"load average: ([0-9\.]*), ([0-9\.]*), ([0-9\.]*)") {
-        Ok(regex) => regex,
-        Err(err) => {
-            println!("{}Uptime regex elkészítése sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
-        },
-    };
-    let uptime_load_averages = match uptime_load_average_regex.captures(&uptime_kimenete.as_str()) {
-        Some(captures) => captures,
-        None => {
-            println!("{}Uptime regex nem talált egyezést: '{}'", LOG_PREFIX, uptime_kimenete);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
-        },
-    };
-    let processzor_1perc = match uptime_load_averages.get(1).unwrap().as_str().parse::<f32>() {
-        Ok(perc) => perc,
-        Err(err) => {
-            println!("{}Uptime kimenet processzor_1perc-re alakítása sikertelen: '{}'", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
-        },
-    };
-    let processzor_5perc = match uptime_load_averages.get(2).unwrap().as_str().parse::<f32>() {
-        Ok(perc) => perc,
-        Err(err) => {
-            println!("{}Uptime kimenet processzor_5perc-re alakítása sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
-        },
-    };
-    let processzor_15perc = match uptime_load_averages.get(3).unwrap().as_str().parse::<f32>() {
-        Ok(perc) => perc,
-        Err(err) => {
-            println!("{}Uptime kimenet processzor_15perc-re alakítása sikertelen: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba a szerver státuszának lekérdezésekor.")));
-        },
-    };
-
-    let free_parancs_kimenete = match Command::new("free")
-        .arg("-m")
-        .output() {
-            Ok(output) => String::from_utf8_lossy(&output.stdout).into_owned(),
-            Err(err) => {
-                println!("{}Free parancs futtatása sikertelen!: {}", LOG_PREFIX, err);
-                String::from("")
-            },
-        };
-
-    let free_memória_regex = Regex::new(r"Mem:[ \t]*([0-9]*)[ \t]*([0-9]*)[ \t]*([0-9]*)[ \t]*([0-9]*)[ \t]*([0-9]*)[ \t]*([0-9]*)").unwrap();
-    let free_memória = free_memória_regex.captures(&free_parancs_kimenete.as_str()).unwrap();
-    let memória_használat = free_memória.get(2).unwrap().as_str().parse::<f32>().unwrap() / free_memória.get(1).unwrap().as_str().parse::<f32>().unwrap();
-
-    let free_swap_regex = Regex::new(r"Swap:[ \t]*([0-9]*)[ \t]*([0-9]*)[ \t]*([0-9]*)").unwrap();
-    let free_swap = free_swap_regex.captures(&free_parancs_kimenete.as_str()).unwrap();
-    let swap_használat = free_swap.get(2).unwrap().as_str().parse::<f32>().unwrap() / free_swap.get(1).unwrap().as_str().parse::<f32>().unwrap();
-
-    let df_parancs_kimenete = match Command::new("df")
-        .arg("-B1")
-        .output() {
-            Ok(output) => String::from_utf8_lossy(&output.stdout).into_owned(),
-            Err(err) => {
-                println!("{}df parancs futtatása sikertelen!: {}", LOG_PREFIX, err);
-                String::from("")
-            },
-        };
-    let df_regex = Regex::new(r".*(overlay|/dev/xvda1|/dev/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*").unwrap();
-    let df = df_regex.captures(&df_parancs_kimenete.as_str()).unwrap();
-    let lemez_használat = df.get(3).unwrap().as_str().parse::<f32>().unwrap() / df.get(2).unwrap().as_str().parse::<f32>().unwrap();
-    
-    HttpResponse::Ok()
-        .body(format!("{{\"eredmeny\": \"ok\", \"folyamat_ok\": {}, \"telnet_ok\": {}, \"processzor_1perc\": {}, \"processzor_5perc\": {}, \"processzor_15perc\": {}, \"memoria_hasznalat\": {}, \"swap_hasznalat\": {}, \"lemez_hasznalat\": {}}}", 
-            telnet_státusz, telnet_státusz, processzor_1perc, processzor_5perc, processzor_15perc, memória_használat, swap_használat, lemez_használat))
-}
-
-pub fn teamspeak_új_token_igénylése(felhasználó_cookie_azonosítója: Option<String>) -> HttpResponse {
-    let felhasználó_jelenlegi_cookie_azonosítója = match &felhasználó_cookie_azonosítója {
-        None => String::from(""),
-        Some(cookie) => cookie.to_owned(),
-    };
-
-    let felhasználó = cookie_gazdájának_lekérdezése(felhasználó_jelenlegi_cookie_azonosítója);
-
-    match (felhasználó_cookie_azonosítója, &felhasználó) {
-        (None, _) => {
-            return HttpResponse::Unauthorized().body(exit_error(format!("Nem vagy belépve.")));
-        }
-        (Some(_), None) => {
-            return HttpResponse::Unauthorized().body(exit_error(format!("Nem vagy belépve.")));
-        }
-        (_, _) => (),
-    }
-
-    let mut conn = match csatlakozás(crate::HAUSZ_TS_ADATBAZIS_URL) {
-        Err(err) => {
-            println!("{}Hiba a Teamspeak adatbázishoz való csatlakozás során: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
-        },
-        Ok(conn) => conn,
-    };
-
-    let felhasználó = felhasználó.unwrap();
-
-    match conn.query_drop(format!("DELETE FROM `felhasznalo_tokenek` WHERE `user_id` = {}", felhasználó.azonosító)) {
-        Err(err) => {
-            println!("{}Hiba a Teamspeak token törlésekor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
-        },
-        Ok(_) => (),
-    }
-
-    let create_token_sh_kimenete = Command::new("/bin/sh")
-        .arg("/webszerver/create_token.sh")
-        .output()
-        .expect("Hiba a create_token.sh futtatásakor!");
-
-    let create_token_sh_kimenete = String::from_utf8_lossy(&create_token_sh_kimenete.stdout).into_owned();
-
-    let token_regex = Regex::new(r"token=(.*)[\r\n]*error").unwrap();
-
-    let token = match token_regex.captures(&create_token_sh_kimenete) {
-        None => {
-            println!("{}Hiba a Teamspeak token létrehozásakor: Nem sikerült a token lekérdezése a create_token.sh kimenetéből. Kimenet: '{}'", LOG_PREFIX, create_token_sh_kimenete);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
-        },
-        Some(token) => token,
-    };
-    let token = match token.get(1) {
-        None => {
-            println!("{}Hiba a Teamspeak token létrehozásakor: Nem sikerült a token kinyerése a Captures-ből", LOG_PREFIX);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
-        },
-        Some(token) => token.as_str().replace("\r", ""),
-    };
-
-    match conn.query_drop(format!("INSERT INTO `felhasznalo_tokenek` (`user_id`, `token`, `generalasi_datum`) VALUES ({}, '{}', now(6))", felhasználó.azonosító, token)) {
-        Err(err) => {
-            println!("{}Hiba a Teamspeak token létrehozásakor: {}", LOG_PREFIX, err);
-            return HttpResponse::InternalServerError().body(exit_error(format!("Hiba az új TeamSpeak token igénylésekor.")));
-        },
-        Ok(_) => (),
-    }
-
-    HttpResponse::Ok()
-        .body(format!("{{\"eredmeny\": \"ok\", \"valasz\": \"Új token generálása kész\"}}"))
 }

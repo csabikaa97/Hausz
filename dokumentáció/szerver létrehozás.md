@@ -63,3 +63,8 @@ docker-compose build
 
 docker-compose start
 ```
+
+7. A teamspeak szerver kimenetében meg kell keresi a ServerQuery kulcsot, és ki kell cserélni a következő fájlokban:
+
+- create_token.sh
+- list_clients.sh

@@ -4,10 +4,12 @@ use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 use crate::alap_fuggvenyek::get_gyorsítótár;
 use crate::alap_fuggvenyek::save_gyorsítótár;
+use crate::oldalak::fiok_varazslo::teamspeak_fiók_varázsló_oldal;
 use crate::oldalak::jelszo_valtoztatas::jelszó_változtatás;
 use crate::oldalak::meghivo::meghívó;
 use crate::oldalak::megoszto::megosztó;
 use crate::oldalak::minecraft::minecraft;
+use crate::oldalak::teamspeak::teamspeak_oldal;
 use crate::session::Session;
 use crate::alap_fuggvenyek::isset;
 use crate::fajlok::hozzárendelt_fájl;
@@ -101,6 +103,28 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     // jelszó változatás
     if isset("uj_jelszo_sha256_salt", post.clone()) {
         return jelszó_változtatás(post, session).await;
+    }
+
+    // teamspeak oldal
+    if isset("token_informacio", get.clone()) {
+        return teamspeak_oldal(get, session).await;
+    }
+    if isset("uj_token_igenylese", get.clone()) {
+        return teamspeak_oldal(get, session).await;
+    }
+    if isset("felhasznalok", get.clone()) {
+        return teamspeak_oldal(get, session).await;
+    }
+    if isset("szerver_statusz", get.clone()) {
+        return teamspeak_oldal(get, session).await;
+    }
+
+    // teamspeak fiók varázsló oldal
+    if isset("fiok_lista_lekerese", get.clone()) {
+        return teamspeak_fiók_varázsló_oldal(post, get, session).await;
+    }
+    if isset("igenyles", get.clone()) {
+        return teamspeak_fiók_varázsló_oldal(post, get, session).await;
     }
 
     let path = request.path();

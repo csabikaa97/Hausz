@@ -58,6 +58,8 @@ services:
     build: teamspeak/adatbazis
     container_name: teamspeak_adatbazis
     command: [ "mysqld" ]
+    ports:
+     - "3307:3306"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.14

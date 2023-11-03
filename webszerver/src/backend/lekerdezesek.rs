@@ -7,43 +7,54 @@ use mysql::prelude::*;
 use crate::backend::AdatbázisEredményMinecraftFelhasználó;
 
 use super::AdatbázisEredményFelhasználó;
+use super::AdatbázisEredményFelhasználóToken;
 use super::AdatbázisEredményFájl;
 use super::AdatbázisEredményIgényeltFelhasználó;
+use super::AdatbázisEredményTeamspeakFelhasználó;
 
-/*
-pub fn felhasználó_lekérdezése_id_alapján(user_id: u32) -> Result<Option<AdatbázisEredményFelhasználó>> {
-    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+pub fn teamspeak_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményTeamspeakFelhasználó>> {
+    let mut conn = match csatlakozás(crate::HAUSZ_TEAMSPEAK_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
-            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
             return Err(err);
         }
     };
 
     match conn.query_map(
-        format!("SELECT id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users WHERE id = {}", user_id),
+        format!("SELECT client_id, client_nickname FROM clients ORDER BY client_nickname"),
+        |(client_id, client_nickname)| AdatbázisEredményTeamspeakFelhasználó {
+            client_id,
+            client_nickname
+        }
+    ) {
+        Ok(eredmény) => {
+            return Ok(eredmény);
+        },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: (11321) {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+}
+
+pub fn teamspeak_token_lekérdezése(user_id: u32) -> Result<Option<AdatbázisEredményFelhasználóToken>> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            return Err(err);
+        }
+    };
+
+    match conn.query_map(
+        format!("select user_id, COALESCE(token, ''), datediff(now(), generalasi_datum) as kulonbseg from hausz_ts.felhasznalo_tokenek where user_id = {}", user_id),
         |(
-            id,
-            username,
-            password,
-            sha256_password,
-            email,
-            admin,
-            megjeleno_nev,
-            minecraft_username,
-            minecraft_islogged,
-            minecraft_lastlogin
-        )| AdatbázisEredményFelhasználó {
-            azonosító: id,
-            felhasználónév: username,
-            jelszó: password,
-            sha256_jelszó: sha256_password,
-            email,
-            admin,
-            megjelenő_név: megjeleno_nev,
-            minecraft_username,
-            minecraft_islogged,
-            minecraft_lastlogin
+            user_id,
+            token,
+            datediff,
+        )| AdatbázisEredményFelhasználóToken {
+            felhasználó_azonosító: user_id,
+            token,
+            datediff,
         }
     ) {
         Ok(eredmény) => {
@@ -53,28 +64,21 @@ pub fn felhasználó_lekérdezése_id_alapján(user_id: u32) -> Result<Option<Ad
                 },
                 Some(x) => {
                     return Ok(Some(
-                        AdatbázisEredményFelhasználó { 
-                            azonosító: x.azonosító,
-                            felhasználónév: x.felhasználónév.clone(),
-                            jelszó: x.jelszó.clone(),
-                            sha256_jelszó: x.sha256_jelszó.clone(),
-                            email: x.email.clone(),
-                            admin: x.admin.clone(),
-                            megjelenő_név: x.megjelenő_név.clone(),
-                            minecraft_username: x.minecraft_username.clone(),
-                            minecraft_islogged: x.minecraft_islogged.clone(),
-                            minecraft_lastlogin: x.minecraft_lastlogin.clone(),
-                        }));
+                        AdatbázisEredményFelhasználóToken {
+                            felhasználó_azonosító: x.felhasználó_azonosító,
+                            token: x.token.clone(),
+                            datediff: x.datediff,
+                        }
+                    ));
                 }
             }
         },
-        Err(hiba) => {
-            println!("{}Hiba az adatbázis lekérdezésekor: (9) {}", crate::LOG_PREFIX, hiba);
-            return Err(hiba);
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: (11) {}", crate::LOG_PREFIX, err);
+            return Err(err);
         }
-    }
+    };
 }
-*/
 
 pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEredményFájl> {
     let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
@@ -328,6 +332,43 @@ pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
     };
 
     Ok(true)
+}
+
+pub fn igényelt_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményIgényeltFelhasználó>> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    let felhasználók = match conn.query_map(
+        format!("SELECT request_id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), COALESCE(megjeleno_nev, '') FROM users_requested"),
+        |(
+            request_id,
+            username,
+            password,
+            sha256_password,
+            email,
+            megjeleno_nev,
+        )| AdatbázisEredményIgényeltFelhasználó {
+            request_id,
+            username,
+            password,
+            sha256_password,
+            email,
+            megjeleno_nev,
+        }
+    ) {
+        Ok(eredmény) => {
+            return Ok(eredmény);
+        },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: (6) {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
 }
 
 pub fn igényelt_felhasznalo_lekerdezese(felhasználónév: String) -> Result<AdatbázisEredményIgényeltFelhasználó> {

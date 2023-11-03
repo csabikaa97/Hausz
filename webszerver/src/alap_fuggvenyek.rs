@@ -82,7 +82,7 @@ pub fn get_password_part(resz: JelszoReszek, password: &str) -> Result<String, m
 pub fn exit_ok(szoveg: String) -> String {
     let buffer = String::new();
     let buffer = buffer + "{\"eredmeny\": \"ok\", ";
-    let buffer = if szoveg.chars().nth(0) != "\"".chars().nth(0) && szoveg.chars().nth(0) != "'".chars().nth(0) && szoveg.chars().nth(0) != "[".chars().nth(0) {
+    let buffer = if szoveg.chars().nth(0) != Some('"') && szoveg.chars().nth(0) != Some('\'') && szoveg.chars().nth(0) != Some('[') {
         buffer + "\"valasz\":\"" + &szoveg + "\"}"
     } else {
         buffer + &szoveg + "}"
