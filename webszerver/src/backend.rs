@@ -14,6 +14,29 @@ pub struct AdatbázisEredményTeamspeakFelhasználó {
     pub client_id: u32,
     pub client_nickname: String,
 }
+
+pub struct AdatbázisEredményTeamspeakJogosultság {
+    pub id: u32,
+    pub jogosultsag_nev: String,
+}
+
+pub struct AdatbázisEredményTeamspeakJogosultságIgénylés {
+    pub id: u32,
+    pub hausz_felhasznalo_id: u32,
+    pub igenyles_datuma: String,
+    pub igenyelt_fiokok: String,
+    pub igenyelt_fiok_idk: String,
+    pub jelenlegi_fiok_kivalasztott: u32,
+}
+
+pub struct AdatbázisEredményLogBejegyzés {
+    pub id: u32,
+    pub szolgaltatas: String,
+    pub bejegyzes: String,
+    pub komment: String,
+    pub felhasznalo: String,
+    pub datum: String,
+}
 pub struct AdatbázisEredményFájl {
     pub azonosító: u32,
     pub felhasználó_azonosító: u32,

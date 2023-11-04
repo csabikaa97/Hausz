@@ -4,6 +4,7 @@ use actix_web::HttpResponse;
 use actix_web::HttpRequest;
 use crate::alap_fuggvenyek::get_gyorsítótár;
 use crate::alap_fuggvenyek::save_gyorsítótár;
+use crate::oldalak::admin_oldal::admin_oldal;
 use crate::oldalak::fiok_varazslo::teamspeak_fiók_varázsló_oldal;
 use crate::oldalak::jelszo_valtoztatas::jelszó_változtatás;
 use crate::oldalak::meghivo::meghívó;
@@ -125,6 +126,41 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     }
     if isset("igenyles", get.clone()) {
         return teamspeak_fiók_varázsló_oldal(post, get, session).await;
+    }
+
+    // admin oldal
+    if isset("aktivalas", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("elutasitas", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("torles", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("aktivalando_fiokok", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("fiokok", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("admin_csere", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("log", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("parancs", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("teamspeak_jogosultsag_igenylesek", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("teamspeak_jogosultsag_jovahagyas", get.clone()) {
+        return admin_oldal(post, session).await;
+    }
+    if isset("teamspeak_jogosultsag_elutasitas", get.clone()) {
+        return admin_oldal(post, session).await;
     }
 
     let path = request.path();

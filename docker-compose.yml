@@ -27,20 +27,6 @@ services:
   volumes:
    - "./:/var/www"
 
- public:
-   build: public
-   container_name: public
-   ports:
-    - "80:8080"
-    - "443:4443"
-   volumes:
-    - "./:/var/www"
-   networks:
-    container_halozat:
-     ipv4_address: 172.20.128.12
-   depends_on:
-    - "adatbazis"
-
  egyuttnezo_szerver:
    build: forras/egyuttnezo_szerver
    container_name: egyuttnezo_szerver
@@ -113,7 +99,7 @@ services:
      - "./public:/public"
     networks:
      container_halozat:
-      ipv4_address: 172.20.128.17
+      ipv4_address: 172.20.128.12
     depends_on:
       - "adatbazis"
      

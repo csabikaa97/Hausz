@@ -10,7 +10,81 @@ use super::AdatbázisEredményFelhasználó;
 use super::AdatbázisEredményFelhasználóToken;
 use super::AdatbázisEredményFájl;
 use super::AdatbázisEredményIgényeltFelhasználó;
+use super::AdatbázisEredményLogBejegyzés;
 use super::AdatbázisEredményTeamspeakFelhasználó;
+use super::AdatbázisEredményTeamspeakJogosultságIgénylés;
+
+pub fn teamspeak_jogosultság_igénylések_lekérdezése() -> Result<Vec<AdatbázisEredményTeamspeakJogosultságIgénylés>> {
+    let mut conn = match csatlakozás(crate::HAUSZ_TEAMSPEAK_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            return Err(err);
+        }
+    };
+
+    match conn.query_map(
+        format!("SELECT id, hausz_felhasznalo_id, igenyles_datuma, igenyelt_fiokok, igenyelt_fiok_idk, jelenlegi_fiok_kivalasztott FROM jogosultsag_igenylesek ORDER BY igenyles_datuma DESC"),
+        |(
+            id,
+            hausz_felhasznalo_id,
+            igenyles_datuma,
+            igenyelt_fiokok,
+            igenyelt_fiok_idk,
+            jelenlegi_fiok_kivalasztott,
+        )| AdatbázisEredményTeamspeakJogosultságIgénylés {
+            id,
+            hausz_felhasznalo_id,
+            igenyles_datuma,
+            igenyelt_fiokok,
+            igenyelt_fiok_idk,
+            jelenlegi_fiok_kivalasztott,
+        }
+    ) {
+        Ok(eredmény) => {
+            return Ok(eredmény);
+        },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: (729661) {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+} 
+
+pub fn log_bejegyzések_lekérdezése() -> Result<Vec<AdatbázisEredményLogBejegyzés>> {
+    let mut conn = match csatlakozás(crate::HAUSZ_TEAMSPEAK_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            return Err(err);
+        }
+    };
+
+    match conn.query_map(
+        format!("SELECT id, szolgaltatas, bejegyzes, komment, felhasznalo, datum FROM log ORDER BY datum DESC"),
+        |(
+            id,
+            szolgaltatas,
+            bejegyzes,
+            komment,
+            felhasznalo,
+            datum,
+        )| AdatbázisEredményLogBejegyzés {
+            id,
+            szolgaltatas,
+            bejegyzes,
+            komment,
+            felhasznalo,
+            datum
+        }
+    ) {
+        Ok(eredmény) => {
+            return Ok(eredmény);
+        },
+        Err(err) => {
+            println!("{}Hiba az adatbázis lekérdezésekor: (729661) {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+}
 
 pub fn teamspeak_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményTeamspeakFelhasználó>> {
     let mut conn = match csatlakozás(crate::HAUSZ_TEAMSPEAK_ADATBAZIS_URL) {
@@ -335,7 +409,7 @@ pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
 }
 
 pub fn igényelt_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményIgényeltFelhasználó>> {
-    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+    let mut conn: PooledConn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -343,7 +417,7 @@ pub fn igényelt_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredmén
         }
     };
 
-    let felhasználók = match conn.query_map(
+    match conn.query_map(
         format!("SELECT request_id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), COALESCE(megjeleno_nev, '') FROM users_requested"),
         |(
             request_id,
@@ -471,6 +545,51 @@ pub fn session_törlése(cookie: String, user_id: u32) -> Result<String> {
         Ok(_) => { return Ok("Cookie törölve".to_owned()) }
     }
 
+}
+
+pub fn felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményFelhasználó>> {
+    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    let felhasználók = match conn.query_map(
+            format!("SELECT id, COALESCE(username, ''), COALESCE(password, ''), COALESCE(sha256_password, ''), COALESCE(email, ''), admin, COALESCE(megjeleno_nev, ''), COALESCE(minecraft_username, ''), minecraft_islogged, minecraft_lastlogin FROM users"),
+            |(
+                id,
+                username,
+                password,
+                sha256_password,
+                email,
+                admin,
+                megjeleno_nev,
+                minecraft_username,
+                minecraft_islogged,
+                minecraft_lastlogin
+            )| AdatbázisEredményFelhasználó {
+                azonosító: id,
+                felhasználónév: username,
+                jelszó: password,
+                sha256_jelszó: sha256_password,
+                email,
+                admin,
+                megjelenő_név: megjeleno_nev,
+                minecraft_username,
+                minecraft_islogged,
+                minecraft_lastlogin
+            }
+        ) {
+            Ok(eredmény) => eredmény,
+            Err(err) => {
+                println!("{}Hiba az adatbázis lekérdezésekor: (7) {}", crate::LOG_PREFIX, err);
+                return Err(err);
+            }
+        };
+
+    return Ok(felhasználók);
 }
 
 pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok) -> Result<Option<AdatbázisEredményFelhasználó>> {
