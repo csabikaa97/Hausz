@@ -1,7 +1,0 @@
-DirectoryIndex teamspeak.html
-
-RewriteEngine on
-RewriteRule (.*)check_telnet\.sh(.*) /teamspeak/ [R=301,NC,L]
-RewriteRule (.*)create_token\.sh(.*) /teamspeak/ [R=301,NC,L]
-RewriteRule (.*)list_clients\.sh(.*) /teamspeak/ [R=301,NC,L]
-RewriteRule (.*)\.htaccess /teamspeak/ [R=301,NC,L]

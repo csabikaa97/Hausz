@@ -40,12 +40,12 @@ function jelszo_valtoztatasa(event) {
 
             post_parameterek.append('uj_jelszo_sha256_salt', uj_jelszo_salt);
 
-            let jelszo_hash = sha256_library.hash_keszites( obj('uj_jelszo').value );
-            let salted_hash = sha256_library.hash_keszites( jelszo_hash + uj_jelszo_salt );
+            let jelszo_hash = crypto_konyvtar.hash_keszites( obj('uj_jelszo').value );
+            let salted_hash = crypto_konyvtar.hash_keszites( jelszo_hash + uj_jelszo_salt );
             post_parameterek.append('uj_jelszo_sha256', salted_hash);
             
-            let jelszo_hash_megerosites = sha256_library.hash_keszites( obj('uj_jelszo_megerosites').value );
-            let salted_hash_megerosites = sha256_library.hash_keszites( jelszo_hash_megerosites + uj_jelszo_salt );
+            let jelszo_hash_megerosites = crypto_konyvtar.hash_keszites( obj('uj_jelszo_megerosites').value );
+            let salted_hash_megerosites = crypto_konyvtar.hash_keszites( jelszo_hash_megerosites + uj_jelszo_salt );
             post_parameterek.append('uj_jelszo_sha256_megerosites', salted_hash_megerosites);
             
             let post_parameterek_salt_keres = new FormData();
@@ -55,8 +55,8 @@ function jelszo_valtoztatasa(event) {
                 if(uzenet.eredmeny == 'ok') {
                     let jelenlegi_salt = uzenet.salt;
 
-                    let jelenlegi_jelszo_hash = sha256_library.hash_keszites( obj('jelenlegi_jelszo').value );
-                    let jelenlegi_salted_hash = sha256_library.hash_keszites( jelenlegi_jelszo_hash + jelenlegi_salt );
+                    let jelenlegi_jelszo_hash = crypto_konyvtar.hash_keszites( obj('jelenlegi_jelszo').value );
+                    let jelenlegi_salted_hash = crypto_konyvtar.hash_keszites( jelenlegi_jelszo_hash + jelenlegi_salt );
 
                     post_parameterek.append('jelenlegi_jelszo_sha256', jelenlegi_salted_hash);
                 } else {

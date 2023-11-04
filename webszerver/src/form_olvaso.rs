@@ -57,11 +57,8 @@ pub async fn form_olvasó(payload: &mut Multipart) -> Vec<(String, String)> {
 pub fn get_olvasó(query: String) -> Vec<(String, String)> {
     let mut returnvalue = Vec::new();
 
-    // explode the string by delimiter "&"
     let query = query.split("&");
 
-    
-    // iterate over the string vector
     for q in query.clone() {
         let mut q = q.split("=");
 

@@ -80,6 +80,10 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy jogosult a fájl eléréshez.")));
         }
 
+        if session.loggedin != "yes" && adatbázis_fájl.members_only == 1 {
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy jogosult a fájl eléréshez.")));
+        }
+
         let kiterjesztés = match adatbázis_fájl.fájlnév.split('.').last() {
             Some(kiterjesztés) => kiterjesztés,
             None => "",
@@ -334,8 +338,6 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                         println!("{}Hiba a fájl kiírása közben", LOG_PREFIX);
                     },
                 }
-    
-                println!("{}Fájl sikeresen kiírva lemezre: {}", LOG_PREFIX, filename);
             }
         }
 
@@ -380,37 +382,25 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve.")));
     }
 
-    // if( isset($_GET['atnevezes']) ) {
     if isset("atnevezes", get.clone()) {
-        //     die_if( strlen($_GET['uj_nev']) <= 0 || strlen($_GET['file_id']) <= 0, 'Hiányzó uj_nev vagy file_id paraméter.');
         if list_key("uj_nev", get.clone()).len() <= 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Hiányzó uj_nev paraméter.")));
         }
         if list_key("file_id", get.clone()).len() <= 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Hiányzó file_id paraméter.")));
         }
-        //     $result = query_futtatas("SELECT * FROM hausz_megoszto.files WHERE filename='".$_GET['uj_nev']."';");
-        //     die_if( $result->num_rows > 0, 'Már létezik fájl ezzel a névvel.');
         match fájl_lekérdezése_név_alapján(list_key("uj_nev", get.clone())) {
             Some(_) => {
                 return HttpResponse::BadRequest().body(exit_error(format!("Már létezik fájl ezzel a névvel.")));
             },
             None => {},
         }
-        //     $result = query_futtatas("SELECT * FROM hausz_megoszto.files WHERE id=".$_GET['file_id'].";");
-        //     die_if( $result->num_rows <= 0, 'Nem létezik az átnevezendő fájl.');
         let átnevezendő_fájl =match fájl_lekérdezése_id_alapján(list_key("file_id", get.clone())) {
             Some(eredmémny) => eredmémny,
             None => {
                 return HttpResponse::BadRequest().body(exit_error(format!("Nem létezik az átnevezendő fájl.")));
             },
         };
-
-        //     $row = $result->fetch_assoc();
-        //     die_if( $row['user_id'] != $_SESSION['user_id'] && $row['user_id'] != '0', 'Nem nevezheted át más fájljait.');
-        //     die_if( strlen($_GET['uj_nev']) > 250, 'Nem lehet az új név 250 karakternél hosszabb.');
-        //     die_if( preg_match('/[^a-zA-Z0-9_-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]/', $_GET['uj_nev'], $matches), 'Illegális karakterek vannak az új névben: '.$matches);
-        //     die_if( !preg_match('/(.*)\.(.*)/', $_GET['uj_nev']), 'Nincs kiterjesztés megadva az új névben.');
 
         if átnevezendő_fájl.felhasználó_azonosító != session.user_id && átnevezendő_fájl.felhasználó_azonosító != 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Nem nevezheted át más fájljait.")));
@@ -425,11 +415,6 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs kiterjesztés megadva az új névben.")));
         }
         
-        //     $eredmeny = "";
-        //     $parancs = 'mv "/var/www/public/megoszto/fajlok/'.$row['filename'].'" "/var/www/public/megoszto/fajlok/'.$_GET['uj_nev'].'"';
-        //     exec($parancs, $eredmeny, $retval);
-        //     die_if( $retval != 0, $parancs);
-
         match fs::rename(format!("/public/megoszto/fajlok/{}", átnevezendő_fájl.fájlnév), format!("/public/megoszto/fajlok/{}", list_key("uj_nev", get.clone()))) {
             Ok(_) => {},
             Err(err) => {
@@ -437,12 +422,6 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             }
         }
-
-        //     $query = 'update hausz_megoszto.files set filename="'.$_GET['uj_nev'].'" where id = '.$_GET['file_id'];
-        //     $result = query_futtatas($query);
-        //     log_bejegyzes("megoszto", "átnevezés", "[".$_GET['file_id'].'] '.$row['filename'].' -> '.$_GET['uj_nev'], $_SESSION['username']);
-        //     exit_ok('"valasz": "A(z) '.$row['filename'].' nevű fájl sikeresen át lett nevezve."');
-        // }
 
         match általános_query_futtatás(format!("UPDATE files SET filename = '{}' WHERE id = {}", list_key("uj_nev", get.clone()), list_key("file_id", get.clone()))) {
             Ok(_) => {
@@ -455,16 +434,11 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         }
     }
 
-    // if( isset($_GET['privat_statusz_csere']) ) {
     if isset("privat_statusz_csere", get.clone()) {
-        //     die_if( strlen($_GET['file_id']) <= 0, "Nincs megadva fájl azonosító.");
         if list_key("file_id", get.clone()).len() <= 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs megadva fájl azonosító.")));
         }
 
-        //     $result = query_futtatas("SELECT * FROM files WHERE id = ".$_GET['file_id']);
-        //     die_if( $result->num_rows <= 0, "Nem létezik a változtatni kívánt fájl.");
-        //     $row = $result->fetch_assoc();
         let módosítandó_fájl = match fájl_lekérdezése_id_alapján(list_key("file_id", get.clone())) {
             Some(fájl) => fájl,
             None => {
@@ -529,11 +503,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         }
     }
 
-    // if( isset($_GET['delete']) ) {
     if isset("delete", get.clone()) {
-        //     $result = query_futtatas("SELECT files.id, users.username, files.user_id, files.filename, files.added FROM files LEFT OUTER JOIN users ON files.user_id = users.id WHERE files.id = ".$_GET['file_id']);
-        //     die_if( $result->num_rows <= 0, 'Nem létező fájl azonosító');
-        //     $row = $result->fetch_assoc();
         let törlendő_fájl = match fájl_lekérdezése_id_alapján(list_key("file_id", get.clone())) {
             Some(fájl) => fájl,
             None => {
@@ -541,20 +511,9 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
         };
         
-        //     die_if( strtolower($_SESSION['username']) != strtolower($row['username']) && strtolower($row['username']) != "ismeretlen", 'Nem a tiéd a fájl, ezért azt nem törölheted');
-        //     $eredmeny = "";
         if törlendő_fájl.felhasználó_azonosító != session.user_id {
             return HttpResponse::BadRequest().body(exit_error(format!("Nem a tiéd a fájl, ezért azt nem törölheted.")));
         }
-        
-        //     $parancs = 'rm "/var/www/public/megoszto/fajlok/'.$row['filename'].'"';
-        //     exec($parancs, $eredmeny, $retval);
-        //     die_if( $retval != 0, "".$parancs);
-        //     $_GET['file'] = preg_replace("/'/", "\'", $_GET['file']);
-        //     $result_del = query_futtatas("DELETE FROM files WHERE id = ".$_GET['file_id']);
-        //     log_bejegyzes("megoszto", "törlés", "[".$_GET['file_id'].']: '.$row['filename'], $_SESSION['username']);
-        //     exit_ok('"valasz": "'.$row['filename'].' nevű fájl törölve."');
-        // }
 
         match fs::remove_file(format!("/public/megoszto/fajlok/{}", törlendő_fájl.fájlnév)) {
             Ok(_) => {},
@@ -575,15 +534,6 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         log_bejegyzes("megoszto", "törlés", format!("[{}] {}", list_key("file_id", get.clone()), törlendő_fájl.fájlnév).as_str(), session.username);
         return HttpResponse::Ok().body(exit_ok(format!("A fájl sikeresen törölve.")));
     }
-
-    // if( isset($_GET['claim']) ) {
-    //     $result = query_futtatas("UPDATE files SET user_id = (SELECT id FROM users WHERE username = '".$_SESSION['username']."') WHERE id = ".$_GET['file_id']);
-    //     $result = query_futtatas("SELECT filename FROM files WHERE id = ".$_GET['file_id']);
-    //     die_if( $result->num_rows <= 0, 'Nem létezik a claimelendő fájl');
-    //     $row = $result->fetch_assoc();
-    //     log_bejegyzes("megoszto", "claimelés", "[".$_GET['file_id'].']: '.$row['filename'], $_SESSION['username']);
-    //     exit_ok('"valasz": "A ' . $row['filename'] . ' nevű fájl sikeresen hozzá lett rendelve a fiókodhoz."');
-    // }
 
     if isset("claim", get.clone()) {
         let claimelendő_fájl = match fájl_lekérdezése_id_alapján(list_key("file_id", get.clone())) {

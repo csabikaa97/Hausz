@@ -101,7 +101,7 @@ pub fn exit_error(szoveg: String) -> String {
 }
 
 pub fn log_bejegyzes(szolgaltatas: &str, bejegyzes: &str, komment: &str, felhasznalo: String) {
-    let query = format!("insert into hausz_log.log (szolgaltatas, bejegyzes, komment, felhasznalo, datum) values ('{}', '{}', '{}', '{}', now(6));", szolgaltatas, bejegyzes, komment, felhasznalo);
+    let query = format!("INSERT INTO hausz_log.log (szolgaltatas, bejegyzes, komment, felhasznalo, datum) values ('{}', '{}', '{}', '{}', now(6));", szolgaltatas, bejegyzes, komment, felhasznalo);
     match általános_query_futtatás(query.clone()) {
         Ok(_) => {},
         Err(err) => {

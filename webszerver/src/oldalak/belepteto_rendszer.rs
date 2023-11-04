@@ -110,7 +110,6 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
 
     if isset("logout", get.clone()) {
         match session_törlése(session.cookie, session.user_id) {
-            // {"eredmeny": "ok", "valasz":"Sikeres kilépés."}
             Ok(_) => { return HttpResponse::Ok().body(exit_ok(format!("\"eredmeny\": \"ok\", \"valasz\":\"Sikeres kilépés.\""))); },
             Err(hiba) => {
                 println!("{}Hiba a session törlésekor: ({})", LOG_PREFIX, hiba);

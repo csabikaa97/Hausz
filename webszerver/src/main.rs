@@ -26,13 +26,12 @@ static PORT_HTTPS: u16                          = 443;
 pub static DOMAIN: &str                         = "hausz.stream";
 pub static SESSION_LEJÁRATI_IDEJE_MP: i64       = 60*60*24*7;
 pub static SESSSION_AZONOSÍTÓ_HOSSZ: usize      = 94;
-pub static HAUSZ_TS_TOKEN_IGENYLES_CD_MP: u32   = 60*60*24*3;
-pub static HAUSZ_TS_TOKEN_IGENYLES_CD_NAP: u32  = 60*60*24*3;
+pub static HAUSZ_TS_TOKEN_IGENYLES_CD_NAP: u32  = 5;
+pub static HAUSZ_TS_TOKEN_IGENYLES_CD_MP: u32   = 60*60*24*HAUSZ_TS_TOKEN_IGENYLES_CD_NAP;
 pub static HAUSZ_TEAMSPEAK_ADMIN_JELSZO: &str   = "LKMjDYNl";
 pub const MAX_FÁJL_MÉRET: usize                 = 1024*1024*10;
-pub static MEGOSZTO_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_megoszto";
-pub static HAUSZ_TS_ADATBAZIS_URL: &str         = "mysql://root:root@172.20.128.10/hausz_ts";
-pub static HAUSZ_TEAMSPEAK_ADATBAZIS_URL: &str  = "mysql://root:root@172.20.128.15/teamspeak";
+pub static HAUSZ_ADATBAZIS_URL: &str            = "mysql://root:root@172.20.128.10/hausz_megoszto";
+pub static HAUSZ_TEAMSPEAK_ADATBAZIS_URL: &str  = "mysql://root:root@172.20.128.14/teamspeak";
 
 static STATIKUS_FÁJL_GYORSÍTÓTÁR: Mutex<Vec<(String, Vec<u8>)>> = Mutex::new(Vec::new());
 

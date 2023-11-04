@@ -9,7 +9,7 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     library: {
-      name: 'sha256_library',
+      name: 'crypto_konyvtar',
       type: 'var',
     },
   },

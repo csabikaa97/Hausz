@@ -130,37 +130,37 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
 
     // admin oldal
     if isset("aktivalas", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("elutasitas", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("torles", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("aktivalando_fiokok", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("fiokok", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("admin_csere", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("log", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("parancs", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("teamspeak_jogosultsag_igenylesek", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("teamspeak_jogosultsag_jovahagyas", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
     if isset("teamspeak_jogosultsag_elutasitas", get.clone()) {
-        return admin_oldal(post, session).await;
+        return admin_oldal(get, session).await;
     }
 
     let path = request.path();
@@ -178,8 +178,7 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
             gzip = true;
             x
         },
-        Err(hiba) => {
-            println!("{}Nincs gyorsítótár: {}: ({})", LOG_PREFIX, fájlnév, hiba);
+        Err(_) => {
             match std::fs::read(&fájlnév) {
                 Ok(tartalom) => {
                     let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
@@ -187,7 +186,6 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
                         Ok(_) => {
                             match encoder.finish() {
                                 Ok(compressed_bytes) => {
-                                    println!("{}Fájl sikeresen eltárolva a gyorsítótárban: {}", LOG_PREFIX, &fájlnév);
                                     save_gyorsítótár(fájlnév.clone(), compressed_bytes);
                                 },
                                 Err(hiba) => {

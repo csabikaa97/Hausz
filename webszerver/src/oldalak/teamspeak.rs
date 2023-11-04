@@ -14,20 +14,17 @@ use crate::alap_fuggvenyek::isset;
 use crate::alap_fuggvenyek::exit_error;
 
 pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> HttpResponse {
-    // die_if( !isset($_SESSION['loggedin']), 'Nem vagy belépve');
     if session.loggedin != "yes" {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
     }
     
-    //     if( isset($_GET['token_informacio']) ) {
     if isset("token_informacio", get.clone()) {
-    //         $result = query_futtatas('');
         let token = match teamspeak_token_lekérdezése(session.user_id) {
             Ok(x) => {
                 match x {
                     Some(y) => y,
                     None => {
-                        return HttpResponse::BadRequest().body(exit_error(format!("Jelenleg nincs jogosultsági tokened")));
+                        return HttpResponse::BadRequest().body(exit_error(format!("Jelenleg nincs jogosultsági tokened.")));
                     }
                 }
             },
@@ -40,17 +37,9 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
         let jogosult_uj_token_keresre = if token.datediff > crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP { "igen" } else { "nem" };
 
         return HttpResponse::Ok().body(exit_ok(format!("\"token\": \"{}\", \"jogosult_uj_token_keresere\": \"{}\"", token.token, jogosult_uj_token_keresre)));
-    //         die_if( $result->num_rows <= 0, "Jelenleg nincs jogosultsági tokened.");
-    //         $row = $result->fetch_assoc();
-    //         exit_ok('"token": "'.$row['token'].'", "jogosult_uj_token_keresere": "'.(intval($row['kulonbseg']) > 5 ? 'igen' : 'nem').'"');
-    //     }
     }
     
-    //     if( isset($_GET['uj_token_igenylese']) ) {
     if isset("uj_token_igenylese", get.clone()) {
-        //         $eredmeny = shell_exec('/var/www/forras/teamspeak/create_token.sh');
-        //         $eredmeny = preg_replace('/\s+/', '', $eredmeny);
-        //         $eredmeny = preg_replace('/(.*)tokenid2=0token=(.*)error(.*)/', '$2', $eredmeny);
         let create_token_sh_kimenete = match Command::new("/webszerver/create_token.sh").output() {
             Ok(x) => x,
             Err(hiba) => {
@@ -82,7 +71,6 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
         
-        //         $result = query_futtatas('select datediff(now(), generalasi_datum) as kulonbseg from hausz_ts.felhasznalo_tokenek where user_id = '.$_SESSION['user_id'].';');
         let jelenlegi_token = match teamspeak_token_lekérdezése(session.user_id) {
             Ok(x) => {
                 match x {
@@ -101,18 +89,13 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             },
         };
-        //         if($result->num_rows > 0) {
-        //             $row = $result->fetch_assoc();
-        //             die_if( $row['kulonbseg'] == 0, 'Csak 5 naponként lehet új tokent igényelni. A jelenlegi tokened ma készült.');
         if jelenlegi_token.datediff == 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Csak {} naponként lehet új tokent igényelni. A jelenlegi tokened ma készült.", crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP)));
         }
-        //             die_if( $row['kulonbseg'] < 5, 'Csak 5 naponként lehet új tokent igényelni. A jelenlegi tokened '.$row['kulonbseg'].' napja készült.');
         if jelenlegi_token.datediff < crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP {
             return HttpResponse::BadRequest().body(exit_error(format!("Csak {} naponként lehet új tokent igényelni. A jelenlegi tokened {} napja készült.", crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP, jelenlegi_token.datediff)));
         }
 
-        //             query_futtatas('delete from hausz_ts.felhasznalo_tokenek where user_id = '.$_SESSION['user_id']);
         match általános_query_futtatás(format!("DELETE FROM hausz_ts.felhasznalo_tokenek WHERE user_id = {}", session.user_id)) {
             Ok(x) => x,
             Err(hiba) => {
@@ -121,7 +104,6 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        //         $result = query_futtatas("insert into hausz_ts.felhasznalo_tokenek (user_id, token, generalasi_datum) values (".$_SESSION['user_id'].", '".$eredmeny."', now());");
         match általános_query_futtatás(format!("INSERT INTO hausz_ts.felhasznalo_tokenek (user_id, token, generalasi_datum) VALUES ({}, '{}', now())", session.user_id, token)) {
             Ok(x) => x,
             Err(hiba) => {
@@ -130,18 +112,13 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        //         log_bejegyzes("teamspeak szerver", "új token készítés", $eredmeny, $_SESSION['username']);
-        //         exit_ok('Új token generálása kész');
         log_bejegyzes("teamspeak szerver", "új token készítés", token, session.username);
         return HttpResponse::Ok().body(exit_ok(format!("Új token generálása kész")));
     }
         
-    //     if( isset($_GET['felhasznalok']) ) {
     if isset("felhasznalok", get.clone()) {
-        //         $van_online_felhasznalo = false;
         let mut van_online_felhasznalo = false;
 
-        //         $eredmeny = shell_exec('/var/www/forras/teamspeak/list_clients.sh');
         let list_clients_sh_kimenete = match Command::new("/webszerver/list_clients.sh").output() {
             Ok(x) => x,
             Err(hiba) => {
@@ -150,46 +127,23 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        //         $eredmeny = preg_replace('/\s+/', ' ', $eredmeny);
         let eredmeny = String::from_utf8_lossy(&list_clients_sh_kimenete.stdout);
         let eredmeny = eredmeny.trim();
-        //         $eredmeny = preg_replace('/[\n\r]/', ' ', $eredmeny);
         let eredmeny = Regex::new(r"[\n\r]").unwrap().replace_all(&eredmeny, " ");
-        //         $eredmeny = explode('|', $eredmeny);
         let eredmeny = eredmeny.split("|");
-        //         $felhasznalok = array();
         let mut felhasználók = Vec::new();
-        //         foreach($eredmeny as $sor) {
-        //             $sor = preg_replace('/(.*)client_nickname=(.*) client_type=(.*)/', '$2', $sor);
-        //             if($sor != "serveradmin") {
-        //                 $sor = preg_replace('/\\\s/', ' ', $sor);
-        //                 $sor = preg_replace('/\\\p/', '|', $sor);
-        //                 array_push($felhasznalok, $sor);
-        //                 $van_online_felhasznalo = true;
-        //             }
-        //         }
+
         for sor in eredmeny {
             let sor = Regex::new(r"(.*)client_nickname=(.*) client_type=(.*)").unwrap().replace_all(sor, "$2");
             if sor != "serveradmin" {
-                let sor = Regex::new(r"\\\s").unwrap().replace_all(&sor, " ");
-                let sor = Regex::new(r"\\\p").unwrap().replace_all(&sor, "|");
                 felhasználók.push(sor.to_string());
-                //                 $van_online_felhasznalo = true;
                 van_online_felhasznalo = true;
             }
         }
 
-        //         if( !$van_online_felhasznalo) {
         if !van_online_felhasznalo {
-            //             exit_ok('"felhasznalok": 0');
             return HttpResponse::Ok().body(exit_ok(format!("\"felhasznalok\": 0")));
         } else {
-            //         $buffer = '"felhasznalok": [{"felhasznalonev": "'.$felhasznalok[0].'"}';
-            //         for ($i=1; $i < count($felhasznalok); $i++) {
-            //             $buffer .= ', {"felhasznalonev": "'.$felhasznalok[$i].'"}';
-            //         }
-            //         exit_ok($buffer.']');
-            //     }
             let buffer = format!("\"felhasznalok\": [{{\"felhasznalonev\": \"{}\"}}", felhasználók[0]);
             let mut buffer = buffer.to_string();
             for i in 1..felhasználók.len() {
@@ -200,11 +154,8 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
         }
     }
     
-    //     if( isset($_GET['szerver_statusz']) ) {
     if isset("szerver_statusz", get.clone()) {
-        //         $buffer = "";
         let buffer = "";
-        //         $eredmeny = shell_exec("/var/www/forras/teamspeak/check_telnet.sh");
         let check_telnet_sh_kimenete = match Command::new("/webszerver/check_telnet.sh").output() {
             Ok(x) => x,
             Err(hiba) => {
@@ -212,12 +163,10 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             },
         };
-        //         $eredmeny = preg_replace('/\s+/', ' ', $eredmeny);
         let eredmeny = String::from_utf8_lossy(&check_telnet_sh_kimenete.stdout);
         let eredmeny = eredmeny.trim();
 
         let buffer_check_telnet: String;
-        //         if(preg_match('/(.*)elcome to the TeamSpeak 3 ServerQuery interface(.*)/', $eredmeny, $matches)) {
         match Regex::new(r"(.*)elcome to the TeamSpeak 3 ServerQuery interface(.*)") {
             Ok(x) => {
                 match x.captures(&eredmeny) {
@@ -235,12 +184,6 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        //         $eredmeny = "";
-        //         $eredmeny = shell_exec("uptime");
-                
-        //         $buffer .= preg_replace(    '/(.*)load average: ([0-9]\.[0-9][0-9]), ([0-9]\.[0-9][0-9]), ([0-9]\.[0-9][0-9])(.*)/'
-        //         , ', "processzor_1perc": $2, "processzor_5perc": $3, "processzor_15perc": $4'
-        //         , $eredmeny);
         let uptime_kimenete = match Command::new("uptime").output() {
             Ok(x) => x,
             Err(hiba) => {
@@ -260,7 +203,6 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        //         $eredmeny = shell_exec('free');
         let meminfo_kimenet = match Command::new("cat")
             .arg("/proc/meminfo")
             .output() {
@@ -270,22 +212,9 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             },
         };
-        //         $eredmeny = preg_replace('/\n/', ' ', $eredmeny);
-        //         $eredmeny = preg_replace('/\s+/', ' ', $eredmeny);
         let meminfo_kimenet = String::from_utf8_lossy(&meminfo_kimenet.stdout);
         let meminfo_kimenet = meminfo_kimenet.trim();
 
-        /* FORMAT:a
-            MemTotal:        4027860 kB
-            MemFree:          417952 kB
-            MemAvailable:    2104620 kB
-            Buffers:           64840 kB
-            Cached:          1963308 kB
-            SwapCached:         3592 kB
-            Active:          1450820 kB
-         */
-
-        // find MemTotal: and copy the number after it
         let memoria_osszes = Regex::new(r"MemTotal:\s+([0-9]+)\s+kB")
             .unwrap()
             .captures(&meminfo_kimenet)
@@ -316,8 +245,6 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 
         let swap_arany = (swap_osszes - swap_szabad) / swap_osszes;
         
-
-        //         $tarhely2 = shell_exec('df -B1');
         let df_kimenete = match Command::new("df").arg("-B1").output() {
             Ok(x) => x,
             Err(hiba) => {
@@ -325,30 +252,20 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             },
         };
-        //         $tarhely2 = preg_replace('/[\n\r]/', '', $tarhely2);
+
         let df_kimenete = String::from_utf8_lossy(&df_kimenete.stdout);
         let df_kimenete = df_kimenete.trim();
         let df_kimenete = Regex::new(r"[\n\r]").unwrap().replace_all(&df_kimenete, "");
-        //         $hasznalt = preg_replace('/.*(overlay|\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$3', $tarhely2);
         let hasznalt = Regex::new(r".*(overlay|\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*").unwrap().replace_all(&df_kimenete, "$3");
-        //         $elerheto = preg_replace('/.*(overlay|\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*/', '$4', $tarhely2);
         let elerheto = Regex::new(r".*(overlay|\/dev\/xvda1|\/dev\/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*").unwrap().replace_all(&df_kimenete, "$4");
-        //         $hasznalt = floatval($hasznalt);
         let hasznalt = hasznalt.parse::<f32>().unwrap();
-        //         $elerheto = floatval($elerheto);
         let elerheto = elerheto.parse::<f32>().unwrap();
-        //         $tarhely_beteltseg = $hasznalt / ($hasznalt + $elerheto);
         let tarhely_beteltseg = hasznalt / (hasznalt + elerheto);
                 
-        //         $buffer .= ', "memoria_hasznalat": '.$memoria_arany.', "swap_hasznalat": '.$swap_arany.', "lemez_hasznalat": '.$tarhely_beteltseg;
         let buffer_memoria_tarhely = format!("{}, \"memoria_hasznalat\": {}, \"swap_hasznalat\": {}, \"lemez_hasznalat\": {}", buffer, memoria_arany, swap_arany, tarhely_beteltseg);
 
         return HttpResponse::Ok().body(exit_ok(format!("{},{}{}", buffer_uptime, buffer_check_telnet, buffer_memoria_tarhely)));
     }
-            
-            
-            
-    //         exit_ok($buffer);
-    //     }
+    
     return HttpResponse::BadRequest().body(exit_error(format!("Ismeretlen szándék (128261)")));
 }

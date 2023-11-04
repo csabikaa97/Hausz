@@ -27,7 +27,7 @@ function belepteto_rendszer_frissult() {
     }
 }
 
-function uj_token_igenylese() { //
+function uj_token_igenylese() {
     szinkron_keres("/teamspeak/teamspeak.php?uj_token_igenylese", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             token_informaciok_frissitese();

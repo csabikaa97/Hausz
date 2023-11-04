@@ -20,12 +20,12 @@ function regisztracio_inditasa(event) {
     let post_parameterek = new FormData();
     post_parameterek.append("regisztracio", "igen");
     post_parameterek.append("regisztracio_username", obj('regisztracio_username').value);
-    if( typeof sha256_library !== 'undefined' ) {
+    if( typeof crypto_konyvtar !== 'undefined' ) {
         szinkron_keres("/kezelo/regisztracio.php?generate_salt", "", (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 let salt = uzenet.valasz;
-                let jelszo_hash = sha256_library.hash_keszites(obj('regisztracio_password').value);
-                let salted_hash = sha256_library.hash_keszites(jelszo_hash + salt);
+                let jelszo_hash = crypto_konyvtar.hash_keszites(obj('regisztracio_password').value);
+                let salted_hash = crypto_konyvtar.hash_keszites(jelszo_hash + salt);
                 post_parameterek.append("regisztracio_password", salted_hash);
                 post_parameterek.append("regisztracio_password_confirm", salted_hash);
                 post_parameterek.append("regisztracio_password_salt", salt);
@@ -142,5 +142,5 @@ var vanKulonlegesKarakter = false;
 var ujJelszavakEgyeznek = false;
 var jelszoErossegFrissitesIdozito;
 
-let sha256_library;
+let crypto_konyvtar;
 topbar_betoltese();

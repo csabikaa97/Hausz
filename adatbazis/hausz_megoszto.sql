@@ -32,7 +32,7 @@ CREATE TABLE `users` (
 );
 -- admin                /   admin
 -- automata_teszteles   /   automata_teszteles
-INSERT INTO `users` (`username`, `sha256_password`, `megjeleno_nev`, `admin`) VALUES ('admin', '$SHA$8d93e8f0deed91097f4ae80a8e5ae79181ae7ba61d404f53a2e79fb0f21ac822$82dfe312db9a233c9ff5d9c01dbf4fc364be6f77fa75b8dc418818fb4d690f83', 'admin', 'igen');
+INSERT INTO `users` (`username`, `sha256_password`, `megjeleno_nev`, `admin`) VALUES ('admin', '$SHA$8d93e8f0deed91097f4ae80a8e5ae79181ae7ba61d404f53a2e79fb0f21ac822$e7483ac4ed392771a519ddad6762febee112717d8d1e42fa28a5cad73eb46a16', 'admin', 'igen');
 INSERT INTO `users` (`username`, `sha256_password`, `megjeleno_nev`) VALUES ('automata_teszteles', '$SHA$e2470dea81024809960afbbccc1a3accde248520fb3040d90af3c6e38218e4b5$f8896ae7a7729ffd4e803371d0a1bd37c57b84db2bbcf4b2f26613653acb0016', 'automata_teszteles');
 INSERT INTO `users` (`username`, `megjeleno_nev`) VALUES ('ismeretlen', 'ismeretlen');
 UPDATE `users` SET id = 0 WHERE username LIKE 'ismeretlen';

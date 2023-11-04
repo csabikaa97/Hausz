@@ -38,7 +38,7 @@ services:
     container_halozat:
      ipv4_address: 172.20.128.13
    depends_on:
-    - "public"
+    - "webszerver"
   
  teamspeak_adatbazis:
     build: teamspeak/adatbazis

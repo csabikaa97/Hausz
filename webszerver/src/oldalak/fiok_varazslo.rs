@@ -12,16 +12,12 @@ use crate::alap_fuggvenyek::exit_error;
 static LOG_PREFIX: &str = "[fiok_vará] ";
 
 pub async fn teamspeak_fiók_varázsló_oldal(post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
-    // die_if( !isset($_SESSION['loggedin']), 'Nem vagy belépve');
     if session.loggedin != "yes" {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
     }
 
-    // if( isset($_GET['fiok_lista_lekerese'])) {
     if isset("fiok_lista_lekerese", get.clone()) {
-        //     $buffer = '"fiokok": [';
         let mut buffer = "\"fiokok\": [".to_string();
-        //     $result = query_futtatas("SELECT * FROM clients ORDER BY client_nickname", "teamspeak");
         let felhasználók = match teamspeak_felhasználók_lekérdezése() {
             Ok(felhasználók) => felhasználók,
             Err(err) => {
@@ -33,15 +29,6 @@ pub async fn teamspeak_fiók_varázsló_oldal(post: Vec<(String, String)>, get: 
         }
 
         
-        //     if( $result->num_rows > 0) {
-        //         $row = $result->fetch_assoc();
-        //         $buffer .= '{"client_id": ' . $row['client_id'] . ', "client_nickname": "' . $row['client_nickname'] . '"}';
-        //         while( $row = $result->fetch_assoc() ) {
-        //             $buffer .= ', {"client_id": ' . $row['client_id'] . ', "client_nickname": "' . $row['client_nickname'] . '"}';
-        //         }
-        //         $buffer .= ']';
-        //     }
-        //     exit_ok('"fiokok_szama": '.$result->num_rows.','.$buffer);
         let mut i = 0;
         for felhasználó in &felhasználók {
             if i > 0 {
@@ -53,11 +40,7 @@ pub async fn teamspeak_fiók_varázsló_oldal(post: Vec<(String, String)>, get: 
 
         return HttpResponse::Ok().body(exit_ok(format!("\"fiokok_szama\": {}, {}]", felhasználók.len(), buffer)));
     }
-    // }
-
-    // if( isset($_GET['igenyles'])) {
     if isset("igenyles", get.clone()) {
-        //     $eredmeny = query_futtatas("INSERT INTO hausz_ts.jogosultsag_igenylesek (hausz_felhasznalo_id, igenyles_datuma, igenyelt_fiokok, igenyelt_fiok_idk, jelenlegi_fiok_kivalasztott) VALUES (".$_SESSION['user_id'].", now(6), '".$_POST['fiok_nevek']."', '".$_POST['fiok_idk']."', '".$_POST['jelenlegi_fiok_kivalasztott']."')");
         match általános_query_futtatás(
             format!("INSERT INTO hausz_ts.jogosultsag_igenylesek (hausz_felhasznalo_id, igenyles_datuma, igenyelt_fiokok, igenyelt_fiok_idk, jelenlegi_fiok_kivalasztott) VALUES ({}, now(6), '{}', '{}', '{}')"
                 , session.user_id
@@ -72,11 +55,8 @@ pub async fn teamspeak_fiók_varázsló_oldal(post: Vec<(String, String)>, get: 
             },
         }
 
-        //     log_bejegyzes("teamspeak szerver", "Jogosultság igénylése", "Fióknevek: " . "Jelenlegi: '".$_POST['jelenlegi_fiok_kivalasztott']."' <- ".$_POST['fiok_nevek'], $_SESSION['username']);
         log_bejegyzes("teamspeak szerver", "Jogosultság igénylése", format!("Fióknevek: Jelenlegi: {} <- {}", list_key("jelenlegi_fiok_kivalasztott", post.clone()), list_key("fiok_nevek", post.clone())).as_str(), session.username);
-        //     exit_ok('Igénylés sikeresen elküldve');
         return HttpResponse::Ok().body(exit_ok(format!("Igénylés sikeresen elküldve")));
     }
-    //
     return HttpResponse::BadRequest().body(exit_error(format!("Ismeretlen szándék")));
 }

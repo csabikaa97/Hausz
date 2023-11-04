@@ -104,7 +104,7 @@ fn csatlakozás(url: &str) -> Result<mysql::PooledConn> {
 }
 
 pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
-    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::HAUSZ_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
@@ -152,7 +152,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
 
     let mut valid_fájlok_száma = 0;
     for fájl in fájlok {
-        if fájl.azonosító != session.user_id && fájl.privát == 1 {
+        if fájl.felhasználó_azonosító != session.user_id && fájl.privát == 1 {
             continue;
         }
 
@@ -161,7 +161,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
         }
 
         fájlok_szöveg.push_str(&format!(
-            "{{\"megjeleno_nev\": \"{}\", \"titkositott\": {}, \"id\": {}, \"size\": {}, \"filename\": \"{}\", \"added\": \"{}\", \"username\": \"{}\", \"private\": {}}}",
+            "{{\"megjeleno_nev\": \"{}\", \"titkositott\": {}, \"id\": {}, \"size\": {}, \"filename\": \"{}\", \"added\": \"{}\", \"username\": \"{}\", \"private\": {}, \"members_only\": {}}}",
             fájl.felhasználó_megjelenő_név,
             fájl.titkosított,
             fájl.azonosító,
@@ -170,6 +170,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
             fájl.hozzáadás_dátuma,
             fájl.felhasználó_azonosító,
             fájl.privát,
+            fájl.members_only,
         ));
 
         valid_fájlok_száma += 1;
@@ -185,7 +186,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
 }
 
 pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<AdatbázisEredményFelhasználó> {
-    let mut conn = match csatlakozás(crate::MEGOSZTO_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::HAUSZ_ADATBAZIS_URL) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
