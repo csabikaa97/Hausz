@@ -100,6 +100,9 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     if isset("delete", get.clone()) {
         return megosztó(payload, post, get, session).await;
     }
+    if isset("kulcs_ellenorzese", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
 
     // jelszó változatás
     if isset("uj_jelszo_sha256_salt", post.clone()) {

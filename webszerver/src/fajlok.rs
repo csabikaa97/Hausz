@@ -28,7 +28,7 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "erettsegiszamlalo/ErettsegiStyle.css"  => "erettsegiszamlalo/ErettsegiStyle.css",
         "erettsegiszamlalo/ErettsegiWallpaper.jpg"       => "erettsegiszamlalo/ErettsegiWallpaper.jpg",
         "webjosda"                              => "webjosda/josda.html",
-        "webjosda/webjosda.js"                  => "webjosda/josda.js",
+        "webjosda/josda.js"                     => "webjosda/josda.js",
         "fizetos"                               => "webjosda/fizetos.html",
         "webjosda/fizetos.js"                   => "webjosda/fizetos.js",
         "webjosda/josdastyle.css"               => "webjosda/josdastyle.css",

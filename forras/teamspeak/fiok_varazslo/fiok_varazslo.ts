@@ -1,6 +1,6 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
-/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
-/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+/// <reference path="../../komponensek/alap_fuggvenyek.ts" />
+/// <reference path="../../komponensek/belepteto_rendszer.ts" />
+/// <reference path="../../komponensek/topbar.ts" />
 
 function belepteto_rendszer_frissult() {
     if( session_loggedin == 'yes' ) {

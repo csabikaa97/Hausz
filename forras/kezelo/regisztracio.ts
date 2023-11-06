@@ -1,5 +1,5 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
-/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+/// <reference path="../komponensek/alap_fuggvenyek.ts" />
+/// <reference path="../komponensek/topbar.ts" />
 
 function regisztracio_inditasa(event) {
     event.preventDefault();

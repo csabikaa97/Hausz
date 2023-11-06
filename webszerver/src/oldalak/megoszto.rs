@@ -168,6 +168,34 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             .body(buffer);
     }
 
+    if isset("kulcs_ellenorzese", get.clone()) {
+        if list_key("kulcs", post.clone()).len() != 64 {
+            println!("{}KULCS: {}", LOG_PREFIX, list_key("kulcs", post.clone()));
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem megfelelő hosszúságú a megadott kulcs.")));
+        }
+        if list_key("file_id", get.clone()).len() <= 0 {
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem adtál meg fájl azonosítót.")));
+        }
+        
+
+        let fájl = match fájl_lekérdezése_id_alapján(list_key("file_id", get.clone())) {
+            Some(fájl) => fájl,
+            None => {
+                return HttpResponse::BadRequest().body(exit_error(format!("Nem létezik ilyen fájl.")));
+            }
+        };
+
+        if fájl.titkosított != 2 {
+            return HttpResponse::BadRequest().body(exit_error(format!("A fájl nem titkosított, vagy nem a 2-es verziójú titkosítással lett zárolva.")));
+        }
+
+        if fájl.titkositasi_kulcs_hash != list_key("kulcs", post.clone()) {
+            return HttpResponse::BadRequest().body(exit_error(format!("Nem jó kulcsot adtál meg.")));
+        }
+
+        return HttpResponse::Ok().body(exit_ok(format!("A megadott kulcs helyes.")));
+    }
+
     if isset("submit", post.clone()) {
         if list_key("filename", post.clone()).len() <= 0 {
             return HttpResponse::BadRequest().body(exit_error(format!("Nem válaszottál ki fájlt a feltöltéshez.")));
@@ -249,29 +277,6 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs elég tárhely a fájl feltöltéséhez ({} MB).", MIN_ELÉRHETŐ_TÁRHELY_FELTÖLTÉSHEZ / 1024.0 / 1024.0)));
         }
 
-        /*
-        
-        if(strlen($_POST['titkositas_kulcs']) > 0) {
-            $plaintext = file_get_contents($_FILES['fileToUpload']['tmp_name']);
-            exec('rm "'.$_FILES['fileToUpload']['tmp_name'].'"', $output, $retval);
-            die_if( $retval != 0, 'Eltávolítás nem sikerült.');
-            $key = $_POST['titkositas_kulcs'];
-            $cipher = "aes-256-cbc";
-            die_if( !in_array($cipher, openssl_get_cipher_methods()), 'Nem lehet titkosítani, mert nem jó a titkosítási algoritmus.');
-            $iv = "aaaaaaaaaaaaaaaa";
-            $ciphertext = base64_encode(openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv));
-            ini_set('display_errors', 1);
-            exec('touch "'.$target_file.'"', $output, $retval);
-            die_if( $retval != 0, 'Fájl készítése sikertelen.');
-            
-            die_if( !file_put_contents($target_file, $ciphertext), 'Nem sikerül kiírni a fájlba a tartalmat: "'.$target_file.'"');
-        } else {
-            die_if( !move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file), 'Sikertelen volt a fájl feltöltése.');
-        }
-         */
-
-        // TODO: TITKOSÍTÁS KLIENS OLDALON!!!
-
         let mut total_size: usize = 0;
         
         while let Some(mut field) = payload.try_next().await.unwrap_or(None) {
@@ -343,17 +348,22 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
 
         let private = list_key("private", post.clone());
         let titkositas_kulcs = list_key("titkositas_kulcs", post.clone());
-        let titkositott = match list_key("titkositas_kulcs", post.clone()).len() > 0 {
-            true => 1,
-            false => 0,
+        let titkositott = match (list_key("titkositas_kulcs", post.clone()).len() > 0, list_key("titkositasi_kulcs_hash", post.clone()).len() > 0) {
+            (true, true) => {
+                return HttpResponse::BadRequest().body(exit_error(format!("Több verziójú titkosításhoz adtál meg kulcsot (v1 és v2).")));
+            },
+            (true, false) => 1,
+            (false, true) => 2,
+            (false, false) => 0,
         };
+        let titkositasi_kulcs_hash = list_key("titkositasi_kulcs_hash", post.clone());
         let members_only = match list_key("members_only", post.clone()).as_str() {
             "1" => 1,
             "0" => 0,
             &_ => 0,
         };
         match általános_query_futtatás(format!(
-            "INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs, members_only) VALUES ('{}', NOW(6), {}, {}, {}, {}, '{}', {});",
+            "INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs, members_only, titkositasi_kulcs_hash) VALUES ('{}', NOW(6), {}, {}, {}, {}, '{}', {}, '{}');",
                 filename,
                 session.user_id,
                 total_size,
@@ -361,6 +371,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                 titkositott,
                 titkositas_kulcs,
                 members_only,
+                titkositasi_kulcs_hash,
         )) {
             Ok(_) => {},
             Err(err) => {

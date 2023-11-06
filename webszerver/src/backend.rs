@@ -49,6 +49,7 @@ pub struct AdatbázisEredményFájl {
     pub titkosított: u8,
     pub titkosítás_kulcs: String,
     pub members_only: u8,
+    pub titkositasi_kulcs_hash: String,
 }
 
 pub struct AdatbázisEredményFelhasználóToken {
@@ -114,7 +115,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
     };
 
     let fájlok = match conn.query_map(
-            format!("SELECT COALESCE(users.megjeleno_nev, ''), COALESCE(user_id, 0), files.titkositott, files.id AS 'id', files.size, filename, added, COALESCE(username, ''), private, COALESCE(files.titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC"),
+            format!("SELECT COALESCE(users.megjeleno_nev, ''), COALESCE(user_id, 0), files.titkositott, files.id AS 'id', files.size, filename, added, COALESCE(username, ''), private, COALESCE(files.titkositas_kulcs, ''), members_only, COALESCE(titkositasi_kulcs_hash, '') FROM files LEFT OUTER JOIN users ON files.user_id = users.id ORDER BY files.added DESC"),
             |(
                 megjeleno_nev,
                 user_id, 
@@ -126,7 +127,8 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
                 username, 
                 private, 
                 titkositas_kulcs,
-                members_only)|
+                members_only,
+                titkositasi_kulcs_hash)|
             AdatbázisEredményFájl {
                 felhasználó_megjelenő_név: megjeleno_nev,
                 felhasználó_azonosító: user_id,
@@ -139,6 +141,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
                 privát: private,
                 titkosítás_kulcs: titkositas_kulcs,
                 members_only,
+                titkositasi_kulcs_hash,
             },
         ) {
             Ok(fájlok) => fájlok,

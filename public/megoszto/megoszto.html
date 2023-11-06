@@ -50,6 +50,16 @@
         <a id="titkositott_fajl_letoltes_link" href="" download=""></a>
         <a id="titkositatlan_fajl_letoltes_link" href="" download=""></a>
     </div>
+    <div id='v2_titkositas_feloldasa_box' class="preview_box kozepre lathatatlan" style="max-width: 60%; max-height: 60%;display: inline-block">
+        <h3>Az elérni kívánt fájl titkosítva van (v2) 🔒</h3>
+        <p>1. Töltsd le a fájlt ezzel a gombbal: <button onclick="v2_titkositott_fajl_letoltes()" id="v2_titkositott_fajl_letoltes_gomb">Letöltés</button><div id="v2_titkositott_fajl_letoltes_kesz" class="lathatatlan">&#9989;</div></p>
+        <p>2. Add meg a titkosítási kulcsot a feloldáshoz: <input id="v2_titkositas_feloldasa_kulcs" type="text" placeholder="Kulcs"></input></p>
+        <p><button id="v2_titkositas_feloldasa_kulcs_ellenorzes_gomb" onclick="v2_titkositas_feloldasa_kulcs_lekerdezes()">Ellenőrzés</button></p>
+        <p>3. Ha jó kulcsot adtál meg, akkor feloldhatod itt a fájlt <a id="v2_titkositas_feloldott_fajl"></a></p>
+        <br>
+        <p id="v2_titkositas_mentes_doboz" class="lathatatlan">4. Ha saját magadtól szeretnéd inkább feloldani a fájlt, akkor ezzel a gombbal tudod letölteni: <button onclick="v2_titkositott_fajl_mentese()">Mentés</button></p>
+        <p></p>
+    </div>
     <div id="fajl_drop_zona" class="zindex-9 lathatatlan" style="opacity: 0.0; top: 0; left: 0; width: 100%; height: 100%; position: fixed"></div>
     <div id="fajl_drop_zona_leiras" class="zindex-8 lathatatlan" style="opacity: 0.75; background-color: black; top: 0; left: 0; width: 100%; height: 100%; position: fixed">
         <h1 class="kozepre-szoveg" style="margin-top: 25%">Dobd a fájlt bárhova az oldalon a feltöltéshez</h1>

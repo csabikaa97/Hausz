@@ -4,7 +4,30 @@ const fs = require('fs');
 const { exec, execSync, spawnSync } = require("child_process");
 const crypto = require('crypto');
 
+let osszes_ts_fajl_forras = spawnSync("find", ["forras", "-name", "*.ts"], { encoding : 'utf8' }).stdout;
+let osszes_ts_fajl_priv = spawnSync("find", ["priv", "-name", "*.ts"], { encoding : 'utf8' }).stdout;
+let osszes_ts_fajl = osszes_ts_fajl_forras + osszes_ts_fajl_priv;
+
+function get_filename(utvonal) {
+    let utvonal_split = utvonal.split('/');
+    return utvonal_split[utvonal_split.length-1];
+}
+
+function get_absolute_path_for_file(filename) {
+    let osszes_fajl_split = osszes_ts_fajl.split('\n');
+    for (let i = 0; i < osszes_fajl_split.length; i++) {
+        let jelenlegi_sor = osszes_fajl_split[i];
+        if( new RegExp(filename + '$').test( jelenlegi_sor ) ) {
+            return jelenlegi_sor;
+        }
+    }
+
+    console.log({osszes_fajl: osszes_ts_fajl});
+    throw new Error('Nem található a fájl: ' + filename);
+}
+
 function checksum_szamitasa_fajlhoz(eleresi_ut) {
+    eleresi_ut = get_absolute_path_for_file(get_filename(eleresi_ut));
     let fajl = String(fs.readFileSync(eleresi_ut));
     let checksum = crypto.createHash('md5').update(fajl).digest("hex");
     return checksum;

@@ -164,7 +164,7 @@ pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEred
     };
 
     match conn.query_map(
-        format!("SELECT files.id, files.user_id, COALESCE(megjeleno_nev, ''), COALESCE(username, ''), filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE files.id = {}", file_id),
+        format!("SELECT files.id, files.user_id, COALESCE(megjeleno_nev, ''), COALESCE(username, ''), filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only, COALESCE(titkositasi_kulcs_hash, '') FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE files.id = {}", file_id),
         |(
             azonosító,
             felhasználó_azonosító,
@@ -177,6 +177,7 @@ pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEred
             titkosított,
             titkosítás_kulcs,
             members_only,
+            titkositasi_kulcs_hash
         )| AdatbázisEredményFájl {
             azonosító,
             felhasználó_azonosító,
@@ -189,6 +190,7 @@ pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEred
             titkosított,
             titkosítás_kulcs,
             members_only,
+            titkositasi_kulcs_hash
         }
     ) {
         Ok(eredmény) => {
@@ -210,6 +212,7 @@ pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEred
                             titkosított: x.titkosított,
                             titkosítás_kulcs: x.titkosítás_kulcs.clone(),
                             members_only: x.members_only,
+                            titkositasi_kulcs_hash: x.titkositasi_kulcs_hash.clone(),
                         }
                     );
                 }
@@ -232,7 +235,7 @@ pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisE
     };
 
     match conn.query_map(
-        format!("SELECT files.id, user_id, COALESCE(megjeleno_nev, ''), COALESCE(username, ''), filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE filename = '{}'", filename),
+        format!("SELECT files.id, user_id, COALESCE(megjeleno_nev, ''), COALESCE(username, ''), filename, added, size, private, titkositott, COALESCE(titkositas_kulcs, ''), members_only, COALESCE(titkositasi_kulcs_hash, '') FROM files LEFT OUTER JOIN hausz_megoszto.users ON users.id = files.user_Id WHERE filename = '{}'", filename),
         |(
             azonosító,
             felhasználó_azonosító,
@@ -245,6 +248,7 @@ pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisE
             titkosított,
             titkosítás_kulcs,
             members_only,
+            titkositasi_kulcs_hash
         )| AdatbázisEredményFájl {
             azonosító,
             felhasználó_azonosító,
@@ -257,6 +261,7 @@ pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisE
             titkosított,
             titkosítás_kulcs,
             members_only,
+            titkositasi_kulcs_hash
         }
     ) {
         Ok(eredmény) => {
@@ -278,6 +283,7 @@ pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisE
                             titkosított: x.titkosított,
                             titkosítás_kulcs: x.titkosítás_kulcs.clone(),
                             members_only: x.members_only,
+                            titkositasi_kulcs_hash: x.titkositasi_kulcs_hash.clone(),
                         }
                     );
                 }

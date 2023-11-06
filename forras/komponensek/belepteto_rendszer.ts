@@ -1,4 +1,4 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="alap_fuggvenyek.ts" />
 
 function topbar_fiok_gomb_kattintas() {
     let felhasznalo_doboz = obj('felhasznalo_doboz');
