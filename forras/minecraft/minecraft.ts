@@ -1,6 +1,6 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
-/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
-/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+/// <reference path="../komponensek/alap_fuggvenyek.ts" />
+/// <reference path="../komponensek/belepteto_rendszer.ts" />
+/// <reference path="../komponensek/topbar.ts" />
 
 function belepteto_rendszer_frissult() {
     if( session_loggedin == "yes" ) {
@@ -14,9 +14,6 @@ function belepteto_rendszer_frissult() {
             let elem = hide_elems[i];
             elem.classList.add("nodisplay");
         }
-        
-        jatekosnev_valtoztatas_doboz_frissitese();
-        jatekos_lista_frissitese()
     } else {
         let show_elems = document.getElementsByClassName("without-login");
         for (let i = 0; i < show_elems.length; i++) {
@@ -29,6 +26,9 @@ function belepteto_rendszer_frissult() {
             elem.classList.add("nodisplay");
         }
     }
+
+    jatekosnev_valtoztatas_doboz_frissitese();
+    jatekos_lista_frissitese();
 }
 
 function jatekosnev_valtoztatas_doboz_frissitese() {

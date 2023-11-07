@@ -1,13 +1,14 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
-/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
-/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+/// <reference path="../komponensek/alap_fuggvenyek.ts" />
+/// <reference path="../komponensek/belepteto_rendszer.ts" />
+/// <reference path="../komponensek/topbar.ts" />
 
 topbar_betoltese();
 belepteto_rendszer_beallitas();
 
 var ujitasok_doboz = obj('ujitasok');
 var ujitasok = {
-    '2023.10.09': ["Megosztó: Be lehet állítani minden fájlhoz, hogy csak Hausz tagok, vagy minden felhasználó számára legyen elérhető."]
+    '2023.10.18': ["Alap: A szerveren sikerült átállni a SHA256 hashelési algoritmusra. Az új megoldás miatt a weboldal már nem küldi el a felhasználók jelszavát a szerverre, így a jelszavak használata és tárolása jelentősen biztonságosabb lett."]
+    , '2023.10.09': ["Megosztó: Be lehet állítani minden fájlhoz, hogy csak Hausz tagok, vagy minden felhasználó számára legyen elérhető."]
     , '2023.10.14': ["Minecraft: Letöltési linkeket és csatlakozási lépéseket lehet megtekinteni a Minecraft oldalon."]
     , '2023.10.04': ["Alap: Minden meglévő felhasználó tud meghívót generálni, amivel a regisztráló felhasználó fiókja azonnal aktiválódik."]
     , '2023.01.27': ["TeamSpeak oldal: Egy új 'Fiók varázsló' nevű funkcióval vissza lehet állítani a korábbi fiókokkal elveszett rangokat."]

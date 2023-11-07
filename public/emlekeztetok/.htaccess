@@ -1,4 +1,0 @@
-DirectoryIndex emlekeztetok.html
-
-RewriteEngine on
-RewriteRule (.*)\.htaccess /emlekeztetok/ [R=301,NC,L]

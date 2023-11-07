@@ -24,8 +24,6 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import 'cypress-file-upload';
-
 Cypress.Commands.add('topbar_teszteles', () => {
     cy.viewport(1280, 720)
     cy.contains('Főoldal').and('be.visible')

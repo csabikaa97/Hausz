@@ -27,20 +27,6 @@ services:
   volumes:
    - "./:/var/www"
 
- public:
-   build: public
-   container_name: public
-   ports:
-    - "80:80"
-    - "443:443"
-   volumes:
-    - "./:/var/www"
-   networks:
-    container_halozat:
-     ipv4_address: 172.20.128.12
-   depends_on:
-    - "adatbazis"
-
  egyuttnezo_szerver:
    build: forras/egyuttnezo_szerver
    container_name: egyuttnezo_szerver
@@ -52,12 +38,14 @@ services:
     container_halozat:
      ipv4_address: 172.20.128.13
    depends_on:
-    - "public"
+    - "webszerver"
   
  teamspeak_adatbazis:
     build: teamspeak/adatbazis
     container_name: teamspeak_adatbazis
     command: [ "mysqld" ]
+    ports:
+     - "3307:3306"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.14
@@ -100,6 +88,20 @@ services:
   networks:
    container_halozat:
     ipv4_address: 172.20.128.16
+    
+ webszerver:
+    build: webszerver
+    container_name: webszerver
+    ports:
+     - "80:80"
+     - "443:443"
+    volumes:
+     - "./public:/public"
+    networks:
+     container_halozat:
+      ipv4_address: 172.20.128.12
+    depends_on:
+      - "adatbazis"
      
 networks:
   container_halozat:

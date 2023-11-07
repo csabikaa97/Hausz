@@ -1,0 +1,29 @@
+[package]
+name = "webszerver"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-form-data = "0.6.2"
+actix-multipart = "0.5.0"
+actix-web = { version = "4.4.0", features = ["openssl"] }
+base64 = "0.21.5"
+bcrypt = "0.14.0"
+chrono = "0.4.31"
+env_logger = "0.10.0"
+flate2 = "1.0.28"
+futures = "0.3.28"
+futures-util = "0.3.28"
+mysql = "23.0.1"
+openssl = "0.10.57"
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+regex = "1.10.1"
+serde = { version = "1.0.189", features = ["derive"] }
+time = "0.3.30"
+
+[[bin]]
+name = "webszerver"
+path = "src/main.rs"

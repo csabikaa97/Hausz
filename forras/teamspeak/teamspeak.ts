@@ -1,6 +1,6 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
-/// <reference path="/var/www/forras/komponensek/belepteto_rendszer.ts" />
-/// <reference path="/var/www/forras/komponensek/topbar.ts" />
+/// <reference path="../komponensek/alap_fuggvenyek.ts" />
+/// <reference path="../komponensek/belepteto_rendszer.ts" />
+/// <reference path="../komponensek/topbar.ts" />
 
 function belepteto_rendszer_frissult() {
     if( session_loggedin == 'yes' ) {
@@ -27,7 +27,7 @@ function belepteto_rendszer_frissult() {
     }
 }
 
-function uj_token_igenylese() { //
+function uj_token_igenylese() {
     szinkron_keres("/teamspeak/teamspeak.php?uj_token_igenylese", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             token_informaciok_frissitese();
@@ -67,13 +67,13 @@ function token_informaciok_frissitese() {
 
             obj('token').innerHTML = uzenet.token;
 
-            if( uzenet.jogosult_uj_rokenre == "igen" ) {
+            if( uzenet.jogosult_uj_token_keresere == "igen" ) {
                 obj('jogosult_tokenre_szoveg').style.display = 'block';
             } else {
                 obj('jogosult_tokenre_szoveg').style.display = 'none';
             }
         } else {
-            if( uzenet.valasz == 'Jelenleg nincs jogosultásgi tokened' ) {
+            if( uzenet.valasz == 'Jelenleg nincs jogosultsági tokened.' ) {
                 obj('van_token').style.display = 'none';
                 obj('nincs_token').style.display = 'block';
             } else {

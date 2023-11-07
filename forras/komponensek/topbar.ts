@@ -1,4 +1,4 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="../komponensek/alap_fuggvenyek.ts" />
 
 
 function topbar_betoltese() {

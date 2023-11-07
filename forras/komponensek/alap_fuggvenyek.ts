@@ -180,6 +180,16 @@ function idopontbol_datum(datum) {
 }
 
 function uj_valasz_mutatasa(ido, tipus, valasz) {
+    if( typeof ido == "undefined" ) {
+        throw new Error('Ido paraméter nem definiált!!!');
+    }
+    if( typeof tipus == "undefined" ) {
+        throw new Error('Tipus paraméter nem definiált!!!');
+    }
+    if( typeof valasz == "undefined" ) {
+        throw new Error('Valasz paraméter nem definiált!!!');
+    }
+
     if( typeof ido != "number" )
         throw new Error('Ido paraméter nem number típusú!!!');
     if( typeof tipus != "string" )

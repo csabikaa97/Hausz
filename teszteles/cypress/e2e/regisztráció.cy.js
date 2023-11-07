@@ -7,7 +7,7 @@ describe('Regisztráció', () => {
     })
 
     it('Asztali: Regisztrációs oldal tartalom', () => {
-        cy.visit(Cypress.env('domain') + '/kezelo/regisztracio.html')
+        cy.visit(Cypress.env('domain') + 'kezelo/regisztracio.html')
         cy.viewport(1280, 720)
         cy.contains('Főoldal').and('be.visible')
         cy.contains('Megosztó').and('be.visible')
@@ -16,7 +16,7 @@ describe('Regisztráció', () => {
     })
 
     it('Mobil: Regisztrációs oldal tartalom', () => {
-        cy.visit(Cypress.env('domain') + '/kezelo/regisztracio.html')
+        cy.visit(Cypress.env('domain') + 'kezelo/regisztracio.html')
         cy.viewport(320, 640)
         cy.contains('Hausz oldalak').and('be.visible')
         cy.contains('Hausz regisztráció').and('be.visible')
@@ -24,7 +24,7 @@ describe('Regisztráció', () => {
     })
 
     it('Mobil: Regisztráció', () => {
-        cy.visit(Cypress.env('domain') + '/kezelo/regisztracio.html')
+        cy.visit(Cypress.env('domain') + 'kezelo/regisztracio.html')
         cy.viewport(320, 640)
         cy.wait(250)
         cy.get('#adatvedelmi_tajekoztato_elolvasva_gomb').and('be.visible').click()
@@ -63,8 +63,8 @@ describe('Regisztráció', () => {
         cy.get('input[id=regisztracio_password_confirm]').and('be.visible').type(a + b + c + d)
         cy.get('#jelszoErossegTippek').contains('🟢 Új jelszavak egyeznek')
 
-        cy.get('input[id=regisztracio_username]').and('be.visible').type(start + a + b + c + d)
-        cy.get('input[id=regisztracio_email]').and('be.visible').type(start + a + b + c + '_AUTOMATA_TESZTELES@' + Cypress.env('domain'))
+        cy.get('input[id=regisztracio_username]').and('be.visible').type(start + a + b + d)
+        cy.get('input[id=regisztracio_email]').and('be.visible').type(start + a + b + '_AUTOMATA_TESZTELES@' + Cypress.env('domain'))
 
         cy.viewport(320, 640)
         cy.get('#regisztracio_gomb').and('be.visible').click()

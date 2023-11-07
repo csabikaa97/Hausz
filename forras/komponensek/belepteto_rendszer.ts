@@ -1,4 +1,4 @@
-/// <reference path="/var/www/forras/komponensek/alap_fuggvenyek.ts" />
+/// <reference path="alap_fuggvenyek.ts" />
 
 function topbar_fiok_gomb_kattintas() {
     let felhasznalo_doboz = obj('felhasznalo_doboz');
@@ -27,8 +27,8 @@ function belepesgomb(event) {
             post_parameterek_belepes.append('login', 'yes');
             post_parameterek_belepes.append('username', obj('username').value);
 
-            let jelszo = sha256_library.hash_keszites(obj('current-password').value);
-            let saltos_jelszo = sha256_library.hash_keszites(jelszo + salt);
+            let jelszo = crypto_konyvtar.hash_keszites(obj('current-password').value);
+            let saltos_jelszo = crypto_konyvtar.hash_keszites(jelszo + salt);
             post_parameterek_belepes.append('sha256_password', saltos_jelszo);
 
             szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
@@ -152,7 +152,7 @@ function belepteto_rendszer_beallitas(frissult?, belepes?, kilepes?) {
     });
 }
 
-let sha256_library;
+let crypto_konyvtar;
 let elem = document.createElement("script");
-elem.setAttribute("src", "/komponensek/sha256.js");
+elem.setAttribute("src", "/komponensek/crypto.js");
 document.body.appendChild(elem);

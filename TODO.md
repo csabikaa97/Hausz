@@ -34,6 +34,13 @@
 
 ## 👨🏻‍💻 Fejlesztői érdekű teendó
 
+* Automata tesztek elkészítése az összes oldalhoz:
+	* [ ] megosztó
+	* [ ] teamspeak
+	* [ ] admin oldal
+	* [ ] minecraft
+	* [ ] meghivo
+* API tesztekhez szoftver keresése, és tesztek írása
 * Mentés visszaállításához használható scriptek automatikus létrehozása mentés készítésekor
 * szerver felkészítése arra a lehetőségre hogy minden táblázat üres
 * Együttnéző

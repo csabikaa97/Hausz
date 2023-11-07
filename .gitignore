@@ -59,3 +59,7 @@
 # Privát 
 /forras/ruhaszamlalo/*.*
 /public/ruhaszamlalo/*.*
+
+# Rust webszerver fájlok
+/webszerver/target/*
+/webszerver/registry/*

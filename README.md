@@ -2,9 +2,119 @@
 
 Ez a repository tartalmazza a Hausz Kft weboldalának és egyéb szolgáltatásainak forráskódját, tartalmát, és dokumentációjat, illetve itt található minden olyan fájl ami a Hausz szolgáltatások üzemeltetéséhez szükséges.
 
+### TESZTELÉS JEGYZETEK
+
+Jelenleg folyamatban lévő feladatok:
+
+- Rust backend befejezése
+<table>
+<thead>
+  <tr>
+    <th>Kérés</th>
+    <th>Implementáció állapot</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>alap HTML, CSS, JS fájlok</td>
+    <td>Részleges: Kell egy lightweight megoldás az engedélyezett fájlok nyilvántartásához: Lehet config fájl is amit a szerver olvas be betöltéskor</td>
+  </tr>
+  <tr>
+    <td>Belépés</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Kilépés</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Beléptető rendszer állapot</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Megosztó: fájlok listája</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Megosztó: Tárhely státusz</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Megosztó: Fájl letöltése</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Megosztó: Fájl feltöltése</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Jelszó változtatás</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Regisztráció</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Fiók varázsló</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: aktiválandó fiókok</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: fiók aktiválás</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: fiók elutasítás</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: TS rang kérés elfogadás</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: TS rang kérés elutasítás</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: admin státusz csere</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: Jelenlegi fiókok</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Admin: Logok lekérése</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Teamspeak: token információ</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Teamspeak: Online felhasználó lista</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Teamspeak: Új token igénylése</td>
+    <td>Kész</td>
+  </tr>
+  <tr>
+    <td>Teamspeak: Szerver státusz</td>
+    <td>Kész</td>
+  </tr>
+</tbody>
+</table>
+- Adatbázis átalakítása új igényeknek megfelelően
+    - Felhasználói adatok megosztó adatbázisból különbe mozgatása
+
 ### Újítások
 
-* A főbb változtatásokat a [főoldalon](https://hausz.stream/) az újítások részen, és a git commitokban lehet követni, a hátralévő feladatokat és a kisebb módosításokat pedig a [TODO.md](TODO.md) fájlban 
+* A főbb változtatásokat a [főoldalon](https://hausz.stream/) az újítások részen, és a git commitokban lehet követni, a hátralévő feladatokat és a kisebb módosításokat pedig a [TODO.md](TODO.md) fájlban
 
 ### Szolgáltatások
 

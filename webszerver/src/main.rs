@@ -1,0 +1,222 @@
+use actix_multipart::Multipart;
+use actix_web::middleware;
+use actix_web::{
+    web, App, HttpServer, 
+    HttpRequest, HttpResponse
+};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use std::io::Error;
+use std::io::ErrorKind;
+use std::sync::Mutex;
+use crate::alap_fuggvenyek::exit_error;
+
+mod backend;
+mod fajlok;
+mod form_olvaso;
+mod keres_kezelo;
+mod session;
+mod alap_fuggvenyek;
+mod oldalak;
+pub mod mime_types;
+
+static LOG_PREFIX: &str                         = "[ActixMain] ";
+static IP: &str                                 = "0.0.0.0";
+static PORT_HTTP: u16                           = 80;
+static PORT_HTTPS: u16                          = 443;
+pub static DOMAIN: &str                         = "hausz.stream";
+pub static SESSION_LEJÁRATI_IDEJE_MP: i64       = 60*60*24*7;
+pub static SESSSION_AZONOSÍTÓ_HOSSZ: usize      = 94;
+pub static HAUSZ_TS_TOKEN_IGENYLES_CD_NAP: u32  = 5;
+pub static HAUSZ_TS_TOKEN_IGENYLES_CD_MP: u32   = 60*60*24*HAUSZ_TS_TOKEN_IGENYLES_CD_NAP;
+pub static HAUSZ_TEAMSPEAK_ADMIN_JELSZO: &str   = "LKMjDYNl";
+pub const MAX_FÁJL_MÉRET: usize                 = 1024*1024*10;
+pub static HAUSZ_ADATBAZIS_URL: &str            = "mysql://root:root@172.20.128.10/hausz_megoszto";
+pub static HAUSZ_TEAMSPEAK_ADATBAZIS_URL: &str  = "mysql://root:root@172.20.128.14/teamspeak";
+
+static STATIKUS_FÁJL_GYORSÍTÓTÁR: Mutex<Vec<(String, Vec<u8>)>> = Mutex::new(Vec::new());
+
+async fn post_kérés_kezelő(request: HttpRequest, mut payload: Multipart) -> HttpResponse {
+    let content_type = match request.headers().get("content-type") {
+        None => return HttpResponse::BadRequest().body(exit_error(format!("Nincs content-type header"))),
+        Some(content_type) => content_type,
+    };
+
+    let content_type = match content_type.to_str() {
+        Err(e) => return HttpResponse::BadRequest().body(exit_error(format!("{}", e))),
+        Ok(content_type) => content_type,
+    };
+    if !content_type.starts_with("multipart/form-data;") {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nem multipart/form-data")));
+    }
+
+    let cookie: String = match request.cookie("hausz_session") {
+        None => {
+            "".to_string()
+        }
+        Some(cookies) => {
+            if cookies.value().len() == 0 {
+                return HttpResponse::BadRequest().body(exit_error(format!("Üres cookie")));
+            }
+
+            cookies.value().to_string()
+        }
+    };
+
+    let adatok: backend::AdatbázisEredményFelhasználó;
+    let session_adatok: session::Session;
+
+    match backend::cookie_gazdájának_lekérdezése(cookie.clone()) {
+        Some(eredmeny) => {
+            adatok = eredmeny;
+            
+            session_adatok = session::Session {
+                loggedin: "yes".to_string(),
+                username: adatok.felhasználónév,
+                admin: adatok.admin,
+                user_id: adatok.azonosító,
+                cookie: cookie.clone(),
+                minecraft_username: adatok.minecraft_username,
+            };
+        }
+        None => {
+            session_adatok = session::Session {
+                loggedin: "no".to_string(),
+                username: "".to_string(),
+                admin: "".to_string(),
+                user_id: 0,
+                cookie: "".to_string(),
+                minecraft_username: "".to_string(),
+            };
+        },
+    }
+
+    let form_adatok = form_olvaso::form_olvasó(&mut payload).await;
+    let get_adatok = form_olvaso::get_olvasó(request.query_string().to_string());
+
+    keres_kezelo::keres_kezelo(payload, form_adatok, get_adatok, session_adatok, request).await
+}
+
+async fn get_kérés_kezelő(request: HttpRequest, payload: Multipart) -> HttpResponse {
+    let form_adatok = Vec::new();
+    let get_adatok = form_olvaso::get_olvasó(request.query_string().to_string());
+
+    let session_adatok: session::Session;
+
+    let cookie: String = match request.cookie("hausz_session") {
+        None => {
+            "".to_string()
+        }
+        Some(cookies) => {
+            if cookies.value().len() == 0 {
+                return HttpResponse::BadRequest().body(exit_error(format!("Üres cookie")));
+            }
+
+            cookies.value().to_string()
+        }
+    };
+
+    let adatok: backend::AdatbázisEredményFelhasználó;
+
+    match backend::cookie_gazdájának_lekérdezése(cookie.clone()) {
+        Some(eredmeny) => {
+            adatok = eredmeny;
+            
+            session_adatok = session::Session {
+                loggedin: "yes".to_string(),
+                username: adatok.felhasználónév,
+                admin: adatok.admin,
+                user_id: adatok.azonosító,
+                cookie: cookie.clone(),
+                minecraft_username: adatok.minecraft_username,
+            };
+        }
+        None => {
+            session_adatok = session::Session {
+                loggedin: "no".to_string(),
+                username: "".to_string(),
+                admin: "".to_string(),
+                user_id: 0,
+                cookie: "".to_string(),
+                minecraft_username: "".to_string(),
+            };
+        },
+    }
+
+    keres_kezelo::keres_kezelo(payload, form_adatok, get_adatok, session_adatok, request).await
+}
+
+async fn kérés_metódus_választó(request: HttpRequest, payload: Multipart) -> HttpResponse {
+    let method = request.method();
+
+    match method.to_owned() {
+        actix_web::http::Method::GET => return get_kérés_kezelő(request, payload).await,
+        actix_web::http::Method::POST => return post_kérés_kezelő(request, payload).await,
+        _ => return HttpResponse::BadRequest().body(exit_error(format!("Ismeretlen metódus"))),
+    }
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    println!("{}Starting web server", LOG_PREFIX);
+
+    let mut builder = match SslAcceptor::mozilla_intermediate(SslMethod::tls()) {
+        Ok(builder) => builder,
+        Err(e) => {
+            println!("{}Hiba a titkosítókulcsok beolvasásakor: {}", LOG_PREFIX, e);
+            return Err(Error::new(ErrorKind::Other, e));
+        }
+    };
+    builder.set_private_key_file("/public/privkey.pem", SslFiletype::PEM).expect(&format!("{}Hiba a titkosítókulcs beállításakor", LOG_PREFIX));
+   
+    builder.set_certificate_chain_file("/public/fullchain.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
+
+    let https_server = match HttpServer::new(move || {
+            App::new()
+            .wrap(middleware::Compress::default())
+            .default_service(web::route().to(kérés_metódus_választó))
+        })
+        .workers(10)
+        .bind_openssl(format!("{}:{}", IP, PORT_HTTPS), builder) {
+            Ok(server) => {
+                println!("{}Web server listening on {}:{}", LOG_PREFIX, IP, PORT_HTTPS);
+                server
+            },
+            Err(e) => {
+                println!("{}Hiba a HTTPS szerver indításakor: {}", LOG_PREFIX, e);
+                return Err(Error::new(ErrorKind::Other, e));
+            }
+        };
+
+    let http_server = match HttpServer::new(|| {
+        App::new()
+        .wrap(middleware::Compress::default())
+        .default_service(web::route().to(kérés_metódus_választó))
+    }) 
+        .workers(10)
+        .bind(format!("{}:{}", IP, PORT_HTTP)) {
+            Ok(server) => {
+                println!("{}Web server listening on {}:{}", LOG_PREFIX, IP, PORT_HTTP);
+                server
+            },
+            Err(e) => {
+                println!("{}Hiba a HTTP szerver indításakor: {}", LOG_PREFIX, e);
+                return Err(Error::new(ErrorKind::Other, e));
+            }
+        };
+
+    
+
+    match futures::join!(https_server.run(), http_server.run()) {
+        (Ok(_), Ok(_)) => (),
+        (Err(e), _) => {
+            println!("{}Hiba a HTTPS future futtatásakor: {}", LOG_PREFIX, e);
+            return Err(Error::new(ErrorKind::Other, e));
+        },
+        (_, Err(e)) => {
+            println!("{}Hiba a HTTP future futtatásakor: {}", LOG_PREFIX, e);
+            return Err(Error::new(ErrorKind::Other, e));
+        }
+    }
+
+    Ok(())
+}
