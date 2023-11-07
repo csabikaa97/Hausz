@@ -112,7 +112,9 @@ function fajlok_betoltese() {
             return;
         }
 
-        obj('nincs_fajl_sor').style.display = uzenet.fajlok_szama <= 0 ? 'table-row' : '';
+        if(typeof obj('nincs_fajl_sor') !== undefined) {
+            obj('nincs_fajl_sor').style.display = uzenet.fajlok_szama <= 0 ? 'table-row' : '';
+        }
 
         let buffer = "";
         for (let i = 0; i < uzenet.fajlok_szama; i++) {

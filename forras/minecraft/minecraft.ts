@@ -14,9 +14,6 @@ function belepteto_rendszer_frissult() {
             let elem = hide_elems[i];
             elem.classList.add("nodisplay");
         }
-        
-        jatekosnev_valtoztatas_doboz_frissitese();
-        jatekos_lista_frissitese()
     } else {
         let show_elems = document.getElementsByClassName("without-login");
         for (let i = 0; i < show_elems.length; i++) {
@@ -29,6 +26,9 @@ function belepteto_rendszer_frissult() {
             elem.classList.add("nodisplay");
         }
     }
+
+    jatekosnev_valtoztatas_doboz_frissitese();
+    jatekos_lista_frissitese();
 }
 
 function jatekosnev_valtoztatas_doboz_frissitese() {
