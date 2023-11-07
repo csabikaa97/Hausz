@@ -127,7 +127,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
 
             if isset("letoltes", post.clone()) {
-                let plaintext = match base64::engine::general_purpose::STANDARD.decode(&buffer) {
+                let meg_mindig_base64 = match base64::engine::general_purpose::STANDARD.decode(&buffer) {
                     Ok(plaintext) => plaintext,
                     Err(err) => {
                         let hiba = format!("{}Hiba a fájl dekódolásakor: {}", LOG_PREFIX, err);
@@ -135,20 +135,40 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                         return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
                     }
                 };
-    
-                let decoded_file = match openssl::symm::decrypt(openssl::symm::Cipher::aes_256_cbc(), list_key("titkositas_feloldasa_kulcs", post.clone()).as_bytes(), Some("aaaaaaaaaaaaaaaa".as_bytes()), &plaintext) {
+
+                let ez_mar_nyers_adat = match base64::engine::general_purpose::STANDARD.decode(&meg_mindig_base64) {
                     Ok(plaintext) => plaintext,
                     Err(err) => {
-                        let hiba = format!("{}Hiba a fájl dekódolásakor: {}", LOG_PREFIX, err);
+                        let hiba = format!("{}Hiba a fájl 2. dekódolásakor: {}", LOG_PREFIX, err);
                         println!("{}", hiba);
                         return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
                     }
+                };
+
+                let kulcs_string = list_key("titkositas_feloldasa_kulcs", post.clone());
+                let mut kulcs: [u8;32] = [0; 32];
+                for i in 0..kulcs_string.len() {
+                    kulcs[i] = kulcs_string.as_bytes()[i];
+                }
+                for i in kulcs_string.len()..32 {
+                    kulcs[i] = 0;
+                }
+                let iv = "aaaaaaaaaaaaaaaa".as_bytes();
+
+                let decoded_file = match openssl::symm::decrypt(openssl::symm::Cipher::aes_256_cbc(), &kulcs, Some(iv), &ez_mar_nyers_adat) {
+                    Ok(plaintext) => {
+                        plaintext
+                    },
+                    Err(err) => {
+                        println!("{} OpenSSL decrypt hiba: {}", LOG_PREFIX, err);
+                        return HttpResponse::BadRequest().body(exit_error(format!("Nem sikerült a fájl dekódolása.")));
+                    },
                 };
     
                 return HttpResponse::Ok()
                     .content_type(mime)
-                    .append_header(("Content-disposition", format!("attachment; filename=\"titkositott_{}\"", adatbázis_fájl.fájlnév)))
-                    .append_header(("Content-Length", format!("{}", plaintext.len())))
+                    .append_header(("Content-disposition", format!("attachment; filename=\"{}\"", adatbázis_fájl.fájlnév)))
+                    .append_header(("Content-Length", format!("{}", ez_mar_nyers_adat.len())))
                     .append_header(("Cache-Control", "public, max-age=9999999, immutable"))
                     .append_header(("X-Robots-Tag", "noindex"))
                     .append_header(("Content-Type", mime))
@@ -158,9 +178,11 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             return HttpResponse::Ok().body(exit_ok(format!("A fájl titkosítása feloldva.")));
         }
 
+        let titkositott_content_dispositon = if adatbázis_fájl.titkosított != 0 { "titkositott_" } else { "" };
+
         return HttpResponse::Ok()
             .content_type(mime)
-            .append_header(("Content-disposition", format!("attachment; filename=\"{}\"", adatbázis_fájl.fájlnév)))
+            .append_header(("Content-disposition", format!("attachment; filename=\"{}{}\"", titkositott_content_dispositon, adatbázis_fájl.fájlnév)))
             .append_header(("Content-Length", format!("{}", buffer.len())))
             .append_header(("Cache-Control", "public, max-age=9999999, immutable"))
             .append_header(("X-Robots-Tag", "noindex"))
