@@ -166,13 +166,12 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                 };
     
                 return HttpResponse::Ok()
-                    .content_type(mime)
-                    .append_header(("Content-disposition", format!("attachment; filename=\"{}\"", adatbázis_fájl.fájlnév)))
-                    .append_header(("Content-Length", format!("{}", ez_mar_nyers_adat.len())))
-                    .append_header(("Cache-Control", "public, max-age=9999999, immutable"))
-                    .append_header(("X-Robots-Tag", "noindex"))
-                    .append_header(("Content-Type", mime))
-                    .body(decoded_file);
+                .append_header(("Content-disposition", format!("attachment; filename=\"{}\"", adatbázis_fájl.fájlnév)))
+                .append_header(("Content-Length", format!("{}", ez_mar_nyers_adat.len())))
+                .append_header(("Cache-Control", "public, max-age=9999999, immutable"))
+                .append_header(("X-Robots-Tag", "noindex"))
+                .content_type(mime)
+                .body(decoded_file);
             }
 
             return HttpResponse::Ok().body(exit_ok(format!("A fájl titkosítása feloldva.")));
@@ -181,12 +180,11 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         let titkositott_content_dispositon = if adatbázis_fájl.titkosított != 0 { "titkositott_" } else { "" };
 
         return HttpResponse::Ok()
-            .content_type(mime)
             .append_header(("Content-disposition", format!("attachment; filename=\"{}{}\"", titkositott_content_dispositon, adatbázis_fájl.fájlnév)))
             .append_header(("Content-Length", format!("{}", buffer.len())))
             .append_header(("Cache-Control", "public, max-age=9999999, immutable"))
             .append_header(("X-Robots-Tag", "noindex"))
-            .append_header(("Content-Type", mime))
+            .content_type(mime)
             .body(buffer);
     }
 
@@ -441,10 +439,11 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         if list_key("uj_nev", get.clone()).len() > 250 {
             return HttpResponse::BadRequest().body(exit_error(format!("Nem lehet az új név 250 karakternél hosszabb.")));
         }
-        if Regex::new(r"/[^a-zA-Z0-9_-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]/").unwrap().is_match(list_key("uj_nev", get.clone()).as_str()) {
+        if Regex::new(r"[^a-zA-Z0-9_\-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]").unwrap().is_match(list_key("uj_nev", get.clone()).as_str()) {
             return HttpResponse::BadRequest().body(exit_error(format!("Illegális karakterek vannak az új névben.")));
         }
-        if !Regex::new(r"/(.*)\.(.*)/").unwrap().is_match(list_key("uj_nev", get.clone()).as_str()) {
+        if !Regex::new(r"(.*)\.(.*)").unwrap().is_match(list_key("uj_nev", get.clone()).as_str()) {
+            println!("{}Nincs kiterjesztés: \"{}\"", LOG_PREFIX, list_key("uj_nev", get.clone()));
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs kiterjesztés megadva az új névben.")));
         }
         

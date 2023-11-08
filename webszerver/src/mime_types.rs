@@ -1,6 +1,8 @@
 static LOG_PREFIX: &str = "[mimetypes] ";
 
 pub fn mime_type_megállapítása(kiterjesztés: &str) -> &str {
+    let kiterjesztés_lowercase = kiterjesztés.to_lowercase();
+    let kiterjesztés = kiterjesztés_lowercase.as_str();
     match kiterjesztés {
         "aac" => "audio/aac",
         "abw" => "application/x-abiword",

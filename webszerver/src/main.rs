@@ -1,5 +1,4 @@
 use actix_multipart::Multipart;
-use actix_web::middleware;
 use actix_web::{
     web, App, HttpServer, 
     HttpRequest, HttpResponse
@@ -172,7 +171,6 @@ async fn main() -> std::io::Result<()> {
 
     let https_server = match HttpServer::new(move || {
             App::new()
-            .wrap(middleware::Compress::default())
             .default_service(web::route().to(kérés_metódus_választó))
         })
         .workers(10)
@@ -189,9 +187,8 @@ async fn main() -> std::io::Result<()> {
 
     let http_server = match HttpServer::new(|| {
         App::new()
-        .wrap(middleware::Compress::default())
         .default_service(web::route().to(kérés_metódus_választó))
-    }) 
+    })
         .workers(10)
         .bind(format!("{}:{}", IP, PORT_HTTP)) {
             Ok(server) => {
