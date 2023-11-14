@@ -3,10 +3,14 @@ use actix_web::{
     web, App, HttpServer, 
     HttpRequest, HttpResponse
 };
+use konfiguracio::KonfigurációsFájl;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use std::fs;
 use std::io::Error;
 use std::io::ErrorKind;
 use std::sync::Mutex;
+use toml;
+use crate::konfiguracio::PrivátWebszerverKonfiguráció;
 use crate::alap_fuggvenyek::exit_error;
 
 mod backend;
@@ -17,22 +21,23 @@ mod session;
 mod alap_fuggvenyek;
 mod oldalak;
 pub mod mime_types;
+pub mod konfiguracio;
+use konfiguracio::PrivátKonfigurációsFájl;
 
-static LOG_PREFIX: &str                         = "[ActixMain] ";
-static IP: &str                                 = "0.0.0.0";
-static PORT_HTTP: u16                           = 80;
-static PORT_HTTPS: u16                          = 443;
-pub static DOMAIN: &str                         = "hausz.stream";
-pub static SESSION_LEJÁRATI_IDEJE_MP: i64       = 60*60*24*7;
-pub static SESSSION_AZONOSÍTÓ_HOSSZ: usize      = 94;
-pub static HAUSZ_TS_TOKEN_IGENYLES_CD_NAP: u32  = 5;
-pub static HAUSZ_TS_TOKEN_IGENYLES_CD_MP: u32   = 60*60*24*HAUSZ_TS_TOKEN_IGENYLES_CD_NAP;
-pub static HAUSZ_TEAMSPEAK_ADMIN_JELSZO: &str   = "LKMjDYNl";
-pub const MAX_FÁJL_MÉRET: usize                 = 1024*1024*10;
-pub static HAUSZ_ADATBAZIS_URL: &str            = "mysql://root:root@172.20.128.10/hausz_megoszto";
-pub static HAUSZ_TEAMSPEAK_ADATBAZIS_URL: &str  = "mysql://root:root@172.20.128.14/teamspeak";
+static LOG_PREFIX: &str = "[ActixMain] ";
 
 static STATIKUS_FÁJL_GYORSÍTÓTÁR: Mutex<Vec<(String, Vec<u8>)>> = Mutex::new(Vec::new());
+
+static KONFIGURÁCIÓS_FÁJL: Mutex<Vec<KonfigurációsFájl>> = Mutex::new(Vec::new());
+static PRIVÁT_KONFIGURÁCIÓS_FÁJL: Mutex<Vec<PrivátKonfigurációsFájl>> = Mutex::new(Vec::new());
+
+pub fn konfig() -> KonfigurációsFájl {
+    return KONFIGURÁCIÓS_FÁJL.lock().unwrap()[0].clone();
+}
+
+pub fn privát_konfig() -> PrivátKonfigurációsFájl {
+    return PRIVÁT_KONFIGURÁCIÓS_FÁJL.lock().unwrap()[0].clone();
+}
 
 async fn post_kérés_kezelő(request: HttpRequest, mut payload: Multipart) -> HttpResponse {
     let content_type = match request.headers().get("content-type") {
@@ -156,8 +161,48 @@ async fn kérés_metódus_választó(request: HttpRequest, payload: Multipart) -
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    println!("{}Starting web server", LOG_PREFIX);
+    println!("{}Konfigurációs fájl beolvasása...", LOG_PREFIX);
+    let config_fájl_tartalom = match fs::read_to_string("konfiguracio.toml") {
+        Ok(tartalom) => tartalom,
+        Err(e) => {
+            panic!("{}Hiba a config fájl beolvasásakor: {}", LOG_PREFIX, e);
+        }
+    };
 
+    let adatok: KonfigurációsFájl = match toml::from_str(&config_fájl_tartalom) {
+        Ok(adatok) => adatok,
+        Err(e) => {
+            panic!("{}Hiba a config fájl feldolgozásakor: {}\nTartalom:\n{:?}", LOG_PREFIX, e, config_fájl_tartalom);
+        }
+    };
+
+    println!("{}Konfigurációs fájl OK", LOG_PREFIX);
+
+    let privát_config_fájl_tartalom = match fs::read_to_string("privat_konfiguracio.toml") {
+        Ok(tartalom) => tartalom,
+        Err(_) => {
+            println!("{}Hiba a privát config fájl beolvasásakor", LOG_PREFIX);
+            "".to_string()
+        }
+    };
+
+    let privát_adatok: PrivátKonfigurációsFájl = match toml::from_str(&privát_config_fájl_tartalom) {
+        Ok(adatok) => adatok,
+        Err(_) => {
+            println!("{}Hiba a privát config fájl feldolgozásakor", LOG_PREFIX);
+            println!("{}A privát konfigurációs fájl értékei helyett az alap értékek lesznek használva.", LOG_PREFIX);
+            PrivátKonfigurációsFájl {
+                webszerver: PrivátWebszerverKonfiguráció {
+                    hausz_teamspeak_admin_jelszo: "".to_string(),
+                }
+            }
+        }
+    };
+
+    KONFIGURÁCIÓS_FÁJL.lock().unwrap().push(adatok);
+    PRIVÁT_KONFIGURÁCIÓS_FÁJL.lock().unwrap().push(privát_adatok);
+    
+    println!("{}Webszerver indítása...", LOG_PREFIX);
     let mut builder = match SslAcceptor::mozilla_intermediate(SslMethod::tls()) {
         Ok(builder) => builder,
         Err(e) => {
@@ -174,9 +219,9 @@ async fn main() -> std::io::Result<()> {
             .default_service(web::route().to(kérés_metódus_választó))
         })
         .workers(10)
-        .bind_openssl(format!("{}:{}", IP, PORT_HTTPS), builder) {
+        .bind_openssl(format!("{}:{}", konfig().webszerver.ip, konfig().webszerver.port_https), builder) {
             Ok(server) => {
-                println!("{}Web server listening on {}:{}", LOG_PREFIX, IP, PORT_HTTPS);
+                println!("{}HTTPS webszerver elindítva - {}:{}", LOG_PREFIX, konfig().webszerver.ip, konfig().webszerver.port_https);
                 server
             },
             Err(e) => {
@@ -190,9 +235,9 @@ async fn main() -> std::io::Result<()> {
         .default_service(web::route().to(kérés_metódus_választó))
     })
         .workers(10)
-        .bind(format!("{}:{}", IP, PORT_HTTP)) {
+        .bind(format!("{}:{}", konfig().webszerver.ip, konfig().webszerver.port_http)) {
             Ok(server) => {
-                println!("{}Web server listening on {}:{}", LOG_PREFIX, IP, PORT_HTTP);
+                println!("{}HTTP webszerver elindítva - {}:{}", LOG_PREFIX, konfig().webszerver.ip, konfig().webszerver.port_http);
                 server
             },
             Err(e) => {
@@ -200,8 +245,6 @@ async fn main() -> std::io::Result<()> {
                 return Err(Error::new(ErrorKind::Other, e));
             }
         };
-
-    
 
     match futures::join!(https_server.run(), http_server.run()) {
         (Ok(_), Ok(_)) => (),

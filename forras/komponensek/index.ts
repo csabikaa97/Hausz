@@ -7,7 +7,13 @@ belepteto_rendszer_beallitas();
 
 var ujitasok_doboz = obj('ujitasok');
 var ujitasok = {
-    '2023.10.18': ["Alap: A szerveren sikerült átállni a SHA256 hashelési algoritmusra. Az új megoldás miatt a weboldal már nem küldi el a felhasználók jelszavát a szerverre, így a jelszavak használata és tárolása jelentősen biztonságosabb lett."]
+    '2023.11.08': [
+        "Alap: A Webszerver újra lett írva Rust nyelven, és a régi kódokat kiváltotta egy új, sokkal modernebb, és biztonságosabb megoldás."
+        , "Alap: A belépés új session-öket használ, aminek köszönhetően nem kell fél óránként belépni az oldalon."
+        , "Megosztó: Az új Webszervernek köszönhetően egy újabb titkosítási megoldást sikerült bevezetni, amely 100%-ban a feltöltő számítógépen titkosítja, és oldja fel a fájlokat. A v2 verziójú titkosítás során a titkosítatlan fájl, és a hozzátartozó titkosítási kulcs sem kerül fel a szerverre."
+        , "Alap: Az új Webszerver a már meglévő újabb funkciót mellett rengeteg lehetőséget ad a jövőbeni fejlesztésekhez, ezért érdemes lesz figyelni a weboldalt, és a forráskódot a következő hónapokban."
+    ]
+    , '2023.10.18': ["Alap: A szerveren sikerült átállni a SHA256 hashelési algoritmusra. Az új megoldás miatt a weboldal már nem küldi el a felhasználók jelszavát a szerverre, így a jelszavak használata és tárolása jelentősen biztonságosabb lett."]
     , '2023.10.09': ["Megosztó: Be lehet állítani minden fájlhoz, hogy csak Hausz tagok, vagy minden felhasználó számára legyen elérhető."]
     , '2023.10.14': ["Minecraft: Letöltési linkeket és csatlakozási lépéseket lehet megtekinteni a Minecraft oldalon."]
     , '2023.10.04': ["Alap: Minden meglévő felhasználó tud meghívót generálni, amivel a regisztráló felhasználó fiókja azonnal aktiválódik."]

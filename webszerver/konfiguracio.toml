@@ -1,0 +1,11 @@
+[webszerver]
+ip = "0.0.0.0"
+port_http = 80
+port_https = 443
+domain = "hausz.stream"
+session_lejarati_ideje_mp = 604800
+sesssion_azonosito_hossz = 94
+hausz_ts_token_igenyles_cd_nap = 5
+max_fajl_meret = 10485760
+hausz_adatbazis_url = "mysql://root:root@172.20.128.10/hausz_megoszto"
+hausz_teamspeak_adatbazis_url = "mysql://root:root@172.20.128.14/teamspeak"

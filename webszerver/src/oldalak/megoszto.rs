@@ -261,29 +261,13 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         let tarhely2 = String::from_utf8_lossy(&tarhely2.stdout);
         let tarhely2 = tarhely2.replace("\n", "");
 
-        let hasznalt = match Regex::new(r".*(overlay|/dev/xvda1|/dev/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*") {
-            Ok(regex) => regex,
-            Err(err) => {
-                println!("{} Hiba a foglalt tarhely értékének kinyeréséhez használandó regex létrehozásakor: {}", LOG_PREFIX, err);
-                return HttpResponse::InternalServerError().finish();
-            }
-        }.replace_all(&tarhely2, "$3");
-
-        let elérhető = match Regex::new(r".*(overlay|/dev/xvda1|/dev/root)[^0-9]*([0-9]*)[^0-9]*([0-9]*)[^0-9]*([0-9]*).*") {
+        let elérhető = match Regex::new(r".*(overlay)[\n\s]*([0-9]*)[\n\s]*([0-9]*)[\n\s]*([0-9]*).*") {
             Ok(regex) => regex,
             Err(err) => {
                 println!("{} Hiba az elérhető tarhely értékének kinyeréséhez használandó regex létrehozásakor: {}", LOG_PREFIX, err);
                 return HttpResponse::InternalServerError().finish();
             }
         }.replace_all(&tarhely2, "$4");
-
-        let hasznalt = match hasznalt.parse::<f64>() {
-            Ok(hasznalt) => hasznalt,
-            Err(err) => {
-                println!("{}Hiba a foglalt tarhely értékének átalakításakor: {}", LOG_PREFIX, err);
-                return HttpResponse::InternalServerError().finish();
-            }
-        };
 
         let elérhető = match elérhető.parse::<f64>() {
             Ok(elérhető) => elérhető,
@@ -293,7 +277,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
         };
 
-        if (elérhető - hasznalt - (list_key("fileToUpload", post.clone()).len() as f64) ) < MIN_ELÉRHETŐ_TÁRHELY_FELTÖLTÉSHEZ {
+        if (elérhető - (list_key("fileToUpload", post.clone()).len() as f64) ) < MIN_ELÉRHETŐ_TÁRHELY_FELTÖLTÉSHEZ {
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs elég tárhely a fájl feltöltéséhez ({} MB).", MIN_ELÉRHETŐ_TÁRHELY_FELTÖLTÉSHEZ / 1024.0 / 1024.0)));
         }
 
@@ -366,7 +350,11 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
         }
 
-        let private = list_key("private", post.clone());
+        let private = match list_key("private", post.clone()).as_str() {
+            "1" => 1,
+            "0" => 0,
+            &_ => 0,
+        };
         let titkositas_kulcs = list_key("titkositas_kulcs", post.clone());
         let titkositott = match (list_key("titkositas_kulcs", post.clone()).len() > 0, list_key("titkositasi_kulcs_hash", post.clone()).len() > 0) {
             (true, true) => {
@@ -382,7 +370,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             "0" => 0,
             &_ => 0,
         };
-        match általános_query_futtatás(format!(
+        let query = format!(
             "INSERT INTO `files` (filename, added, user_id, size, private, titkositott, titkositas_kulcs, members_only, titkositasi_kulcs_hash) VALUES ('{}', NOW(6), {}, {}, {}, {}, '{}', {}, '{}');",
                 filename,
                 session.user_id,
@@ -392,10 +380,11 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                 titkositas_kulcs,
                 members_only,
                 titkositasi_kulcs_hash,
-        )) {
+        );
+        match általános_query_futtatás(query.clone()) {
             Ok(_) => {},
             Err(err) => {
-                println!("{}Hiba a fájl feltöltésekor: {}", LOG_PREFIX, err);
+                println!("{}Hiba a fájl feltöltésekor: {}\nQuery:\n{}", LOG_PREFIX, err, query);
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             }
         }

@@ -34,7 +34,7 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        let jogosult_uj_token_keresre = if token.datediff > crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP { "igen" } else { "nem" };
+        let jogosult_uj_token_keresre = if token.datediff > crate::konfig().webszerver.hausz_ts_token_igenyles_cd_nap { "igen" } else { "nem" };
 
         return HttpResponse::Ok().body(exit_ok(format!("\"token\": \"{}\", \"jogosult_uj_token_keresere\": \"{}\"", token.token, jogosult_uj_token_keresre)));
     }
@@ -90,10 +90,10 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
         if jelenlegi_token.datediff == 0 {
-            return HttpResponse::BadRequest().body(exit_error(format!("Csak {} naponként lehet új tokent igényelni. A jelenlegi tokened ma készült.", crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP)));
+            return HttpResponse::BadRequest().body(exit_error(format!("Csak {} naponként lehet új tokent igényelni. A jelenlegi tokened ma készült.", crate::konfig().webszerver.hausz_ts_token_igenyles_cd_nap)));
         }
-        if jelenlegi_token.datediff < crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP {
-            return HttpResponse::BadRequest().body(exit_error(format!("Csak {} naponként lehet új tokent igényelni. A jelenlegi tokened {} napja készült.", crate::HAUSZ_TS_TOKEN_IGENYLES_CD_NAP, jelenlegi_token.datediff)));
+        if jelenlegi_token.datediff < crate::konfig().webszerver.hausz_ts_token_igenyles_cd_nap {
+            return HttpResponse::BadRequest().body(exit_error(format!("Csak {} naponként lehet új tokent igényelni. A jelenlegi tokened {} napja készült.", crate::konfig().webszerver.hausz_ts_token_igenyles_cd_nap, jelenlegi_token.datediff)));
         }
 
         match általános_query_futtatás(format!("DELETE FROM hausz_ts.felhasznalo_tokenek WHERE user_id = {}", session.user_id)) {

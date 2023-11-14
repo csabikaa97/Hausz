@@ -105,7 +105,7 @@ fn csatlakozás(url: &str) -> Result<mysql::PooledConn> {
 }
 
 pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
-    let mut conn = match csatlakozás(crate::HAUSZ_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url.as_str()) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
@@ -189,7 +189,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
 }
 
 pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<AdatbázisEredményFelhasználó> {
-    let mut conn = match csatlakozás(crate::HAUSZ_ADATBAZIS_URL) {
+    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url.as_str()) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
@@ -198,7 +198,7 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
     };
 
     let session = match conn.query_map(
-        format!("SELECT azonosito AS eltelt_masodpercek FROM sessionok WHERE session_kulcs = '{}' AND TIMESTAMPDIFF(SECOND, datum, now(6)) < {}", cookie_azonosító, crate::SESSION_LEJÁRATI_IDEJE_MP),
+        format!("SELECT azonosito AS eltelt_masodpercek FROM sessionok WHERE session_kulcs = '{}' AND TIMESTAMPDIFF(SECOND, datum, now(6)) < {}", cookie_azonosító, crate::konfig().webszerver.session_lejarati_ideje_mp),
         |azonosito| {
             AdatbázisEredménySession {
                 azonosító: azonosito,

@@ -1,5 +1,3 @@
-static LOG_PREFIX: &str = "[fájlok   ] ";
-
 pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
     let útvonal = if útvonal.starts_with("/") {
         &útvonal[1..]
@@ -63,7 +61,6 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "ruhaszamlalo/ruhaszamlalo.js"          => "ruhaszamlalo/ruhaszamlalo.js",
         // "" => "",
         _ => {
-            println!("{}Nincs hozzáadva a listához a fájl: {}", LOG_PREFIX, útvonal);
             "404.html"
         },
     }

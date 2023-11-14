@@ -3,7 +3,7 @@
 expect << EOF
 spawn telnet 172.20.128.15 10011
 expect -re ".*command\."
-send "login serveradmin LKMjDYNl\r"
+send "login serveradmin <placeholder>\r"
 expect -re ".*msg=ok"
 send "use sid=1\r"
 expect -re ".*msg=ok"

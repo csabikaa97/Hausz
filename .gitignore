@@ -63,3 +63,4 @@
 # Rust webszerver fájlok
 /webszerver/target/*
 /webszerver/registry/*
+/webszerver/privat_konfiguracio.toml

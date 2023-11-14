@@ -335,7 +335,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
             return HttpResponse::BadRequest().body(exit_error(format!("Hibás igénylés azonosító")));
         }
             
-        let mut conn = match mysql::Conn::new(crate::HAUSZ_TEAMSPEAK_ADATBAZIS_URL) {
+        let mut conn = match mysql::Conn::new(crate::konfig().webszerver.hausz_adatbazis_url.as_str()) {
             Ok(conn) => conn,
             Err(hiba) => {
                 println!("{}Hiba a MySQL adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, hiba);
@@ -368,7 +368,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
             expect -re ".*msg=ok"
             send "use port=9987\\r"
             expect -re ".*msg=ok"
-        "#, crate::HAUSZ_TEAMSPEAK_ADMIN_JELSZO);
+        "#, crate::privát_konfig().webszerver.hausz_teamspeak_admin_jelszo);
 
         for jogosultság in igényelt_jogosultságok {
             parancs += format!("send \"servergroupaddclient sgid={} cldbid={}\\r\"\n", jogosultság.id, jóváhagyandó_igénylés.jelenlegi_fiok_kivalasztott).as_str();
