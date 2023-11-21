@@ -7,4 +7,3 @@ mysql -u root --password="root" < /telepites/hausz_ts.sql
 mysql -u root --password="root" < /telepites/hausz_log.sql
 mysql -u root --password="root" < /telepites/hausz_egyuttnezo.sql
 mysql -u root --password="root" < /telepites/hausz_megoszto.sql
-mysql -u root --password="root" < /telepites/hausz_felhasznalok.sql

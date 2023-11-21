@@ -1,0 +1,10 @@
+- name: open-iscsi telepítése
+  hosts: hausz_nodes
+  become: yes
+  tasks:
+  - name: open-iscsi telepítése apt-vel
+    apt:
+      pkg:
+      - open-iscsi
+      - nfs-common
+      state: present

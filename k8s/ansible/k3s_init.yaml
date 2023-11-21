@@ -1,0 +1,7 @@
+- name: k3s beállítása
+  hosts: hausz_nodes
+  become: yes
+  tasks:
+   - name: k3s szerver futtatása
+     shell:
+       cmd: k3s server

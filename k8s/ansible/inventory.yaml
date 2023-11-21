@@ -1,0 +1,8 @@
+hausz_nodes:
+  hosts:
+    hausz_node1:
+      ansible_host: node1
+    hausz_node2:
+      ansible_host: node2
+    hausz_node3:
+      ansible_host: node3

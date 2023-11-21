@@ -162,19 +162,27 @@ async fn kérés_metódus_választó(request: HttpRequest, payload: Multipart) -
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     println!("{}Konfigurációs fájl beolvasása...", LOG_PREFIX);
-    let config_fájl_tartalom = match fs::read_to_string("konfiguracio.toml") {
+    let config_fájl_tartalom = match fs::read_to_string("/hausz/webszerver/konfiguracio.toml") {
         Ok(tartalom) => tartalom,
         Err(e) => {
             panic!("{}Hiba a config fájl beolvasásakor: {}", LOG_PREFIX, e);
         }
     };
 
-    let adatok: KonfigurációsFájl = match toml::from_str(&config_fájl_tartalom) {
+    let mut adatok: KonfigurációsFájl = match toml::from_str(&config_fájl_tartalom) {
         Ok(adatok) => adatok,
         Err(e) => {
             panic!("{}Hiba a config fájl feldolgozásakor: {}\nTartalom:\n{:?}", LOG_PREFIX, e, config_fájl_tartalom);
         }
     };
+
+    if !adatok.webszerver.tanusitvanyok_eleresi_utvonala.starts_with("/") {
+        panic!("{}A tanúsítványok elérési útvonala nem abszolút. ", LOG_PREFIX);
+    }
+
+    if !adatok.webszerver.tanusitvanyok_eleresi_utvonala.ends_with("/") {
+        adatok.webszerver.tanusitvanyok_eleresi_utvonala.push('/');
+    }
 
     println!("{}Konfigurációs fájl OK", LOG_PREFIX);
 
@@ -207,12 +215,13 @@ async fn main() -> std::io::Result<()> {
         Ok(builder) => builder,
         Err(e) => {
             println!("{}Hiba a titkosítókulcsok beolvasásakor: {}", LOG_PREFIX, e);
+            println!("{}Használt útvonal: ({})", LOG_PREFIX, konfig().webszerver.tanusitvanyok_eleresi_utvonala + "privkey.pem");
             return Err(Error::new(ErrorKind::Other, e));
         }
     };
-    builder.set_private_key_file("/public/privkey.pem", SslFiletype::PEM).expect(&format!("{}Hiba a titkosítókulcs beállításakor", LOG_PREFIX));
+    builder.set_private_key_file(konfig().webszerver.tanusitvanyok_eleresi_utvonala + "privkey.pem", SslFiletype::PEM).expect(&format!("{}Hiba a titkosítókulcs beállításakor", LOG_PREFIX));
    
-    builder.set_certificate_chain_file("/public/fullchain.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
+    builder.set_certificate_chain_file(konfig().webszerver.tanusitvanyok_eleresi_utvonala + "fullchain.pem").expect(&format!("{}Hiba a tanúsítvány beállításakor", LOG_PREFIX));
 
     let https_server = match HttpServer::new(move || {
             App::new()

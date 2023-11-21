@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karbantarto-deployment
+  namespace: hausz
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: karbantarto
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 1
+      volumes:
+        - name: projektkonyvtar-volume
+          persistentVolumeClaim:
+            claimName: projektkonyvtar-pvc
+      containers:
+        - name: karbantarto-container
+          image: 'hausz-karbantarto'
+          volumeMounts:
+            - name: projektkonyvtar-volume
+              mountPath: /hausz
+              subPath: ''
+          resources:
+            requests:
+              memory: 250Mi
+              cpu: 250m
+            limits:
+              memory: 2Gi
+              cpu: 3000m
+          command:
+            - sleep
+            - "999999"
+          securityContext:
+            privileged: true
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - web
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: karbantarto-service
+  namespace: hausz
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "192.168.0.61"
+  selector:
+    app: karbantarto
+  ports:
+  - name: ssh-port
+    port: 22
+    protocol: TCP
+    targetPort: 22

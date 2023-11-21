@@ -1,0 +1,9 @@
+- name: lvm2 telepítése
+  hosts: hausz_nodes
+  become: yes
+  tasks:
+  - name: lvm2 telepítése apt-vel
+    apt:
+      pkg:
+      - lvm2
+      state: present

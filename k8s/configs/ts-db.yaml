@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ts-db-pvc
+  namespace: hausz
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-cephfs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamspeak-db-deployment
+  namespace: hausz
+  labels:
+    app: ts-db
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ts-db
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: ts-db-volume
+          persistentVolumeClaim:
+            claimName: ts-db-pvc
+      containers:
+        - name: ts-db-container
+          image: 'hausz-teamspeak_adatbazis'
+          imagePullPolicy: Never
+          command:
+            - mysqld
+          env:
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: 'yes'
+          volumeMounts:
+            - name: ts-db-volume
+              mountPath: /var/lib/mysql
+              subPath: ''
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: "600Mi"
+            limits:
+              cpu: 1000m
+              memory: "1Gi"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - ts-db
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-db-service
+  namespace: hausz
+spec:
+  type: ClusterIP
+  ports:
+  - name: ts-db-port
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: ts-db
+  clusterIP: "10.43.1.1"
+  sessionAffinity: None

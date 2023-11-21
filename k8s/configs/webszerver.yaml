@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: projektkonyvtar-pvc
+  namespace: hausz
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: rook-cephfs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webszerver-deployment
+  namespace: hausz
+  labels:
+    app: webszerver
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: webszerver
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 1
+      volumes:
+        - name: projektkonyvtar-volume
+          persistentVolumeClaim:
+            claimName: projektkonyvtar-pvc
+      containers:
+        - name: webszerver-container
+          image: 'hausz-webszerver:latest'
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: projektkonyvtar-volume
+              mountPath: /hausz
+              subPath: ''
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
+            limits:
+              memory: 250Mi
+              cpu: 250m
+          securityContext:
+            privileged: true
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - web
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webszerver-service
+  namespace: hausz
+spec:
+  selector:
+    app: webszerver
+  type: LoadBalancer
+  loadBalancerIP: "192.168.0.62"
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP

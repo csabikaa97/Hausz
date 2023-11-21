@@ -20,12 +20,16 @@ services:
   container_name: kiadas
   volumes:
    - "./:/var/www"
+  profiles:
+   - donotstart
 
  csomagolas:
   build: forras/csomagolas
   container_name: csomagolas
   volumes:
    - "./:/var/www"
+  profiles:
+   - donotstart
 
  egyuttnezo_szerver:
    build: forras/egyuttnezo_szerver
@@ -96,12 +100,18 @@ services:
      - "80:80"
      - "443:443"
     volumes:
-     - "./public:/public"
+     - "./:/hausz"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.12
     depends_on:
       - "adatbazis"
+
+ karbantarto:
+  build: karbantarto
+  container_name: karbantarto
+  profiles:
+   - donotstart
      
 networks:
   container_halozat:

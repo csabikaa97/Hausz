@@ -12,6 +12,8 @@ pub struct WebszerverKonfiguráció {
     pub max_fajl_meret: usize,
     pub hausz_adatbazis_url: String,
     pub hausz_teamspeak_adatbazis_url: String,
+    pub fajlok_eleresi_utvonala: String,
+    pub tanusitvanyok_eleresi_utvonala: String,
 }
 
 impl WebszerverKonfiguráció {
@@ -27,6 +29,8 @@ impl WebszerverKonfiguráció {
             max_fajl_meret: 0,
             hausz_adatbazis_url: "".to_string(),
             hausz_teamspeak_adatbazis_url: "".to_string(),
+            fajlok_eleresi_utvonala: "".to_string(),
+            tanusitvanyok_eleresi_utvonala: "".to_string(),
         };
     }
 
@@ -42,6 +46,8 @@ impl WebszerverKonfiguráció {
             max_fajl_meret: self.max_fajl_meret,
             hausz_adatbazis_url: self.hausz_adatbazis_url.clone(),
             hausz_teamspeak_adatbazis_url: self.hausz_teamspeak_adatbazis_url.clone(),
+            fajlok_eleresi_utvonala: self.fajlok_eleresi_utvonala.clone(),
+            tanusitvanyok_eleresi_utvonala: self.tanusitvanyok_eleresi_utvonala.clone(),
         }
     }
 }

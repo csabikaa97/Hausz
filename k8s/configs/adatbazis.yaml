@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adatbazis-pvc
+  namespace: hausz
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-cephfs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adatbazis-deployment
+  namespace: hausz
+  labels:
+    app: adatbazis
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: adatbazis
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: adatbazis-volume
+          persistentVolumeClaim:
+            claimName: adatbazis-pvc
+      containers:
+        - name: adatbazis-container
+          image: 'hausz-adatbazis'
+          imagePullPolicy: Never
+          command:
+            - mysqld
+          env:
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: 'yes'
+          volumeMounts:
+            - name: adatbazis-volume
+              mountPath: /var/lib/mysql
+              subPath: ''
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: "600Mi"
+            limits:
+              cpu: 1000m
+              memory: "1Gi"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - adatbazis
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adatbazis-service
+  namespace: hausz
+spec:
+  type: ClusterIP
+  ports:
+  - name: adatbazis-port
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: adatbazis
+  clusterIP: "10.43.1.2"
+  sessionAffinity: None

@@ -1,0 +1,8 @@
+- name: Docker telepítése
+  hosts: hausz_nodes
+  become: yes
+  tasks:
+  - name: Docker telepítése apt-vel
+    apt:
+      pkg:
+      - docker.io docker

@@ -1,4 +1,4 @@
-FROM rust:latest as rust
+FROM rust:1.74.0 as rust
 
 FROM rust as planner
 WORKDIR /webszerver
@@ -31,8 +31,6 @@ COPY --from=builder /webszerver/target/release/webszerver .
 COPY check_telnet.sh .
 COPY create_token.sh .
 COPY list_clients.sh .
-COPY konfiguracio.toml .
-COPY privat_konfiguracio.toml ./privat_konfiguracio.toml
 RUN chmod 777 /webszerver/webszerver
 # Use these to find library dependencies:
 # RUN apt install readelf

@@ -1,0 +1,18 @@
+- name: k3s telepítése
+  hosts: hausz_node1
+  become: yes
+  tasks:
+   - name: k3s telepítő letöltése
+     get_url:
+       dest: /home/csabikaa97/install.sh
+       url: https://get.k3s.io
+       mode: 777
+  
+   - name: k3s telepítő futtatása
+     shell:
+       cmd: sh -c /home/csabikaa97/install.sh
+
+- name: k3s telepítése node2 és node3-ra
+  become: yes
+  tasks:
+  - name: 

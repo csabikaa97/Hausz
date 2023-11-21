@@ -167,7 +167,7 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     }
 
     let path = request.path();
-    let fájlnév = "../public/".to_owned() + hozzárendelt_fájl(path);
+    let fájlnév = crate::konfig().webszerver.fajlok_eleresi_utvonala.to_owned() + hozzárendelt_fájl(path);
     
     let kiterjesztés = match fájlnév.split('.').last() {
         Some(kiterjesztés) => kiterjesztés,

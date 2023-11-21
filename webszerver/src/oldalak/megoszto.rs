@@ -4,7 +4,7 @@ use actix_multipart::Multipart;
 use actix_web::HttpResponse;
 use futures_util::TryStreamExt;
 use regex::Regex;
-use crate::{session::Session, alap_fuggvenyek::{isset, log_bejegyzes, list_key}, backend::{lekerdezesek::{általános_query_futtatás, fájl_lekérdezése_név_alapján, fájl_lekérdezése_id_alapján}, saját_fájlok_lekérdezése}, mime_types::mime_type_megállapítása};
+use crate::{session::Session, alap_fuggvenyek::{isset, log_bejegyzes, list_key}, backend::{lekerdezesek::{általános_query_futtatás, fájl_lekérdezése_név_alapján, fájl_lekérdezése_id_alapján}, saját_fájlok_lekérdezése}, mime_types::mime_type_megállapítása, konfig};
 use crate::alap_fuggvenyek::exit_error;
 use crate::alap_fuggvenyek::exit_ok;
 use std::io::Read;
@@ -90,7 +90,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         };
         let mime = mime_type_megállapítása(kiterjesztés);
 
-        let mut fájl = match File::open(format!("/public/megoszto/fajlok/{}", adatbázis_fájl.fájlnév.clone())) {
+        let mut fájl = match File::open(format!("{}megoszto/fajlok/{}", konfig().webszerver.fajlok_eleresi_utvonala, adatbázis_fájl.fájlnév.clone())) {
             Err(err) => {
                 let hiba = format!("{}Hiba a fájl megnyitásakor: {}", LOG_PREFIX, err);
                 println!("{}", hiba);
@@ -231,7 +231,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                 if meglévő_fájl.felhasználó_azonosító != session.user_id {
                     return HttpResponse::BadRequest().body(exit_error(format!("Már létezik egy \"{}\" nevű fájl, amely nem a tiéd, ezért a feltöltés nem lehetséges.", filename)));
                 }
-                match fs::remove_file(format!("/public/megoszto/fajlok/{}", filename)) {
+                match fs::remove_file(format!("{}megoszto/fajlok/{}", konfig().webszerver.fajlok_eleresi_utvonala, filename)) {
                     Ok(_) => {},
                     Err(err) => {
                         println!("{}Hiba a fájl törlésekor: {}", LOG_PREFIX, err);
@@ -295,7 +295,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                 }
             };
 
-            let filepath = format!("/public/megoszto/fajlok/{filename}");
+            let filepath = format!("{}megoszto/fajlok/{filename}", konfig().webszerver.fajlok_eleresi_utvonala);
             let mut f = match std::fs::File::create(filepath.clone()) {
                 Ok(f) => f,
                 Err(err) => {
@@ -436,7 +436,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs kiterjesztés megadva az új névben.")));
         }
         
-        match fs::rename(format!("/public/megoszto/fajlok/{}", átnevezendő_fájl.fájlnév), format!("/public/megoszto/fajlok/{}", list_key("uj_nev", get.clone()))) {
+        match fs::rename(format!("{}megoszto/fajlok/{}", konfig().webszerver.fajlok_eleresi_utvonala, átnevezendő_fájl.fájlnév), format!("{}megoszto/fajlok/{}", konfig().webszerver.fajlok_eleresi_utvonala, list_key("uj_nev", get.clone()))) {
             Ok(_) => {},
             Err(err) => {
                 println!("{}Hiba a fájl átnevezésekor: {}", LOG_PREFIX, err);
@@ -536,7 +536,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             return HttpResponse::BadRequest().body(exit_error(format!("Nem a tiéd a fájl, ezért azt nem törölheted.")));
         }
 
-        match fs::remove_file(format!("/public/megoszto/fajlok/{}", törlendő_fájl.fájlnév)) {
+        match fs::remove_file(format!("{}megoszto/fajlok/{}", konfig().webszerver.fajlok_eleresi_utvonala, törlendő_fájl.fájlnév)) {
             Ok(_) => {},
             Err(err) => {
                 println!("{}Hiba a fájl törlésekor: {}", LOG_PREFIX, err);
