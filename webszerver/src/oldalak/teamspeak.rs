@@ -40,7 +40,7 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
     }
     
     if isset("uj_token_igenylese", get.clone()) {
-        let create_token_sh_kimenete = match Command::new("/webszerver/create_token.sh").output() {
+        let create_token_sh_kimenete = match Command::new("/hausz/webszerver/scriptek/teamspeak_token_keszites.sh").output() {
             Ok(x) => x,
             Err(hiba) => {
                 println!("{}Hiba a create_token.sh futtatásakor: {}", LOG_PREFIX, hiba);
@@ -119,7 +119,7 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
     if isset("felhasznalok", get.clone()) {
         let mut van_online_felhasznalo = false;
 
-        let list_clients_sh_kimenete = match Command::new("/webszerver/list_clients.sh").output() {
+        let list_clients_sh_kimenete = match Command::new("/hausz/webszerver/scriptek/teamspeak_kliens_lista.sh").output() {
             Ok(x) => x,
             Err(hiba) => {
                 println!("{}Hiba a list_clients.sh futtatásakor: {}", LOG_PREFIX, hiba);
@@ -129,8 +129,8 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
 
         let eredmeny = String::from_utf8_lossy(&list_clients_sh_kimenete.stdout);
         let eredmeny = eredmeny.trim();
-        let eredmeny = Regex::new(r"[\n\r]").unwrap().replace_all(&eredmeny, " ");
-        let eredmeny = eredmeny.split("|");
+        let eredmeny = Regex::new(r"[\n\r\s]").unwrap().replace_all(&eredmeny, " ");
+        let eredmeny = Regex::new(r"\\s").unwrap().replace_all(&eredmeny, " ");let eredmeny = eredmeny.split("|");
         let mut felhasználók = Vec::new();
 
         for sor in eredmeny {
@@ -156,7 +156,7 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
     
     if isset("szerver_statusz", get.clone()) {
         let buffer = "";
-        let check_telnet_sh_kimenete = match Command::new("/webszerver/check_telnet.sh").output() {
+        let check_telnet_sh_kimenete = match Command::new("/hausz/webszerver/scriptek/teamspeak_telnet_statusz.sh").output() {
             Ok(x) => x,
             Err(hiba) => {
                 println!("{}Hiba a check_telnet.sh futtatásakor: {}", LOG_PREFIX, hiba);

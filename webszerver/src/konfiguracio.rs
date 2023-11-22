@@ -14,6 +14,7 @@ pub struct WebszerverKonfiguráció {
     pub hausz_teamspeak_adatbazis_url: String,
     pub fajlok_eleresi_utvonala: String,
     pub tanusitvanyok_eleresi_utvonala: String,
+    pub hausz_teamspeak_szerver_ip: String,
 }
 
 impl WebszerverKonfiguráció {
@@ -31,6 +32,7 @@ impl WebszerverKonfiguráció {
             hausz_teamspeak_adatbazis_url: "".to_string(),
             fajlok_eleresi_utvonala: "".to_string(),
             tanusitvanyok_eleresi_utvonala: "".to_string(),
+            hausz_teamspeak_szerver_ip: "".to_string(),
         };
     }
 
@@ -48,6 +50,7 @@ impl WebszerverKonfiguráció {
             hausz_teamspeak_adatbazis_url: self.hausz_teamspeak_adatbazis_url.clone(),
             fajlok_eleresi_utvonala: self.fajlok_eleresi_utvonala.clone(),
             tanusitvanyok_eleresi_utvonala: self.tanusitvanyok_eleresi_utvonala.clone(),
+            hausz_teamspeak_szerver_ip: self.hausz_teamspeak_szerver_ip.clone(),
         }
     }
 }

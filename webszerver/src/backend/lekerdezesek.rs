@@ -306,7 +306,7 @@ pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMi
     };
 
     match conn.query_map(
-        format!("SELECT COALESCE(username, ''), COALESCE(minecraft_username, ''), minecraft_isLogged, minecraft_lastlogin FROM users WHERE minecraft_lastlogin IS NOT NULL ORDER BY minecraft_isLogged DESC, minecraft_lastlogin DESC"),
+        format!("SELECT COALESCE(username, ''), COALESCE(minecraft_username, ''), minecraft_isLogged, minecraft_lastlogin FROM users WHERE minecraft_lastlogin IS NOT NULL AND minecraft_lastlogin > 1606077974 ORDER BY minecraft_isLogged DESC, minecraft_lastlogin DESC"),
         |(
             username,
             minecraft_username,

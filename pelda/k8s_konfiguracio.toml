@@ -1,3 +1,5 @@
+# Ez a konfiguráció a Kubernetes környezetben való futtatáshoz szükséges
+
 [webszerver]
 ip = "0.0.0.0"
 port_http = 80
@@ -11,3 +13,4 @@ hausz_adatbazis_url = "mysql://root:root@172.20.128.10/hausz_megoszto"
 hausz_teamspeak_adatbazis_url = "mysql://root:root@172.20.128.14/teamspeak"
 fajlok_eleresi_utvonala = "/hausz/public/"
 tanusitvanyok_eleresi_utvonala = "/hausz/priv/"
+hausz_teamspeak_szerver_ip = "10.43.1.3"

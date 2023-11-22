@@ -8,6 +8,7 @@ use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use std::fs;
 use std::io::Error;
 use std::io::ErrorKind;
+use std::process::Command;
 use std::sync::Mutex;
 use toml;
 use crate::konfiguracio::PrivátWebszerverKonfiguráció;
@@ -159,10 +160,88 @@ async fn kérés_metódus_választó(request: HttpRequest, payload: Multipart) -
     }
 }
 
+fn scriptek_ellenőrzése() {
+    let ellenőrizendő_fájlok = vec![
+        "teamspeak_kliens_lista.sh",
+        "teamspeak_telnet_statusz.sh",
+        "teamspeak_token_keszites.sh"
+    ];
+
+    for fájl in ellenőrizendő_fájlok {
+        let fájl_útvonala = "/hausz/webszerver/scriptek/".to_string() + fájl;
+        if !std::path::Path::new(&fájl_útvonala).exists() {
+            println!("{}A {} fájl nem létezik. Fájl generálása folyamatban...", LOG_PREFIX, fájl_útvonala);
+
+            let mut tartalom: String = "".to_string();
+
+            if fájl == "teamspeak_kliens_lista.sh" {
+                tartalom = format!(r#"#!/bin/bash
+expect << EOF
+spawn telnet {} 10011
+expect -re ".*command\."
+send "login serveradmin {}\r"
+expect -re ".*msg=ok"
+send "use sid=1\r"
+expect -re ".*msg=ok"
+send "use port=9987\r"
+expect -re ".*msg=ok"
+send "clientlist\r"
+expect -re ".*msg=ok"
+send "quit"
+EOF"#, konfig().webszerver.hausz_teamspeak_szerver_ip, privát_konfig().webszerver.hausz_teamspeak_admin_jelszo);
+            }
+
+            if fájl == "teamspeak_telnet_statusz.sh" {
+                tartalom = format!(r#"#!/bin/bash
+expect << EOF
+set timeout 2
+spawn telnet {} 10011
+expect -re ".*command\."
+send "quit\r"
+EOF"#, konfig().webszerver.hausz_teamspeak_szerver_ip);
+            }
+
+            if fájl == "teamspeak_token_keszites.sh" {
+                tartalom = format!(r#"#!/bin/bash
+expect << EOF
+spawn telnet {} 10011
+expect -re ".*command\."
+send "login serveradmin {}\r"
+expect -re ".*msg=ok"
+send "use sid=1\r"
+expect -re ".*msg=ok"
+send "use port=9987\r"
+expect -re ".*msg=ok"
+send "tokenadd tokentype=0 tokenid1=7 tokenid2=0\r"
+expect -re ".*msg=ok"
+send "quit"
+EOF"#, konfig().webszerver.hausz_teamspeak_szerver_ip, privát_konfig().webszerver.hausz_teamspeak_admin_jelszo);
+            }
+
+            match fs::write(&fájl_útvonala, tartalom) {
+                Ok(_) => {},
+                Err(e) => {
+                    panic!("{}Hiba a {} fájl létrehozásakor: {}", LOG_PREFIX, fájl_útvonala, e);
+                }
+            }
+
+            match Command::new("chmod")
+                .arg("777")
+                .arg(&fájl_útvonala)
+                .output() {
+                    Ok(_) => {},
+                    Err(e) => {
+                        panic!("{}Hiba a {} fájl jogosultságainak beállításakor: {}", LOG_PREFIX, fájl_útvonala, e);
+                    }
+                }
+        }
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     println!("{}Konfigurációs fájl beolvasása...", LOG_PREFIX);
-    let config_fájl_tartalom = match fs::read_to_string("/hausz/webszerver/konfiguracio.toml") {
+    let config_fájl_tartalom = match fs::read_to_string("/hausz/konfiguracio.toml") {
         Ok(tartalom) => tartalom,
         Err(e) => {
             panic!("{}Hiba a config fájl beolvasásakor: {}", LOG_PREFIX, e);
@@ -185,30 +264,35 @@ async fn main() -> std::io::Result<()> {
     }
 
     println!("{}Konfigurációs fájl OK", LOG_PREFIX);
+    println!("{}Privát konfigurációs fájl beolvasása...", LOG_PREFIX);
 
-    let privát_config_fájl_tartalom = match fs::read_to_string("privat_konfiguracio.toml") {
-        Ok(tartalom) => tartalom,
-        Err(_) => {
-            println!("{}Hiba a privát config fájl beolvasásakor", LOG_PREFIX);
-            "".to_string()
-        }
-    };
+    let privát_adatok: PrivátKonfigurációsFájl;
 
-    let privát_adatok: PrivátKonfigurációsFájl = match toml::from_str(&privát_config_fájl_tartalom) {
-        Ok(adatok) => adatok,
-        Err(_) => {
-            println!("{}Hiba a privát config fájl feldolgozásakor", LOG_PREFIX);
-            println!("{}A privát konfigurációs fájl értékei helyett az alap értékek lesznek használva.", LOG_PREFIX);
-            PrivátKonfigurációsFájl {
-                webszerver: PrivátWebszerverKonfiguráció {
-                    hausz_teamspeak_admin_jelszo: "".to_string(),
+    match fs::read_to_string("/hausz/privat_konfiguracio.toml") {
+        Ok(tartalom) => {
+            privát_adatok = match toml::from_str(&tartalom) {
+                Ok(adatok) => adatok,
+                Err(_) => {
+                    println!("{}Hiba a privát config fájl feldolgozásakor", LOG_PREFIX);
+                    println!("{}A privát konfigurációs fájl értékei helyett az alap értékek lesznek használva.", LOG_PREFIX);
+                    PrivátKonfigurációsFájl {
+                        webszerver: PrivátWebszerverKonfiguráció {
+                            hausz_teamspeak_admin_jelszo: "".to_string(),
+                        }
+                    }
                 }
-            }
+            };
+        },
+        Err(hiba) => {
+            println!("{}Hiba a privát config fájl beolvasásakor: {}", LOG_PREFIX, hiba);
+            privát_adatok = PrivátKonfigurációsFájl::new();
         }
     };
 
     KONFIGURÁCIÓS_FÁJL.lock().unwrap().push(adatok);
     PRIVÁT_KONFIGURÁCIÓS_FÁJL.lock().unwrap().push(privát_adatok);
+
+    scriptek_ellenőrzése();
     
     println!("{}Webszerver indítása...", LOG_PREFIX);
     let mut builder = match SslAcceptor::mozilla_intermediate(SslMethod::tls()) {
