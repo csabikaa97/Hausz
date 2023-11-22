@@ -8,12 +8,6 @@
 /teamspeak/adatbazis/*.sqlitedb
 /public/megoszto/fajlok/*
 
-# Együttnéző működéséhez generált szemetek
-
-/forras/egyuttnezo_szerver/node_modules
-/forras/egyuttnezo_szerver/package.json
-/forras/egyuttnezo_szerver/package-lock.json
-
 /teszteles/node_modules
 /teszteles/package.json
 /teszteles/package-lock.json
@@ -29,9 +23,7 @@
 
 /public/megoszto/megoszto.js
 /public/admin/admin.js
-/public/egyuttnezo/egyuttnezo.js
 /public/index/index.js
-/public/egyuttnezo/egyuttnezo.js
 /public/erettsegiszamlalo/erettsegiszamlalo.js
 /public/hauszkft/hauszkft.js
 /public/kezelo/jelszo_valtoztatas.js

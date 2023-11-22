@@ -30,19 +30,6 @@ services:
    - "./:/var/www"
   profiles:
    - donotstart
-
- egyuttnezo_szerver:
-   build: forras/egyuttnezo_szerver
-   container_name: egyuttnezo_szerver
-   ports:
-    - "8090:8090"
-   volumes:
-    - "./:/var/www"
-   networks:
-    container_halozat:
-     ipv4_address: 172.20.128.13
-   depends_on:
-    - "webszerver"
   
  teamspeak_adatbazis:
     build: teamspeak/adatbazis

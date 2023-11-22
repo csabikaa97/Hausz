@@ -10,12 +10,6 @@
 
 /public/megoszto/fajlok/
 
-# Együttnéző működéséhez generált szemetek
-
-/public/egyuttnezo/node_modules
-/public/egyuttnezo/package.json
-/public/egyuttnezo/package-lock.json
-
 /public/teszteles/node_modules
 /public/teszteles/package.json
 /public/teszteles/package-lock.json
@@ -27,9 +21,7 @@
 
 /public/megoszto/megoszto.js
 /public/admin/admin.js
-/public/egyuttnezo/egyuttnezo.js
 /public/index/index.js
-/public/egyuttnezo/egyuttnezo.js
 /public/erettsegiszamlalo/erettsegiszamlalo.js
 /public/hauszkft/hauszkft.js
 /public/kezelo/jelszo_valtoztatas.js

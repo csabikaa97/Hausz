@@ -9,7 +9,6 @@ cd /var/www/
 kiadas.js forras/erettsegiszamlalo/erettsegiszamlalo.ts public/erettsegiszamlalo/erettsegiszamlalo.js
 kiadas.js forras/megoszto/megoszto.ts public/megoszto/megoszto.js
 kiadas.js forras/admin/admin.ts public/admin/admin.js
-kiadas.js forras/egyuttnezo/egyuttnezo.ts public/egyuttnezo/egyuttnezo.js
 kiadas.js forras/hauszkft/hauszkft.ts public/hauszkft/hauszkft.js
 kiadas.js forras/kezelo/jelszo_valtoztatas.ts public/kezelo/jelszo_valtoztatas.js
 kiadas.js forras/kezelo/regisztracio.ts public/kezelo/regisztracio.js

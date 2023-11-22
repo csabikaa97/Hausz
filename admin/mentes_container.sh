@@ -21,9 +21,6 @@ docker export kiadas -o "${backup_folder}/kiadas.tar"
 echo "Backing up container: 'public'..."
 docker export public -o "${backup_folder}/public.tar"
 
-echo "Backing up container: 'egyuttnezo_szerver'..."
-docker export egyuttnezo_szerver -o "${backup_folder}/egyuttnezo_szerver.tar"
-
 echo "Backing up container: 'teamspeak_adatbazis'..."
 docker export teamspeak_adatbazis -o "${backup_folder}/teamspeak_adatbazis.tar"
 
