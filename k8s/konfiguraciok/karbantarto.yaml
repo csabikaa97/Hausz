@@ -21,13 +21,43 @@ spec:
         - name: projektkonyvtar-volume
           persistentVolumeClaim:
             claimName: projektkonyvtar-pvc
+        - name: adatbazis-volume
+          persistentVolumeClaim:
+            claimName: adatbazis-pvc
+        - name: minecraft-server-volume
+          persistentVolumeClaim:
+            claimName: minecraft-server-pvc
+        - name: navidrome-volume
+          persistentVolumeClaim:
+            claimName: navidrome-pvc
+        - name: ts-db-volume
+          persistentVolumeClaim:
+            claimName: ts-db-pvc
+        - name: ts-volume
+          persistentVolumeClaim:
+            claimName: ts-pvc
+        - name: vaultwarden-volume
+          persistentVolumeClaim:
+            claimName: vaultwarden-pvc
       containers:
         - name: karbantarto-container
           image: 'hausz-karbantarto'
+          imagePullPolicy: Never
           volumeMounts:
             - name: projektkonyvtar-volume
               mountPath: /hausz
-              subPath: ''
+            - name: adatbazis-volume
+              mountPath: /pvc-volumes/adatbazis-pvc
+            - name: minecraft-server-volume
+              mountPath: /pvc-volumes/minecraft-server-pvc
+            - name: navidrome-volume
+              mountPath: /pvc-volumes/navidrome-pvc
+            - name: ts-db-volume
+              mountPath: /pvc-volumes/ts-db-pvc
+            - name: ts-volume
+              mountPath: /pvc-volumes/ts-pvc
+            - name: vaultwarden-volume
+              mountPath: /pvc-volumes/vaultwarden-pvc
           resources:
             requests:
               memory: 250Mi

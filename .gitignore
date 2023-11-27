@@ -60,3 +60,14 @@
 
 konfiguracio.toml
 privat_konfiguracio.toml
+
+# Minecraft server
+/minecraft-server/adatok/*
+/minecraft-server/plugins/*
+
+# Navidrome
+/navidrome/adatok/*
+/navidrome/fajlok/*
+
+# Vaultwarden
+/vaultwarden/adatok/*

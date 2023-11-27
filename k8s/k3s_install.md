@@ -1,9 +1,11 @@
-# 1. install on first server
+# Kubernetes cluster telepítése K3S segítségével
+
+## 1. Telepítés az első szerveren
 
 ```bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.26.10+k3s2 \
 K3S_TOKEN=df5f3e05b3ee02575916cef5fa3565cd5edb0c002dad7a4820abc6c10c8cfd10 \
-INSTALL_K3S_EXEC="--kube-apiserver-arg default-not-ready-toleration-seconds=15 --kube-apiserver-arg default-unreachable-toleration-seconds=15 --kube-controller-arg node-monitor-period=10s --kube-controller-arg node-monitor-grace-period=10s --kubelet-arg node-status-update-frequency=3s" \
+INSTALL_K3S_EXEC="--disable=servicelb --kube-apiserver-arg default-not-ready-toleration-seconds=60 --kube-apiserver-arg default-unreachable-toleration-seconds=60 --kube-controller-arg node-monitor-period=10s --kube-controller-arg pod-eviction-timeout=20s --kube-controller-arg node-monitor-grace-period=30s --kubelet-arg node-status-update-frequency=3s" \
 sh -s - server \
     --cluster-init
 ```
@@ -11,50 +13,24 @@ A sok argumentum azért van hogy gyorsabban reagáljon a kubernetes a node-ok le
 - https://web.archive.org/web/20220910051513/https://medium.com/tailwinds-navigator/kubernetes-tip-how-to-make-kubernetes-react-faster-when-nodes-fail-1e248e184890
 - https://medium.com/tailwinds-navigator/kubernetes-tip-how-to-make-kubernetes-react-faster-when-nodes-fail-1e248e184890
 
-# 2. install on other servers
+# 2. Telepítés többi szerveren
 
 ```bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.26.10+k3s2 K3S_TOKEN=df5f3e05b3ee02575916cef5fa3565cd5edb0c002dad7a4820abc6c10c8cfd10 \
-INSTALL_K3S_EXEC="--kube-apiserver-arg default-not-ready-toleration-seconds=15 --kube-apiserver-arg default-unreachable-toleration-seconds=15 --kube-controller-arg node-monitor-period=10s --kube-controller-arg node-monitor-grace-period=10s --kubelet-arg node-status-update-frequency=3s" \
+INSTALL_K3S_EXEC="--disable=servicelb --kube-apiserver-arg default-not-ready-toleration-seconds=60 --kube-apiserver-arg default-unreachable-toleration-seconds=60 --kube-controller-arg node-monitor-period=10s --kube-controller-arg pod-eviction-timeout=20s --kube-controller-arg node-monitor-grace-period=30s --kubelet-arg node-status-update-frequency=3s" \
 sh -s - server \
-    --server https://192.168.0.40:6443
+    --server https://192.168.0.43:6443
 ```
 
-# 3. Define kubeconfig for kubectl
+# 3. Metallb load balancer telepítése
 
 ```bash
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
+kubectl create -f metallb-ip-range.yaml
+kubectl create -f metallb-layer2-ad.yaml
 ```
 
-# 4. install rancher (optional)
-
-```bash
-kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
-helm search repo cert-manager
-helm install cert-manager jetstack/cert-manager
-helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-helm search repo rancher
-helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=hausz.local
-```
-# 5. container image copying
-- docker save
-```bash
-docker save --output hausz_<container_nev>.tar hausz_<container_nev>:latest
-```
-- Import image in k3s
-```bash
-k3s ctr images import ./hausz_<container_nev>.tar
-```
-
-# 6. kulcsok másolása webszerverre
-
-```bash
-scp ./privkey.pem csabikaa97@node1:/home/csabikaa97/hausz/public/ ; scp ./fullchain.pem csabikaa97@node1:/home/csabikaa97/hausz/public/
-scp ./privkey.pem csabikaa97@node2:/home/csabikaa97/hausz/public/ ; scp ./fullchain.pem csabikaa97@node2:/home/csabikaa97/hausz/public/
-scp ./privkey.pem csabikaa97@node3:/home/csabikaa97/hausz/public/ ; scp ./fullchain.pem csabikaa97@node3:/home/csabikaa97/hausz/public/
-```
-
-# 7. Rook install
+# 4. Rook Ceph tárhely telepítése
 
 ```bash
 git clone --single-branch --branch release-1.12 https://github.com/rook/rook.git
@@ -68,7 +44,29 @@ Várni kell amíg a rook-ceph-operator pod elindul
 kubectl create -f cluster.yaml
 ```
 
-# 8. Ceph toolbox indítása
+Telepíteni kell a storageclassokat, és beállítani az alapértelmezett storageclassot
+
+```bash
+kubectl apply -f rook/deploy/examples/csi/cephfs/storageclass.yaml
+kubectl apply -f rook/deploy/examples/filesystem.yaml
+kubectl get sc
+kubectl patch storageclass rook-cephfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+```
+
+Telepíteni kell a dashboard load balancert
+
+```bash
+kubectl apply -f egyszeri_konfiguraciok/rook-dashboard-loadbalancer.yaml
+```
+
+A dashboard belépési adatok: admin / <jelszó a következő parancsból>
+
+```bash
+kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['data']['password']}" | base64 --decode && echo
+```
+
+# 5. Ceph toolbox használata
 
 ```bash
 kubectl create -f deploy/examples/toolbox.yaml
@@ -86,15 +84,7 @@ Példák:
 kubectl -n rook-ceph delete deploy/rook-ceph-tools
 ```
 
-```bash
-examples/csi/cephfs# kubectl apply -f storageclass.yaml
-rook/deploy/examples# kubectl apply -f filesystem.yaml
-kubectl get sc
-kubectl patch storageclass rook-cephfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-```
-
-# 9. adatbázis inicializálása
+# 6. Adatbázisok inicializálása
 
 Alapból a mysql docker image nem inicalizálja az adatbázist, ezért azt manuálisan kell megcsinálnunk.
 1.  Át kell írni az adatbázist tartalmazó deploymentekben a "command" rész a következőre:
@@ -112,20 +102,46 @@ Alapból a mysql docker image nem inicalizálja az adatbázist, ezért azt manu�
     ```bash
     mysqld --initialize
     ```
+5. Itt vagy vissza lehet állítani egy biztonsági mentést, vagy a következő parancsokkal új adatbázist lehet létrehozni:
+    ```bash
+    mysqld &
+    mysql -u root -p
+    /telepites/telepites.sh
+    ```
 
-nano ./var/lib/rancher/k3s/server/manifests/local-storage.yaml
-^ ebben a fájlban át kell írni a default-ot true-tól false-ra:
-    ```storageclass.kubernetes.io/is-default-class: "false"``` -> ```"true"```
+# 7. container image készítés és másolás docker-compose környezetből
 
-# 10. metallb telepítése (bare metal load balancer)
+- docker save
+```bash
+docker save --output hausz_<container_nev>.tar hausz_<container_nev>:latest
+```
+- Import image in k3s
+```bash
+k3s ctr images import ./hausz_<container_nev>.tar
 
-Beépített load balancer letiltás k3s szolgáltatásban:
+k3s ctr image import hausz-minecraft-server.tar ; k3s ctr image import hausz-navidrome.tar ; k3s ctr image import hausz-teamspeak.tar ; k3s ctr image import hausz-teamspeak_adatbazis.tar ; k3s ctr image import hausz-torrent-tracker.tar ; k3s ctr image import hausz-vaultwarden.tar ; k3s ctr image import hausz-webszerver.tar ; k3s ctr image import hausz-adatbazis.tar ; k3s ctr image import hausz-karbantarto.tar
+```
 
-nano /etc/systemd/system/k3s.service
-```server \``` -> ```server --disable servicelb \```
+# 8. Traefik TLS tanúsítványok megadása
+
+https://doc.traefik.io/traefik/v1.7/user-guide/kubernetes/#add-a-tls-certificate-to-the-ingress
+
+1. Hozzá kell adni a tanúsítványt a kubernetes clusterhez
+```bash
+kubectl -n kube-system create secret tls traefik-ssl-tanusitvany --key=privkey.pem --cert=fullchain.pem
+```
+
+2. El kell készíteni a Traefik TLSStore CRD-t a clusteren belül
+```bash
+kubectl apply -f /k8s/egyszeri_konfiguraciok/ssl-tanusitvany-secret.yaml
+```
+
+[ssl-tanusitvany-secret.yaml](/k8s/egyszeri_konfiguraciok/ssl-tanusitvany-secret.yaml)
+
+# Egyebek
+
+KUBECONFIG definíció Helm használatához
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
-kubectl create -f metallb-ip-range.yaml
-kubectl create -f metallb-layer2-ad.yaml
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 ```

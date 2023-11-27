@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vaultwarden-pvc
+  namespace: hausz
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-cephfs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden-deployment
+  namespace: hausz
+  labels:
+    app: vaultwarden
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: vaultwarden-volume
+          persistentVolumeClaim:
+            claimName: vaultwarden-pvc
+        - name: projektkonyvtar-volume
+          persistentVolumeClaim:
+            claimName: projektkonyvtar-pvc
+      containers:
+        - name: vaultwarden-container
+          image: 'hausz-vaultwarden:latest'
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: projektkonyvtar-volume
+              mountPath: /hausz
+              subPath: ''
+            - name: vaultwarden-volume
+              mountPath: /data
+              subPath: ''
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 50m
+            limits:
+              memory: 400Mi
+              cpu: 400m
+          securityContext:
+            privileged: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaultwarden-service
+  namespace: hausz
+spec:
+  selector:
+    app: vaultwarden
+  type: LoadBalancer
+  loadBalancerIP: "192.168.0.64"
+  ports:
+  - name: vaultwarden-port
+    port: 80
+    protocol: TCP
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vaultwarden-ingress
+  namespace: hausz
+  labels:
+    name: vaultwarden-ingress
+spec:
+  rules:
+  - host: "vaultwarden.kubernetes.hausz.stream"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: vaultwarden-service
+            port: 
+              number: 80

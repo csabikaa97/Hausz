@@ -1,0 +1,15 @@
+FROM ubuntu:22.04
+RUN apt update
+RUN apt install wget -y
+WORKDIR /minecraft_build_files
+RUN wget -O purpur.jar https://api.purpurmc.org/v2/purpur/1.20.2/latest/download
+WORKDIR /jdk
+RUN wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.1%2B12/OpenJDK21U-jdk_x64_linux_hotspot_21.0.1_12.tar.gz
+RUN tar -xvf OpenJDK21U-jdk_x64_linux_hotspot_21.0.1_12.tar.gz
+RUN rm OpenJDK21U-jdk_x64_linux_hotspot_21.0.1_12.tar.gz
+WORKDIR /minecraft_build_files
+COPY start.sh start.sh
+RUN chmod 777 /minecraft_build_files/start.sh
+COPY eula.txt eula.txt
+COPY plugins /minecraft_build_files/plugins
+CMD ["bash", "/minecraft_build_files/start.sh"]

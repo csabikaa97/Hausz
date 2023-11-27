@@ -85,3 +85,23 @@ spec:
     port: 443
     targetPort: 443
     protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webszerver-ingress
+  namespace: hausz
+  labels:
+    name: webszerver-ingress
+spec:
+  rules:
+  - host: "kubernetes.hausz.stream"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: webszerver-service
+            port: 
+              number: 80

@@ -1,0 +1,1 @@
+FROM deluan/navidrome:latest

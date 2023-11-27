@@ -99,7 +99,50 @@ services:
   container_name: karbantarto
   profiles:
    - donotstart
-     
+
+ minecraft-server:
+  build: minecraft-server
+  container_name: minecraft-server
+  ports:
+   - "25565:25565"
+   - "25566:25566"
+  volumes:
+   - "./minecraft-server/adatok:/minecraft"
+  networks:
+   container_halozat:
+    ipv4_address: 172.20.128.17
+  profiles:
+   - donotstart
+
+ navidrome:
+  build: navidrome
+  container_name: navidrome
+  ports:
+   - "4533:4533"
+  restart: unless-stopped
+  environment:
+   - ND_SCANSCHEDULE=24h
+   - ND_SESSIONTIMEOUT=168h
+  volumes:
+   - "./navidrome/adatok:/data"
+   - "./navidrome/fajlok:/music:ro"
+  profiles:
+   - donotstart
+
+ vaultwarden:
+  build: vaultwarden
+  container_name: vaultwarden
+  ports:
+   - "8080:80"
+  restart: unless-stopped
+  volumes:
+   - "./vaultwarden/adatok:/data"
+   - "./priv:/priv"
+  environment:
+   - ROCKET_TLS={certs="/priv/fullchain.pem",key="/priv/privkey.pem"}
+  profiles:
+   - donotstart
+
 networks:
   container_halozat:
     driver: bridge

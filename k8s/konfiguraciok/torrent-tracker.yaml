@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: torrent-tracker-deployment
+  namespace: hausz
+  labels:
+    app: torrent-tracker
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: torrent-tracker
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: torrent-tracker-container
+          image: hausz-torrent-tracker
+          imagePullPolicy: Never
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 10m
+            limits:
+              memory: 250Mi
+              cpu: 400m
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - web
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: torrent-tracker-service
+  namespace: hausz
+spec:
+  type: NodePort
+  selector:
+    app: torrent-tracker
+  ports:
+  - name: tracker-port
+    port: 6969
+    protocol: UDP
+    targetPort: 6969
