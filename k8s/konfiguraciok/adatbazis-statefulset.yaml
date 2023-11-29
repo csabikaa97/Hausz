@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adatbazis-slave-service
+  namespace: hausz
+  labels:
+    app: adatbazis-slave-service
+    app.kubernetes.io/name: adatbazis-slave-service
+spec:
+  ports:
+  - name: mysql-port
+    port: 3306
+  clusterIP: None
+  selector:
+    app: adatbazis-slave
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adatbazis-slave-loadbalancer
+  namespace: hausz
+spec:
+  clusterIP: 10.43.1.4
+  selector:
+    app: adatbazis-slave
+  ports:
+  - port: 3306
+    targetPort: 3306
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: adatbazis-slave-statefulset
+  namespace: hausz
+spec:
+  selector:
+    matchLabels:
+      app: adatbazis-slave
+      app.kubernetes.io/name: adatbazis-slave
+  serviceName: adatbazis-slave-service
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: adatbazis-slave
+        app.kubernetes.io/name: adatbazis-slave
+    spec:
+      initContainers:
+      - name: adatbazis-id-inicializalas
+        image: 'hausz-adatbazis-slave:latest'
+        imagePullPolicy: Never
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          [[ $HOSTNAME =~ -([0-9]+)$ ]] || exit 1
+          ordinal=${BASH_REMATCH[1]}
+          echo [mysqld] > /mnt/conf.d/server-id.cnf
+          echo server-id=$((100 + $ordinal)) >> /mnt/conf.d/server-id.cnf
+        volumeMounts:
+        - name: konfigok
+          mountPath: /mnt/conf.d
+      - name: adatbazis-masolas
+        image: 'hausz-adatbazis-slave:latest'
+        imagePullPolicy: Never
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          if [ -n "$(ls -A "/var/lib/mysql")" ]; then
+              echo "Mar van inicializalva adatbazis."
+          else
+              mysqld --initialize-insecure
+              mysqld &
+              mysqldump --password="root" --source-data --all-databases -h 10.43.1.2 -p > masolat.sql
+              echo "Varakozas a mysqld folyamat indulasara (10mp)"
+              sleep 10
+              echo "Varakozas vege."
+              mysql -u root -e "CHANGE MASTER TO MASTER_HOST='10.43.1.2', MASTER_USER='replikalo', MASTER_PASSWORD='replikalo';"
+              mysql -u root < masolat.sql
+              mysql -u root -e "START SLAVE;"
+          fi
+        volumeMounts:
+        - name: adatok
+          mountPath: /var/lib/mysql
+        - name: konfigok
+          mountPath: /etc/mysql/conf.d
+      containers:
+      - name: adatbazis-slave
+        image: 'hausz-adatbazis-slave:latest'
+        imagePullPolicy: Never
+        env:
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        ports:
+        - name: mysql-port
+          containerPort: 3306
+        volumeMounts:
+        - name: adatok
+          mountPath: /var/lib/mysql
+        - name: konfigok
+          mountPath: /etc/mysql/conf.d
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+      affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - adatbazis-slave
+              topologyKey: kubernetes.io/hostname
+  volumeClaimTemplates:
+  - metadata:
+      name: adatok
+    spec:
+      accessModes:
+       - ReadWriteMany
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: konfigok
+    spec:
+      accessModes:
+       - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi

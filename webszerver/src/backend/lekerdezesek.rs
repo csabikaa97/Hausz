@@ -15,7 +15,7 @@ use super::AdatbázisEredményTeamspeakFelhasználó;
 use super::AdatbázisEredményTeamspeakJogosultságIgénylés;
 
 pub fn teamspeak_jogosultság_igénylések_lekérdezése() -> Result<Vec<AdatbázisEredményTeamspeakJogosultságIgénylés>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             return Err(err);
@@ -51,7 +51,7 @@ pub fn teamspeak_jogosultság_igénylések_lekérdezése() -> Result<Vec<Adatbá
 } 
 
 pub fn log_bejegyzések_lekérdezése() -> Result<Vec<AdatbázisEredményLogBejegyzés>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             return Err(err);
@@ -112,7 +112,7 @@ pub fn teamspeak_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredmén
 }
 
 pub fn teamspeak_token_lekérdezése(user_id: u32) -> Result<Option<AdatbázisEredményFelhasználóToken>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             return Err(err);
@@ -155,7 +155,7 @@ pub fn teamspeak_token_lekérdezése(user_id: u32) -> Result<Option<AdatbázisEr
 }
 
 pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEredményFájl> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -226,7 +226,7 @@ pub fn fájl_lekérdezése_id_alapján(file_id: String) -> Option<AdatbázisEred
 }
 
 pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisEredményFájl> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -297,7 +297,7 @@ pub fn fájl_lekérdezése_név_alapján(filename: String) -> Option<AdatbázisE
 }
 
 pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMinecraftFelhasználó>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -328,7 +328,7 @@ pub fn minecraft_játékosok_lekérdezése() -> Result<Vec<AdatbázisEredményMi
 }
 
 pub fn minecraft_felhasználó_létezik(felhasználónév: String) -> Result<bool> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -358,7 +358,7 @@ pub fn minecraft_felhasználó_létezik(felhasználónév: String) -> Result<boo
 }
 
 pub fn saját_meghívók_lekérése(user_id: u32) -> Result<Vec<String>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -381,7 +381,7 @@ pub fn saját_meghívók_lekérése(user_id: u32) -> Result<Vec<String>> {
 }
 
 pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -412,7 +412,7 @@ pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
 }
 
 pub fn igényelt_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményIgényeltFelhasználó>> {
-    let mut conn: PooledConn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn: PooledConn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -449,7 +449,7 @@ pub fn igényelt_felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredmén
 }
 
 pub fn igényelt_felhasznalo_lekerdezese(felhasználónév: String) -> Result<AdatbázisEredményIgényeltFelhasználó> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -506,7 +506,7 @@ pub fn igényelt_felhasznalo_lekerdezese(felhasználónév: String) -> Result<Ad
 }
 
 pub fn új_session_beillesztése(cookie: String, felhasznalo: AdatbázisEredményFelhasználó) -> Result<String> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_w) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -529,7 +529,7 @@ pub fn új_session_beillesztése(cookie: String, felhasznalo: AdatbázisEredmén
 }
 
 pub fn session_törlése(cookie: String, user_id: u32) -> Result<String> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_w) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -551,7 +551,7 @@ pub fn session_törlése(cookie: String, user_id: u32) -> Result<String> {
 }
 
 pub fn felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményFelhasználó>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -596,7 +596,7 @@ pub fn felhasználók_lekérdezése() -> Result<Vec<AdatbázisEredményFelhaszn�
 }
 
 pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok) -> Result<Option<AdatbázisEredményFelhasználó>> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -673,7 +673,7 @@ pub fn felhasznalo_lekerdezese(azonosító_adat: FelhasználóAzonosítóAdatok)
 }
 
 pub fn salt_lekerdezese(salt_username: &str) -> Result<String> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
@@ -736,7 +736,7 @@ pub fn salt_lekerdezese(salt_username: &str) -> Result<String> {
 }
 
 pub fn általános_query_futtatás(query: String) -> Result<String> {
-    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url) {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_w) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);

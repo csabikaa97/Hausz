@@ -5,3 +5,6 @@ mysql -u root --password="root" -e "CREATE DATABASE hausz_felhasznalok;"
 mysql -u root --password="root" < /telepites/hausz_ts.sql
 mysql -u root --password="root" < /telepites/hausz_log.sql
 mysql -u root --password="root" < /telepites/hausz_megoszto.sql
+mysql -u root --password="root" -e "CREATE USER 'replikalo'@'%' IDENTIFIED BY 'replikalo';"
+mysql -u root --password="root" -e "GRANT REPLICATION SLAVE ON *.* TO 'replikalo'@'%';"
+mysql -u root --password="root" -e "FLUSH PRIVILEGES;"

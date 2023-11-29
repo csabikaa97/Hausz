@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole-deployment
+  namespace: hausz
+  labels:
+    app: pihole
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pihole
+        octopusexport: OctopusExport
+    spec:
+      hostNetwork: true
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: webszerver-container
+          image: 'hausz-pihole:latest'
+          imagePullPolicy: Never
+          ports:
+            - name: dns-port-udp
+              containerPort: 53
+              protocol: UDP
+            - name: dns-port-tcp
+              containerPort: 53
+              protocol: TCP
+            - name: dhcp-port
+              containerPort: 67
+              protocol: UDP
+            - name: http-port
+              containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: TZ
+              value: 'Europe/Budapest'
+            - name: WEBPASSWORD
+              value: 'admin'
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - pihole
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-loadbalancer
+  namespace: hausz
+spec:
+  selector:
+    app: pihole
+  type: LoadBalancer
+  loadBalancerIP: "192.168.0.69"
+  ports:
+  - name: dns-port-tcp
+    port: 53
+    protocol: TCP
+    targetPort: 53
+  - name: dns-port-udp
+    port: 53
+    protocol: UDP
+    targetPort: 53
+  - name: dhcp-port
+    port: 67
+    protocol: UDP
+    targetPort: 67
+  - name: http-port
+    port: 80
+    protocol: TCP
+    targetPort: 80

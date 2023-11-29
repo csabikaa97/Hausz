@@ -63,7 +63,7 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - web
+                        - webszerver
                 topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1

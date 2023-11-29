@@ -105,7 +105,7 @@ fn csatlakozás(url: &str) -> Result<mysql::PooledConn> {
 }
 
 pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
-    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url.as_str()) {
+    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url_r.as_str()) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
@@ -189,7 +189,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
 }
 
 pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<AdatbázisEredményFelhasználó> {
-    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url.as_str()) {
+    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url_r.as_str()) {
         Ok(conn) => conn,
         Err(err) => {
             println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
@@ -245,7 +245,7 @@ pub fn cookie_gazdájának_lekérdezése(cookie_azonosító: String) -> Option<A
             Some(felhasználó) => { return Some(felhasználó); },
         },
         Err(err) => {
-            println!("{}cooki_gazdájának_lekérdezése: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
+            println!("{}cookie_gazdájának_lekérdezése: Hiba a felhasználók lekérdezésekor: {}", LOG_PREFIX, err);
             return None;
         }
     };

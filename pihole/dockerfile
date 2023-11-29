@@ -1,0 +1,2 @@
+FROM pihole/pihole:latest
+COPY dns.list /etc/pihole/custom.list

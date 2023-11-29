@@ -40,7 +40,7 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - web
+                        - torrent-tracker
                 topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1

@@ -335,7 +335,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
             return HttpResponse::BadRequest().body(exit_error(format!("Hibás igénylés azonosító")));
         }
             
-        let mut conn = match mysql::Conn::new(crate::konfig().webszerver.hausz_adatbazis_url.as_str()) {
+        let mut conn = match mysql::Conn::new(crate::konfig().webszerver.hausz_teamspeak_adatbazis_url.as_str()) {
             Ok(conn) => conn,
             Err(hiba) => {
                 println!("{}Hiba a MySQL adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, hiba);

@@ -1,0 +1,3 @@
+FROM mysql:8.0.30
+RUN rm /etc/my.cnf
+COPY my.cnf /etc/my.cnf

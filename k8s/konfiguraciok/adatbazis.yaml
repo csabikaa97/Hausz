@@ -55,21 +55,6 @@ spec:
             requests:
               cpu: 100m
               memory: "600Mi"
-            limits:
-              cpu: 1000m
-              memory: "1Gi"
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - adatbazis
-                topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1
 kind: Service

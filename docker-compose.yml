@@ -14,6 +14,14 @@ services:
   networks:
    container_halozat:
     ipv4_address: 172.20.128.10
+
+ adatbazis-slave:
+  build: adatbazis-slave
+  container_name: adatbazis-slave
+  environment:
+   - MYSQL_ROOT_PASSWORD=root
+  profiles:
+   - donotstart
     
  kiadas:
   build: forras/kiadas
@@ -44,7 +52,7 @@ services:
      - "./teamspeak/adatbazis/adatok:/var/lib/mysql"
      - "./admin/mentes/:/mentes"
     environment:
-     - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+     - MYSQL_ROOT_PASSWORD=root
 
  teamspeak:
     build: teamspeak/szerver
@@ -142,6 +150,25 @@ services:
    - ROCKET_TLS={certs="/priv/fullchain.pem",key="/priv/privkey.pem"}
   profiles:
    - donotstart
+
+ pihole:
+  container_name: pihole
+  build: pihole
+  ports:
+    - "53:53/tcp"
+    - "53:53/udp"
+    - "67:67/udp"
+    - "80:80/tcp"
+  privileged: true
+  environment:
+    TZ: 'Europe/Budapest'
+    WEBPASSWORD: 'admin'
+  cap_add:
+    - NET_ADMIN
+  restart: unless-stopped
+  networks:
+   container_halozat:
+    ipv4_address: 172.20.128.18
 
 networks:
   container_halozat:
