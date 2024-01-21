@@ -36,19 +36,36 @@ spec:
         - name: adatbazis-volume
           persistentVolumeClaim:
             claimName: adatbazis-pvc
+      initContainers:
+      - name: adatbazis-inicializalas
+        image: 'hausz-adatbazis:latest'
+        imagePullPolicy: Never
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          if [ -n "$(ls -A "/var/lib/mysql")" ]; then
+              echo "Mar van inicializalva adatbazis."
+          else
+              MYSQL_ROOT_PASSWORD=root
+              mysqld --initialize-insecure
+              echo [mysqld] > /mnt/conf.d/server-id.cnf
+              mkdir -p /mnt/conf.d
+              echo 1 >> /mnt/conf.d/server-id.cnf
+          fi
+        volumeMounts:
+        - name: adatbazis-volume
+          mountPath: /var/lib/mysql
       containers:
         - name: adatbazis-container
           image: 'hausz-adatbazis'
           imagePullPolicy: Never
           command:
             - mysqld
-          env:
-            - name: MYSQL_ALLOW_EMPTY_PASSWORD
-              value: 'yes'
           volumeMounts:
             - name: adatbazis-volume
               mountPath: /var/lib/mysql
-              subPath: ''
           securityContext:
             privileged: true
           resources:

@@ -107,11 +107,9 @@ spec:
             cpu: 500m
             memory: 1Gi
       affinity:
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
                 matchExpressions:
                   - key: app
                     operator: In

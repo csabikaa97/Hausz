@@ -26,9 +26,12 @@ sh -s - server \
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
+cd k8s/egyszeri_konfiguraciok
 kubectl create -f metallb-ip-range.yaml
 kubectl create -f metallb-layer2-ad.yaml
 ```
+
+A kubectl create parancsokhoz szükséges yaml fájlok az [egyszeri_konfiguraciok](egyszeri_konfiguraciok) mappában vannak.
 
 # 4. Rook Ceph tárhely telepítése
 

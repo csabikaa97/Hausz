@@ -53,16 +53,14 @@ spec:
               value: 'admin'
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - pihole
-                topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - pihole
+              topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1
 kind: Service

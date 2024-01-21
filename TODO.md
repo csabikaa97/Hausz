@@ -1,5 +1,14 @@
 ## 👤 Felhasználói érdekű teendő
 
+
+* Webszerver
+	* Session-ök eltárolása: Csak egy bcrypt / argon2 hash legyen eltárolva a session kulcsról
+	* Unwrap-ek áznézése
+	* Függvény hívásoknál .clone() cserélése borrow-ra
+	* SQL conn pool
+	* gyorsítótár átalakítása azért hogy több szál is el tudja érni egyszerre
+	* REDIRECT HTTP TO HTTPS
+	* teamspeak oldal expect scriptek átírása rust-on belülre
 * Együttnéző
 	* Hangerő állításhoz, és megtartáshoz tesztelés script
 	* Videó link kérése közvetlen URL-el, lejátszó betöltése nélkül

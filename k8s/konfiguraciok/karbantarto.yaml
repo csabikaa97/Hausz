@@ -39,6 +39,15 @@ spec:
         - name: vaultwarden-volume
           persistentVolumeClaim:
             claimName: vaultwarden-pvc
+        - name: adatbazis-slave-0-volume
+          persistentVolumeClaim:
+            claimName: adatok-adatbazis-slave-statefulset-0
+        - name: adatbazis-slave-1-volume
+          persistentVolumeClaim:
+            claimName: adatok-adatbazis-slave-statefulset-1
+        - name: adatbazis-slave-2-volume
+          persistentVolumeClaim:
+            claimName: adatok-adatbazis-slave-statefulset-2
       containers:
         - name: karbantarto-container
           image: 'hausz-karbantarto'
@@ -58,6 +67,12 @@ spec:
               mountPath: /pvc-volumes/ts-pvc
             - name: vaultwarden-volume
               mountPath: /pvc-volumes/vaultwarden-pvc
+            - name: adatbazis-slave-0-volume
+              mountPath: /pvc-volumes/adatbazis-slave-0-pvc
+            - name: adatbazis-slave-1-volume
+              mountPath: /pvc-volumes/adatbazis-slave-1-pvc
+            - name: adatbazis-slave-2-volume
+              mountPath: /pvc-volumes/adatbazis-slave-2-pvc
           resources:
             requests:
               memory: 250Mi

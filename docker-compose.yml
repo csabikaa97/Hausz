@@ -2,12 +2,12 @@ version: "3"
 
 services:
  adatbazis:
-  build: adatbazis
+  build: docker/adatbazis
   container_name: adatbazis
   environment:
    - MYSQL_ROOT_PASSWORD=root
   volumes:
-   - "./adatbazis/adatok:/var/lib/mysql"
+   - "./docker/adatbazis/adatok:/var/lib/mysql"
    - "./admin/mentes/:/mentes"
   ports:
    - "3306:3306"
@@ -16,7 +16,7 @@ services:
     ipv4_address: 172.20.128.10
 
  adatbazis-slave:
-  build: adatbazis-slave
+  build: docker/docker/adatbazis-slave
   container_name: adatbazis-slave
   environment:
    - MYSQL_ROOT_PASSWORD=root
@@ -24,7 +24,7 @@ services:
    - donotstart
     
  kiadas:
-  build: forras/kiadas
+  build: docker/forras/kiadas
   container_name: kiadas
   volumes:
    - "./:/var/www"
@@ -32,7 +32,7 @@ services:
    - donotstart
 
  csomagolas:
-  build: forras/csomagolas
+  build: docker/forras/csomagolas
   container_name: csomagolas
   volumes:
    - "./:/var/www"
@@ -40,7 +40,7 @@ services:
    - donotstart
   
  teamspeak_adatbazis:
-    build: teamspeak/adatbazis
+    build: docker/teamspeak/adatbazis
     container_name: teamspeak_adatbazis
     command: [ "mysqld" ]
     ports:
@@ -49,13 +49,13 @@ services:
      container_halozat:
       ipv4_address: 172.20.128.14
     volumes:
-     - "./teamspeak/adatbazis/adatok:/var/lib/mysql"
+     - "./docker/teamspeak/adatbazis/adatok:/var/lib/mysql"
      - "./admin/mentes/:/mentes"
     environment:
      - MYSQL_ROOT_PASSWORD=root
 
  teamspeak:
-    build: teamspeak/szerver
+    build: docker/teamspeak/szerver
     container_name: teamspeak
     #command: [ "/opt/ts3server/ts3server" ]
     ports:
@@ -74,13 +74,13 @@ services:
     depends_on:
      - "teamspeak_adatbazis"
     volumes:
-     - "./teamspeak/szerver/adatok:/var/ts3server/files"
+     - "./docker/teamspeak/szerver/adatok:/var/ts3server/files"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.15
 
  torrent-tracker:
-  build: torrent-tracker
+  build: docker/torrent-tracker
   container_name: torrent-tracker
   ports:
    - "58371:6969"
@@ -103,19 +103,19 @@ services:
       - "adatbazis"
 
  karbantarto:
-  build: karbantarto
+  build: docker/karbantarto
   container_name: karbantarto
   profiles:
    - donotstart
 
  minecraft-server:
-  build: minecraft-server
+  build: docker/minecraft-server
   container_name: minecraft-server
   ports:
    - "25565:25565"
    - "25566:25566"
   volumes:
-   - "./minecraft-server/adatok:/minecraft"
+   - "./docker/minecraft-server/adatok:/minecraft"
   networks:
    container_halozat:
     ipv4_address: 172.20.128.17
@@ -123,7 +123,7 @@ services:
    - donotstart
 
  navidrome:
-  build: navidrome
+  build: docker/navidrome
   container_name: navidrome
   ports:
    - "4533:4533"
@@ -132,19 +132,19 @@ services:
    - ND_SCANSCHEDULE=24h
    - ND_SESSIONTIMEOUT=168h
   volumes:
-   - "./navidrome/adatok:/data"
-   - "./navidrome/fajlok:/music:ro"
+   - "./docker/navidrome/adatok:/data"
+   - "./docker/navidrome/fajlok:/music:ro"
   profiles:
    - donotstart
 
  vaultwarden:
-  build: vaultwarden
+  build: docker/vaultwarden
   container_name: vaultwarden
   ports:
    - "8080:80"
   restart: unless-stopped
   volumes:
-   - "./vaultwarden/adatok:/data"
+   - "./docker/vaultwarden/adatok:/data"
    - "./priv:/priv"
   environment:
    - ROCKET_TLS={certs="/priv/fullchain.pem",key="/priv/privkey.pem"}
@@ -153,7 +153,7 @@ services:
 
  pihole:
   container_name: pihole
-  build: pihole
+  build: docker/pihole
   ports:
     - "53:53/tcp"
     - "53:53/udp"
@@ -166,9 +166,30 @@ services:
   cap_add:
     - NET_ADMIN
   restart: unless-stopped
+  profiles:
+   - donotstart
   networks:
    container_halozat:
     ipv4_address: 172.20.128.18
+
+ vpn:
+  build: docker/vpn
+  container_name: vpn
+  ports:
+   - "500:500/udp"
+   - "4500:4500/udp"
+  cap_add:
+   - NET_ADMIN
+  privileged: true
+  restart: unless-stopped
+  volumes:
+   - "./docker/vpn/adatok:/etc/ipsec.d"
+   - "/lib/modules:/lib/modules:ro"
+  profiles:
+   - donotstart
+  networks:
+   container_halozat:
+    ipv4_address: 172.20.128.19
 
 networks:
   container_halozat:

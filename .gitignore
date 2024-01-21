@@ -15,9 +15,9 @@
 
 # Docker container adatok
 
-/adatbazis/adatok/*
-/teamspeak/adatbazis/adatok/*
-/teamspeak/szerver/adatok/*
+/docker/adatbazis/adatok/*
+/docker/teamspeak/adatbazis/adatok/*
+/docker/teamspeak/szerver/adatok/*
 
 # Csomagolt Javascript fájlok
 
@@ -62,12 +62,15 @@ konfiguracio.toml
 privat_konfiguracio.toml
 
 # Minecraft server
-/minecraft-server/adatok/*
-/minecraft-server/plugins/*
+/docker/minecraft-server/adatok/*
+/docker/minecraft-server/plugins/*
 
 # Navidrome
-/navidrome/adatok/*
-/navidrome/fajlok/*
+/docker/navidrome/adatok/*
+/docker/navidrome/fajlok/*
 
 # Vaultwarden
-/vaultwarden/adatok/*
+/docker/vaultwarden/adatok/*
+
+# VPN
+/docker/vpn/adatok/*
