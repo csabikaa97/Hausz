@@ -45,6 +45,12 @@ spec:
         - "-c"
         - |
           set -ex
+          cd /var/log
+          mkdir mysql
+          chmod 777 mysql
+          cd mysql
+          touch mysql-bin.log
+          chmod 777 mysql-bin.log
           if [ -n "$(ls -A "/var/lib/mysql")" ]; then
               echo "Mar van inicializalva adatbazis."
           else
@@ -59,7 +65,7 @@ spec:
           mountPath: /var/lib/mysql
       containers:
         - name: adatbazis-container
-          image: 'hausz-adatbazis'
+          image: 'hausz_adatbazis'
           imagePullPolicy: Never
           command:
             - mysqld

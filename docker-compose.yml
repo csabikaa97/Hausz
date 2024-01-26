@@ -15,16 +15,16 @@ services:
    container_halozat:
     ipv4_address: 172.20.128.10
 
- adatbazis-slave:
-  build: docker/docker/adatbazis-slave
-  container_name: adatbazis-slave
+ adatbazis_slave:
+  build: docker/adatbazis-slave
+  container_name: adatbazis_slave
   environment:
    - MYSQL_ROOT_PASSWORD=root
   profiles:
    - donotstart
     
  kiadas:
-  build: docker/forras/kiadas
+  build: forras/kiadas
   container_name: kiadas
   volumes:
    - "./:/var/www"
@@ -32,7 +32,7 @@ services:
    - donotstart
 
  csomagolas:
-  build: docker/forras/csomagolas
+  build: forras/csomagolas
   container_name: csomagolas
   volumes:
    - "./:/var/www"

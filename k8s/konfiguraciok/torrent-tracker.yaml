@@ -21,15 +21,12 @@ spec:
       terminationGracePeriodSeconds: 1
       containers:
         - name: torrent-tracker-container
-          image: hausz-torrent-tracker
+          image: hausz_torrent-tracker
           imagePullPolicy: Never
           resources:
             requests:
               memory: 10Mi
               cpu: 10m
-            limits:
-              memory: 250Mi
-              cpu: 400m
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

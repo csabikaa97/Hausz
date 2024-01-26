@@ -50,7 +50,7 @@ spec:
             claimName: adatok-adatbazis-slave-statefulset-2
       containers:
         - name: karbantarto-container
-          image: 'hausz-karbantarto'
+          image: 'hausz_karbantarto'
           imagePullPolicy: Never
           volumeMounts:
             - name: projektkonyvtar-volume
@@ -77,9 +77,6 @@ spec:
             requests:
               memory: 250Mi
               cpu: 250m
-            limits:
-              memory: 2Gi
-              cpu: 3000m
           command:
             - sleep
             - "999999"

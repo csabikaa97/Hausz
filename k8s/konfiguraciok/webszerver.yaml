@@ -38,7 +38,7 @@ spec:
             claimName: projektkonyvtar-pvc
       containers:
         - name: webszerver-container
-          image: 'hausz-webszerver:latest'
+          image: 'hausz_webszerver:latest'
           imagePullPolicy: Never
           volumeMounts:
             - name: projektkonyvtar-volume
@@ -48,9 +48,6 @@ spec:
             requests:
               memory: 100Mi
               cpu: 100m
-            limits:
-              memory: 250Mi
-              cpu: 250m
           securityContext:
             privileged: true
       affinity:

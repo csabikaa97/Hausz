@@ -38,7 +38,7 @@ spec:
             claimName: minecraft-server-pvc
       containers:
         - name: minecraft-server-container
-          image: 'hausz-minecraft-server:latest'
+          image: 'hausz_minecraft-server:latest'
           imagePullPolicy: Never
           volumeMounts:
             - name: minecraft-server-volume

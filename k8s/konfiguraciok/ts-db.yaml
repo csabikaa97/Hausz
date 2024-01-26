@@ -38,7 +38,7 @@ spec:
             claimName: ts-db-pvc
       containers:
         - name: ts-db-container
-          image: 'hausz-teamspeak_adatbazis'
+          image: 'hausz_teamspeak_adatbazis'
           imagePullPolicy: Never
           command:
             - mysqld

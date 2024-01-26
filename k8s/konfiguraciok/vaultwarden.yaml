@@ -41,7 +41,7 @@ spec:
             claimName: projektkonyvtar-pvc
       containers:
         - name: vaultwarden-container
-          image: 'hausz-vaultwarden:latest'
+          image: 'hausz_vaultwarden:latest'
           imagePullPolicy: Never
           volumeMounts:
             - name: projektkonyvtar-volume

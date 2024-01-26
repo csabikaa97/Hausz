@@ -47,7 +47,7 @@ spec:
     spec:
       initContainers:
       - name: adatbazis-id-inicializalas
-        image: 'hausz-adatbazis-slave:latest'
+        image: 'hausz_adatbazis_slave:latest'
         imagePullPolicy: Never
         command:
         - bash
@@ -62,7 +62,7 @@ spec:
         - name: konfigok
           mountPath: /mnt/conf.d
       - name: adatbazis-masolas
-        image: 'hausz-adatbazis-slave:latest'
+        image: 'hausz_adatbazis_slave:latest'
         imagePullPolicy: Never
         command:
         - bash
@@ -89,7 +89,7 @@ spec:
           mountPath: /etc/mysql/conf.d
       containers:
       - name: adatbazis-slave
-        image: 'hausz-adatbazis-slave:latest'
+        image: 'hausz_adatbazis_slave:latest'
         imagePullPolicy: Never
         env:
         - name: MYSQL_ALLOW_EMPTY_PASSWORD

@@ -22,7 +22,7 @@ spec:
       terminationGracePeriodSeconds: 1
       containers:
         - name: webszerver-container
-          image: 'hausz-pihole:latest'
+          image: 'hausz_pihole:latest'
           imagePullPolicy: Never
           ports:
             - name: dns-port-udp
@@ -55,11 +55,11 @@ spec:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
-              matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                    - pihole
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - pihole
               topologyKey: kubernetes.io/hostname
 ---
 apiVersion: v1

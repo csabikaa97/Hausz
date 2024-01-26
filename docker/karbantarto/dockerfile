@@ -1,3 +1,3 @@
 FROM ubuntu:22.04
 RUN apt update
-RUN apt install git docker.io docker-compose mysql -y
+RUN apt install git docker.io docker-compose mysql-client -y

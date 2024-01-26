@@ -96,6 +96,10 @@ Alapból a mysql docker image nem inicalizálja az adatbázist, ezért azt manu�
     - sleep
     - "360000"
     ```
+
+    VAGY
+
+    ```kubectl run hausz-adatbazis --image=hausz_adatbazis:latest --image-pull-policy=Never --restart=Never -- /bin/sh -c "sleep 360000"```
 2. Ezután a módosított deploymentet újra kell indítani
 3. Be kell lépni a következő paranccsal a mysql konténerbe:
     ```bash
@@ -114,15 +118,56 @@ Alapból a mysql docker image nem inicalizálja az adatbázist, ezért azt manu�
 
 # 7. container image készítés és másolás docker-compose környezetből
 
+- docker-compose build
+```bash
+# build the basic images
+docker-compose build
+
+# build the images of non autostart containers
+docker-compose build adatbazis-slave ; docker-compose build csomagolas ; docker-compose build karbantarto ; docker-compose build minecraft-server ; docker-compose build navidrome ; docker-compose build vaultwarden ; docker-compose build pihole ; docker-compose build vpn
+```
+
 - docker save
 ```bash
 docker save --output hausz_<container_nev>.tar hausz_<container_nev>:latest
 ```
+
+```bash
+docker save --output adatbazis.tar hausz_adatbazis:latest
+docker save --output adatbazis-slave.tar hausz_adatbazis_slave:latest
+docker save --output kiadas.tar hausz_kiadas:latest
+docker save --output csomagolas.tar hausz_csomagolas:latest
+docker save --output teamspeak_adatbazis.tar hausz_teamspeak_adatbazis:latest
+docker save --output teamspeak.tar hausz_teamspeak:latest
+docker save --output torrent-tracker.tar hausz_torrent-tracker:latest
+docker save --output webszerver.tar hausz_webszerver:latest
+docker save --output karbantarto.tar hausz_karbantarto:latest
+docker save --output minecraft-server.tar hausz_minecraft-server:latest
+docker save --output navidrome.tar hausz_navidrome:latest
+docker save --output vaultwarden.tar hausz_vaultwarden:latest
+docker save --output pihole.tar hausz_pihole:latest
+docker save --output vpn.tar hausz_vpn:latest
+```
 - Import image in k3s
 ```bash
 k3s ctr images import ./hausz_<container_nev>.tar
+```
 
-k3s ctr image import hausz-minecraft-server.tar ; k3s ctr image import hausz-navidrome.tar ; k3s ctr image import hausz-teamspeak.tar ; k3s ctr image import hausz-teamspeak_adatbazis.tar ; k3s ctr image import hausz-torrent-tracker.tar ; k3s ctr image import hausz-vaultwarden.tar ; k3s ctr image import hausz-webszerver.tar ; k3s ctr image import hausz-adatbazis.tar ; k3s ctr image import hausz-karbantarto.tar
+```bash
+k3s ctr images import adatbazis.tar
+k3s ctr images import adatbazis-slave.tar
+k3s ctr images import kiadas.tar
+k3s ctr images import csomagolas.tar
+k3s ctr images import teamspeak_adatbazis.tar
+k3s ctr images import teamspeak.tar
+k3s ctr images import torrent-tracker.tar
+k3s ctr images import webszerver.tar
+k3s ctr images import karbantarto.tar
+k3s ctr images import minecraft-server.tar
+k3s ctr images import navidrome.tar
+k3s ctr images import vaultwarden.tar
+k3s ctr images import pihole.tar
+k3s ctr images import vpn.tar
 ```
 
 # 8. Traefik TLS tanúsítványok megadása
@@ -136,7 +181,7 @@ kubectl -n kube-system create secret tls traefik-ssl-tanusitvany --key=privkey.p
 
 2. El kell készíteni a Traefik TLSStore CRD-t a clusteren belül
 ```bash
-kubectl apply -f /k8s/egyszeri_konfiguraciok/ssl-tanusitvany-secret.yaml
+kubectl apply -f k8s/egyszeri_konfiguraciok/ssl-tanusitvany-secret.yaml
 ```
 
 [ssl-tanusitvany-secret.yaml](/k8s/egyszeri_konfiguraciok/ssl-tanusitvany-secret.yaml)
@@ -147,4 +192,11 @@ KUBECONFIG definíció Helm használatához
 
 ```bash
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+```
+
+# 9. Hausz namespace hozzáadása és alkalmazások indítása
+
+```bash
+kubectl create namespace hausz
+kubectl create -f k8s/konfiguraciok/
 ```
