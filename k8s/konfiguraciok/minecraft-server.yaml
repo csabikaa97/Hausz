@@ -92,7 +92,7 @@ metadata:
     name: minecraft-dynmap-ingress
 spec:
   rules:
-  - host: "dynmap.kubernetes.hausz.stream"
+  - host: "dynmap.hausz.stream"
     http:
       paths:
       - pathType: Prefix

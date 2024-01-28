@@ -36,9 +36,30 @@ spec:
         - name: ts-db-volume
           persistentVolumeClaim:
             claimName: ts-db-pvc
+      initContainers:
+      - name: adatbazis-inicializalas
+        image: 'hausz_teamspeak_adatbazis:latest'
+        imagePullPolicy: Never
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          if [ -n "$(ls -A "/var/lib/mysql")" ]; then
+              echo "Mar van inicializalva adatbazis."
+          else
+              mysqld --initialize-insecure
+              mysqld &
+              sleep 10
+              echo "Varakozas a mysqld folyamat indulasara (10mp)"
+              mysql -u root < /telepites/telepites.sql
+          fi
+        volumeMounts:
+        - name: ts-db-volume
+          mountPath: /var/lib/mysql
       containers:
         - name: ts-db-container
-          image: 'hausz_teamspeak_adatbazis'
+          image: 'hausz_teamspeak_adatbazis:latest'
           imagePullPolicy: Never
           command:
             - mysqld

@@ -82,7 +82,7 @@ metadata:
     name: vaultwarden-ingress
 spec:
   rules:
-  - host: "vaultwarden.kubernetes.hausz.stream"
+  - host: "vaultwarden.hausz.stream"
     http:
       paths:
       - pathType: Prefix

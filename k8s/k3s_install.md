@@ -188,7 +188,7 @@ kubectl apply -f k8s/egyszeri_konfiguraciok/ssl-tanusitvany-secret.yaml
 
 # Egyebek
 
-KUBECONFIG definíció Helm használatához
+KUBECONFIG definíció Helm szoftverhez és saját használatához
 
 ```bash
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml

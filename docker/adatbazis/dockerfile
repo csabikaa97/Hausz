@@ -2,6 +2,8 @@ FROM mysql:8.0.30
 RUN mkdir /telepites
 WORKDIR /telepites
 COPY telepites.sh *.sql /telepites/
+RUN cat telepites.sql > osszes.sql
+RUN cat hausz_*.sql >> osszes.sql
 RUN rm /etc/my.cnf
 COPY my.cnf /etc/my.cnf
 RUN sed -i 's/\r$//' /telepites/telepites.sh

@@ -69,19 +69,19 @@ spec:
         - "-c"
         - |
           set -ex
-          if [ -n "$(ls -A "/var/lib/mysql")" ]; then
-              echo "Mar van inicializalva adatbazis."
-          else
-              mysqld --initialize-insecure
-              mysqld &
-              mysqldump --password="root" --source-data --all-databases -h 10.43.1.2 -p > masolat.sql
-              echo "Varakozas a mysqld folyamat indulasara (10mp)"
-              sleep 10
-              echo "Varakozas vege."
-              mysql -u root -e "CHANGE MASTER TO MASTER_HOST='10.43.1.2', MASTER_USER='replikalo', MASTER_PASSWORD='replikalo';"
-              mysql -u root < masolat.sql
-              mysql -u root -e "START SLAVE;"
-          fi
+          rm -rf /var/lib/mysql/*
+          mysqld --initialize-insecure
+          mysqld &
+          cd /
+          mkdir telepites
+          cd /telepites/
+          mysqldump --password="root" --source-data --all-databases -h 10.43.1.2 -p > masolat.sql
+          echo "Varakozas a mysqld folyamat indulasara (10mp)"
+          sleep 10
+          echo "Varakozas vege."
+          mysql -u root -e "CHANGE MASTER TO MASTER_HOST='10.43.1.2', MASTER_USER='replikalo', MASTER_PASSWORD='replikalo';"
+          mysql -u root < masolat.sql
+          mysql -u root -e "START SLAVE;"
         volumeMounts:
         - name: adatok
           mountPath: /var/lib/mysql

@@ -14,11 +14,9 @@ cd $FOMAPPA
 echo "[adatbazis SQL] mentés scriptek készítése hausz_ adatbázisokról"
 docker-compose exec adatbazis sh -c '/usr/bin/mysqldump -u root --password="root" hausz_ts > /mentes/hausz_ts.sql' >/dev/null
 docker-compose exec adatbazis sh -c '/usr/bin/mysqldump -u root --password="root" hausz_megoszto > /mentes/hausz_megoszto.sql' >/dev/null
-docker-compose exec adatbazis sh -c '/usr/bin/mysqldump -u root --password="root" hausz_felhasznalok > /mentes/hausz_felhasznalok.sql' >/dev/null
 docker-compose exec adatbazis sh -c '/usr/bin/mysqldump -u root --password="root" hausz_log > /mentes/hausz_log.sql' >/dev/null
 mv admin/mentes/hausz_log.sql admin/mentes/$DATUM/hausz_log.sql
 mv admin/mentes/hausz_megoszto.sql admin/mentes/$DATUM/hausz_megoszto.sql
-mv admin/mentes/hausz_felhasznalok.sql admin/mentes/$DATUM/hausz_felhasznalok.sql
 mv admin/mentes/hausz_ts.sql admin/mentes/$DATUM/hausz_ts.sql
 echo "[adatbazis SQL] kész"
 

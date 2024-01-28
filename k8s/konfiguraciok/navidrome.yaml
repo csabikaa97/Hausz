@@ -81,7 +81,7 @@ metadata:
     name: navidrome-ingress
 spec:
   rules:
-  - host: "navidrome.kubernetes.hausz.stream"
+  - host: "navidrome.hausz.stream"
     http:
       paths:
       - pathType: Prefix

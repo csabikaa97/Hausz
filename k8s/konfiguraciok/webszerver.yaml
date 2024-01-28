@@ -90,7 +90,7 @@ metadata:
     name: webszerver-ingress
 spec:
   rules:
-  - host: "kubernetes.hausz.stream"
+  - host: "hausz.stream"
     http:
       paths:
       - pathType: Prefix

@@ -55,8 +55,6 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "kezelo/meghivo.js"                     => "/kezelo/meghivo.js",
         "admin/admin.html"                      => "/admin/admin.html",
         "admin/admin.js"                        => "/admin/admin.js",
-        "ruhaszamlalo"                          => "ruhaszamlalo/ruhaszamlalo.html",
-        "ruhaszamlalo/ruhaszamlalo.js"          => "ruhaszamlalo/ruhaszamlalo.js",
         // "" => "",
         _ => {
             "404.html"

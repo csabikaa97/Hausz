@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS hausz_ts;
+CREATE DATABASE IF NOT EXISTS hausz_log;
+CREATE DATABASE IF NOT EXISTS hausz_megoszto;
+CREATE USER IF NOT EXISTS 'replikalo'@'%' IDENTIFIED WITH mysql_native_password BY 'replikalo';
+GRANT REPLICATION SLAVE ON *.* TO 'replikalo'@'%';
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+FLUSH PRIVILEGES;

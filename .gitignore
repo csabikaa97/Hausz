@@ -48,10 +48,6 @@
 
 /public/*.pem
 
-# Privát 
-/forras/ruhaszamlalo/*.*
-/public/ruhaszamlalo/*.*
-
 # Rust webszerver fájlok
 /webszerver/target/*
 /webszerver/registry/*
@@ -74,3 +70,6 @@ privat_konfiguracio.toml
 
 # VPN
 /docker/vpn/adatok/*
+
+# Kubeconfig
+kubeconfig.yaml

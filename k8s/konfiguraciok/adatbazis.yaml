@@ -11,6 +11,19 @@ spec:
       storage: 5Gi
   storageClassName: rook-cephfs
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adatbazis-replika-pvc
+  namespace: hausz
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-cephfs
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,42 +49,52 @@ spec:
         - name: adatbazis-volume
           persistentVolumeClaim:
             claimName: adatbazis-pvc
+        - name: adatbazis-replika-volume
+          persistentVolumeClaim:
+            claimName: adatbazis-replika-pvc
       initContainers:
       - name: adatbazis-inicializalas
-        image: 'hausz-adatbazis:latest'
+        image: 'hausz_adatbazis:latest'
         imagePullPolicy: Never
         command:
         - bash
         - "-c"
         - |
           set -ex
-          cd /var/log
-          mkdir mysql
-          chmod 777 mysql
-          cd mysql
-          touch mysql-bin.log
-          chmod 777 mysql-bin.log
           if [ -n "$(ls -A "/var/lib/mysql")" ]; then
               echo "Mar van inicializalva adatbazis."
           else
+              cd /var/lib/
+              chmod 777 adatbazis-replika
+              cd adatbazis-replika
+              touch mysql-bin.log
+              chmod 777 mysql-bin.log
               MYSQL_ROOT_PASSWORD=root
-              mysqld --initialize-insecure
-              echo [mysqld] > /mnt/conf.d/server-id.cnf
               mkdir -p /mnt/conf.d
+              echo [mysqld] > /mnt/conf.d/server-id.cnf
               echo 1 >> /mnt/conf.d/server-id.cnf
+              mysqld --initialize-insecure
+              mysqld &
+              sleep 10
+              echo "Varakozas a mysqld folyamat indulasara (10mp)"
+              mysql -u root --password="root" < /telepites/osszes.sql
           fi
         volumeMounts:
         - name: adatbazis-volume
           mountPath: /var/lib/mysql
+        - name: adatbazis-replika-volume
+          mountPath: /var/lib/adatbazis-replika
       containers:
         - name: adatbazis-container
-          image: 'hausz_adatbazis'
+          image: 'hausz_adatbazis:latest'
           imagePullPolicy: Never
           command:
             - mysqld
           volumeMounts:
             - name: adatbazis-volume
               mountPath: /var/lib/mysql
+            - name: adatbazis-replika-volume
+              mountPath: /var/lib/adatbazis-replika
           securityContext:
             privileged: true
           resources:

@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: karbantarto-deployment
+  name: code-server-deployment
   namespace: hausz
+  labels:
+    app: code-server
 spec:
   selector:
     matchLabels:
@@ -13,10 +15,10 @@ spec:
   template:
     metadata:
       labels:
-        app: karbantarto
+        app: code-server
         octopusexport: OctopusExport
     spec:
-      terminationGracePeriodSeconds: 1
+      terminationGracePeriodSeconds: 30
       volumes:
         - name: projektkonyvtar-volume
           persistentVolumeClaim:
@@ -49,9 +51,14 @@ spec:
           persistentVolumeClaim:
             claimName: adatok-adatbazis-slave-statefulset-2
       containers:
-        - name: karbantarto-container
-          image: 'hausz_karbantarto:latest'
-          imagePullPolicy: Never
+        - name: code-server-container
+          image: 'linuxserver/code-server:4.20.1'
+          imagePullPolicy: Always
+          env:
+           - name: ND_SCANSCHEDULE
+             value: 24h
+           - name: ND_SESSIONTIMEOUT
+             value: 168h
           volumeMounts:
             - name: projektkonyvtar-volume
               mountPath: /hausz
@@ -75,10 +82,43 @@ spec:
               mountPath: /pvc-volumes/adatbazis-slave-2-pvc
           resources:
             requests:
-              memory: 250Mi
-              cpu: 250m
-          command:
-            - sleep
-            - "999999"
+              memory: 900Mi
+              cpu: 1000m
           securityContext:
             privileged: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: code-server-service
+  namespace: hausz
+spec:
+  selector:
+    app: code-server
+  type: LoadBalancer
+  loadBalancerIP: "192.168.0.70"
+  ports:
+  - name: code-server-port
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: code-server-ingress
+  namespace: hausz
+  labels:
+    name: code-server-ingress
+spec:
+  rules:
+  - host: "code-server.hausz.stream"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: code-server-service
+            port: 
+              number: 8443
