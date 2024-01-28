@@ -46,7 +46,7 @@ spec:
               subPath: ''
           resources:
             requests:
-              memory: 3Gi
+              memory: 8Gi
               cpu: 2000m
           securityContext:
             privileged: true
