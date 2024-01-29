@@ -18,6 +18,9 @@ spec:
     spec:
       terminationGracePeriodSeconds: 1
       volumes:
+        - name: vaultwarden-volume
+          persistentVolumeClaim:
+            claimName: vaultwarden-pvc
         - name: projektkonyvtar-volume
           persistentVolumeClaim:
             claimName: projektkonyvtar-pvc
@@ -53,6 +56,8 @@ spec:
           image: 'hausz_karbantarto:latest'
           imagePullPolicy: Never
           volumeMounts:
+            - name: vaultwarden-volume
+              mountPath: /vaultwarden
             - name: projektkonyvtar-volume
               mountPath: /hausz
             - name: adatbazis-volume
