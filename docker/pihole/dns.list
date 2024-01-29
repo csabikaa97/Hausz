@@ -1,8 +1,5 @@
-192.168.0.40 node1
-192.168.0.41 node2
-192.168.0.42 node3
-192.168.0.67 rook.hausz.local
-192.168.0.65 navidrome.hausz.local
-192.168.0.63 ts.hausz.local
-192.168.0.64 vaultwarden.hausz.local
-192.168.0.62 webszerver.hausz.local
+# DNS lista
+# Példa:
+# 127.0.0.1 localhost
+# 10.20.30.40 szerver1
+

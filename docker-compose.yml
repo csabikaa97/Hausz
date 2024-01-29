@@ -184,7 +184,6 @@ services:
   restart: unless-stopped
   volumes:
    - "./docker/vpn/adatok:/etc/ipsec.d"
-   - "/lib/modules:/lib/modules:ro"
   profiles:
    - donotstart
   networks:

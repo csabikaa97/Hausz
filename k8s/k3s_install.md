@@ -19,7 +19,7 @@ A sok argumentum azért van hogy gyorsabban reagáljon a kubernetes a node-ok le
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.26.10+k3s2 K3S_TOKEN=df5f3e05b3ee02575916cef5fa3565cd5edb0c002dad7a4820abc6c10c8cfd10 \
 INSTALL_K3S_EXEC="--disable=servicelb --kube-apiserver-arg default-not-ready-toleration-seconds=60 --kube-apiserver-arg default-unreachable-toleration-seconds=60 --kube-controller-arg node-monitor-period=10s --kube-controller-arg pod-eviction-timeout=20s --kube-controller-arg node-monitor-grace-period=30s --kubelet-arg node-status-update-frequency=3s" \
 sh -s - server \
-    --server https://192.168.0.43:6443
+    --server https://<első szerver IP címe>:6443
 ```
 
 # 3. Metallb load balancer telepítése

@@ -78,3 +78,4 @@ kubeconfig.yaml
 # Privát fájlok
 /forras/kiadas/privat_kiadasa.sh
 /forras/csomagolas/privat_csomagolasa.sh
+/docker/pihole/dns.list

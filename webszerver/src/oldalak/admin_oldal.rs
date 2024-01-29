@@ -360,7 +360,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
         let mut parancs = format!(r#"
             expect << EOF
             set timeout 2
-            spawn telnet 172.20.128.15 10011
+            spawn telnet {} 10011
             expect -re ".*command\."
             send "login serveradmin {}\\r"
             expect -re ".*msg=ok"
@@ -368,7 +368,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
             expect -re ".*msg=ok"
             send "use port=9987\\r"
             expect -re ".*msg=ok"
-        "#, crate::privát_konfig().webszerver.hausz_teamspeak_admin_jelszo);
+        "#, crate::konfig().webszerver.hausz_teamspeak_szerver_ip, crate::privát_konfig().webszerver.hausz_teamspeak_admin_jelszo);
 
         for jogosultság in igényelt_jogosultságok {
             parancs += format!("send \"servergroupaddclient sgid={} cldbid={}\\r\"\n", jogosultság.id, jóváhagyandó_igénylés.jelenlegi_fiok_kivalasztott).as_str();

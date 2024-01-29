@@ -18,6 +18,9 @@ spec:
     spec:
       terminationGracePeriodSeconds: 1
       volumes:
+        - name: vpn-volume
+          persistentVolumeClaim:
+            claimName: vpn-pvc
         - name: vaultwarden-volume
           persistentVolumeClaim:
             claimName: vaultwarden-pvc
@@ -56,6 +59,8 @@ spec:
           image: 'hausz_karbantarto:latest'
           imagePullPolicy: Never
           volumeMounts:
+            - name: vpn-volume
+              mountPath: /pvc-volumes/vpn-pvc
             - name: vaultwarden-volume
               mountPath: /vaultwarden
             - name: projektkonyvtar-volume
