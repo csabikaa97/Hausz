@@ -38,6 +38,7 @@
 # mentések
 
 /admin/mentes/*
+/admin/mentes_privat.sh
 /teamspeak/adatbazis/*.sql
 
 # VSCode beállítások
@@ -73,3 +74,7 @@ privat_konfiguracio.toml
 
 # Kubeconfig
 kubeconfig.yaml
+
+# Privát fájlok
+/forras/kiadas/privat_kiadasa.sh
+/forras/csomagolas/privat_csomagolasa.sh
