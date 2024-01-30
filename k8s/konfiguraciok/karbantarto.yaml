@@ -92,3 +92,21 @@ spec:
             - "999999"
           securityContext:
             privileged: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: karbantarto-loadbalancer
+  namespace: hausz
+  labels:
+    app: karbantarto
+spec:
+  ports:
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  selector:
+    app: karbantarto
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.72

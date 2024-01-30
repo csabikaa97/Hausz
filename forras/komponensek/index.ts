@@ -7,7 +7,8 @@ belepteto_rendszer_beallitas();
 
 var ujitasok_doboz = obj('ujitasok');
 var ujitasok = {
-    '2023.11.08': [
+    '2024.01.30': ["Alap: Az összes szolgáltatást sikerült kihejezni a régi fizetős Amazon szerverről saját szerverre, így mostmár több lehetőség van hosztolás szempontjából, a meglévő szolgáltatások pedig gyorsabban működnek."]
+    , '2023.11.08': [
         "Alap: A Webszerver újra lett írva Rust nyelven, és a régi kódokat kiváltotta egy új, sokkal modernebb, és biztonságosabb megoldás."
         , "Alap: A belépés új session-öket használ, aminek köszönhetően nem kell fél óránként belépni az oldalon."
         , "Megosztó: Az új Webszervernek köszönhetően egy újabb titkosítási megoldást sikerült bevezetni, amely 100%-ban a feltöltő számítógépen titkosítja, és oldja fel a fájlokat. A v2 verziójú titkosítás során a titkosítatlan fájl, és a hozzátartozó titkosítási kulcs sem kerül fel a szerverre."

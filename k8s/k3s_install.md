@@ -194,6 +194,21 @@ KUBECONFIG definíció Helm szoftverhez és saját használatához
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 ```
 
+Ubuntu - 53-as port felszabadítása [How to free up port 53 - linuxuprising.com](https://www.linuxuprising.com/2020/07/ubuntu-how-to-free-up-port-53-used-by.html)
+
+1. Meg kell nézni hogy a systemd-resolved szolgáltatás használja-e a 53-as portot
+
+```bash
+sudo lsof -i :53
+```
+2. Le kell tiltani a systemd-resolved szolgáltatást
+
+```bash
+sudo nano /etc/systemd/resolved.conf
+```
+
+3. Át kell írni azt a sort amiben a ```#DNSStubListener=yes``` szöveg található, és át kell írni erre: ```DNSStubListener=no```
+
 # 9. Hausz namespace hozzáadása és alkalmazások indítása
 
 ```bash
