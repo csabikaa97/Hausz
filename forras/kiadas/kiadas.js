@@ -22,8 +22,8 @@ function get_absolute_path_for_file(filename) {
         }
     }
 
-    console.log({osszes_fajl: osszes_ts_fajl});
-    throw new Error('Nem található a fájl: ' + filename);
+    console.log("[    ] " + {osszes_fajl: osszes_ts_fajl});
+    throw new Error('[HIBA] Nem található a fájl: ' + filename);
 }
 
 function checksum_szamitasa_fajlhoz(eleresi_ut) {
@@ -41,16 +41,16 @@ if(parameterek.length != 4) {
 
 var bemeneti = parameterek[2];
 var kimeneti = parameterek[3];
-console.log(bemeneti + '  ->  ' + kimeneti);
+console.log('[    ] ' + bemeneti + '  ->  ' + kimeneti);
 
 if( !(/\.js/.test(kimeneti)) ) {
-    console.log('\tCsak .js fájl lehet a kimenet');
+    console.log('[HIBA] \tCsak .js fájl lehet a kimenet');
     process.exit(1);
 }
 
 
 if( !(/\.ts$/.test(bemeneti)) ) {
-    console.log('\tCsak .ts fájl lehet a bemenet');
+    console.log('[HIBA] \tCsak .ts fájl lehet a bemenet');
     process.exit(1);
 }
 
@@ -78,13 +78,13 @@ try {
             if( /^\/\/\/ Checksum: /.test( referenciak[i+1] ) ) {
                 let mentett_checksum = referenciak[i+1].replace( /^\/\/\/ Checksum: (.*)/, '$1');
                 if( mentett_checksum != valos_checksum ) {
-                    console.log('\tNem egyezik a valós és a mentett checksum: ' + fajlnev);
+                    console.log('[INFO] \tNem egyezik a valós és a mentett checksum: ' + fajlnev);
                     kilephet = false;
                     break;
                 }
                 i = i + 1;
             } else {
-                console.log('\tNincs mentett checksum: ' + fajlnev);
+                console.log('[INFO] \tNincs mentett checksum: ' + fajlnev);
                 kilephet = false;
                 break;
             }
@@ -107,13 +107,13 @@ try {
     
 }
 
-console.log('\tCompileolás...');
+console.log('[    ] \tCompileolás...');
 let child = spawnSync("/usr/local/bin/tsc", [bemeneti, "-out", kimeneti], { encoding : 'utf8' });
 if( child.stdout.length > 0 ) {
     console.log(child.stdout);
 }
 if(child.status != 0) {
-    console.log("exit code: ", child.status);
+    console.log("[HIBA] kilépési kód: ", child.status);
     process.exit(1);
 }
 
@@ -139,4 +139,4 @@ referenciak.forEach(sor => {
 
 data = datum_es_checksum + data;
 fs.writeFileSync(kimeneti, data);
-console.log('\tKÉSZ');
+console.log('[KÉSZ] \tMinden fájl sikeresen kiadva');
