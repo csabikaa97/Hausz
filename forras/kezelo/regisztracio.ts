@@ -21,7 +21,7 @@ function regisztracio_inditasa(event) {
     post_parameterek.append("regisztracio", "igen");
     post_parameterek.append("regisztracio_username", obj('regisztracio_username').value);
     if( typeof crypto_konyvtar !== 'undefined' ) {
-        szinkron_keres("/kezelo/regisztracio.php?generate_salt", "", (uzenet) => {
+        szinkron_keres("/kezelo/regisztracio.🦀?generate_salt", "", (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 let salt = uzenet.valasz;
                 let jelszo_hash = crypto_konyvtar.hash_keszites(obj('regisztracio_password').value);
@@ -33,7 +33,7 @@ function regisztracio_inditasa(event) {
                 post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
                 post_parameterek.append("regisztracio_meghivo", obj('regisztracio_meghivo').value);
 
-                szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
+                szinkron_keres("/kezelo/regisztracio.🦀", post_parameterek, (uzenet) => {
                     if( uzenet.eredmeny == 'ok' ) {
                         obj('regisztracio_doboz').style.display = 'none';
                         obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';
@@ -52,7 +52,7 @@ function regisztracio_inditasa(event) {
         post_parameterek.append("regisztracio_email", obj('regisztracio_email').value);
         post_parameterek.append("regisztracio_meghivo", obj('regisztracio_meghivo').value);
         
-        szinkron_keres("/kezelo/regisztracio.php", post_parameterek, (uzenet) => {
+        szinkron_keres("/kezelo/regisztracio.🦀", post_parameterek, (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 obj('regisztracio_doboz').style.display = 'none';
                 obj('adatvedelmi_tajekoztato_doboz').style.display = 'none';

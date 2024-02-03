@@ -32,7 +32,7 @@ function belepteto_rendszer_frissult() {
 }
 
 function jatekosnev_valtoztatas_doboz_frissitese() {
-    szinkron_keres("/minecraft/minecraft.php?felhasznalonev_info", "", (uzenet) => {
+    szinkron_keres("/minecraft/minecraft.🦀?felhasznalonev_info", "", (uzenet) => {
         let felhasznalonev_doboz = document.getElementById("felhasznalonev_doboz");
         let buffer = `<p>A szerverhez történő csatlakozáshoz az ezen oldalon megadott játékosnévnek, és a játékban használt felhasználónévnek egyeznie kell.`;
         buffer += ` Ha nincsen eredeti Mojang vagy Microsoft fiókod, akkor ez a név tetszőleges, akármi lehet.`
@@ -70,7 +70,7 @@ function toggle_visibility(event, id) {
 }
 
 function jatekos_lista_frissitese() {
-    szinkron_keres("/minecraft/minecraft.php?jatekos_lista", "", (uzenet) => {
+    szinkron_keres("/minecraft/minecraft.🦀?jatekos_lista", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             let buffer = `<table><tr><th>Játékos</th><th></th><th>Utolsó belépés</th></tr>`;
             let jatekosok = uzenet.jatekosok;
@@ -139,7 +139,7 @@ function felhasznalonev_valtoztatas() {
 
     let post_parameterek = new FormData();
     post_parameterek.append('uj_felhasznalonev', uj_felhasznalonev);
-    szinkron_keres("/minecraft/minecraft.php?felhasznalonev_valtoztatas", post_parameterek, (uzenet) => {
+    szinkron_keres("/minecraft/minecraft.🦀?felhasznalonev_valtoztatas", post_parameterek, (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
             belepteto_rendszer_frissult();

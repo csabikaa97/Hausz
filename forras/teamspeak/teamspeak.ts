@@ -28,7 +28,7 @@ function belepteto_rendszer_frissult() {
 }
 
 function uj_token_igenylese() {
-    szinkron_keres("/teamspeak/teamspeak.php?uj_token_igenylese", "", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.🦀?uj_token_igenylese", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             token_informaciok_frissitese();
             uj_valasz_mutatasa(3000, "ok", uzenet.valasz);
@@ -39,7 +39,7 @@ function uj_token_igenylese() {
 }
 
 function felhasznalok_frissitese() {
-    szinkron_keres("/teamspeak/teamspeak.php?felhasznalok", "", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.🦀?felhasznalok", "", (uzenet) => {
         console.log(uzenet);
         if( uzenet.eredmeny == 'ok' ) {
             if( uzenet.felhasznalok == 0 ) {
@@ -60,7 +60,7 @@ function felhasznalok_frissitese() {
 }
 
 function token_informaciok_frissitese() {
-    szinkron_keres("/teamspeak/teamspeak.php?token_informacio", "", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.🦀?token_informacio", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             obj('van_token').style.display = 'block';
             obj('nincs_token').style.display = 'none';
@@ -84,7 +84,7 @@ function token_informaciok_frissitese() {
 }
 
 function szerver_statusz_frissitese() {
-    szinkron_keres("/teamspeak/teamspeak.php?szerver_statusz", "", (uzenet) => {
+    szinkron_keres("/teamspeak/teamspeak.🦀?szerver_statusz", "", (uzenet) => {
         if(uzenet.eredmeny != 'ok') {
             uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
             return;

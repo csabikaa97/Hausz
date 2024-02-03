@@ -3,7 +3,7 @@
 /// <reference path="../komponensek/topbar.ts" />
 
 function futtatas() {
-    szinkron_keres(`/admin/admin.php?parancs=${obj("parancs").value}`, "", (uzenet) => {
+    szinkron_keres(`/admin/admin.🦀?parancs=${obj("parancs").value}`, "", (uzenet) => {
         obj("parancssor").innerHTML += uzenet.valasz;
         obj("parancs").value = "";
     });
@@ -15,7 +15,7 @@ function futtatas_enter(event: KeyboardEvent) {
 
 function admin_statusz_csere(nev, id) {
     if( confirm(`Biztosan meg szeretnéd változtatni "${nev}" admin státuszát?`) ) {
-        szinkron_keres("/admin/admin.php?admin_csere&id=" + id, "", (uzenet) => {
+        szinkron_keres("/admin/admin.🦀?admin_csere&id=" + id, "", (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 fiokok_betoltese();
                 log_betoltese();
@@ -29,7 +29,7 @@ function admin_statusz_csere(nev, id) {
 
 function elutasitas(nev, id) {
     if( confirm(`Biztosan elutasítod "${nev}" regisztrációs kérelmét?`) ) {
-        szinkron_keres(`/admin/admin.php?elutasitas&id=${id}`, "", (uzenet) => {
+        szinkron_keres(`/admin/admin.🦀?elutasitas&id=${id}`, "", (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 aktivalando_fiokok_betoltese();
                 log_betoltese(); 
@@ -43,7 +43,7 @@ function elutasitas(nev, id) {
 
 function aktivalas(nev, id) {
     if( confirm(`Biztosan elfogadod "${nev}" regisztrációs kérelmét?`) ) {
-        szinkron_keres(`/admin/admin.php?aktivalas&id=${id}`, "", (uzenet) => {
+        szinkron_keres(`/admin/admin.🦀?aktivalas&id=${id}`, "", (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 aktivalando_fiokok_betoltese();
                 fiokok_betoltese();
@@ -58,7 +58,7 @@ function aktivalas(nev, id) {
 
 function torles(nev, id) {
     if( confirm(`Biztosan szeretnéd törölni a "${nev}" nevű fiókot?`) ) {
-        szinkron_keres("/admin/admin.php?torles&user_id=" + id, "", (uzenet) => {
+        szinkron_keres("/admin/admin.🦀?torles&user_id=" + id, "", (uzenet) => {
             if( uzenet.eredmeny == 'ok' ) {
                 fiokok_betoltese();
                 log_betoltese();
@@ -72,7 +72,7 @@ function torles(nev, id) {
 
 function aktivalando_fiokok_betoltese() {
     let buffer = '<h3>Aktiválandó fiókok</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">request_id</th><th class="cella">username</th><th class="cella">email</th><th class="cella"></th><th class="cella"></th></tr>';
-    szinkron_keres("/admin/admin.php?aktivalando_fiokok", "", (uzenet) => {
+    szinkron_keres("/admin/admin.🦀?aktivalando_fiokok", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uzenet.valasz.forEach(fiok => {
                 buffer += '<tr>';
@@ -98,7 +98,7 @@ function aktivalando_fiokok_betoltese() {
 
 function fiokok_betoltese() {
     let buffer = '<h3>Aktív fiókok</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">id</th><th class="cella">username</th><th class="cella">megjeleno_nev</th><th class="cella">email</th><th class="cella">Admin</th><th class="cella"></th><th class="cella"></th></tr>';
-    szinkron_keres("/admin/admin.php?fiokok", "", (uzenet) => {
+    szinkron_keres("/admin/admin.🦀?fiokok", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uzenet.valasz.forEach(fiok => {
                 buffer += '<tr>';
@@ -121,7 +121,7 @@ function fiokok_betoltese() {
 
 function log_betoltese() {
     let buffer = '<h3>Log</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">id</th><th class="cella">szolgaltatas</th><th class="cella">bejegyzes</th><th class="cella">komment</th><th class="cella">felhasznalo</th><th class="cella">datum</th></tr>';
-    szinkron_keres("/admin/admin.php?log", "", (uzenet) => {
+    szinkron_keres("/admin/admin.🦀?log", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uzenet.valasz.forEach(sor => {
                 buffer += '<tr>';
@@ -143,7 +143,7 @@ function log_betoltese() {
 
 function teamspeak_jogosultsag_igenylesek_betoltese() {
     let buffer = '<h3>Teamspeak jogosultság igénylések</h3><table class="szint-1 tablazat"><tbody><tr><th class="cella">id</th><th class="cella">felhasználó</th><th class="cella">igenyelt fiókok</th><th class="cella">igenyelt fiók idk</th><th class="cella">igenyelt időpont</th><th class="cella"></th><th class="cella"></th></tr>';
-    szinkron_keres("/admin/admin.php?teamspeak_jogosultsag_igenylesek", "", (uzenet) => {
+    szinkron_keres("/admin/admin.🦀?teamspeak_jogosultsag_igenylesek", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             if( uzenet.igenylesek_szama == 0 ) {
                 buffer += '<tr><td class="cella" colspan="7">Nincs igénylés</td></tr>';
@@ -169,7 +169,7 @@ function teamspeak_jogosultsag_igenylesek_betoltese() {
 }
 
 function teamspeak_jogosultsag_jovahagyas(id) {
-    szinkron_keres("/admin/admin.php?teamspeak_jogosultsag_jovahagyas&id="+id, "", (uzenet) => {
+    szinkron_keres("/admin/admin.🦀?teamspeak_jogosultsag_jovahagyas&id="+id, "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uj_valasz_mutatasa(5000, "siker", uzenet.valasz);
             teamspeak_jogosultsag_igenylesek_betoltese();
@@ -180,7 +180,7 @@ function teamspeak_jogosultsag_jovahagyas(id) {
 }
 
 function teamspeak_jogosultsag_elutasitas(id) {
-    szinkron_keres("/admin/admin.php?teamspeak_jogosultsag_elutasitas&id="+id, "", (uzenet) => {
+    szinkron_keres("/admin/admin.🦀?teamspeak_jogosultsag_elutasitas&id="+id, "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             uj_valasz_mutatasa(5000, "siker", uzenet.valasz);
             teamspeak_jogosultsag_igenylesek_betoltese();

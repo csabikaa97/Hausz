@@ -20,7 +20,7 @@ function belepesgomb(event) {
     post_parameterek_salt_keres.append('get_salt', 'yes');
     post_parameterek_salt_keres.append('username', obj('username').value);
 
-    szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_salt_keres, (uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.🦀", post_parameterek_salt_keres, (uzenet) => {
         if(uzenet.eredmeny == 'ok') {
             let salt = uzenet.salt;
             let post_parameterek_belepes = new FormData();
@@ -31,7 +31,7 @@ function belepesgomb(event) {
             let saltos_jelszo = crypto_konyvtar.hash_keszites(jelszo + salt);
             post_parameterek_belepes.append('sha256_password', saltos_jelszo);
 
-            szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
+            szinkron_keres("/include/belepteto_rendszer.🦀", post_parameterek_belepes, (uzenet) => {
                 if(uzenet.eredmeny == 'ok') {
                     if (typeof belepes_fuggveny === 'function') {   belepes_fuggveny(); }
                     uj_valasz_mutatasa(3000, "", "Sikeres belépés");
@@ -45,7 +45,7 @@ function belepesgomb(event) {
             post_parameterek_belepes.append('login', 'yes');
             post_parameterek_belepes.append('username', obj('username').value);
             post_parameterek_belepes.append('password', obj('current-password').value);
-            szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_belepes, (uzenet) => {
+            szinkron_keres("/include/belepteto_rendszer.🦀", post_parameterek_belepes, (uzenet) => {
                 if(uzenet.eredmeny == 'ok') {
                     if (typeof belepes_fuggveny === 'function') {   belepes_fuggveny(); }
                     uj_valasz_mutatasa(3000, "", "Sikeres belépés");
@@ -61,7 +61,7 @@ function belepesgomb(event) {
  
 function kilepesgomb(event) {
     event.preventDefault();
-    szinkron_keres("/include/belepteto_rendszer.php?logout=igen", "", (uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.🦀?logout=igen", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             if (typeof kilepes_fuggveny === 'function') {   kilepes_fuggveny(); }
             session_username = "";
@@ -78,7 +78,7 @@ function kilepesgomb(event) {
 }
 
 function belepteto_rendszer_frissites() {
-    szinkron_keres("/include/belepteto_rendszer.php?statusz=1", "", (uzenet) => {
+    szinkron_keres("/include/belepteto_rendszer.🦀?statusz=1", "", (uzenet) => {
         let varakozas = setInterval(() => {
             if( obj('felhasznalo_doboz') != null ) {
                 if( uzenet.eredmeny == 'ok' ) {

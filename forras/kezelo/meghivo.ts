@@ -14,7 +14,7 @@ function belepteto_rendszer_frissult() {
             let elem = hide_elems[i];
             elem.classList.add("nodisplay");
         }
-        szinkron_keres("/kezelo/meghivo.php?meghivo_adatok", "", (uzenet) => {
+        szinkron_keres("/kezelo/meghivo.🦀?meghivo_adatok", "", (uzenet) => {
             let meghivo_adatok = document.getElementById("meghivo_adatok");
             if( uzenet.eredmeny == 'ok' ) {
                 let meghivo = uzenet.meghivok[0];
@@ -41,7 +41,7 @@ function belepteto_rendszer_frissult() {
 }
 
 function uj_meghivo() {
-    szinkron_keres("/kezelo/meghivo.php?uj_meghivo", "", (uzenet) => {
+    szinkron_keres("/kezelo/meghivo.🦀?uj_meghivo", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             location.reload();
         } else {

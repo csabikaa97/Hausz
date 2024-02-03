@@ -33,7 +33,7 @@ function jelszo_valtoztatasa(event) {
         }
     }
 
-    szinkron_keres("/kezelo/regisztracio.php?generate_salt", "", (uzenet) => {
+    szinkron_keres("/kezelo/regisztracio.🦀?generate_salt", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             let uj_jelszo_salt = uzenet.valasz;
             let post_parameterek = new FormData();
@@ -51,7 +51,7 @@ function jelszo_valtoztatasa(event) {
             let post_parameterek_salt_keres = new FormData();
             post_parameterek_salt_keres.append('get_salt', 'yes');
             
-            szinkron_keres("/include/belepteto_rendszer.php", post_parameterek_salt_keres, (uzenet) => {
+            szinkron_keres("/include/belepteto_rendszer.🦀", post_parameterek_salt_keres, (uzenet) => {
                 if(uzenet.eredmeny == 'ok') {
                     let jelenlegi_salt = uzenet.salt;
 
@@ -66,7 +66,7 @@ function jelszo_valtoztatasa(event) {
                 post_parameterek.append('uj_jelszo', obj('uj_jelszo').value);
                 post_parameterek.append('uj_jelszo_megerosites', obj('uj_jelszo_megerosites').value);
 
-                szinkron_keres("/kezelo/jelszo_valtoztatas.php", post_parameterek, (uzenet) => {
+                szinkron_keres("/kezelo/jelszo_valtoztatas.🦀", post_parameterek, (uzenet) => {
                     if( uzenet.eredmeny == 'ok' ) {
                         obj('jelszo_valtoztatas_doboz').style.display = 'none';
                         obj('hibaNemVagyBelepveDoboz').style.display = 'none';

@@ -14,7 +14,7 @@ function belepteto_rendszer_frissult() {
 }
 
 function fiok_lista_frissitese() {
-    szinkron_keres("/teamspeak/fiok_varazslo/fiok_varazslo.php?fiok_lista_lekerese", "", (uzenet) => {
+    szinkron_keres("/teamspeak/fiok_varazslo/fiok_varazslo.🦀?fiok_lista_lekerese", "", (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             obj('fiok_lista_toltes_animacio').style.display = 'none';
             obj('interaktiv_resz').style.display = 'block';
@@ -109,7 +109,7 @@ function igenyles() {
     post_data.append('fiok_nevek', fiok_nevek);
     post_data.append('jelenlegi_fiok_kivalasztott', jelenlegi_fiok_kivalasztott);
 
-    szinkron_keres("/teamspeak/fiok_varazslo/fiok_varazslo.php?igenyles", post_data, (uzenet) => {
+    szinkron_keres("/teamspeak/fiok_varazslo/fiok_varazslo.🦀?igenyles", post_data, (uzenet) => {
         if( uzenet.eredmeny == 'ok' ) {
             obj('varazslo').style.display = 'none';
             obj('sikeres_igenyles').style.display = 'block';
