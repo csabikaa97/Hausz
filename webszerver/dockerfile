@@ -20,7 +20,7 @@ COPY --from=cacher /webszerver/target target
 COPY . .
 RUN cargo build --release --bin webszerver
 
-FROM ubuntu:22.04 as runtime
+FROM --platform=amd64 ubuntu:22.04 as runtime
 WORKDIR /webszerver
 RUN echo "deb http://security.ubuntu.com/ubuntu focal-security main" >> /etc/apt/sources.list
 RUN apt update 

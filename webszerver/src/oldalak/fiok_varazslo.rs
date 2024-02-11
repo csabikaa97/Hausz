@@ -42,11 +42,11 @@ pub async fn teamspeak_fiók_varázsló_oldal(post: Vec<(String, String)>, get: 
     }
     if isset("igenyles", get.clone()) {
         match általános_query_futtatás(
-            format!("INSERT INTO hausz_ts.jogosultsag_igenylesek (hausz_felhasznalo_id, igenyles_datuma, igenyelt_fiokok, igenyelt_fiok_idk, jelenlegi_fiok_kivalasztott) VALUES ({}, now(6), '{}', '{}', '{}')"
+            format!("INSERT INTO hausz_ts.jogosultsag_igenylesek (hausz_felhasznalo_id, igenyles_datuma, igenyelt_fiokok, igenyelt_fiok_idk, jelenlegi_fiok_kivalasztott) VALUES ({}, now(6), '{}', '{}', {})"
                 , session.user_id
-                , list_key("fiok_nevek", get.clone())
-                , list_key("fiok_idk", get.clone())
-                , list_key("jelenlegi_fiok_kivalasztott", get.clone())
+                , list_key("fiok_nevek", post.clone())
+                , list_key("fiok_idk", post.clone())
+                , list_key("jelenlegi_fiok_kivalasztott", post.clone())
         )) {
             Ok(_) => {},
             Err(err) => {

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <title>Profil beállítások - Hausz</title>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" type="text/css" href="/index/alapok.css" />
+    <link rel="shortcut icon" type="image/png" href="/index/favicon.png" />
+    <meta name="color-scheme" content="dark light">
+</head>
+
+<body>
+    <script src="/beallitasok/beallitasok.js"></script>
+
+    <h1 class="kozepre-szoveg">Profil beállítások</h1>
+
+    <button class="gomb szint-2 kerekites-10" onclick="jelszo_valtoztatas_dialog_megnyitasa()">Jelszó változtatás</button>
+    <button class="gomb szint-2 kerekites-10" onclick="meghivo_dialog_megnyitasa()">Meghívó készítése</button>
+    <button class="gomb szint-2 kerekites-10" onclick="fiok_varazslo_dialog_megnyitasa()">TeamSpeak jogosultság varázsló</button>
+    
+    <dialog id="jelszo_valtoztatas_dialog">
+        <h1 class="kozepre-szoveg">Hausz jelszó változtatás</h1>
+        
+        <div class="kozepre fit-content" id="jelszo_valtoztatas_doboz">
+            <p>Add meg az adataid a jelszó megváltoztatásához</p>
+            <div class='register'>
+                <form id='password_reset' onsubmit="jelszo_valtoztatasa(event)">
+                    <input class="gomb szint-1 kerekites-10" autocomplete='current-password' id='jelenlegi_jelszo' type='password' name='current-password' placeholder='Jelenlegi jelszó'><br>
+                    <input oninput="jelszoErossegFrissitesUtemezese()" class="gomb szint-1 kerekites-10" autocomplete='new-password' id='uj_jelszo' type='password' name='new-password' placeholder='Új jelszó'><br>
+                    <input oninput="jelszoErossegFrissitesUtemezese()" class="gomb szint-1 kerekites-10" autocomplete='new-password-confirm' id='uj_jelszo_megerosites' type='password' name='new-password-confirm' placeholder='Új jelszó megerősítése'><br>
+                    <p>Javasolt irányelvek az új jelszóhoz:</p>
+                    <div id="jelszoErossegTippek">⚫ Kis betű<br>⚫ Nagy betű<br>⚫ Szám<br>⚫ Különleges karakter<br>⚫ Legalább 10 karakter hosszú<br>⚫ Új jelszavak egyeznek<br></div>
+                    <br><button class="gomb szint-2 kerekites-10" type="submit">Jelszó megváltoztatása</button>
+                </form>
+            </div>
+        </div>
+        <div class="nodisplay kozepre fit-content" id="hibaNemVagyBelepveDoboz">
+            <p>Nem vagy belépve</p>
+        </div>
+        <div class="nodisplay kozepre fit-content" id="ok_jelszo_valtoztatas_sikeres">
+            <p>Jelszavad sikeresen meg lett változtatva</p>
+        </div>
+        <br><br>
+        <button class="gomb szint-2 kerekites-10" onclick="jelszo_valtoztatas_dialog_bezarasa()">Bezárás</button>
+    </dialog>
+
+    <dialog id="meghivo_dialog">
+        <h1 class="kozepre-szoveg">Meghívó készítés új Hausz felhasználónak</h1>
+        <div class="nodisplay kozepre fit-content without-login">
+            <p>Kérlek lépj be meghívó készítéséhez</p>
+        </div>
+        <div class="nodisplay kozepre fit-content require-login">
+            <p>Ezen az oldalon tudsz meghívót készíteni valakinek, akinek még nincsen Hausz fiókja.</p>
+            <p>Az aki felhasználja a meghívót, annak a fiókja azonnal aktiválva lesz.</p>
+            <br>
+            <div id="meghivo_adatok"></div>
+        </div>
+        <br><br>
+        <button class="gomb szint-2 kerekites-10" onclick="meghivo_dialog_bezarasa()">Bezárás</button>
+    </dialog>
+    
+    <dialog id="fiok_varazslo_dialog">
+        <h1 class="kozepre-szoveg">TeamSpeak fiók varázsló</h1>
+        <div class="kozepre" style="max-width: 800px; width: 90%">
+            <div id="varazslo" class="tab-1" class="nodisplay">
+                <h3>Válaszd ki a listából a saját fiókjaidat, majd kattints az oldal alján az igénylés gombra</h3>
+                <br>
+                <svg id="fiok_lista_toltes_animacio" class="tab-2" width="100" height="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                    <circle cx="50" cy="50" fill="none" stroke="#ccc" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138">
+                        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
+                    </circle>
+                </svg>
+
+                <div id="interaktiv_resz" class="tab-2 nodisplay">
+                    <input type="text" placeholder="Írj be ide egy nevet a szűréshez" id="fiok_szures_mezo" oninput="fiok_filter_frissites()" class="max-szelesseg"></input>
+                    <table id="fiok_lista"></table>
+                    <div id="igenyles_gomb" class="gomb szint-2 kerekites-15 inline" onclick="igenyles()">Igénylés</div>
+                </div>
+            </div>
+            <br><br>
+
+            <div id="nincs_belepve_leiras" class="nodisplay">
+                <h3>Lépj be a TeamSpeak jogosultság visszaállításához</h3>
+                <div class="tab-2">
+                    Ha nem rendelkezel Hausz fiókkal, akkor először regisztrálnod kell a <br><div class="gomb szint-2 kerekites-15 inline" onclick="window.location.href = '/kezelo/regisztracio.html'">regisztrációs oldalon</div>. Ha már rendelkezel fiókkal, akkor lépj be.
+                </div>
+            </div>
+
+            <div id="sikeres_igenyles" class="nodisplay">
+                <h3>Sikeres igénylés</h3>
+                <div class="tab-2">
+                    A jogosultság igénylésed sikeresen elküldve. Ha a jogosultság igénylésed elfogadásra kerül, akkor a TeamSpeak fiókodban látni fogod a visszaállított jogosultságaidat.
+
+                    <br><br>
+                </div>
+            </div>
+            <br><br><br><br><br>
+        </div>
+        <br><br>
+        <button class="gomb szint-2 kerekites-10" onclick="fiok_varazslo_dialog_bezarasa()">Bezárás</button>
+    </dialog>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+
+</html>

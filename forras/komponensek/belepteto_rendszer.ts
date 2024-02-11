@@ -88,11 +88,9 @@ function belepteto_rendszer_frissites() {
                     obj('belepve_mint').innerHTML = `Belépve mint: ${session_username}`;
                     if(session_admin == "igen") {
                         obj('admin_felulet_gomb').style.display = 'block';
-                        obj('vscode_gomb').style.display = 'block';
                     } else {
                         session_admin = "";
                         obj('admin_felulet_gomb').style.display = 'none';
-                        obj('vscode_gomb').style.display = 'none';
                     }
                     if(session_username != "") {
                         obj('belepett_menu_gomb').innerHTML = "Fiók";

@@ -107,7 +107,7 @@ try {
     
 }
 
-console.log('[    ] \tCompileolás...');
+console.log('[INFO] \tCompileolás...');
 let child = spawnSync("/usr/local/bin/tsc", [bemeneti, "-out", kimeneti], { encoding : 'utf8' });
 if( child.stdout.length > 0 ) {
     console.log(child.stdout);
@@ -139,4 +139,4 @@ referenciak.forEach(sor => {
 
 data = datum_es_checksum + data;
 fs.writeFileSync(kimeneti, data);
-console.log('[KÉSZ] \tMinden fájl sikeresen kiadva');
+console.log('[    ] \tKész');

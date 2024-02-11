@@ -10,4 +10,5 @@ RUN mkdir -p /root/.kube
 RUN touch /root/.kube/config
 RUN apt install openssh-server rsync -y
 RUN mkdir -p /home/csabikaa97
+RUN apt install samba rsync openssh-server -y
 CMD ["/bin/bash", "-c", "service ssh start && service rsync start && tail -f /dev/null"]

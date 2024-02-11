@@ -1,1 +1,1 @@
-FROM teamspeak:3.13.7
+FROM --platform=linux/amd64 teamspeak:3.13.7

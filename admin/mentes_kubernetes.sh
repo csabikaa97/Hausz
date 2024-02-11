@@ -12,9 +12,7 @@ mkdir $FOMAPPA/admin/mentes/$DATUM
 cd $FOMAPPA
 
 echo "[    ] SQL: hausz_ dump készítése"
-mysqldump -u root -h 10.43.1.2 --password="root" hausz_ts > admin/mentes/$DATUM/hausz_ts.sql
-mysqldump -u root -h 10.43.1.2 --password="root" hausz_megoszto > admin/mentes/$DATUM/hausz_megoszto.sql
-mysqldump -u root -h 10.43.1.2 --password="root" hausz_log > admin/mentes/$DATUM/hausz_log.sql
+mysql -uroot -proot -e "show databases;" -h 10.43.1.2 | grep -Ev "mysql|information_schema|performance_schema|sys|Database" | xargs mysqldump -uroot -proot -h 10.43.1.2 --databases > admin/mentes/$DATUM/hausz_adatbazis.sql
 echo "[    ] SQL: hausz_ kész"
 
 echo "[    ] SQL: teamspeak_adatbazis dump készítése"
@@ -37,7 +35,7 @@ if [ -f "admin/mentes_privat.sh" ]; then
     cp "admin/mentes_privat.sh" "admin/mentes/$DATUM/mentes_privat.sh"
 else
     echo "[INFO] admin/mentes_privat.sh nem található!"
-    echo "[INFO] Futtatás kihagyva"
+    echo "[INFO]     Futtatás kihagyva"
 fi
 
 du -sh $FOMAPPA/admin/mentes/$DATUM

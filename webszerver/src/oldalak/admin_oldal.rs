@@ -288,7 +288,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
                 },
                 Err(_) => String::from(""),
             };
-            buffer += format!("{{\"id\": \"{}\", \"username\": \"{}\", \"igenyles_datuma\": \"{}\", \"igenyelt_fiokok\": \"{}\", \"igenyelt_fiok_idk\": \"{}\"}},", 
+            buffer += format!("{{\"id\": \"{}\", \"username\": \"{}\", \"igenyles_datuma\": \"{}\", \"igenyelt_fiokok\": \"{}\", \"igenyelt_fiok_idk\": \"{}\"}}", 
                 igénylés.id,
                 felhasználónév,
                 igénylés.igenyles_datuma, 
