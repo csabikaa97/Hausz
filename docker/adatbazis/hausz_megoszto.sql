@@ -71,3 +71,9 @@ CREATE TABLE `sessionok` (
   `session_kulcs` varchar(1000) DEFAULT NULL,
   `datum` datetime(6) DEFAULT NULL
 );
+
+CREATE TABLE `push_ertesites_adatok` (
+  `felhasznalo_azonosito` int(11) NOT NULL,
+  `adatok` VARCHAR(9999) NOT NULL,
+  `megjegyzes` VARCHAR(255) NOT NULl
+);

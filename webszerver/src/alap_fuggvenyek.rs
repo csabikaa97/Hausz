@@ -1,6 +1,7 @@
 use mysql::MySqlError;
-
 use crate::backend::lekerdezesek::általános_query_futtatás;
+use crate::backend::adminok_lekérdezése;
+use crate::backend::ertesites_kuldes::push_értesítés_id_alapján;
 
 static LOG_PREFIX: &str = "[alap_függ] ";
 
@@ -100,12 +101,32 @@ pub fn exit_error(szoveg: String) -> String {
     return buffer;
 }
 
-pub fn log_bejegyzes(szolgaltatas: &str, bejegyzes: &str, komment: &str, felhasznalo: String) {
+pub async fn log_bejegyzes(szolgaltatas: &str, bejegyzes: &str, komment: &str, felhasznalo: String) {
     let query = format!("INSERT INTO hausz_log.log (szolgaltatas, bejegyzes, komment, felhasznalo, datum) values ('{}', '{}', '{}', '{}', now(6));", szolgaltatas, bejegyzes, komment, felhasznalo);
     match általános_query_futtatás(query.clone()) {
         Ok(_) => {},
         Err(err) => {
             println!("{}Nem sikerült a log bejegyzés: ({}) ({})", LOG_PREFIX, query, err);
         },
+    }
+
+    let adminok = match adminok_lekérdezése() {
+        Ok(adminok) => adminok,
+        Err(err) => {
+            println!("{}Nem sikerült az adminok lekérdezése: {}", LOG_PREFIX, err);
+            return;
+        }
+    };
+
+    let cím = format!("Új log {}: {}", szolgaltatas, bejegyzes);
+    let szöveg = format!("{}: {}", felhasznalo, bejegyzes);
+
+    for admin in adminok {
+        match push_értesítés_id_alapján(cím.clone(), szöveg.clone(), admin).await {
+            Ok(_) => {},
+            Err(err) => {
+                println!("{}Nem sikerült az értesítés küldése: ({})", LOG_PREFIX, err);
+            },
+        }
     }
 }

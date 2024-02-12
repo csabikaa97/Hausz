@@ -5,7 +5,7 @@ use crate::alap_fuggvenyek::exit_ok;
 
 static LOG_PREFIX: &str = "[meghivo  ] ";
 
-pub fn meghívó(_: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
+pub async fn meghívó(_: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
     if session.loggedin != "yes" {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
     }
@@ -54,7 +54,7 @@ pub fn meghívó(_: Vec<(String, String)>, get: Vec<(String, String)>, session: 
             Ok(_) => {}
         }
 
-        log_bejegyzes("hausz_alap", "Meghívó készítés", &meghivo, session.username);
+        log_bejegyzes("hausz_alap", "Meghívó készítés", &meghivo, session.username).await;
 
         return HttpResponse::Ok().body(exit_ok(format!("Új meghívó létrehozása sikeres")));
     }

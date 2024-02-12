@@ -5,7 +5,7 @@ use crate::alap_fuggvenyek::exit_ok;
 
 static LOG_PREFIX: &str = "[minecraft] ";
 
-pub fn minecraft(post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
+pub async fn minecraft(post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
     if session.loggedin != "yes" {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
     }
@@ -46,7 +46,7 @@ pub fn minecraft(post: Vec<(String, String)>, get: Vec<(String, String)>, sessio
             }
         }
 
-        log_bejegyzes("hausz_alap", "Minecraft felhasználónév változtatás", uj_felhasznalonev.as_str(), session.username.clone());
+        log_bejegyzes("hausz_alap", "Minecraft felhasználónév változtatás", uj_felhasznalonev.as_str(), session.username.clone()).await;
         
         return HttpResponse::Ok().body(exit_ok(format!("Felhasználónév változtatás sikeres")));
     }

@@ -25,14 +25,23 @@ self.addEventListener("activate", async (e) => {
     console.log("[SW] subscription:");
     console.log({subscription});
     console.log(JSON.stringify(subscription));
+    let form_adatok = new FormData();
+    form_adatok.append("adatok", JSON.stringify(subscription));
+    let megjegyzes = navigator.platform + " " + navigator.userAgent;
+    form_adatok.append("megjegyzes", megjegyzes);
+
+    fetch('beallitasok.🦀?push_ertesites_adatok_mentese', {
+        method: "POST",
+        body: form_adatok,
+    });
 });
 
 self.addEventListener("push", function(event) {
     console.log("[SW] Push event");
     console.log({event});
-    var data = event.data.text();
+    var data = JSON.parse(event.data.text());
     console.log("Push data: ", {data});
-    self.registration.showNotification("teszt", {
-        body: data,
+    self.registration.showNotification(data.cim, {
+        body: data.uzenet,
     });
 });

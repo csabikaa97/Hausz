@@ -389,7 +389,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
         }
         
-        log_bejegyzes("megoszto", "feltöltés", filename.as_str(), session.username);
+        log_bejegyzes("megoszto", "feltöltés", filename.as_str(), session.username).await;
         
         return HttpResponse::Ok().body(exit_ok(format!("A '{}' nevű fájl sikeresen fel lett töltve.", filename)));
     }
@@ -552,7 +552,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
         }
 
-        log_bejegyzes("megoszto", "törlés", format!("[{}] {}", list_key("file_id", get.clone()), törlendő_fájl.fájlnév).as_str(), session.username);
+        log_bejegyzes("megoszto", "törlés", format!("[{}] {}", list_key("file_id", get.clone()), törlendő_fájl.fájlnév).as_str(), session.username).await;
         return HttpResponse::Ok().body(exit_ok(format!("A fájl sikeresen törölve.")));
     }
 
@@ -576,7 +576,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
             }
         }
 
-        log_bejegyzes("megoszto", "claimelés", format!("[{}] {}", list_key("file_id", get.clone()), claimelendő_fájl.fájlnév).as_str(), session.username);
+        log_bejegyzes("megoszto", "claimelés", format!("[{}] {}", list_key("file_id", get.clone()), claimelendő_fájl.fájlnév).as_str(), session.username).await;
         return HttpResponse::Ok().body(exit_ok(format!("A '{}' nevű fájl sikeresen hozzá lett rendelve a fiókodhoz.", claimelendő_fájl.fájlnév)));
     }
 

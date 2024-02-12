@@ -46,7 +46,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
                     }
                 }
 
-                log_bejegyzes("hausz_alap", "fiók aktiválás", format!("[{}] - {}", igényelt_felhasználó.request_id, igényelt_felhasználó.username).as_str(), session.username.clone());
+                log_bejegyzes("hausz_alap", "fiók aktiválás", format!("[{}] - {}", igényelt_felhasználó.request_id, igényelt_felhasználó.username).as_str(), session.username.clone()).await;
                 return HttpResponse::Ok().body(exit_ok(format!("Aktiválás sikeres")));
             }
         }
@@ -101,7 +101,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
             }
         }
 
-        log_bejegyzes("hausz_alap", "fiók törlés", format!("[{}] - {}", felhasználó.azonosító, felhasználó.felhasználónév).as_str(), session.username.clone());
+        log_bejegyzes("hausz_alap", "fiók törlés", format!("[{}] - {}", felhasználó.azonosító, felhasználó.felhasználónév).as_str(), session.username.clone()).await;
         return HttpResponse::Ok().body(exit_ok(format!("Törlés sikeres")));
     }
 
@@ -199,7 +199,7 @@ pub async fn admin_oldal(get: Vec<(String, String)>, session: Session) -> HttpRe
                 , felhasználó.azonosító
                 , felhasználó.felhasználónév
                 , if session.admin == "igen" { "nem" } else { "igen" } ).as_str(), 
-            session.username.clone());
+            session.username.clone()).await;
         return HttpResponse::Ok().body(exit_ok(format!("Admin státusz változtatás kész")));
     }
 

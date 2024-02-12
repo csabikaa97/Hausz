@@ -35,7 +35,7 @@ pub async fn keres_kezelo(payload: Multipart, post: Vec<(String, String)>, get: 
     return returnvalue.await;
 }
 
-pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {  
+pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session, request: HttpRequest) -> HttpResponse {
     // beléptető rendszer
     if isset("login", post.clone()) {
         return belepteto_rendszer(post, get, session);
@@ -52,29 +52,29 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
 
     // regisztráció
     if isset("regisztracio", post.clone()) {
-        return regisztráció(post, get, session);
+        return regisztráció(post, get, session).await;
     }
     if isset("generate_salt", get.clone()) {
-        return regisztráció(post, get, session);
+        return regisztráció(post, get, session).await;
     }
 
     // meghívó
     if isset("meghivo_adatok", get.clone()) {
-        return meghívó(post, get, session);
+        return meghívó(post, get, session).await;
     }
     if isset("uj_meghivo", get.clone()) {
-        return meghívó(post, get, session);
+        return meghívó(post, get, session).await;
     }
 
     // minecraft
     if isset("felhasznalonev_info", get.clone()) {
-        return minecraft(post, get, session);
+        return minecraft(post, get, session).await;
     }
     if isset("felhasznalonev_valtoztatas", get.clone()) {
-        return minecraft(post, get, session);
+        return minecraft(post, get, session).await;
     }
     if isset("jatekos_lista", get.clone()) {
-        return minecraft(post, get, session);
+        return minecraft(post, get, session).await;
     }
 
     // megosztó
@@ -169,7 +169,7 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     }
 
     // beállítások oldal
-    if isset("push_ertesites_adatok_mentese", post.clone()) {
+    if isset("push_ertesites_adatok_mentese", get.clone()) {
         return push_ertesites_adatok_mentese(post, session).await;
     }
     if isset("push_ertesites_kuldese", post.clone()) {

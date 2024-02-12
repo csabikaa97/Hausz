@@ -47,10 +47,10 @@ async fn post_kérés_kezelő(request: HttpRequest, mut payload: Multipart) -> H
     };
 
     let content_type = match content_type.to_str() {
-        Err(e) => return HttpResponse::BadRequest().body(exit_error(format!("{}", e))),
+        Err(e) => return HttpResponse::BadRequest().body(exit_error(format!("content_type to_str() error: {}", e))),
         Ok(content_type) => content_type,
     };
-    if !content_type.starts_with("multipart/form-data;") {
+    if !content_type.starts_with("multipart/form-data") {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem multipart/form-data")));
     }
 

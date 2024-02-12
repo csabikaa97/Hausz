@@ -103,7 +103,7 @@ pub async fn jelszó_változtatás(post: Vec<(String, String)>, session: Session
         }
     }
     
-    log_bejegyzes("alap", "jelszó változtatás", "", session.username);
+    log_bejegyzes("alap", "jelszó változtatás", "", session.username).await;
 
     return HttpResponse::Ok().body(exit_ok(format!("A jelszavad sikeresen meg lett változtatva")));
 }

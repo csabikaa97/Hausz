@@ -7,6 +7,7 @@ use crate::session::Session;
 
 pub mod session_azonosito_generator;
 pub mod lekerdezesek;
+pub mod ertesites_kuldes;
 
 static LOG_PREFIX: &str = "[backend  ] ";
 
@@ -50,6 +51,12 @@ pub struct AdatbázisEredményFájl {
     pub titkosítás_kulcs: String,
     pub members_only: u8,
     pub titkositasi_kulcs_hash: String,
+}
+
+pub struct AdatbázisEredményPushadatok {
+    pub felhasznalo_azonosito: u32,
+    pub adatok: String,
+    pub megjegyzes: String,
 }
 
 pub struct AdatbázisEredményFelhasználóToken {
@@ -102,6 +109,29 @@ fn csatlakozás(url: &str) -> Result<mysql::PooledConn> {
         Ok(conn) => Ok(conn),
         Err(err) => Err(err),
     }
+}
+
+pub fn adminok_lekérdezése() -> Result<Vec<u32>>{
+    let mut conn = match csatlakozás(crate::konfig().webszerver.hausz_adatbazis_url_r.as_str()) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    let adminok = match conn.query_map(
+            format!("SELECT id FROM users WHERE admin = 'igen'").as_str(),
+            |id: u32| id
+        ) {
+            Ok(fájlok) => fájlok,
+            Err(err) => {
+                println!("{}Hiba az adatbázis lekérdezésekor: (10) {}", LOG_PREFIX, err);
+                return Err(err);
+            }
+        };
+
+    Ok(adminok)
 }
 
 pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {

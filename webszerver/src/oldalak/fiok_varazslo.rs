@@ -55,7 +55,7 @@ pub async fn teamspeak_fiók_varázsló_oldal(post: Vec<(String, String)>, get: 
             },
         }
 
-        log_bejegyzes("teamspeak szerver", "Jogosultság igénylése", format!("Fióknevek: Jelenlegi: {} <- {}", list_key("jelenlegi_fiok_kivalasztott", post.clone()), list_key("fiok_nevek", post.clone())).as_str(), session.username);
+        log_bejegyzes("teamspeak szerver", "Jogosultság igénylése", format!("Fióknevek: Jelenlegi: {} <- {}", list_key("jelenlegi_fiok_kivalasztott", post.clone()), list_key("fiok_nevek", post.clone())).as_str(), session.username).await;
         return HttpResponse::Ok().body(exit_ok(format!("Igénylés sikeresen elküldve")));
     }
     return HttpResponse::BadRequest().body(exit_error(format!("Ismeretlen szándék")));

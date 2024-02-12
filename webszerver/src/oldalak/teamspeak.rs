@@ -112,7 +112,7 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
             },
         };
 
-        log_bejegyzes("teamspeak szerver", "új token készítés", token, session.username);
+        log_bejegyzes("teamspeak szerver", "új token készítés", token, session.username).await;
         return HttpResponse::Ok().body(exit_ok(format!("Új token generálása kész")));
     }
         

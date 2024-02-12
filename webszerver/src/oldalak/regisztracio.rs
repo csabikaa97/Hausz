@@ -5,7 +5,7 @@ use crate::alap_fuggvenyek::exit_ok;
 
 static LOG_PREFIX: &str = "[regiszt..] ";
 
-pub fn regisztráció(post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
+pub async fn regisztráció(post: Vec<(String, String)>, get: Vec<(String, String)>, session: Session) -> HttpResponse {
     if isset("generate_salt", get.clone()) {
         let salt = random_új_session_azonosító();
         return HttpResponse::Ok().body(exit_ok(salt));
@@ -122,7 +122,7 @@ pub fn regisztráció(post: Vec<(String, String)>, get: Vec<(String, String)>, s
         buffer = format!("{} - Meghivo: {}", buffer, list_key("regisztracio_meghivo", post.clone()));
     }
 
-    log_bejegyzes("hausz_alap", "regisztráció", buffer.as_str(), session.username.clone());
+    log_bejegyzes("hausz_alap", "regisztráció", buffer.as_str(), session.username.clone()).await;
 
     return HttpResponse::Ok().body(exit_ok(format!("Sikeres regisztráció")));
 }
