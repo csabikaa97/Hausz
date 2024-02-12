@@ -11,6 +11,8 @@ use crate::oldalak::meghivo::meghívó;
 use crate::oldalak::megoszto::megosztó;
 use crate::oldalak::minecraft::minecraft;
 use crate::oldalak::teamspeak::teamspeak_oldal;
+use crate::oldalak::beallitasok::push_ertesites_adatok_mentese;
+use crate::oldalak::beallitasok::push_ertesites_kuldese;
 use crate::session::Session;
 use crate::alap_fuggvenyek::isset;
 use crate::fajlok::hozzárendelt_fájl;
@@ -164,6 +166,14 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     }
     if isset("teamspeak_jogosultsag_elutasitas", get.clone()) {
         return admin_oldal(get, session).await;
+    }
+
+    // beállítások oldal
+    if isset("push_ertesites_adatok_mentese", post.clone()) {
+        return push_ertesites_adatok_mentese(post, session).await;
+    }
+    if isset("push_ertesites_kuldese", post.clone()) {
+        return push_ertesites_kuldese(post, session).await;
     }
 
     let path = request.path();

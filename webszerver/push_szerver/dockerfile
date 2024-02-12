@@ -1,0 +1,5 @@
+FROM node:21.6.1
+WORKDIR /temp
+COPY package.json /temp/
+RUN npm install
+CMD ["node", "/push_szerver/szerver.js"]

@@ -25,15 +25,6 @@ self.addEventListener("activate", async (e) => {
     console.log("[SW] subscription:");
     console.log({subscription});
     console.log(JSON.stringify(subscription));
-
-    fetch("http://127.0.0.1:3000/save-subscription", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(subscription),
-    })
-
 });
 
 self.addEventListener("push", function(event) {

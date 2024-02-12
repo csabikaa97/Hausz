@@ -379,6 +379,22 @@ async function serviceworker_bejegyzese() {
     console.log({registration});
 }
 
+function ertesites_kuldese() {
+    let szoveg = obj("ertesites_szoveg").value;
+    let adatok = obj("ertesites_adatok").value;
+    let keres = {
+        adatok: JSON.parse(adatok),
+        uzenet: szoveg,
+    };
+    fetch("http://127.0.0.1:3000/ertesites_kuldese", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(keres),
+    });
+}
+
 var vanKisbetu = false;
 var vanNagybetu = false;
 var vanSzam = false;

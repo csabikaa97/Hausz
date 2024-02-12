@@ -102,6 +102,17 @@ services:
     depends_on:
       - "adatbazis"
 
+ push_szerver:
+  build: webszerver/push_szerver
+  container_name: push_szerver
+  ports:
+    - "3000:3000"
+  volumes:
+    - "./webszerver/push_szerver:/push_szerver"
+  networks:
+   container_halozat:
+    ipv4_address: 172.20.128.20
+
  karbantarto:
   build: docker/karbantarto
   container_name: karbantarto

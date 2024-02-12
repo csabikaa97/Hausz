@@ -1,11 +1,10 @@
 const express = require("express");
 const app = express();
 const webpush = require('web-push');
-const cors = require("cors")
+const cors = require("cors");
 
 const port = 3000;
-const vapidAdatok = require("./vapid_adatok.json");
-const subscription_adatok = [];
+const vapidAdatok = require("/push_szerver/vapid_adatok.json");
 
 webpush.setVapidDetails(
     vapidAdatok.email,
@@ -20,14 +19,12 @@ app.get("/", (_, valasz) => {
     valasz.send("Web Push szerver!");
 })
 
-app.post("/save-subscription", (keres, valasz) => {
-    subscription_adatok.push(keres.body);
-    valasz.json({ "eredmeny": "ok", "valasz": "Adatok sikeresen elmentve" })
-    console.log("Új adatok elmentve: ", subscription_adatok[0]);
-})
-
-app.get("/send-notification", (_, valasz) => {
-    webpush.sendNotification(subscription_adatok[0], "Teszt üzenet a push szolgáltatásból!");
+app.post("/ertesites_kuldese", (keres, valasz) => {
+    let subscription_adat = keres.body.adatok;
+    console.log({subscription_adat});
+    let uzenet = keres.body.uzenet;
+    console.log({uzenet});
+    webpush.sendNotification(subscription_adat, uzenet);
     valasz.json({ "eredmeny": "ok", "valasz": "Üzenet sikeresen elküldve!" });
 })
 

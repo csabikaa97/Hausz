@@ -7,3 +7,4 @@ pub mod jelszo_valtoztatas;
 pub mod teamspeak;
 pub mod fiok_varazslo;
 pub mod admin_oldal;
+pub mod beallitasok;
