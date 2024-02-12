@@ -351,6 +351,34 @@ function igenyles() {
     });
 }
 
+function funkciok_ellenorzese() {
+    if('serviceWorker' in navigator) {
+        obj("serviceworker_support").innerHTML = '🟢';
+    } else {
+        obj("serviceworker_support").innerHTML = '🔴';
+    }
+
+    if('Notification' in window) {
+        obj("notification_support").innerHTML = '🟢';
+    } else {
+        obj("notification_support").innerHTML = '🔴';
+    }
+
+    Notification.requestPermission().then((permission) => {
+        if(permission != 'granted') {
+            uj_valasz_mutatasa(5000, "hiba", "Az értesítések engedélyezése sikertelen");
+            obj("notification_sending_support").innerHTML = '🔴';
+        } else {
+            obj("notification_sending_support").innerHTML = '🟢';
+        }
+    });
+}
+
+async function serviceworker_bejegyzese() {
+    const registration = await navigator.serviceWorker.register('/serviceworker.js');
+    console.log({registration});
+}
+
 var vanKisbetu = false;
 var vanNagybetu = false;
 var vanSzam = false;

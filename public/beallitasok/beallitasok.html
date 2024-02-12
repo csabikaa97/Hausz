@@ -100,6 +100,28 @@
         <br><br>
         <button class="gomb szint-2 kerekites-10" onclick="fiok_varazslo_dialog_bezarasa()">Bezárás</button>
     </dialog>
+
+    <table>
+        <th>
+            <td>Feature</td>
+            <td>Supported</td>
+        </th>
+        <tr>
+            <td>serviceWorker</td>
+            <td id="serviceworker_support">?</td>
+        </tr>
+        <tr>
+            <td>Notifications available</td>
+            <td id="notification_support">?</td>
+        </tr>
+        <tr>
+            <td>Notifications enabled</td>
+            <td id="notification_sending_support">?</td>
+        </tr>
+    </table>
+    <button onclick="funkciok_ellenorzese()">Funkciók ellenőrzése</button>
+    <button onclick="serviceworker_bejegyzese()">Serviceworker bejegyzése</button>
+    <button onclick="ertesitesek_engedelyezese()">Értesítések engedélyezése</button>
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 

@@ -18,5 +18,6 @@ kiadas.js forras/webjosda/fizetos.ts public/webjosda/fizetos.js
 kiadas.js forras/minecraft/minecraft.ts public/minecraft/minecraft.js
 kiadas.js forras/minecraft/minecraft.ts public/minecraft/minecraft.js
 kiadas.js forras/beallitasok/beallitasok.ts public/beallitasok/beallitasok.js
+kiadas.js forras/serviceworker/serviceworker.ts public/serviceworker.js
 
 echo "[    ] Minden fájl sikeresen kiadva"

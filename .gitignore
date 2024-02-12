@@ -54,6 +54,8 @@
 /webszerver/target/*
 /webszerver/registry/*
 /webszerver/scriptek/*.sh
+/webszerver/push_szerver/node_modules/*
+/webszerver/push_szerver/vapid_adatok.json
 
 konfiguracio.toml
 privat_konfiguracio.toml

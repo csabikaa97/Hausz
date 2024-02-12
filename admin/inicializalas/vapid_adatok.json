@@ -1,0 +1,5 @@
+{
+    "email": "mailto:<e-mail cím>",
+    "publikus_kulcs": "<publikus vapid kulcs>",
+    "privat_kulcs": "<privát vapid kulcs>"
+}

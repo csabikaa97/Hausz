@@ -11,15 +11,15 @@ while true; do
     then
         set -e
         echo "[    ] Repo inicializása docker-compose környezethez..."
-        declare -a forras_fajlok=("k8s_konfiguracio.toml" "mentes_privat.sh" "privat_kiadasa.sh" "privat_konfiguracio.toml" "szurendo_szavak.ts" "privat_csomagolasa.sh")
-        declare -a cel_utvonalak=("konfiguracio.toml" "admin/mentes_privat.sh" "forras/kiadas/privat_kiadasa.sh" "privat_konfiguracio.toml" "priv/szurendo_szavak.ts" "forras/csomagolas/privat_csomagolasa.sh")
+        declare -a forras_fajlok=("k8s_konfiguracio.toml" "mentes_privat.sh" "privat_kiadasa.sh" "privat_konfiguracio.toml" "szurendo_szavak.ts" "privat_csomagolasa.sh" "vapid_adatok.json")
+        declare -a cel_utvonalak=("konfiguracio.toml" "admin/mentes_privat.sh" "forras/kiadas/privat_kiadasa.sh" "privat_konfiguracio.toml" "priv/szurendo_szavak.ts" "forras/csomagolas/privat_csomagolasa.sh" "webszerver/push_szerver/vapid_adatok.json")
         break
     elif [ $input -eq 2 ]
     then
         set -e
         echo "[    ] Repo inicializása kubernetes környezethez..."
-        declare -a forras_fajlok=("konfiguracio.toml" "mentes_privat.sh" "privat_kiadasa.sh" "privat_konfiguracio.toml" "szurendo_szavak.ts" "privat_csomagolasa.sh")
-        declare -a cel_utvonalak=("konfiguracio.toml" "admin/mentes_privat.sh" "forras/kiadas/privat_kiadasa.sh" "privat_konfiguracio.toml" "priv/szurendo_szavak.ts" "forras/csomagolas/privat_csomagolasa.sh")
+        declare -a forras_fajlok=("konfiguracio.toml" "mentes_privat.sh" "privat_kiadasa.sh" "privat_konfiguracio.toml" "szurendo_szavak.ts" "privat_csomagolasa.sh" "vapid_adatok.json")
+        declare -a cel_utvonalak=("konfiguracio.toml" "admin/mentes_privat.sh" "forras/kiadas/privat_kiadasa.sh" "privat_konfiguracio.toml" "priv/szurendo_szavak.ts" "forras/csomagolas/privat_csomagolasa.sh" "webszerver/push_szerver/vapid_adatok.json")
         break
     else
         echo "[HIBA] Hibas bemenet!"
