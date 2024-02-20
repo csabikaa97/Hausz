@@ -6,4 +6,9 @@ RUN cat telepites.sql > osszes.sql
 RUN cat hausz_*.sql >> osszes.sql
 RUN rm /etc/my.cnf
 COPY my.cnf /etc/my.cnf
+RUN mkdir -p /var/lib/adatbazis-replika/
+RUN cd /var/lib/adatbazis-replika/
+RUN touch mysql-bin.log
+RUN chmod -R 777 /var/lib/adatbazis-replika/
+RUN mysqld --initialize-insecure
 RUN sed -i 's/\r$//' /telepites/telepites.sh

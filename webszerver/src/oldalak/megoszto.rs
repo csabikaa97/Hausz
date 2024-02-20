@@ -431,7 +431,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         if Regex::new(r"[^a-zA-Z0-9_\-\.éáűőúöüóíÍÉÁŰŐÚÖÜÓ]").unwrap().is_match(list_key("uj_nev", get.clone()).as_str()) {
             return HttpResponse::BadRequest().body(exit_error(format!("Illegális karakterek vannak az új névben.")));
         }
-        if !Regex::new(r"(.*)\.(.*)").unwrap().is_match(list_key("uj_nev", get.clone()).as_str()) {
+        if list_key("uj_nev", get.clone()).contains(".") {
             println!("{}Nincs kiterjesztés: \"{}\"", LOG_PREFIX, list_key("uj_nev", get.clone()));
             return HttpResponse::BadRequest().body(exit_error(format!("Nincs kiterjesztés megadva az új névben.")));
         }
