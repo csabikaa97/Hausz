@@ -43,5 +43,6 @@ self.addEventListener("push", function(event) {
     console.log("Push data: ", {data});
     self.registration.showNotification(data.cim, {
         body: data.uzenet,
+        icon: "/favicon.png"
     });
 });

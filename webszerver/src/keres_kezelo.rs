@@ -12,7 +12,10 @@ use crate::oldalak::megoszto::megosztó;
 use crate::oldalak::minecraft::minecraft;
 use crate::oldalak::teamspeak::teamspeak_oldal;
 use crate::oldalak::beallitasok::push_ertesites_adatok_mentese;
-use crate::oldalak::beallitasok::push_ertesites_kuldese;
+use crate::oldalak::beallitasok::push_értesítés_adatok_törlése;
+use crate::backend::kliens_push_kuldes::push_ertesites_kuldese;
+use crate::oldalak::beallitasok::api_kulcsok_lekerdezese;
+use crate::oldalak::beallitasok::push_értesítés_adatok_lekérdezése;
 use crate::session::Session;
 use crate::alap_fuggvenyek::isset;
 use crate::fajlok::hozzárendelt_fájl;
@@ -172,9 +175,19 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     if isset("push_ertesites_adatok_mentese", get.clone()) {
         return push_ertesites_adatok_mentese(post, session).await;
     }
+    if isset("push_ertesites_adatok_torlese", get.clone()) {
+        return push_értesítés_adatok_törlése(post, session).await;
+    }
     if isset("push_ertesites_kuldese", post.clone()) {
         return push_ertesites_kuldese(post, session).await;
     }
+    if isset("api_kulcsok_lekerdezese", get.clone()) {
+        return api_kulcsok_lekerdezese(session).await;
+    }
+    if isset("push_ertesites_adatok_lekerdezese", get.clone()) {
+        return push_értesítés_adatok_lekérdezése(session).await;
+    }
+
 
     let path = request.path();
     let fájlnév = crate::konfig().webszerver.fajlok_eleresi_utvonala.to_owned() + hozzárendelt_fájl(path);

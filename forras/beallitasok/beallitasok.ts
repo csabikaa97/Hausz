@@ -68,9 +68,61 @@ function meghivo_frissites() {
     }
 }
 
-function belepteto_rendszer_frissult() {
+function uj_api_kulcs_letrehozasa() {
+    
+}
+
+function api_kulcsok_frissitese() {
+    if(session_loggedin !== "yes") {
+        obj('api_kulcsok').innerHTML = "";
+    }
+
+    let buffer = "<tr><th>Kulcs</th><th>Megjegyzés</th><th></th></tr>";
+
+    szinkron_keres("/beallitasok/beallitasok.🦀?api_kulcsok_lekerdezese", "", (uzenet) => {
+        if(uzenet.eredmeny == 'ok') {
+            if(uzenet.valasz.length <= 0) {
+                buffer += `<tr><td colspan="2">Nincsenek jelenleg API kulcsok</td><td></td></tr>`;
+            } else {
+                uzenet.valasz.forEach(elem => {
+                    buffer += `<tr><td>${elem.kulcs}</td><td>${elem.megjegyzes}</td></tr>`;
+                });
+            }
+            obj('api_kulcsok').innerHTML = buffer;
+        } else {
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+        }
+    });
+}
+
+function push_api_adatok_frissitese() {
+    if(session_loggedin !== "yes") {
+        obj('push_adatok').innerHTML = "";
+    }
+
+    let buffer = "<tr><th>Adat</th><th>Megjegyzés</th><th></th></tr>";
+
+    szinkron_keres("/beallitasok/beallitasok.🦀?push_ertesites_adatok_lekerdezese", "", (uzenet) => {
+        if(uzenet.eredmeny == 'ok') {
+            if(uzenet.valasz.length <= 0) {
+                buffer += `<tr><td colspan="2">Nincsenek jelenleg Push API adatok</td><td></td></tr>`;
+            } else {
+                uzenet.valasz.forEach(elem => {
+                    buffer += `<tr><td>${(JSON.stringify(elem.adat)).slice(0,20)}...</td><td>${elem.megjegyzes}</td></tr>`;
+                });
+            }
+            obj('push_adatok').innerHTML = buffer;
+        } else {
+            uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
+        }
+    });
+}
+
+async function belepteto_rendszer_frissult() {
     jelszo_valtoztatas_frissites();
     meghivo_frissites();
+    api_kulcsok_frissitese();
+    push_api_adatok_frissitese();
     fiok_varazslo_frissites();
 }
 
@@ -375,8 +427,46 @@ function funkciok_ellenorzese() {
 }
 
 async function serviceworker_bejegyzese() {
+    uj_valasz_mutatasa(3000, "", "Serviceworker telepítése folyamatban...");
     const registration = await navigator.serviceWorker.register('/serviceworker.js');
     console.log({registration});
+    uj_valasz_mutatasa(3000, "ok", "Serviceworker telepítése sikeres");
+}
+
+function serviceworkerek_torlese() {
+    try {
+        navigator.serviceWorker.getRegistrations().then((telepitett_workerek) => {
+            if(telepitett_workerek.length <= 0) {
+                uj_valasz_mutatasa(5000, "hiba", "Nincsen telepített Serviceworker");
+                return;
+            }
+            for (let i = 0; i < telepitett_workerek.length; i++) {
+                const worker = telepitett_workerek[i];
+
+                worker.pushManager.getSubscription().then((push_subscription_adat) => {
+                    let form_adatok = new FormData();
+                    form_adatok.append("push_subscription_adat", JSON.stringify(push_subscription_adat));
+                    fetch('/beallitasok/beallitasok.🦀?push_ertesites_adatok_torlese', {
+                        method: "POST",
+                        body: form_adatok,
+                    }).then(() => {
+                        worker.unregister();
+                        console.log(i + ". serviceworker adatbzásiból és böngészőből történő törlése sikeres")
+                    }).catch(() => {
+                        console.error("Hiba a " + i + ". serviceworker adatbzásiból történő törlésekor")
+                    });
+                })
+                .catch(() => {
+                    worker.unregister();
+                    console.log(i + ". serviceworker csak böngészőből történő törlése sikeres")
+                });
+            }
+            uj_valasz_mutatasa(3000, "ok", "Serviceworkerek törlése sikeres!");
+        });
+    }
+    catch (err) {
+        uj_valasz_mutatasa(5000, "hiba", "Hiba a Serviceworkerek törlése közben: " + {err});
+    }
 }
 
 var vanKisbetu = false;

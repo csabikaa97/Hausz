@@ -13,6 +13,8 @@ use super::AdatbázisEredményIgényeltFelhasználó;
 use super::AdatbázisEredményLogBejegyzés;
 use super::AdatbázisEredményTeamspeakFelhasználó;
 use super::AdatbázisEredményTeamspeakJogosultságIgénylés;
+use crate::backend::AdatbázisEredményPushApikulcs;
+use crate::backend::AdatbázisEredményPushadatok;
 
 pub fn teamspeak_jogosultság_igénylések_lekérdezése() -> Result<Vec<AdatbázisEredményTeamspeakJogosultságIgénylés>> {
     let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
@@ -380,6 +382,66 @@ pub fn saját_meghívók_lekérése(user_id: u32) -> Result<Vec<String>> {
     return Ok(meghívók);
 }
 
+pub fn saját_push_adatok_lekérése(user_id: u32) -> Result<Vec<AdatbázisEredményPushadatok>> {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    match conn.query_map(
+            format!("SELECT adatok, megjegyzes FROM push_ertesites_adatok WHERE felhasznalo_azonosito = '{}'", user_id),
+            |(
+                adatok,
+                megjegyzes
+            )| AdatbázisEredményPushadatok {
+                felhasznalo_azonosito: user_id,
+                adatok,
+                megjegyzes
+            }
+        ) {
+            Ok(eredmény) => {
+                return Ok(eredmény);
+            },
+            Err(err) => {
+                println!("{}Hiba az adatbázis lekérdezésekor: (14) {}", crate::LOG_PREFIX, err);
+                return Err(err);
+            }
+        };
+}
+
+pub fn saját_push_api_kulcsok_lekérése(user_id: u32) -> Result<Vec<AdatbázisEredményPushApikulcs>> {
+    let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
+        Ok(conn) => conn,
+        Err(err) => {
+            println!("{}Hiba az adatbázishoz való csatlakozáskor: {}", crate::LOG_PREFIX, err);
+            return Err(err);
+        }
+    };
+
+    match conn.query_map(
+            format!("SELECT kulcs, megjegyzes FROM push_ertesites_api_kulcsok WHERE felhasznalo_azonosito = '{}'", user_id),
+            |(
+                kulcs,
+                megjegyzes
+            )| AdatbázisEredményPushApikulcs {
+                felhasznalo_azonosito: user_id,
+                kulcs,
+                megjegyzes
+            }
+        ) {
+            Ok(eredmény) => {
+                return Ok(eredmény);
+            },
+            Err(err) => {
+                println!("{}Hiba az adatbázis lekérdezésekor: (5) {}", crate::LOG_PREFIX, err);
+                return Err(err);
+            }
+        };
+}
+
 pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
     let mut conn = match csatlakozás(&crate::konfig().webszerver.hausz_adatbazis_url_r) {
         Ok(conn) => conn,
@@ -391,7 +453,21 @@ pub fn meghívó_létezik(meghivo: String) -> Result<bool> {
 
     let meghívók = match conn.query_map(
             format!("SELECT meghivo FROM meghivok WHERE meghivo = '{}'", meghivo),
-            |meghivo: String| meghivo
+            |(
+                request_id,
+                username,
+                password,
+                sha256_password,
+                email,
+                megjeleno_nev,
+            )| AdatbázisEredményIgényeltFelhasználó {
+                request_id,
+                username,
+                password,
+                sha256_password,
+                email,
+                megjeleno_nev,
+            }
         ) {
             Ok(eredmény) => eredmény,
             Err(err) => {

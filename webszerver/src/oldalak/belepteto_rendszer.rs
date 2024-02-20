@@ -91,6 +91,8 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
             }
         };
 
+        std::thread::sleep(std::time::Duration::from_secs(1));
+
         return valasz;
     }
 

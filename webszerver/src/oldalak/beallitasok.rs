@@ -1,10 +1,86 @@
 use actix_web::HttpResponse;
-use crate::alap_fuggvenyek::{exit_ok, list_key};
+use crate::alap_fuggvenyek::{exit_ok, isset, list_key};
 use crate::{alap_fuggvenyek::exit_error, session::Session};
 use crate::backend::lekerdezesek::általános_query_futtatás;
 use crate::backend::ertesites_kuldes::teszt_értesítés;
+use crate::backend::lekerdezesek::saját_push_api_kulcsok_lekérése;
+use crate::backend::lekerdezesek::saját_push_adatok_lekérése;
 
 static LOG_PREFIX: &str = "[push_noti] ";
+
+pub async fn push_értesítés_adatok_törlése(post: Vec<(String, String)>, session: Session) -> HttpResponse {
+    if session.loggedin != "yes" {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
+    }
+
+    if !isset("push_subscription_adat", post.clone()) {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nincs megadva keresendő subscription adat")));
+    }
+
+    match általános_query_futtatás(format!("DELETE FROM push_ertesites_adatok WHERE adatok = '{}'", list_key("push_subscription_adat", post.clone()))) {
+        Ok(_) => {
+            return HttpResponse::Ok().body(exit_ok(format!("Push értesítés adat törlése sikeres")));
+        },
+        Err(err) => {
+            println!("{}Nem sikerült a push értesítés adat törlése: {}", LOG_PREFIX, err);
+            return HttpResponse::InternalServerError().body(exit_error(format!("Nem sikerült a push értesítés adat törlése")));
+        }
+    }
+}
+
+pub async fn push_értesítés_adatok_lekérdezése(session: Session) -> HttpResponse {
+    if session.loggedin != "yes" {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
+    }
+
+    let push_adatok = match saját_push_adatok_lekérése(session.user_id) {
+        Ok(kulcsok) => kulcsok,
+        Err(err) => {
+            println!("{}Hiba a saját push API kulcsok lekérése közben: {}", LOG_PREFIX, err);
+            return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba")));
+        }
+    };
+
+    let mut buffer = String::new();
+
+    for push_adat in push_adatok {
+        buffer += format!(
+            "{}{{\"adat\": {}, \"megjegyzes\": \"{}\"}}",
+                if buffer.len() == 0 {""} else {", "},
+                push_adat.adatok,
+                push_adat.megjegyzes
+        ).as_str();
+    }
+
+    return HttpResponse::Ok().body(format!("{{\"eredmeny\": \"ok\", \"valasz\": [{}]}}", buffer));
+}
+
+pub async fn api_kulcsok_lekerdezese(session: Session) -> HttpResponse {
+    if session.loggedin != "yes" {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
+    }
+
+    let api_kulcsok = match saját_push_api_kulcsok_lekérése(session.user_id) {
+        Ok(kulcsok) => kulcsok,
+        Err(err) => {
+            println!("{}Hiba a saját push API kulcsok lekérése közben: {}", LOG_PREFIX, err);
+            return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba")));
+        }
+    };
+
+    let mut buffer = String::new();
+
+    for kulcs in api_kulcsok {
+        buffer += format!(
+            "{}{{\"kulcs\": \"{}\", \"megjegyzes\": \"{}\"}}",
+                if buffer.len() == 0 {""} else {", "},
+                kulcs.kulcs,
+                kulcs.megjegyzes
+        ).as_str();
+    }
+
+    return HttpResponse::Ok().body(format!("{{\"eredmeny\": \"ok\", \"valasz\": [{}]}}", buffer));
+}
 
 pub async fn push_ertesites_adatok_mentese(post: Vec<(String, String)>, session: Session) -> HttpResponse {
     if session.loggedin != "yes" {
@@ -44,9 +120,5 @@ pub async fn push_ertesites_adatok_mentese(post: Vec<(String, String)>, session:
     }
 
     return HttpResponse::Ok().body(exit_ok(szoveg));
-}
-
-pub async fn push_ertesites_kuldese(post: Vec<(String, String)>, session: Session) -> HttpResponse {
-    return HttpResponse::Ok().body("admin_oldal");
 }
 

@@ -73,7 +73,15 @@ CREATE TABLE `sessionok` (
 );
 
 CREATE TABLE `push_ertesites_adatok` (
+  `id` int(11) NOT NULL,
   `felhasznalo_azonosito` int(11) NOT NULL,
   `adatok` VARCHAR(9999) NOT NULL,
+  `megjegyzes` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `push_ertesites_api_kulcsok` (
+  `felhasznalo_azonosito` int(11) NOT NULL,
+  `kulcs` VARCHAR(9999) NOT NULL,
   `megjegyzes` VARCHAR(255) NOT NULl
 );

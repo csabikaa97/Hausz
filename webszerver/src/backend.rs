@@ -8,6 +8,7 @@ use crate::session::Session;
 pub mod session_azonosito_generator;
 pub mod lekerdezesek;
 pub mod ertesites_kuldes;
+pub mod kliens_push_kuldes;
 
 static LOG_PREFIX: &str = "[backend  ] ";
 
@@ -56,6 +57,12 @@ pub struct AdatbázisEredményFájl {
 pub struct AdatbázisEredményPushadatok {
     pub felhasznalo_azonosito: u32,
     pub adatok: String,
+    pub megjegyzes: String,
+}
+
+pub struct AdatbázisEredményPushApikulcs {
+    pub felhasznalo_azonosito: u32,
+    pub kulcs: String,
     pub megjegyzes: String,
 }
 
