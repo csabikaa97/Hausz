@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: push_szerver-deployment
+  namespace: hausz
+  labels:
+    app: push_szerver
+spec:
+  selector:
+    matchLabels:
+      octopusexport: OctopusExport
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: push_szerver
+        octopusexport: OctopusExport
+    spec:
+      terminationGracePeriodSeconds: 1
+      volumes:
+        - name: projektkonyvtar-volume
+          persistentVolumeClaim:
+            claimName: projektkonyvtar-pvc
+      containers:
+        - name: push_szerver-container
+          image: 'hausz_push_szerver:latest'
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: projektkonyvtar-volume
+              mountPath: /hausz
+              subPath: ''
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 10m
+          securityContext:
+            privileged: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - push_szerver
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: push_szerver-service
+  namespace: hausz
+spec:
+  selector:
+    app: push_szerver
+  type: LoadBalancer
+  loadBalancerIP: "192.168.0.70"
+  ports:
+  - name: push-http-port
+    port: 3000
+    targetPort: 3000
+    protocol: TCP
