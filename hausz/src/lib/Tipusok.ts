@@ -9,7 +9,8 @@ export class SaltEredmeny {
 }
 
 export class BelepesStatusz {
-    loggedin: boolean = false;
-    username: string = "";
-    admin: boolean = false;
+    eredmeny: string = "";
+    session_loggedin: string = "";
+    session_username: string = "";
+    session_admin: string = "";
 }

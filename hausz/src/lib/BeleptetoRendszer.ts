@@ -44,11 +44,11 @@ export async function belepes(felhasználónév: string, jelszó: string) {
 }
 
 export function statusz_lekerese() {
-    szinkron_keres(`${alap_url}/include/belepteto_rendszer?statusz=1`, "", (uzenet: Uzenet<BelepesStatusz>) => {
+    szinkron_keres(`${alap_url}/include/belepteto_rendszer?statusz=1`, "", (uzenet: BelepesStatusz) => {
         if( uzenet.eredmeny == 'ok' ) {
-            közös_loggedin.set(uzenet.valasz.loggedin);
-            közös_username.set(uzenet.valasz.username);
-            közös_admin.set(uzenet.valasz.admin);
+            közös_loggedin.set(uzenet.session_loggedin == "yes");
+            közös_username.set(uzenet.session_username);
+            közös_admin.set(uzenet.session_admin == "igen");
         } else {
             közös_loggedin.set(false);
             közös_username.set("");

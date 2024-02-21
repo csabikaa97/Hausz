@@ -1,10 +1,8 @@
 import { browser } from "$app/environment";
+import sha256 from 'sha256';
 
-export async function hash_keszites(szoveg: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(szoveg);
-    const hash = await crypto.subtle.digest("SHA-256", data);
-    return hash.toString();
+export function hash_keszites(szoveg: string) {
+    return sha256(szoveg);
 }
 
 export function szinkron_keres(hivatkozas: string, parameterek: string | FormData, fuggveny: Function) {

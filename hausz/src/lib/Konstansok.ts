@@ -1,1 +1,1 @@
-export const alap_url = "http://localhost:80";
+export const alap_url = "https://localhost";
