@@ -1,0 +1,1 @@
+export const alap_url = "http://localhost:80";

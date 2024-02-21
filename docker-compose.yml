@@ -96,6 +96,7 @@ services:
      - "443:443"
     volumes:
      - "./:/hausz"
+     - "./hausz/build/:/hausz/svelte"
     networks:
      container_halozat:
       ipv4_address: 172.20.128.12

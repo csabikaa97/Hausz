@@ -59,6 +59,7 @@ pub fn hozzárendelt_fájl(útvonal: &str) -> &str {
         "beallitasok/beallitasok"               => "/beallitasok/beallitasok.html",
         "beallitasok/beallitasok.html"          => "/beallitasok/beallitasok.html",
         "beallitasok/beallitasok.js"            => "/beallitasok/beallitasok.js",
+        "svelte/index.html"                     => "/svelte/index.html",
         // "" => "",
         _ => {
             "404.html"
