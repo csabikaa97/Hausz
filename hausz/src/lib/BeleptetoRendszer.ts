@@ -18,6 +18,16 @@ közös_loggedin.subscribe((uj_ertek) => { loggedin = uj_ertek; })
 közös_username.subscribe((uj_ertek) => { username = uj_ertek; })
 közös_admin.subscribe((uj_ertek) => { admin = uj_ertek; })
 
+export async function kilepes() {
+    szinkron_keres("/include/belepteto_rendszer.🦀?logout=igen", "", (uzenet: BelepesStatusz) => {
+        if( uzenet.eredmeny == 'ok' ) {
+            közös_loggedin.set(false);
+            közös_username.set("");
+            közös_admin.set(false);
+        }
+    });
+}
+
 export async function belepes(felhasználónév: string, jelszó: string) {
     let post_parameterek_salt_keres = new FormData();
     post_parameterek_salt_keres.append('get_salt', 'yes');

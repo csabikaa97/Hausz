@@ -1,0 +1,141 @@
+@media(prefers-color-scheme: dark) {
+    a {
+        color: rgb(106, 195, 255);
+    }
+
+    input {
+        color: rgb(180, 180, 180);
+    }
+
+    ::placeholder {
+        color: rgb(180, 180, 180);
+    }
+
+    button {
+        background-color: rgb(50, 50, 50);
+        border: rgb(70, 70, 70);
+        color: rgb(180, 180, 180);
+    }
+
+    input {
+        background-color: rgb(30, 30, 30);
+        border: rgb(70, 70, 70);
+    }
+
+    .preview_box {
+        border: solid rgb(70, 70, 70) 1px;
+        background-color: rgb(50, 50, 50);
+    }
+
+    body {
+        background-color: black;
+        color: rgb(180, 180, 180);
+    }
+
+    table {
+        border: 1px solid rgb(70, 70, 70);
+    }
+
+    td {
+        border-top: 1px solid rgb(70, 70, 70);
+    }
+
+    tr:hover {
+        background-color: rgb(70, 70, 70);
+    }
+
+    video {
+        background-color: black;
+    }
+}
+
+@media(prefers-color-scheme: light) {
+    .preview_box {
+        border: solid rgb(240, 240, 240) 1px;
+        background-color: white;
+    }
+
+    body {
+        background-color: white;
+        color: black;
+    }
+
+    table {
+        border: 1px solid rgb(180, 180, 180);
+    }
+
+    td {
+        border-top: 1px solid rgb(180, 180, 180);
+    }
+
+    tr:hover {
+        background-color: rgb(240, 240, 240);
+    }
+
+    video {
+        background-color: black;
+    }
+
+    ::placeholder {
+        color: black;
+    }
+}
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+abbr {
+    text-decoration: none;
+}
+
+input {
+    border: 1px solid;
+}
+
+:root {
+    color-scheme: light dark;
+}
+
+.preview_box {
+    padding: 10px;
+    position: fixed;
+    left: 20%;
+    top: 25%;
+    width: fit-content;
+    height: 75%;
+    border-radius: 5px;
+    z-index: 2;
+}
+
+body {
+    margin: 0px;
+    overflow-x: hidden;
+}
+
+table {
+    margin: 10px;
+    table-layout: auto;
+    border-collapse: collapse;
+    text-align: left;
+    border-radius: 10px;
+}
+
+td {
+    padding: 0 5px;
+    font-size: 18px;
+}
+
+::placeholder {
+    text-align: center;
+    font-size: 100%;
+}
+
+iframe {
+    width: 100%;
+    height: 90%;
+}
+
+th {
+    padding: 8px;
+}

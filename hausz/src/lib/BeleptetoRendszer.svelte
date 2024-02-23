@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { belepes, statusz_lekerese } from "./BeleptetoRendszer";
+    import { belepes, kilepes, statusz_lekerese } from "./BeleptetoRendszer";
     import { közös_admin, közös_loggedin, közös_username } from "./BeleptetoRendszer";
 
     let loggedin = false;
@@ -15,15 +15,18 @@
     statusz_lekerese();
 </script>
 
-<div style="background-color: cyan">
+<div class="szint-1 zindex-1 mobilon-lathatatlan padding-10 kerekites-15" style="position: fixed; bottom: 5px; right: 5px">
     {#if loggedin}
-        Belépve mint: {username}
+        Belépve mint: {username}<br>
         {#if admin}
-            <button on:click={e => {location.href="/admin/admin.html"}}>Admin felület</button>
+            <button on:click={e => {location.href="/admin/admin.html"}}>Admin felület</button><br>
         {/if}
+        <button on:click={e => {kilepes()}}>Kilépés</button><br>
     {:else}
-        <input type="text" bind:value={bemenet_felhasználónév} placeholder="Felhasználónév">
-        <input type="password" bind:value={bemenet_jelszó} placeholder="Jelszó">
-        <button on:click={e => {belepes(bemenet_felhasználónév, bemenet_jelszó)}}>Belépés</button>
+        <form on:submit={e => { e.preventDefault(); belepes(bemenet_felhasználónév, bemenet_jelszó); }}>
+            <input type="text" bind:value={bemenet_felhasználónév} placeholder="Felhasználónév"><br>
+            <input type="password" bind:value={bemenet_jelszó} placeholder="Jelszó"><br>
+            <input type="button" on:click={e => { e.preventDefault(); belepes(bemenet_felhasználónév, bemenet_jelszó); }} value="Belépés"/><br>
+        </form>
     {/if}
 </div>
