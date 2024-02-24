@@ -15,7 +15,7 @@
     statusz_lekerese();
 </script>
 
-<div class="szint-1 zindex-1 mobilon-lathatatlan padding-10 kerekites-15" style="position: fixed; bottom: 5px; right: 5px">
+<div class="szint-1 zindex-1 padding-10 kerekites-15" style="position: fixed; bottom: 5px; right: 5px">
     {#if loggedin}
         Belépve mint: {username}<br>
         {#if admin}

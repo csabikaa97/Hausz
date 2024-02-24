@@ -1,8 +1,12 @@
 <script lang="ts">
     import BeleptetoRendszer from "$lib/BeleptetoRendszer.svelte";
     import { ujitas_lista } from "$lib/Konstansok";
+    import Topbar from "$lib/Topbar.svelte";
 </script>
 
+<div style="height: 25vh"></div>
+
+<Topbar />
 <BeleptetoRendszer />
 
 <div>

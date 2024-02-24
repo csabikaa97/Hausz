@@ -5,6 +5,13 @@ export function hash_keszites(szoveg: string) {
     return sha256(szoveg);
 }
 
+export function obj(szoveg: string): HTMLElement {
+    if( !( /^#/.test(szoveg) ) ) {
+        return <HTMLElement>document.querySelector('#' + szoveg);
+    }
+    return <HTMLElement>document.querySelector(szoveg);
+}
+
 export function szinkron_keres(hivatkozas: string, parameterek: string | FormData, fuggveny: Function) {
     if(!browser) {
         return;
