@@ -25,6 +25,9 @@
                 topbar_lista_aktivalva = false;
             }
         }
+
+        document.head.innerHTML += '<meta name="theme-color" media="(prefers-color-scheme: light)" content="rgb(245,245,245)">';
+        document.head.innerHTML += '<meta name="theme-color" media="(prefers-color-scheme: dark)" content="rgb(30,30,30)">';
     }
 
     let topbar_lista_aktivalva = false;

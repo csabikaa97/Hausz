@@ -1,4 +1,6 @@
-export const alap_url = "https://localhost";
+export const domain = "hausz.stream"
+// TODO: egyesíteni a kettőt
+export const alap_url = "https://localhost"
 
 export const ujitas_lista: Array<{[datum: string]: string[]}> = [
     {'2024.01.30': ["Alap: Az összes szolgáltatást sikerült kihejezni a régi fizetős Amazon szerverről saját szerverre, így mostmár több lehetőség van hosztolás szempontjából, a meglévő szolgáltatások pedig gyorsabban működnek."]}

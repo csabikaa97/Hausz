@@ -1,5 +1,6 @@
 <script lang="ts">
     import BeleptetoRendszer from "$lib/BeleptetoRendszer.svelte";
+    import Uzenet from "$lib/Uzenet.svelte";
     import { ujitas_lista } from "$lib/Konstansok";
     import Topbar from "$lib/Topbar.svelte";
 </script>
@@ -8,6 +9,7 @@
 
 <Topbar />
 <BeleptetoRendszer />
+<Uzenet />
 
 <div>
     <div>

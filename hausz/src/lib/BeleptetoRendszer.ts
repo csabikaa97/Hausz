@@ -1,10 +1,11 @@
 import { writable } from "svelte/store";
 
 import { szinkron_keres } from "./alap_fuggvenyek";
-import { BelepesStatusz, SaltEredmeny } from "./Tipusok";
+import { BelepesStatusz } from "./Tipusok";
 import { Uzenet } from "./Tipusok";
 import { alap_url } from "./Konstansok";
 import { hash_keszites } from "./alap_fuggvenyek";
+import { uj_valasz_mutatasa } from "./Uzenet";
 
 let loggedin = false;
 let username = "";
@@ -13,17 +14,21 @@ let admin = false;
 export let közös_loggedin = writable(false);
 export let közös_username = writable("");
 export let közös_admin = writable(false);
+export let közös_statusz_lekerve = writable(false);
 
 közös_loggedin.subscribe((uj_ertek) => { loggedin = uj_ertek; })
 közös_username.subscribe((uj_ertek) => { username = uj_ertek; })
 közös_admin.subscribe((uj_ertek) => { admin = uj_ertek; })
 
 export async function kilepes() {
-    szinkron_keres("/include/belepteto_rendszer.🦀?logout=igen", "", (uzenet: BelepesStatusz) => {
+    szinkron_keres("/include/belepteto_rendszer.🦀?logout=igen", "", (uzenet: Uzenet<string>) => {
         if( uzenet.eredmeny == 'ok' ) {
             közös_loggedin.set(false);
             közös_username.set("");
             közös_admin.set(false);
+            uj_valasz_mutatasa(3000, "sima", "Sikeres kilépés");
+        } else {
+            uj_valasz_mutatasa(3000, "hiba", uzenet.valasz);
         }
     });
 }
@@ -33,7 +38,7 @@ export async function belepes(felhasználónév: string, jelszó: string) {
     post_parameterek_salt_keres.append('get_salt', 'yes');
     post_parameterek_salt_keres.append('username', felhasználónév);
 
-    szinkron_keres(`${alap_url}/include/belepteto_rendszer.🦀`, post_parameterek_salt_keres, async (uzenet: SaltEredmeny) => {
+    szinkron_keres(`${alap_url}/include/belepteto_rendszer.🦀`, post_parameterek_salt_keres, async (uzenet: {eredmeny: string, salt: string, valasz: string}) => {
         if(uzenet.eredmeny == 'ok') {
             let salt = uzenet.salt;
             let post_parameterek_belepes = new FormData();
@@ -46,15 +51,25 @@ export async function belepes(felhasználónév: string, jelszó: string) {
 
             szinkron_keres("/include/belepteto_rendszer.🦀", post_parameterek_belepes, (uzenet: Uzenet<string>) => {
                 if(uzenet.eredmeny == 'ok') {
+                    uj_valasz_mutatasa(3000, "ok", "Sikeres belépés");
                     statusz_lekerese();
+                } else {
+                    uj_valasz_mutatasa(3000, "hiba", uzenet.valasz);
                 }
             });
+        } else {
+            uj_valasz_mutatasa(3000, "hiba", uzenet.valasz);
         }
     });
 }
 
 export function statusz_lekerese() {
-    szinkron_keres(`${alap_url}/include/belepteto_rendszer?statusz=1`, "", (uzenet: BelepesStatusz) => {
+    szinkron_keres(`${alap_url}/include/belepteto_rendszer?statusz=1`, "", (uzenet: {
+        eredmeny: string;
+        session_loggedin: string,
+        session_username: string,
+        session_admin: string
+    }) => {
         if( uzenet.eredmeny == 'ok' ) {
             közös_loggedin.set(uzenet.session_loggedin == "yes");
             közös_username.set(uzenet.session_username);
@@ -64,5 +79,6 @@ export function statusz_lekerese() {
             közös_username.set("");
             közös_admin.set(false);
         }
+        közös_statusz_lekerve.set(true);
     });
 }

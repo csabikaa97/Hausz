@@ -3,11 +3,6 @@ export class Uzenet<T> {
     valasz: T;
 }
 
-export class SaltEredmeny {
-    eredmeny: string;
-    salt: string;
-}
-
 export class BelepesStatusz {
     eredmeny: string = "";
     session_loggedin: string = "";
