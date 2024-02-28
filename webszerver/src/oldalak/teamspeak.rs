@@ -47,6 +47,12 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             },
         };
+
+        if !create_token_sh_kimenete.status.success() {
+            println!("{} A create_token.sh script visszatérési kódja nem 0 volt.");
+            return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
+        }
+
         let eredmeny = String::from_utf8_lossy(&create_token_sh_kimenete.stdout);
         let eredmeny = Regex::new(r"\s+").unwrap().replace_all(&eredmeny, "");
         let eredmeny = eredmeny.trim();
@@ -126,6 +132,11 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
                 return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
             },
         };
+
+        if !list_clients_sh_kimenete.status.success()  {
+            println!("{} Nem 0 a visszatérési kódja a scriptnek, hanem: {}", LOG_PREFIX, list_clients_sh_kimenete.status);
+            return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
+        }
 
         let eredmeny = String::from_utf8_lossy(&list_clients_sh_kimenete.stdout);
         let eredmeny = eredmeny.trim();

@@ -164,7 +164,7 @@ pub fn saját_fájlok_lekérdezése(session: Session) -> HttpResponse {
         }
 
         fájlok_szöveg.push_str(&format!(
-            "{{\"megjeleno_nev\": \"{}\", \"titkositott\": {}, \"id\": {}, \"size\": {}, \"filename\": \"{}\", \"added\": \"{}\", \"username\": \"{}\", \"private\": {}, \"members_only\": {}}}",
+            "{{\"megjeleno_nev\": \"{}\", \"titkositott\": {}, \"id\": {}, \"size\": {}, \"filename\": \"{}\", \"added\": \"{}\", \"user_id\": \"{}\", \"private\": {}, \"members_only\": {}}}",
             fájl.felhasználó_megjelenő_név,
             fájl.titkosított,
             fájl.azonosító,

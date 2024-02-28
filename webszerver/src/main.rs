@@ -176,7 +176,9 @@ fn scriptek_ellenőrzése() {
 
             if fájl == "teamspeak_kliens_lista.sh" {
                 tartalom = format!(r#"#!/bin/bash
+set -e
 expect << EOF
+set timeout 1
 spawn telnet {} 10011
 expect -re ".*command\."
 send "login serveradmin {}\r"
@@ -193,8 +195,9 @@ EOF"#, konfig().webszerver.hausz_teamspeak_szerver_ip, privát_konfig().webszerv
 
             if fájl == "teamspeak_telnet_statusz.sh" {
                 tartalom = format!(r#"#!/bin/bash
+set -e
 expect << EOF
-set timeout 2
+set timeout 1
 spawn telnet {} 10011
 expect -re ".*command\."
 send "quit\r"
@@ -203,7 +206,9 @@ EOF"#, konfig().webszerver.hausz_teamspeak_szerver_ip);
 
             if fájl == "teamspeak_token_keszites.sh" {
                 tartalom = format!(r#"#!/bin/bash
+set -e
 expect << EOF
+set timeout 1
 spawn telnet {} 10011
 expect -re ".*command\."
 send "login serveradmin {}\r"

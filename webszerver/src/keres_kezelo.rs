@@ -97,6 +97,9 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     if isset("privat_status_csere", get.clone()) {
         return megosztó(payload, post, get, session).await;
     }
+    if isset("claim", get.clone()) {
+        return megosztó(payload, post, get, session).await;
+    }
     if isset("delete", get.clone()) {
         return megosztó(payload, post, get, session).await;
     }
