@@ -10,8 +10,10 @@ import { uj_valasz_mutatasa } from "./Uzenet";
 let loggedin = false;
 let username = "";
 let admin = false;
+let user_id = 0;
 
 export let közös_loggedin = writable(false);
+export let közös_user_id = writable(0);
 export let közös_username = writable("");
 export let közös_admin = writable(false);
 export let közös_statusz_lekerve = writable(false);
@@ -19,6 +21,7 @@ export let közös_statusz_lekerve = writable(false);
 közös_loggedin.subscribe((uj_ertek) => { loggedin = uj_ertek; })
 közös_username.subscribe((uj_ertek) => { username = uj_ertek; })
 közös_admin.subscribe((uj_ertek) => { admin = uj_ertek; })
+közös_user_id.subscribe((uj_ertek) => { user_id = uj_ertek; })
 
 export async function kilepes() {
     szinkron_keres("/include/belepteto_rendszer.🦀?logout=igen", "", (uzenet: Uzenet<string>) => {
@@ -26,6 +29,7 @@ export async function kilepes() {
             közös_loggedin.set(false);
             közös_username.set("");
             közös_admin.set(false);
+            közös_user_id.set(-1);
             uj_valasz_mutatasa(3000, "sima", "Sikeres kilépés");
         } else {
             uj_valasz_mutatasa(3000, "hiba", uzenet.valasz);
@@ -68,16 +72,19 @@ export function statusz_lekerese() {
         eredmeny: string;
         session_loggedin: string,
         session_username: string,
-        session_admin: string
+        session_admin: string,
+        session_user_id: number
     }) => {
         if( uzenet.eredmeny == 'ok' ) {
             közös_loggedin.set(uzenet.session_loggedin == "yes");
             közös_username.set(uzenet.session_username);
             közös_admin.set(uzenet.session_admin == "igen");
+            közös_user_id.set(uzenet.session_user_id);
         } else {
             közös_loggedin.set(false);
             közös_username.set("");
             közös_admin.set(false);
+            közös_user_id.set(-1);
         }
         közös_statusz_lekerve.set(true);
     });

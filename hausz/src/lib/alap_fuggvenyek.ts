@@ -7,10 +7,13 @@ export function hash_keszites(szoveg: string) {
 }
 
 export function obj(szoveg: string): HTMLElement {
-    if( !( /^#/.test(szoveg) ) ) {
-        return <HTMLElement>document.querySelector('#' + szoveg);
+    let azonosito = szoveg;
+    if( !szoveg.startsWith('#') ) { azonosito = '#' + szoveg; }
+    if( document.querySelector(azonosito) !== null) {
+        return <HTMLElement>document.querySelector(azonosito);
+    } else {
+        throw new Error('Nincs ilyen azonosítójú elem: ' + azonosito);
     }
-    return <HTMLElement>document.querySelector(szoveg);
 }
 
 export function masolas(event: Event) {
@@ -43,4 +46,39 @@ export function szinkron_keres(hivatkozas: string, parameterek: string | FormDat
         xhttp.open("POST", hivatkozas);
         xhttp.send(parameterek);
     }
+}
+
+export function idopontbol_datum(datum: Date) {
+    datum.setHours(0);
+    datum.setSeconds(0);
+    datum.setMinutes(0);
+    datum.setMilliseconds(0);
+    return datum;
+}
+
+export function bajt_merette_valtasa(meret: number) {
+    let eredmeny = "";
+    if( meret <= 1024) {
+        eredmeny = String(meret) + ' B';
+    } else {
+        if( meret <= 1024 * 1024) {
+            eredmeny = String(meret / 1024) + ' KB';
+        } else {
+            if( meret <= 1024 * 1024 * 1024) {
+                eredmeny = String(meret / 1024 / 1024) + ' MB';
+            } else {
+                if( meret <= 1024 * 1024 * 1024 * 1024) {
+                    eredmeny = String(meret / 1024 / 1024 / 1024) + ' GB';
+                } else {
+                    if( meret <= 1024 * 1024 * 1024 * 1024 * 1024) {
+                        eredmeny = String(meret / 1024 / 1024  / 1024  / 1024) + ' GB';
+                    }
+                }
+            }
+        }
+    }
+    eredmeny = eredmeny.replace(/([0-9])\.([0-9][0-9]).* ([KMG]?B)/, '$1.$2 $3');
+    eredmeny = eredmeny.replace(/([0-9][0-9])\.([0-9]).* ([KMG]?B)/, '$1.$2 $3');
+    eredmeny = eredmeny.replace(/([0-9][0-9][0-9])\..* ([KMG]?B)/, '$1 $2');
+    return eredmeny;
 }

@@ -1,3 +1,3 @@
-let szurendo_szavak = [
+export let szurendo_szavak = [
     'szo1', 'szo2'
 ];

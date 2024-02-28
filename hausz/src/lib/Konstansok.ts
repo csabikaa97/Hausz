@@ -24,4 +24,15 @@ export const ujitas_lista: Array<{[datum: string]: string[]}> = [
     , {'2022.06.21': ["Megosztó: 🔑🔒 Lehet jelszóval titkosítani feltöltéskor a fájlokat, és teljesen újra lett írva az egész."]}
     , {'2022.06.01': ["TeamSpeak oldal: Rövid leírás új felhasználók számára, jogosultságot igénylés, szerver státuszát, és online felhasználó lista."]}
     , {'2022.05.26': ["Együttnéző: Nagyon alpha verzió még."]}
-]
+];
+
+export const megoszto_fajl_tipusok: Array<{tipus: string, kiterjesztesek: string[]}> = [
+    {tipus: 'kep', kiterjesztesek: ['jpg', 'png', 'heic', 'gif', 'svg', 'webp', 'bmp', 'jpeg']},
+    {tipus: 'audio', kiterjesztesek: ['mp3', 'wav']},
+    {tipus: 'video', kiterjesztesek: ['mkv', 'avi', 'mp4', 'webm']},
+    {tipus: 'dokumentum', kiterjesztesek: ['pdf', 'csv', 'c', 'cpp', 'm', 'py', 'css', 'txt', 'sql', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx', 'ahk', 'md', 'sh']},
+    {tipus: 'szoftver', kiterjesztesek: ['exe', 'msi', 'iso', 'apk', 'rpm', 'deb', 'dmg', 'pkg']},
+    {tipus: 'csomagolt', kiterjesztesek: ['torrent', 'zip', '7z', 'tar', 'rar', 'gz']}
+];
+
+export const megoszto_fajl_elonezet_limit = 1024 * 1024 * 10;
