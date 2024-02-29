@@ -49,7 +49,7 @@ pub async fn teamspeak_oldal(get: Vec<(String, String)>, session: Session) -> Ht
         };
 
         if !create_token_sh_kimenete.status.success() {
-            println!("{} A create_token.sh script visszatérési kódja nem 0 volt.");
+            println!("{} A create_token.sh script visszatérési kódja nem 0 volt, hanem: {}", LOG_PREFIX, create_token_sh_kimenete.status);
             return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
         }
 

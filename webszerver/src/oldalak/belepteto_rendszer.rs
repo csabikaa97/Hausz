@@ -29,7 +29,7 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
         if !isset("username", post.clone()) {
             return HttpResponse::BadRequest().body(exit_error(format!("\"hiba\": \"Nem adtál meg felhasználónevet.\"")));
         }
-        if !isset("password", post.clone()) && !isset("sha256_password", post.clone()) {
+        if !isset("sha256_password", post.clone()) {
             return HttpResponse::BadRequest().body(exit_error(format!("\"hiba\": \"Nem adtál meg jelszót.\"")));
         }
 
@@ -39,7 +39,7 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
         let felhasznalo = match crate::backend::lekerdezesek::felhasznalo_lekerdezese(crate::alap_fuggvenyek::FelhasználóAzonosítóAdatok::Felhasználónév(username.clone())) {
             Ok(Some(result)) => result,
             Ok(None) => {
-                return HttpResponse::BadRequest().body(exit_error(format!("Nem létezik ilyen felhasználó.")));
+                return HttpResponse::BadRequest().body(exit_error(format!("Hibás felhasználónév vagy jelszó.")));
             },
             Err(err) => {
                 println!("{}\"error\": \"{}\"", LOG_PREFIX, err);
@@ -47,19 +47,17 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
             }
         };
 
-        if isset("sha256_password", post.clone()) {
-            let password_in_db = match crate::alap_fuggvenyek::get_password_part(crate::alap_fuggvenyek::JelszoReszek::Password, felhasznalo.sha256_jelszó.as_str()) {
-                Ok(result) => result,
-                Err(err) => {
-                    println!("{}\"error\": \"{}\"", LOG_PREFIX, err);
-                    return HttpResponse::BadRequest().body(exit_error(format!("\"hiba\": \"Nem sikerült a jelszó ellenőrzése.\"")));
-                }
-            };
-
-            if password != password_in_db {
-                println!("{}Jelszavak nem egyeznek! ({}) ({})", LOG_PREFIX, password, password_in_db);
-                return HttpResponse::BadRequest().body(exit_error(format!("Hibás felhasználónév vagy jelszó.")));
+        let password_in_db = match crate::alap_fuggvenyek::get_password_part(crate::alap_fuggvenyek::JelszoReszek::Password, felhasznalo.sha256_jelszó.as_str()) {
+            Ok(result) => result,
+            Err(err) => {
+                println!("{}\"error\": \"{}\"", LOG_PREFIX, err);
+                return HttpResponse::BadRequest().body(exit_error(format!("\"hiba\": \"Nem sikerült a jelszó ellenőrzése.\"")));
             }
+        };
+
+        if password != password_in_db {
+            println!("{}Jelszavak nem egyeznek! ({}) ({})", LOG_PREFIX, password, password_in_db);
+            return HttpResponse::BadRequest().body(exit_error(format!("Hibás felhasználónév vagy jelszó.")));
         }
 
         let új_cookie = crate::backend::session_azonosito_generator::random_új_session_azonosító();
