@@ -71,7 +71,7 @@ export function bajt_merette_valtasa(meret: number) {
                     eredmeny = String(meret / 1024 / 1024 / 1024) + ' GB';
                 } else {
                     if( meret <= 1024 * 1024 * 1024 * 1024 * 1024) {
-                        eredmeny = String(meret / 1024 / 1024  / 1024  / 1024) + ' GB';
+                        eredmeny = String(meret / 1024 / 1024  / 1024  / 1024) + ' TB';
                     }
                 }
             }

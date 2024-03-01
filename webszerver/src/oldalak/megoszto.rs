@@ -242,7 +242,7 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
                     Ok(_) => {},
                     Err(err) => {
                         println!("{}Hiba a fájl törlésekor: {}", LOG_PREFIX, err);
-                        return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
+                        HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
                     }
                 }
             },
@@ -390,8 +390,15 @@ pub async fn megosztó(mut payload: Multipart, post: Vec<(String, String)>, get:
         }
         
         log_bejegyzes("megoszto", "feltöltés", filename.as_str(), session.username);
+
+        let azonosító = match fájl_lekérdezése_név_alapján(filename.clone()) {
+            Some(fájl) => fájl.azonosító,
+            None => {
+                return HttpResponse::InternalServerError().body(exit_error(format!("Belső hiba.")));
+            }
+        };
         
-        return HttpResponse::Ok().body(exit_ok(format!("A '{}' nevű fájl sikeresen fel lett töltve.", filename)));
+        return HttpResponse::Ok().body(exit_ok(format!("\"id\": {}, \"fajlnev\": \"{}\"", azonosító, filename)));
     }
 
     if isset("fajlok", get.clone()) {

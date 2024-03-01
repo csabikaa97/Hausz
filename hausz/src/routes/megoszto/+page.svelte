@@ -1,7 +1,7 @@
 <script lang="ts">
     import { obj, szinkron_keres } from "$lib/alap_fuggvenyek";
     import { szurendo_szavak } from "$lib/szurendo_szavak";
-    import { közös_loggedin, közös_user_id } from "$lib/BeleptetoRendszer";
+    import { közös_loggedin, közös_user_id, közös_username } from "$lib/BeleptetoRendszer";
     import { bajt_merette_valtasa } from "$lib/alap_fuggvenyek";
     import { uj_valasz_mutatasa } from "$lib/Uzenet";
     import { idopontbol_datum } from "$lib/alap_fuggvenyek";
@@ -11,11 +11,15 @@
     import Uzenet from "$lib/Uzenet.svelte";
     import { megoszto_fajl_tipusok } from "$lib/Konstansok";
     import { megoszto_fajl_elonezet_limit } from "$lib/Konstansok";
+    import { hash_keszites } from "$lib/alap_fuggvenyek";
+    import { Buffer } from "buffer";
 
     let session_loggedin = false;
     let session_user_id = 0;
+    let session_username = "";
     közös_loggedin.subscribe((uj_ertek) => { session_loggedin = uj_ertek; })
     közös_user_id.subscribe((uj_ertek) => { session_user_id = uj_ertek; })
+    közös_username.subscribe((uj_ertek) => { session_username = uj_ertek; })
 
     class Fajl {
         megjeleno_nev: string;
@@ -54,22 +58,19 @@
     let nem_letezo_fajl_sor = false;
     let nincs_fajl_sor = false;
 
-    let dropZone: HTMLElement;
-    let dropZone_leiras: HTMLElement;
-
     let jobb_klikk_menu_aktivalva = false;
     let atnevezes_menu_aktivalva = false;
     let titkositas_feloldasa_menu_aktivalva = false;
     let v2_titkositas_feloldasa_menu_aktivalva = false;
 
     let feldolgozott_fajl_lista: FajlElem[] = [];
+    let szurt_fajl_lista: FajlElem[] = [];
 
     let szures_aktivalva = false;
 
     let darken_background = false;
 
     let titkositott_fajl_letoltes_link = "";
-    let titkositott_fajl_letoltes_fajlnev = "";
     let titkositatlan_fajl_letoltes_link = "";
     let v2_titkositas_feloldott_fajl = "";
 
@@ -85,85 +86,121 @@
     let jobb_klikk_menu_position = "fixed";
 
     let atnevezes_uj_nev = "";
+    let fajlnevek: string[] = [];
 
-    function szures_gomb_kattintas(event: Event) {
-        szures_aktivalva = !szures_aktivalva;
-        /*
-        if (obj('szuro_sor').style.display == 'none' || obj('szuro_sor').style.display == '') {
-            obj('szuro_sor').style.display = 'table-row';
-            obj('szures_gomb').classList.remove("szint-3");
-            obj('szures_gomb').classList.add("szint-4");
+    let fileToUpload: HTMLInputElement;
+    let feltoltes_folyamatban = false;
+
+    let titkositas_kulcs: string = "";
+    let privat_feltoltes: boolean;
+    let csak_tagok_szamara_lathato: boolean;
+
+    let v2_titkositas_feloldasa_fazis: "letöltés" | "feloldás" | "mentés";
+    let v2_titkositas_feloldasa_kulcs = "";
+
+    let feltolto_szures_mezo: string = "";
+    let datum_szures_mezo: string = "";
+    let fajlnev_szures_mezo: string = "";
+
+    let titkositas_feloldasa_kulcs = "";
+
+    $: {
+        szurt_fajl_lista = feldolgozott_fajl_lista;
+        filter_frissites();
+    }
+
+    function datum_formazas(datum: string) {
+        if( idopontbol_datum(new Date()) > idopontbol_datum(new Date(datum)) ) {
+            return `${datum.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$1.$2.$3')}`;
         } else {
-            obj('fajlnev_szures_mezo').value = "";
-            obj('datum_szures_mezo').value = "";
-            obj('feltolto_szures_mezo').value = "";
-            filter_frissites();
-            obj('szuro_sor').style.display = 'none';
-            obj('szures_gomb').classList.remove("szint-4");
-            obj('szures_gomb').classList.add("szint-3");
+            return `${datum.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$4:$5')}`;
         }
-        */
     }
 
     function filter_frissites() {
-        /*
-        let filter_fajlnev = obj('fajlnev_szures_mezo').value;
-        let filter_datum = obj('datum_szures_mezo').value;
-        let filter_feltolto = obj('feltolto_szures_mezo').value;
+        let helyi_szurt_fajl_lista = feldolgozott_fajl_lista;
+        for (let i = 0; i < helyi_szurt_fajl_lista.length; i++) {
+            helyi_szurt_fajl_lista = helyi_szurt_fajl_lista.filter( 
+                elem => elem.fajl.megjeleno_nev.toLowerCase().includes(feltolto_szures_mezo.toLowerCase()) 
+            );
+            helyi_szurt_fajl_lista = helyi_szurt_fajl_lista.filter( 
+                elem => elem.fajl.filename.toLowerCase().includes(fajlnev_szures_mezo.toLowerCase())
+            );
+            
+            helyi_szurt_fajl_lista = helyi_szurt_fajl_lista.filter(
+                elem => datum_formazas(elem.fajl.added).includes(datum_szures_mezo)
+            );
+        }
+        szurt_fajl_lista = helyi_szurt_fajl_lista;
+    }
 
-        let tr_tagek = document.getElementsByTagName('tbody')[0].children;
+    function fajl_hozzaadasa(fajl: Fajl, elore: boolean = false) {
+        let hozzaadando_fajl_elem = new FajlElem();
 
-        let maradt_sorok_szama = 0;
-
-        for (let i = 0; i < tr_tagek.length; i++) {
-            let sors = 'table-row';
-
-            if (filter_feltolto.length > 0) {
-                if (tr_tagek[i].attributes['sor_username'] != undefined) {
-                    if (tr_tagek[i].attributes['sor_username'].value.toLowerCase() != filter_feltolto.toLowerCase() &&
-                        !tr_tagek[i].attributes['sor_username'].value.toLowerCase().includes(filter_feltolto.toLowerCase())) {
-                        sors = 'none';
-                    }
+        let kiterjesztes = "";
+        if(fajl.filename.includes('.')) {
+            let split_fajlnev = fajl.filename.split('.');
+            if(split_fajlnev !== undefined) {
+                let utolso_elem = split_fajlnev.pop();
+                if(utolso_elem !== undefined) {
+                    kiterjesztes = utolso_elem;
                 }
-            }
-
-            if (filter_fajlnev.length > 0) {
-                if (tr_tagek[i].attributes['sor_filename'] != undefined) {
-                    if (tr_tagek[i].attributes['sor_filename'].value.toLowerCase() != filter_fajlnev.toLowerCase() &&
-                        !tr_tagek[i].attributes['sor_filename'].value.toLowerCase().includes(filter_fajlnev.toLowerCase())) {
-                        sors = 'none';
-                    }
-                }
-            }
-
-            if (filter_datum.length > 0) {
-                if (tr_tagek[i].attributes['sor_added'] != undefined) {
-                    let datum = tr_tagek[i].attributes['sor_added'].value;
-                    datum = datum.replace(/-/g, '.');
-                    if (datum != filter_datum &&
-                        !datum.includes(filter_datum)) {
-                        sors = 'none';
-                    }
-                }
-            }
-
-            if (tr_tagek[i].id == 'nincs_fajl_sor') {
-                sors = 'none';
-            }
-
-            tr_tagek[i].setAttribute('style', 'display: ' + sors);
-
-            if (sors == 'table-row') {
-                maradt_sorok_szama += 1;
             }
         }
+        let elonezet_tipus = "egyeb";
 
-        if (maradt_sorok_szama <= 3) {
-            obj('nem_letezo_fajl_sor').style.display = "table-row";
+        Object.values(megoszto_fajl_tipusok).forEach((sor) => {
+            sor.kiterjesztesek.forEach( jelenlegi_kiterjesztes => {
+                if ( kiterjesztes.includes(jelenlegi_kiterjesztes) ) {
+                    elonezet_tipus = sor.tipus;
+                    return;
+                }
+            });
+        });
+
+        hozzaadando_fajl_elem.elonezet_tipus = elonezet_tipus;
+
+        szurendo_szavak.forEach(szo => {
+            let jelenlegi_szo_regexe = new RegExp(`${szo}`, 'i');
+            if( jelenlegi_szo_regexe.test(fajl.filename) ) {
+                let csere = "";
+                for (let i = 0; i < szo.length; i++) {   csere += "*"; }
+                fajl.filename = fajl.filename.replace( jelenlegi_szo_regexe, csere );
+            }
+        });
+
+        let elonezet_emoji = "";
+        let elonezet_tipusnev = "";
+
+        switch (elonezet_tipus) {
+            case "kep":         elonezet_emoji = '📷'; elonezet_tipusnev = 'Kép'; break;
+            case "audio":       elonezet_emoji = '🎵'; elonezet_tipusnev = 'Audió'; break;
+            case "video":       elonezet_emoji = '🎬'; elonezet_tipusnev = 'Videó'; break;
+            case "dokumentum":  elonezet_emoji = '📝'; elonezet_tipusnev = 'Dokumentum'; break;
+            case "szoftver":    elonezet_emoji = '💿'; elonezet_tipusnev = 'Szoftver'; break;
+            case "csomagolt":   elonezet_emoji = '📦'; elonezet_tipusnev = 'Csomagolt fájl'; break;
+            default:            elonezet_emoji = '❔'; elonezet_tipusnev = 'Egyéb'; break;
+        }
+
+        hozzaadando_fajl_elem.elonezet_emoji = elonezet_emoji;
+        hozzaadando_fajl_elem.elonezet_tipusnev = elonezet_tipusnev;
+
+        let datum_string = "";
+
+        if( idopontbol_datum(new Date()) > idopontbol_datum(new Date(fajl.added)) ) {
+            datum_string = `${fajl.added.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$1.$2.$3')}`;
         } else {
-            obj('nem_letezo_fajl_sor').style.display = "none";
+            datum_string = `${fajl.added.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$4:$5')}`;
         }
-        */
+
+        hozzaadando_fajl_elem.datum_string = datum_string;
+
+        hozzaadando_fajl_elem.fajl = fajl;
+        if(elore) {
+            feldolgozott_fajl_lista = [hozzaadando_fajl_elem, ...feldolgozott_fajl_lista];
+        } else {
+            feldolgozott_fajl_lista = [...feldolgozott_fajl_lista, hozzaadando_fajl_elem];
+        }
     }
 
     function fajlok_betoltese() {
@@ -179,83 +216,14 @@
                 nincs_fajl_sor = false;
             }
 
-            let feldolgozas_alatt_allo_lista: FajlElem[] = [];
-
             for (let i = 0; i < uzenet.fajlok.length; i++) {
                 let fajl = uzenet.fajlok[i];
-
-                let hozzaadando_fajl_elem = new FajlElem();
-
-                // BAD: let kiterjesztes = String(fajl.filename).replace(/(.*)(\..*)/, '$2');
-                let kiterjesztes = "";
-                if(fajl.filename.includes('.')) {
-                    let split_fajlnev = fajl.filename.split('.');
-                    if(split_fajlnev !== undefined) {
-                        let utolso_elem = split_fajlnev.pop();
-                        if(utolso_elem !== undefined) {
-                            kiterjesztes = utolso_elem;
-                        }
-                    }
-                }
-                let elonezet_tipus = "egyeb";
-
-                Object.values(megoszto_fajl_tipusok).forEach((sor) => {
-                    sor.kiterjesztesek.forEach( jelenlegi_kiterjesztes => {
-                        if ( kiterjesztes.includes(jelenlegi_kiterjesztes) ) {
-                            elonezet_tipus = sor.tipus;
-                            return;
-                        }
-                    });
-                });
-
-                hozzaadando_fajl_elem.elonezet_tipus = elonezet_tipus;
-
-                szurendo_szavak.forEach(szo => {
-                    let jelenlegi_szo_regexe = new RegExp(`${szo}`, 'i');
-                    if( jelenlegi_szo_regexe.test(fajl.filename) ) {
-                        let csere = "";
-                        for (let i = 0; i < szo.length; i++) {   csere += "*"; }
-                        fajl.filename = fajl.filename.replace( jelenlegi_szo_regexe, csere );
-                    }
-                });
-
-                let elonezet_emoji = "";
-                let elonezet_tipusnev = "";
-
-                switch (elonezet_tipus) {
-                    case "kep":         elonezet_emoji = '📷'; elonezet_tipusnev = 'Kép'; break;
-                    case "audio":       elonezet_emoji = '🎵'; elonezet_tipusnev = 'Audió'; break;
-                    case "video":       elonezet_emoji = '🎬'; elonezet_tipusnev = 'Videó'; break;
-                    case "dokumentum":  elonezet_emoji = '📝'; elonezet_tipusnev = 'Dokumentum'; break;
-                    case "szoftver":    elonezet_emoji = '💿'; elonezet_tipusnev = 'Szoftver'; break;
-                    case "csomagolt":   elonezet_emoji = '📦'; elonezet_tipusnev = 'Csomagolt fájl'; break;
-                    default:            elonezet_emoji = '❔'; elonezet_tipusnev = 'Egyéb'; break;
-                }
-
-                hozzaadando_fajl_elem.elonezet_emoji = elonezet_emoji;
-                hozzaadando_fajl_elem.elonezet_tipusnev = elonezet_tipusnev;
-
-                let datum_string = "";
-
-                if( idopontbol_datum(new Date()) > idopontbol_datum(new Date(fajl.added)) ) {
-                    datum_string = `${fajl.added.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$1.$2.$3')}`;
-                } else {
-                    datum_string = `${fajl.added.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$4:$5')}`;
-                }
-
-                hozzaadando_fajl_elem.datum_string = datum_string;
-
-                hozzaadando_fajl_elem.fajl = fajl;
-
-                feldolgozas_alatt_allo_lista = [...feldolgozas_alatt_allo_lista, hozzaadando_fajl_elem];
+                fajl_hozzaadasa(fajl);
             }
 
             if (filter_fajlnev.length > 0 || filter_datum.length > 0 || filter_feltolto.length > 0) {
                 filter_frissites();
             }
-
-            feldolgozott_fajl_lista = feldolgozas_alatt_allo_lista;
-            console.log({feldolgozott_fajl_lista});
         });
 
         szinkron_keres("/megoszto/megoszto.🦀?tarhely=1", "", (uzenet: {eredmeny: string, szabad_tarhely: number, foglalt_tarhely: number, valasz: string}) => {
@@ -319,73 +287,48 @@
         }
     }
 
-    function v2_titkositas_feloldasa(fajl_id: number, fajlnev: string) {
-        /*
-        if( file_id != jelenleg_feloldando_fajl_id || fajlnev != jelenleg_feloldando_fajl_nev ) {
-            obj('v2_titkositott_fajl_letoltes_gomb').style.visibility = 'visible';
-            obj('v2_titkositas_mentes_doboz').style.visibility = 'hidden';
-        }
-        jelenleg_feloldando_fajl_id = file_id;
-        jelenleg_feloldando_fajl_nev = fajlnev;
-        let caller = event.target;
-        if (!caller) {
-            if( !(<HTMLElement>caller).outerHTML.match(/^<td/)) {
-                return;
-            }
-        }
-        obj('v2_titkositas_feloldasa_box').style.visibility = 'visible';
-        obj('darken_background').style.visibility = 'visible';
-        obj('elonezet_bezaras_gomb').style.visibility = 'visible';
-        */
+    function v2_titkositas_feloldasa(fajl_id: number) {
+        titkositott_fajl_letoltes_link = "/megoszto/megoszto.🦀?letoltes&file_id=" + fajl_id;
+        fajl_kivalasztasa_id_alapjan(fajl_id);
+        v2_titkositas_feloldasa_menu_aktivalva = true;
     }
 
-    function v1_titkositas_feloldasa(file_id: number, fajlnev: string) {
-        // obj('titkositatlan_fajl_letoltes_link').innerHTML = "";
-        // obj('titkositas_feloldasa_kulcs').value = "";
-        // obj('titkositott_fajl_letoltes_link').innerHTML = "<br><br>Titkosított fájl letöltése";
-        // obj('titkositott_fajl_letoltes_link').download = "titkositott_" + fajlnev;
-        // obj('titkositott_fajl_letoltes_link').href = "/megoszto/megoszto.🦀?letoltes&file_id=" + file_id;
-        titkositott_fajl_letoltes_link = "/megoszto/megoszto.🦀?letoltes&file_id=" + file_id;
-        titkositott_fajl_letoltes_fajlnev = fajlnev;
-        // obj('titkositas_feloldasa_box').style.visibility = 'visible';
+    function v1_titkositas_feloldasa(fajl_id: number) {
+        titkositott_fajl_letoltes_link = "/megoszto/megoszto.🦀?letoltes&file_id=" + fajl_id;
+        fajl_kivalasztasa_id_alapjan(fajl_id);
         titkositas_feloldasa_menu_aktivalva = true;
-        // obj('darken_background').style.visibility = 'visible';
-        // obj('elonezet_bezaras_gomb').style.visibility = 'visible';
     }
 
     function titkositas_feloldasa_kuldes() {
-        /*
-        if ( obj('titkositas_feloldasa_kulcs').value.length <= 0 ) {
+        if ( titkositas_feloldasa_kulcs.length <= 0 ) {
             uj_valasz_mutatasa(5000, "hiba", "Nem adtál meg titkosítási kulcsot, így nem lehet feloldani a fájlt.");
             return;
         }
 
-        let post_parameterek_titkositas_feloldasa = new FormData();
-        post_parameterek_titkositas_feloldasa.append('titkositas_feloldasa_kulcs', obj('titkositas_feloldasa_kulcs').value);
+        uj_valasz_mutatasa(99999, "sima", "Fájl letöltése és feloldása...");
 
-        szinkron_keres("/megoszto/megoszto.🦀?letoltes&file_id=" + file_id, post_parameterek_titkositas_feloldasa, (uzenet) => {
+        let post_parameterek_titkositas_feloldasa = new FormData();
+        post_parameterek_titkositas_feloldasa.append('titkositas_feloldasa_kulcs', titkositas_feloldasa_kulcs);
+
+        szinkron_keres("/megoszto/megoszto.🦀?letoltes&file_id=" + kivalasztott_fajl.fajl.id, post_parameterek_titkositas_feloldasa, (uzenet: {eredmeny: string, valasz: string}) => {
             if( uzenet.eredmeny == 'ok' ) {
-                uj_valasz_mutatasa(99999, "", "Fájl letöltése...");
                 let xhr = new XMLHttpRequest();
-                xhr.open('POST', "/megoszto/megoszto.🦀?letoltes&file_id=" + file_id);
-                xhr.responseType = 'blob';
+                let post_parameterek_letoltes = new FormData();
+                post_parameterek_letoltes.append('titkositas_feloldasa_kulcs', titkositas_feloldasa_kulcs);
+                post_parameterek_letoltes.append('letoltes', '1');
                 xhr.onload = () => {
                     let fajl = xhr.response;
                     let link = URL.createObjectURL(fajl);
-                    obj('titkositatlan_fajl_letoltes_link').href = link;
-                    obj('titkositatlan_fajl_letoltes_link').innerHTML = "<br><br>Titkosítatlan fájl letöltése";
-                    obj('titkositatlan_fajl_letoltes_link').download = fajlnev;
-                    uj_valasz_mutatasa(5000, "ok", "Fájl letöltése kész.");
+                    titkositatlan_fajl_letoltes_link = link;
+                    uj_valasz_mutatasa(5000, "ok", "Fájl letöltése és feloldása kész.");
                 };
-                let post_parameterek_letoltes = new FormData();
-                post_parameterek_letoltes.append('titkositas_feloldasa_kulcs', obj('titkositas_feloldasa_kulcs').value);
-                post_parameterek_letoltes.append('letoltes', '1');
+                xhr.responseType = 'blob';
+                xhr.open('POST', "/megoszto/megoszto.🦀?letoltes&file_id=" + kivalasztott_fajl.fajl.id);
                 xhr.send(post_parameterek_letoltes);
             } else {
-                uj_valasz_mutatasa(10000, "hiba", uzenet.valasz);
+                uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
             }
         });
-        */
     }
 
     function fajl_atnevezese() {
@@ -430,59 +373,17 @@
         });
     }
 
-    function konyvtarak_beallitasa() {
-        /*
-        if(typeof crypto_konyvtar == 'undefined') {
-            uj_valasz_mutatasa(5000, "hiba", "A crypto könyvtár nem található");
-            throw new Error('A crypto konyvtar nem talalhato.');
-        }
-        if(typeof window['Buffer'] == 'undefined' || typeof window['crypto'] == 'undefined') {
-            window['Buffer'] = crypto_konyvtar.Buffer;
-            window['crypto'] = crypto_konyvtar.crypto;
-        }
-        */
-    }
-
     function feltoltes() {
-        /*
-        let fajlok = obj('fileToUpload').files;
-        if (fajlok.length > 1) {
-            uj_valasz_mutatasa(99999, "", 'Fájlok feltöltése...');
-        } else {
-            uj_valasz_mutatasa(99999, "", 'Fájl feltöltése...');
+        let fajlok = fileToUpload.files;
+        if(fajlok === null) {
+            throw new Error('A fajlok input null!!!');
         }
+        uj_valasz_mutatasa(99999, "sima", (fajlok.length > 1 ? 'Fájlok feltöltése...' : 'Fájl feltöltése...'));
 
-        let feltoltes_statusz_doboz = document.createElement('div');
-        feltoltes_statusz_doboz.style.padding = '20px';
-        feltoltes_statusz_doboz.innerHTML = 'Fájl(ok) feltöltése folyamatban...';
-        feltoltes_statusz_doboz.id = 'feltoltes_statusz_doboz';
-        feltoltes_statusz_doboz.style.position = 'fixed';
-        feltoltes_statusz_doboz.style.display = 'block';
-        feltoltes_statusz_doboz.style.width = '100%';
-        feltoltes_statusz_doboz.style.textAlign = 'center';
-        feltoltes_statusz_doboz.style.top = '50%';
-        document.body.appendChild(feltoltes_statusz_doboz);
-
-        eloterbe_helyezes( [ feltoltes_statusz_doboz ], false, undefined );
-
-        obj('fileToUpload').type = '';
-        obj('fileToUpload_label').innerHTML = 'Feltöltés folyamatban...';
-
-        let valid_fajlok_szama = 0;
-        for (let i = 0; i < fajlok.length; i++) {
-            if (fajlok[i].valid != "nem") {
-                valid_fajlok_szama++;
-            }
-        }
-
-        let kesz_fajlok_szama = 0;
+        feltoltes_folyamatban = true;
 
         for (let i = 0; i < fajlok.length; i++) {
             let fajl = fajlok[i];
-
-            if (fajl.valid == "nem") {
-                continue;
-            }
 
             let keres = new XMLHttpRequest();
             keres.onload = function() {
@@ -491,32 +392,43 @@
                 console.log(feltoltes_form_adatok.get('submit'));
                 let uzenet = JSON.parse(this.responseText);
                 if( uzenet.eredmeny == 'ok' ) {
-                    kesz_fajlok_szama++;
-                    if (kesz_fajlok_szama == valid_fajlok_szama) {
-                        if (valid_fajlok_szama > 1) {
-                            uj_valasz_mutatasa(5000, "ok", 'Fájlok feltöltése kész');
-                        } else {
-                            uj_valasz_mutatasa(5000, "ok", 'Fájl feltöltése kész');
-                        }
-                        obj('feltoltes_statusz_doboz').parentNode.removeChild(obj('feltoltes_statusz_doboz'));
-                        obj('fileToUpload').type = 'file';
-                        obj('fileToUpload_label').innerHTML = '&#128193; Kattints ide fájlok feltöltéséhez';
-                        fajlok_betoltese();
+                    if (i + 1 === fajlok?.length) {
+                        uj_valasz_mutatasa(5000, "ok", (fajlok.length > 1 ? 'Fájlok feltöltése kész' : 'Fájl feltöltése kész'));
+                        
+                        feltoltes_folyamatban = false;
+                        feldolgozott_fajl_lista.map( fajl => {
+                            if(fajl.fajl.id === uzenet.file_id) {
+                                fajl.fajl = uzenet.fajl;
+                            }
+                            return fajl;
+                        });
                     }
+
+                    let uj_fajl = new Fajl();
+                    uj_fajl.added = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                    uj_fajl.filename = uzenet.fajlnev;
+                    uj_fajl.id = uzenet.id;
+                    uj_fajl.megjeleno_nev = session_username;
+                    uj_fajl.members_only = csak_tagok_szamara_lathato ? 1 : 0;
+                    uj_fajl.private = privat_feltoltes ? 1 : 0;
+                    uj_fajl.titkositott = titkositas_kulcs.length > 0 ? 1 : 0;
+                    uj_fajl.user_id = session_user_id;
+                    uj_fajl.size = fajl.size;
+
+                    fajl_hozzaadasa(uj_fajl, true);
                 } else {
                     uj_valasz_mutatasa(5000, "hiba", this.responseText);
                 }
-                eloterbe_helyezes_vege();
             }
             let feltoltes_form_adatok = new FormData();
-            if (obj('titkositas_kulcs').value.length > 0) {
-                var titkositasi_kulcs_sha256_hash = crypto_konyvtar.hash_keszites(obj('titkositas_kulcs').value);
-                feltoltes_form_adatok.append("titkositasi_kulcs_hash", crypto_konyvtar.hash_keszites(titkositasi_kulcs_sha256_hash));
+            if(titkositas_kulcs.length > 0) {
+                var titkositasi_kulcs_sha256_hash = hash_keszites(titkositas_kulcs);
+                feltoltes_form_adatok.append("titkositasi_kulcs_hash", hash_keszites(titkositasi_kulcs_sha256_hash));
                 var string_iv = titkositasi_kulcs_sha256_hash.substring(32, 48);
                 var titkositasi_kulcs_sha256_hash = titkositasi_kulcs_sha256_hash.substring(0, 32);
-                var kulcs_arraybuffer = crypto_konyvtar.Buffer.from(titkositasi_kulcs_sha256_hash, 'utf-8');
+                var kulcs_arraybuffer = Buffer.from(titkositasi_kulcs_sha256_hash, 'utf-8');
                 feltoltes_form_adatok.append("titkositas_iv", string_iv);
-                var iv = crypto_konyvtar.Buffer.from(string_iv, 'utf8');
+                var iv = Buffer.from(string_iv, 'utf8');
 
                 crypto.subtle.importKey('raw', kulcs_arraybuffer, { 'length': 256, 'name': 'AES-GCM' }, false, [ 'encrypt', 'decrypt' ])
                     .then(key => {
@@ -529,12 +441,12 @@
                             crypto.subtle.encrypt({ 'name': 'AES-GCM', iv }, key, olvaso.result)
                                 .then(encrypted => {
                                     fajl = new File([encrypted], fajl.name, { type: fajl.type });
-                                    if(obj('private').checked) {
+                                    if(privat_feltoltes) {
                                         feltoltes_form_adatok.append("private", "1");
                                     } else {
                                         feltoltes_form_adatok.append("private", "0");
                                     }
-                                    if(obj('members_only').checked) {
+                                    if(csak_tagok_szamara_lathato) {
                                         feltoltes_form_adatok.append("members_only", "1");
                                     } else {
                                         feltoltes_form_adatok.append("members_only", "0");
@@ -559,12 +471,12 @@
                         throw new Error('A titkosítási kulcs készítés nem sikerült.');
                     });
             } else {
-                if(obj('private').checked) {
+                if(privat_feltoltes) {
                     feltoltes_form_adatok.append("private", "1");
                 } else {
                     feltoltes_form_adatok.append("private", "0");
                 }
-                if(obj('members_only').checked) {
+                if(csak_tagok_szamara_lathato) {
                     feltoltes_form_adatok.append("members_only", "1");
                 } else {
                     feltoltes_form_adatok.append("members_only", "0");
@@ -576,19 +488,17 @@
                 keres.send(feltoltes_form_adatok);
             }
         }
-        */
     }
 
     function v2_titkositas_feloldasa_decrypt() {
-        /*
-        var titkositasi_kulcs_sha256_hash = crypto_konyvtar.hash_keszites(obj('v2_titkositas_feloldasa_kulcs').value);
-        var string_iv = titkositasi_kulcs_sha256_hash.substring(32, 48);
-        var titkositasi_kulcs_sha256_hash = titkositasi_kulcs_sha256_hash.substring(0, 32);
-        var kulcs_arraybuffer = crypto_konyvtar.Buffer.from(titkositasi_kulcs_sha256_hash, 'utf-8');
-        var iv = crypto_konyvtar.Buffer.from(string_iv, 'utf8');
+        var hash = hash_keszites(v2_titkositas_feloldasa_kulcs);
+        var string_iv = hash.substring(32, 48);
+        var hash = hash.substring(0, 32);
+        var kulcs_arraybuffer = Buffer.from(hash, 'utf-8');
+        var iv = Buffer.from(string_iv, 'utf8');
 
         var fajl = jelenleg_feloldando_fajl;
-
+        uj_valasz_mutatasa(99999, "sima", "Titkosított fájl feoldása...");
         crypto.subtle.importKey('raw', kulcs_arraybuffer, { 'length': 256, 'name': 'AES-GCM' }, false, [ 'encrypt', 'decrypt' ])
             .then(key => {
                 var olvaso = new FileReader();
@@ -599,13 +509,10 @@
 
                     crypto.subtle.decrypt({ 'name': 'AES-GCM', iv }, key, olvaso.result)
                         .then(decrypted => {
-                            uj_valasz_mutatasa(5000, "ok", "A fájl feoldása kész.");
+                            uj_valasz_mutatasa(3000, "ok", "A fájl feoldása kész.");
                             feloldott_fajl = new Blob([decrypted], { type: fajl.type });
-        
-                            obj('v2_titkositas_feloldott_fajl').innerHTML = fajl.name;
-                            obj('v2_titkositas_feloldott_fajl').download = fajl.name;
-                            obj('v2_titkositas_feloldott_fajl').href = URL.createObjectURL(feloldott_fajl);
-                            obj('v2_titkositas_feloldott_fajl').style.visibility = 'visible';
+                            v2_titkositas_feloldott_fajl = URL.createObjectURL(feloldott_fajl);
+                            v2_titkositas_feloldasa_fazis = "mentés";
                         },
                         err => {
                             uj_valasz_mutatasa(5000, "hiba", "A fájl feoldása nem sikerült.");
@@ -620,69 +527,46 @@
                 console.error(err);
                 throw new Error('A feloldókulcs készítés nem sikerült.');
             });
-        */
     }
 
     function v2_titkositas_feloldasa_kulcs_lekerdezes() {
-        /*
         let post_parameterek_kulcs_ellenorzes = new FormData();
-        var hash = crypto_konyvtar.hash_keszites(obj('v2_titkositas_feloldasa_kulcs').value);
-        hash = crypto_konyvtar.hash_keszites(hash);
+        let hash = hash_keszites( hash_keszites(v2_titkositas_feloldasa_kulcs) );
         post_parameterek_kulcs_ellenorzes.append('kulcs', hash);
-        uj_valasz_mutatasa(99999, "", "A megadott kulcs ellenőrzése...");
-        szinkron_keres("/megoszto/megoszto.🦀?kulcs_ellenorzese&file_id=" + jelenleg_feloldando_fajl_id, post_parameterek_kulcs_ellenorzes, (uzenet) => {
+
+        uj_valasz_mutatasa(99999, "sima", "A megadott kulcs ellenőrzése...");
+        szinkron_keres("/megoszto/megoszto.🦀?kulcs_ellenorzese&file_id=" + kivalasztott_fajl.fajl.id, post_parameterek_kulcs_ellenorzes, (uzenet: {eredmeny: string, valasz: string}) => {
             if( uzenet.eredmeny == 'ok' ) {
-                uj_valasz_mutatasa(5000, "ok", uzenet.valasz);
-                obj('v2_titkositas_feloldasa_kulcs').style.visibility = 'hidden';
-                obj('v2_titkositas_feloldasa_kulcs_ellenorzes_gomb').style.visibility = 'hidden';
                 v2_titkositas_feloldasa_decrypt();
             } else {
                 uj_valasz_mutatasa(5000, "hiba", uzenet.valasz);
             }
         });
-        */
-    }
-
-    function v2_titkositott_fajl_mentese() {
-        /*
-        let link = document.createElement('a');
-        link.style.display = 'none';
-        link.href = window.URL.createObjectURL(jelenleg_feloldando_fajl);
-        link.download = jelenleg_feloldando_fajl_nev;
-        document.body.appendChild(link);
-        link.click();
-        */
     }
 
     function v2_titkositott_fajl_letoltes() {
-        /*
-        uj_valasz_mutatasa(99999, "", "Fájl letöltése...");
-        var download_link = "/megoszto/megoszto.🦀?letoltes&file_id=" + jelenleg_feloldando_fajl_id;
-        fetch(download_link)
-            .then(
-                response => {
-                    response.blob().then(
-                        blob => {
-                            jelenleg_feloldando_fajl = new File([blob], jelenleg_feloldando_fajl_nev, { type: blob.type });
-                            obj('v2_titkositott_fajl_letoltes_kesz').style.visibility = 'visible';
-                            obj('v2_titkositott_fajl_letoltes_gomb').style.visibility = 'hidden';
-                            obj('v2_titkositas_mentes_doboz').style.visibility = 'visible';
-                            uj_valasz_mutatasa(5000, "ok", "Fájl letöltése kész.");
-                        },
-                        err => {
-                            uj_valasz_mutatasa(5000, "hiba", "A Blob kiolvasása nem sikerült.");
-                            console.error(err);
-                            throw new Error('A Blob kiolvasása nem sikerült.');
-                        }
-                        );
+        uj_valasz_mutatasa(99999, "sima", "Fájl letöltése...");
+        fetch("/megoszto/megoszto.🦀?letoltes&file_id=" + kivalasztott_fajl.fajl.id).then(
+            response => {
+                response.blob().then(
+                    blob => {
+                        jelenleg_feloldando_fajl = new File([blob], kivalasztott_fajl.fajl.filename, { type: blob.type });
+                        uj_valasz_mutatasa(3000, "ok", "Fájl letöltése kész.");
+                        v2_titkositas_feloldasa_fazis = "feloldás";
                     },
                     err => {
-                    uj_valasz_mutatasa(5000, "hiba", "A fájl letöltése nem sikerült.");
-                    console.error(err);
-                    throw new Error('A fájl letöltése nem sikerült.');
-                }
-            )
-        */
+                        uj_valasz_mutatasa(5000, "hiba", "A Blob kiolvasása nem sikerült.");
+                        console.error(err);
+                        throw new Error('A Blob kiolvasása nem sikerült.');
+                    }
+                );
+            },
+            err => {
+                uj_valasz_mutatasa(5000, "hiba", "A fájl letöltése nem sikerült.");
+                console.error(err);
+                throw new Error('A fájl letöltése nem sikerült.');
+            }
+        )
     }
 
     function elonezet_bezaras() {
@@ -694,9 +578,11 @@
     }
 
     function fajlnev_frissitese() {
-        /*
-        let fajlok = obj('fileToUpload').files;
-        let fajlnevek = "";
+        let fajlok = fileToUpload.files;
+        if(fajlok === null) {
+            throw new Error("A fajlok null!!!");
+        }
+        fajlnevek = [];
         for (let i = 0; i < fajlok.length; i++) {
             let jelenlegi_fajl = fajlok[i];
 
@@ -704,7 +590,6 @@
             if (/['"`]/ig.test(jelenlegi_nev)) {
                 let modositott_nev = jelenlegi_fajl.name.replace(/['"`]/ig, '');
                 if ( !confirm(`"${jelenlegi_fajl.name}" át lesz nevezve "${modositott_nev}"-re. Szeretnéd így is feltölteni a fájlt?`) ) {
-                    jelenlegi_fajl.valid = 'nem';
                     continue;
                 }
                 jelenlegi_nev = modositott_nev;
@@ -712,27 +597,11 @@
             
             if( jelenlegi_fajl.size > 1024 * 1024 * 200 ) {
                 uj_valasz_mutatasa(5000, "hiba", `A "${jelenlegi_nev}" nevű fájl mérete nagyobb mint 200MB, ezért azt nem lehet feltölteni.`);
-                jelenlegi_fajl.valid = 'nem';
                 continue;
             }
 
-            jelenlegi_fajl.valid = 'igen';
-            fajlnevek += jelenlegi_nev;
-            if (i < fajlok.length - 1) {
-                fajlnevek += '<br>';
-            }
+            fajlnevek = [...fajlnevek, jelenlegi_nev];
         }
-
-        if (fajlnevek.length <= 0) {
-            obj('fileToUpload_label').innerHTML = '&#128193; Kattints ide fájlok feltöltéséhez';
-            obj('SubmitGomb').style.visibility = 'hidden';
-        } else {
-            obj('fileToUpload_label').innerHTML = fajlnevek;
-            obj('SubmitGomb').style.visibility = 'visible';
-
-            eloterbe_helyezes( [obj('privat_doboz'), obj('members_only_doboz'), obj('fileToUpload_label'), obj('SubmitGomb'), obj('titkositasi_kulcs_doboz')], true, undefined );
-        }
-        */
     }
 
     function bal_klikk(event: Event, fajl_id: number) {
@@ -740,15 +609,26 @@
         if (window.innerWidth > 1024) {
             if (fajl !== undefined) {
                 if (fajl.fajl.titkositott === 1) {
-                    v1_titkositas_feloldasa(fajl_id, fajl.fajl.filename);
+                    v1_titkositas_feloldasa(fajl_id);
                 } else if (fajl.fajl.titkositott === 2) {
-                    v2_titkositas_feloldasa(fajl_id, fajl.fajl.filename);
+                    v2_titkositas_feloldasa(fajl_id);
                 } else {
                     elonezet(fajl_id);
                 }
             }
         } else {
             jobb_klikk_menu_kinyitas(event, fajl_id);
+        }
+    }
+
+    function fajl_kivalasztasa_id_alapjan(fajl_id: number) {
+        let jelolt = feldolgozott_fajl_lista.find(f => f.fajl.id == fajl_id);
+        if(jelolt !== undefined) {
+            kivalasztott_fajl = jelolt;
+            console.log({kivalasztott_fajl});
+            console.log(session_user_id);
+        } else {
+            throw new Error("Nem található a fájl id alapján: " + fajl_id);
         }
     }
 
@@ -774,14 +654,7 @@
             jobb_klikk_menu_aktivalva = false;
         };
 
-        let jelolt = feldolgozott_fajl_lista.find(f => f.fajl.id == fajl_id);
-        if(jelolt !== undefined) {
-            kivalasztott_fajl = jelolt;
-            console.log({kivalasztott_fajl});
-            console.log(session_user_id);
-        } else {
-            throw new Error("Nem található a fájl id alapján: " + fajl_id);
-        }
+        fajl_kivalasztasa_id_alapjan(fajl_id);
     }
 
     function privat_statusz_csere() {
@@ -818,108 +691,6 @@
                 uj_valasz_mutatasa(3000, "hiba", uzenet.valasz);
             }
         })
-    }
-
-    function reszletek_panel_megnyitasa(fajl_azonosito: number) {
-        /*
-        let jobb_klikk_menu = obj('jobb_klikk_menu');
-        jobb_klikk_menu.style.display = 'block';
-
-        document.body.onscroll = () => {
-            jobb_klikk_menu.style.display = '';
-        };
-
-        document.body.onclick = (event) => {
-            if (window.innerWidth > 1024) {
-                let kattintasJobbKlikkMenunVolt = false;
-                event.composedPath().forEach(element => {
-                    if ((<HTMLElement>element).id == 'jobb_klikk_menu') {
-                        kattintasJobbKlikkMenunVolt = true;
-                    }
-                });
-
-                if (!kattintasJobbKlikkMenunVolt) {
-                    jobb_klikk_menu.style.display = '';
-                }
-            }
-        };
-
-        let buffer = '';
-        buffer += `<h1 class="kozepre-szoveg" style="word-break: break-word">${tr.attributes['sor_filename'].value}</h1>`;
-        if (tr.attributes['sor_private'].value == '1') {
-            buffer += '👁️ Privát fájl (csak te látod)<br><br>';
-        }
-        if (tr.attributes['sor_members_only'].value == '1') {
-            buffer += '<img src="/index/favicon.png" width="14px"> Csak Hausz tagok számára elérhető<br><br>';
-        }
-        if (tr.attributes['sor_titkositott'].value != '0') {
-            buffer += '🔒 Jelszóval védett<br><br>';
-        }
-
-        buffer += `<b>Dátum: </b>${tr.attributes['sor_added'].value.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/, '$1.$2.$3 $4:$5')}<br><br>`;
-        buffer += `<b>Méret: </b>${bajt_merette_valtasa(tr.attributes['sor_size'].value)}<br><br>`;
-        buffer += `<b>Feltöltő: </b>${tr.attributes['sor_username'].value}<br><br>`;
-        if (tr.attributes['sor_titkositott'].value == '1') {
-            buffer += `<div class="szint-3 gomb kerekites-10" onclick="v1_titkositas_feloldasa(event, '${tr.attributes['sor_id'].value}', '${tr.attributes['sor_filename'].value}');">Fájl feloldása</div><br>`;
-        }
-        if (tr.attributes['sor_titkositott'].value == '2') {
-            buffer += `<div class="szint-3 gomb kerekites-10" onclick="v2_titkositas_feloldasa(event, '${tr.attributes['sor_id'].value}', '${tr.attributes['sor_filename'].value}');">Fájl feloldása</div><br>`;
-        }
-        if (tr.attributes['sor_titkositott'].value == '0') {
-            let ismert_elonezet_tipus = false;
-            let ismert_elonezet_tipusok = ['kep', 'audio', 'video', 'dokumentum'];
-            for (let i = 0; i < ismert_elonezet_tipusok.length; i++) {
-                if( tr.attributes['sor_elonezet_tipus'].value == ismert_elonezet_tipusok[i] ) {
-                    ismert_elonezet_tipus = true;
-                }
-            }
-            if (parseInt(tr.attributes['sor_size'].value) <= 1024 * 1024 * 10 && ismert_elonezet_tipus) {
-                buffer += `<div class="szint-3 gomb kerekites-10" onclick='elonezet("/megoszto/megoszto.🦀?letoltes&file_id=${tr.attributes['sor_id'].value}", "${tr.attributes['sor_elonezet_tipus'].value}", "${tr.attributes['sor_size'].value}");'>Megnyitás</div><br>`;
-            }
-        }
-        if (tr.attributes['sor_username'].value == session_username) {
-            buffer += `<div class="szint-3 gomb kerekites-10" onclick='privat_statusz_csere("/megoszto/megoszto.🦀?privat_statusz_csere&file_id=${tr.attributes['sor_id'].value}");'>`;
-            if(tr.attributes['sor_private'].value == '1') {
-                buffer += `Publikussá tétel</div><br>`;
-            } else {
-                buffer += `Priváttá tétel</div><br>`;
-            }
-
-            buffer += `<div class="szint-3 gomb kerekites-10" onclick='members_only_csere("/megoszto/megoszto.🦀?members_only_csere&file_id=${tr.attributes['sor_id'].value}");'>`;
-            if(tr.attributes['sor_members_only'].value == '1') {
-                buffer += `Legyen mindenki számára elérhető</div><br>`;
-            } else {
-                buffer += `Csak Hausz tagok számára legyen elérhető</div><br>`;
-            }
-        }
-        if (tr.attributes['sor_username'].value == 'ismeretlen' && session_loggedin == 'yes') {
-            buffer += `<div class="szint-3 gomb kerekites-10" onclick='claimeles("/megoszto/megoszto.🦀?claim=1&file_id=${tr.attributes['sor_id'].value}");'>Claimelés</div><br>`;
-        }
-        if (tr.attributes['sor_username'].value == session_username || (tr.attributes['sor_username'].value == 'ismeretlen' && session_loggedin == 'yes')) {
-            buffer += `<a class="linkDekoracioTiltas" onclick="torles('/megoszto/megoszto.🦀?delete=1&file_id=${tr.attributes['sor_id'].value}', '${tr.attributes['sor_filename'].value}')"><abbr class="linkDekoracioTiltas pointer f40" title="Törlés">❌</abbr></a>`;
-        }
-        if (tr.attributes['sor_username'].value == session_username) {
-            buffer += `<a class="linkDekoracioTiltas" onclick="fajl_atnevezese(${tr.attributes['sor_id'].value}, '${tr.attributes['sor_filename'].value}')"><abbr class="linkDekoracioTiltas pointer f40" title="Átnevezés">✏️</abbr></a>`;
-        }
-        if (tr.attributes['sor_titkositott'].value == '0') {
-            buffer += `<a class="linkDekoracioTiltas" href="/megoszto/megoszto.🦀?letoltes&file_id=${tr.attributes['sor_id'].value}"><abbr class="linkDekoracioTiltas pointer f40" title="Letöltés">💾</abbr></a>`;
-        }
-        jobb_klikk_menu.innerHTML = buffer;
-
-        if (window.innerWidth > 1024) {
-            if( jobb_klikk_menu.clientHeight + 10 + event.pageY > window.innerHeight + window.pageYOffset ) {
-                jobb_klikk_menu.style.top = (window.innerHeight + window.pageYOffset - jobb_klikk_menu.clientHeight - 10) + 'px';
-            } else {
-                jobb_klikk_menu.style.top = event.pageY + 'px';
-            }
-            jobb_klikk_menu.style.left = event.pageX + 'px';
-            jobb_klikk_menu.style.position = 'absolute';
-        } else {
-            jobb_klikk_menu.style.top = '100px';
-            jobb_klikk_menu.style.left = '30px';
-            jobb_klikk_menu.style.position = 'fixed';
-        }
-        */
     }
 
     function allowDrag(e: DragEvent) {
@@ -992,13 +763,44 @@
             }
 
             if(jobb_klikk_menu_aktivalva) {
+                let volt_cel = false;
                 for (let i = 0; i < event.composedPath().length; i++) {
                     const element = event.composedPath()[i];
                     if ((<HTMLElement>element).id == 'jobb_klikk_menu') {
-                        return;
+                        volt_cel = true;
                     }
                 }
-                jobb_klikk_menu_aktivalva = false;
+                jobb_klikk_menu_aktivalva = volt_cel;
+            }
+
+            if(titkositas_feloldasa_menu_aktivalva) {
+                let volt_tr = false;
+                let volt_cel = false;
+                for (let i = 0; i < event.composedPath().length; i++) {
+                    const element = event.composedPath()[i];
+                    if ((<HTMLElement>element).tagName == 'TR') {
+                        volt_tr = true;
+                    }
+                    if ((<HTMLElement>element).id == 'titkositas_feloldasa_box') {
+                        volt_cel = true;
+                    }
+                }
+                titkositas_feloldasa_menu_aktivalva = volt_cel || volt_tr;
+            }
+
+            if(v2_titkositas_feloldasa_menu_aktivalva) {
+                let volt_tr = false;
+                let volt_cel = false;
+                for (let i = 0; i < event.composedPath().length; i++) {
+                    const element = event.composedPath()[i];
+                    if ((<HTMLElement>element).tagName == 'TR') {
+                        volt_tr = true;
+                    }
+                    if ((<HTMLElement>element).id == 'v2_titkositas_feloldasa_box') {
+                        volt_cel = true;
+                    }
+                }
+                v2_titkositas_feloldasa_menu_aktivalva = volt_cel || volt_tr;
             }
         };
 
@@ -1032,10 +834,10 @@
         <b>Méret: </b>{bajt_merette_valtasa(kivalasztott_fajl.fajl.size)}<br><br>
         <b>Feltöltő: </b>{kivalasztott_fajl.fajl.megjeleno_nev}<br><br>
         {#if kivalasztott_fajl.fajl.titkositott === 1}
-            <button class="szint-3 gomb kerekites-10" on:click={e => {v1_titkositas_feloldasa(kivalasztott_fajl.fajl.id, kivalasztott_fajl.fajl.filename);}}>Fájl feloldása (v1)</button><br>
+            <button class="szint-3 gomb kerekites-10" on:click={e => {v1_titkositas_feloldasa(kivalasztott_fajl.fajl.id);}}>Fájl feloldása (v1)</button><br>
         {/if}
         {#if kivalasztott_fajl.fajl.titkositott === 2}
-            <button class="szint-3 gomb kerekites-10" on:click={e => {v2_titkositas_feloldasa(kivalasztott_fajl.fajl.id, kivalasztott_fajl.fajl.filename);}}>Fájl feloldása</button><br>
+            <button class="szint-3 gomb kerekites-10" on:click={e => {v2_titkositas_feloldasa(kivalasztott_fajl.fajl.id);}}>Fájl feloldása</button><br>
         {/if}
         {#if ismert_elonezet_tipus(kivalasztott_fajl.elonezet_tipus) && kivalasztott_fajl.fajl.size <= megoszto_fajl_elonezet_limit}
             <button class="szint-3 gomb kerekites-10" on:click={e => { elonezet(kivalasztott_fajl.fajl.id); }}>Megnyitás</button>
@@ -1099,21 +901,33 @@
     <div id='titkositas_feloldasa_box' class="preview_box kozepre" style="max-width: 60%; max-height: 60%;display: inline-block">
         <h3>Az elérni kívánt fájl titkosítva van 🔒</h3>
         <label for="titkositas_feloldasa_kulcs">Add meg a fájl titkosító kulcsát a feloldáshoz</label><br><br>
-        <input type="password" id="titkositas_feloldasa_kulcs" name="titkositas_feloldasa_kulcs" placeholder="Kulcs" class="max-szelesseg" /><br><br><br>
+        <input type="password" bind:value={titkositas_feloldasa_kulcs} name="titkositas_feloldasa_kulcs" placeholder="Kulcs" class="max-szelesseg" /><br><br><br>
         <button class="gomb kerekites-15 padding-10" on:click={() => { titkositas_feloldasa_kuldes(); }}>Titkosított fájl feloldása</button>
-        <a href={titkositott_fajl_letoltes_link} download="">{titkositott_fajl_letoltes_link}</a>
-        <a href={titkositatlan_fajl_letoltes_link} download="">{titkositatlan_fajl_letoltes_link}</a>
+        Titkosított <a href={titkositott_fajl_letoltes_link} download="">{kivalasztott_fajl.fajl.filename}</a>
+        Feloldott <a href={titkositatlan_fajl_letoltes_link} download="">{kivalasztott_fajl.fajl.filename}</a>
     </div>
 {/if}
 {#if v2_titkositas_feloldasa_menu_aktivalva}
-    <div id='v2_titkositas_feloldasa_box' class="preview_box kozepre lathatatlan" style="max-width: 60%; max-height: 60%;display: inline-block">
+    <div id='v2_titkositas_feloldasa_box' class="preview_box kozepre" style="max-width: 60%; max-height: 60%;display: inline-block">
         <h3>Az elérni kívánt fájl titkosítva van (v2) 🔒</h3>
-        1. Töltsd le a fájlt ezzel a gombbal: <button on:click={e => { v2_titkositott_fajl_letoltes() }} id="v2_titkositott_fajl_letoltes_gomb">Letöltés</button><div id="v2_titkositott_fajl_letoltes_kesz" class="lathatatlan">&#9989;</div>
-        2. Add meg a titkosítási kulcsot a feloldáshoz: <input id="v2_titkositas_feloldasa_kulcs" type="text" placeholder="Kulcs" />
-        <button id="v2_titkositas_feloldasa_kulcs_ellenorzes_gomb" on:click={e => { v2_titkositas_feloldasa_kulcs_lekerdezes() }}>Ellenőrzés</button>
-        3. Ha jó kulcsot adtál meg, akkor feloldhatod itt a fájlt <a href={v2_titkositas_feloldott_fajl}>{v2_titkositas_feloldott_fajl}</a>
-        <br>
-        <p id="v2_titkositas_mentes_doboz" class="lathatatlan">4. Ha saját magadtól szeretnéd inkább feloldani a fájlt, akkor ezzel a gombbal tudod letölteni: <button on:click={e => { v2_titkositott_fajl_mentese() }}>Mentés</button></p>
+        {#if v2_titkositas_feloldasa_fazis != "mentés"}
+            1. Töltsd le a fájlt ezzel a gombbal: <button class="gomb kerekites-15 padding-10" on:click={e => { v2_titkositott_fajl_letoltes() }}>Letöltés</button>
+            <br>
+        {/if}
+        {#if v2_titkositas_feloldasa_fazis == "feloldás"}
+            2. Add meg a titkosítási kulcsot a feloldáshoz: <input bind:value={v2_titkositas_feloldasa_kulcs} type="password" placeholder="Kulcs" />
+            <button class="gomb kerekites-15 padding-10" on:click={e => { v2_titkositas_feloldasa_kulcs_lekerdezes() }}>Ellenőrzés</button>
+            <br>
+        {/if}
+        {#if v2_titkositas_feloldasa_fazis == "mentés"}
+            Feloldás sikeres!<br>
+            <a href={v2_titkositas_feloldott_fajl} download={v2_titkositas_feloldott_fajl}>{kivalasztott_fajl.fajl.filename}</a>
+        {/if}
+        {#if v2_titkositas_feloldasa_fazis != "mentés"}
+            <br><br><br>
+            <p>Letöltési link manuális feloldáshoz:</p>
+            <a href="/megoszto/megoszto.🦀?letoltes&file_id={kivalasztott_fajl.fajl.id}">titkositott_{kivalasztott_fajl.fajl.filename}</a>
+        {/if}
     </div>
 {/if}
 {#if drop_zona_aktivalva}
@@ -1122,6 +936,7 @@
         on:dragover={e => { allowDrag(e) }}
         on:dragleave={e => { drop_zona_aktivalva = false }}
         on:drop={e => { handleDrop(e) }}
+        role="region"
         class="zindex-9" 
         style="opacity: 0.0; top: 0; left: 0; width: 100%; height: 100%; position: fixed"
     />
@@ -1139,38 +954,46 @@
 
 <h2 class="kozepre-szoveg">Feltöltés</h2>
 <form class="kozepre" enctype="multipart/form-data" autocomplete="off">
-    <input type="file" multiple on:change={e => {fajlnev_frissitese()}} name="fileToUpload" id="fileToUpload" class="nodisplay" />
-    <div class="kozepre fit-content padding-15 gomb szint-2 kerekites-15" id="fileToUpload_label" on:click={e => { obj("fileToUpload").click() }} style="padding: 20px 50px;">
-        &#128193; Kattints ide fájlok feltöltéséhez
-    </div>
+    <input type="file" multiple on:change={e => {fajlnev_frissitese()}} bind:this={fileToUpload} name="fileToUpload" id="fileToUpload" class="nodisplay" />
+    <button class="kozepre fit-content padding-15 gomb szint-2 kerekites-15" id="fileToUpload_label" on:click={e => { obj("fileToUpload").click() }} style="padding: 20px 50px;">
+        {#if fajlnevek.length > 0}
+            {#each fajlnevek as fajl}
+                {fajl}<br>
+            {/each}
+        {:else}
+            Kattints ide fájlok feltöltéséhez
+        {/if}
+    </button>
     <br>
     
     {#if session_loggedin}
-        <div class="kozepre fit-content lathatatlan padding-15 gomb szint-2 kerekites-15" id="privat_doboz" on:click={e => { obj("private").click() }}>
-            <input type="checkbox" name="private" id="private" />
+        <div class="kozepre fit-content padding-15 gomb szint-2 kerekites-15" id="privat_doboz">
+            <input type="checkbox" name="private" bind:value={privat_feltoltes}/>
             Privát tárolás
         </div>
         <br>
-        <div class="kozepre fit-content lathatatlan padding-15 gomb szint-2 kerekites-15" id="members_only_doboz" on:click={e => { obj("members_only").click() }}>
-            <input type="checkbox" name="members_only" value="on" id="members_only" />
+        <div class="kozepre fit-content padding-15 gomb szint-2 kerekites-15" id="members_only_doboz">
+            <input type="checkbox" name="members_only" bind:value={csak_tagok_szamara_lathato} />
             Csak Hausz tagok számára
         </div>
         <br>
     {/if}
 
-    <div class="kozepre fit-content padding-15 gomb szint-2 kerekites-15" id="titkositasi_kulcs_doboz" on:click={e => { obj("titkositas_kulcs").click() }} style="padding: 20px 10px">
+    <div class="kozepre fit-content padding-15 gomb szint-2 kerekites-15" id="titkositasi_kulcs_doboz" style="padding: 20px 10px">
         <label for="titkositas_kulcs">Titkosítási kulcs: </label>
-        <input type="password" name="titkositas_kulcs" id="titkositas_kulcs" />
+        <input type="password" name="titkositas_kulcs" bind:value={titkositas_kulcs}/>
     </div>
 </form>
 <br><br>
-<button on:click={e => { feltoltes() }} class="gomb kerekites-15 padding-10 lathatatlan kozepre" id="SubmitGomb" hidden>Feltöltés</button>
+{#if fajlnevek.length > 0}
+    <button on:click={e => { feltoltes() }} class="gomb kerekites-15 padding-10 kozepre">Feltöltés</button>
+{/if}
 
 <h2 class="kozepre-szoveg">Feltöltött fájlok</h2>
 <table id="tablazat" class="szint-1 kozepre fit-content" style="max-width: 95%; display: table">
     <tr class="szint-2">
         <th colspan="2" style="padding-bottom: 10px">
-            <div id="szures_gomb" on:click={() => { szures_aktivalva = !szures_aktivalva }} class="gomb inline szint-3 kerekites-15">🔎</div> Fájlnév
+            <button id="szures_gomb" on:click={() => { szures_aktivalva = !szures_aktivalva }} class="gomb inline szint-3 kerekites-15">🔎</button> Fájlnév
         </th>
         <th class="mobilon-tiltas">Dátum</th>
         <th class="mobilon-tiltas">Méret</th>
@@ -1180,14 +1003,14 @@
         <tr class="szint-1" id="szuro_sor">
             <th class="mobilon-tiltas"></th>
             <th>
-                <input type="text" id="fajlnev_szures_mezo" on:input={e => { filter_frissites() }} class="max-szelesseg" />
+                <input type="text" bind:value={fajlnev_szures_mezo} on:input={e => { filter_frissites() }} class="max-szelesseg" />
             </th>
             <th class="mobilon-tiltas">
-                <input type="text" id="datum_szures_mezo" on:input={e => { filter_frissites() }} style="max-width: 130px" />
+                <input type="text" bind:value={datum_szures_mezo} on:input={e => { filter_frissites() }} style="max-width: 130px" />
             </th>
             <th class="mobilon-tiltas"></th>
             <th class="mobilon-tiltas">
-                <input type="text" id="feltolto_szures_mezo" on:input={e => { filter_frissites() }} style="max-width: 75px" />
+                <input type="text" bind:value={feltolto_szures_mezo} on:input={e => { filter_frissites() }} style="max-width: 75px" />
             </th>
         </tr>
     {/if}
@@ -1205,7 +1028,7 @@
             </td>
         </tr>
     {/if}
-    {#each feldolgozott_fajl_lista as fajl}
+    {#each szurt_fajl_lista as fajl}
         <tr id={fajl.fajl.id.toString()} on:click={e => { bal_klikk(e, fajl.fajl.id) }}>
             <td>{fajl.elonezet_emoji}</td>
             <td class="padding-5">
@@ -1220,8 +1043,10 @@
                 {/if}
                 {fajl.fajl.filename}
             </td>
-            <td class="mobilon-tiltas">{fajl.fajl.added}</td>
-            <td class="mobilon-tiltas">{fajl.fajl.size}</td>
+            <td class="mobilon-tiltas">
+                {datum_formazas(fajl.fajl.added)}
+            </td>
+            <td class="mobilon-tiltas">{bajt_merette_valtasa(fajl.fajl.size)}</td>
             <td class="mobilon-tiltas">{fajl.fajl.megjeleno_nev}</td>
         </tr>
     {/each}
@@ -1237,6 +1062,12 @@
         <div id="div_szabad_tarhely" style="text-shadow: 1px 1px rgb(70,70,70), -1px -1px rgb(70,70,70), 1px -1px rgb(70,70,70), -1px 1px rgb(70,70,70); border-radius: 10px; padding: 10px; text-align: right">
             {'Felhasznált: ' + bajt_merette_valtasa(foglalt_tarhely)}
         </div>
+    </div>
+{/if}
+
+{#if feltoltes_folyamatban}
+    <div id="feltoltes_statusz_doboz" class="kozepre-szoveg" style="padding: 20px; position: fixed; display: block; width: 100%; text-align: center; top: 50%">
+        Fájl{#if fajlnevek.length > 0}ok{/if} feltöltése folyamatban...
     </div>
 {/if}
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

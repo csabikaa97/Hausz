@@ -101,10 +101,11 @@ pub fn belepteto_rendszer(post: Vec<(String, String)>, get: Vec<(String, String)
 
         return HttpResponse::Ok()
             .body(format!(
-                    "{{\"eredmeny\": \"ok\", \"session_loggedin\": \"{}\", \"session_username\": \"{}\", \"session_admin\": \"{}\"}}", 
+                    "{{\"eredmeny\": \"ok\", \"session_loggedin\": \"{}\", \"session_username\": \"{}\", \"session_user_id\": {}, \"session_admin\": \"{}\"}}", 
                     session.loggedin,
                     session.username,
-                    session.admin
+                    session.user_id,
+                    session.admin,
                 ));
     }
 
