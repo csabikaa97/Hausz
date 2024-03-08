@@ -19,7 +19,7 @@ self.addEventListener("activate", async (e) => {
     console.log("[SW] Activate event");
     const subscription = await self.registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array("BH6UJLBLsbGMLV-DuXF7CYc_VzY3hYbU8Wj0JnnkJdOBAPFmq9YXdvbZf68JJj4hq-4UUYYFh9A3-UHbQNBEAGs"),
+        applicationServerKey: urlBase64ToUint8Array("BGi-dyf0HmAnIiFYLwQEpnBR2SXjJThRP8CWxdljJRIW12Wddgy3O1s5NIyr9A0s4RIGpuU8MBJLNbndar5IMkU"),
     });
 
     console.log("[SW] subscription:");

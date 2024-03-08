@@ -108,7 +108,7 @@ try {
 }
 
 console.log('[INFO] \tCompileolás...');
-let child = spawnSync("/usr/local/bin/tsc", [bemeneti, "-out", kimeneti], { encoding : 'utf8' });
+let child = spawnSync("/usr/local/bin/tsc", [bemeneti, "-out", kimeneti, "--target", "es6"], { encoding : 'utf8' });
 if( child.stdout.length > 0 ) {
     console.log(child.stdout);
 }

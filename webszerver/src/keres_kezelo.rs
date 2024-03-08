@@ -16,6 +16,7 @@ use crate::oldalak::beallitasok::push_értesítés_adatok_törlése;
 use crate::backend::kliens_push_kuldes::push_ertesites_kuldese;
 use crate::oldalak::beallitasok::api_kulcsok_lekerdezese;
 use crate::oldalak::beallitasok::push_értesítés_adatok_lekérdezése;
+use crate::oldalak::beallitasok::új_api_kulcs_készítése;
 use crate::session::Session;
 use crate::alap_fuggvenyek::isset;
 use crate::fajlok::hozzárendelt_fájl;
@@ -183,6 +184,9 @@ pub async fn tenyleges_keres_kezelo(payload: Multipart, post: Vec<(String, Strin
     }
     if isset("api_kulcsok_lekerdezese", get.clone()) {
         return api_kulcsok_lekerdezese(session).await;
+    }
+    if isset("uj_api_kulcs_keszitese", get.clone()) {
+        return új_api_kulcs_készítése(post.clone(), session).await;
     }
     if isset("push_ertesites_adatok_lekerdezese", get.clone()) {
         return push_értesítés_adatok_lekérdezése(session).await;

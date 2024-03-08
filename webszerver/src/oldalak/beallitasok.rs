@@ -8,6 +8,30 @@ use crate::backend::lekerdezesek::saját_push_adatok_lekérése;
 
 static LOG_PREFIX: &str = "[push_noti] ";
 
+pub async fn új_api_kulcs_készítése(post: Vec<(String, String)>, session: Session) -> HttpResponse {
+    if session.loggedin != "yes" {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));
+    }
+
+    if !isset("api_kulcs_megjegyzes", post.clone()) {
+        return HttpResponse::BadRequest().body(exit_error(format!("Nincs megadva API kulcs megjegyzés")));
+    }
+
+    match általános_query_futtatás(format!(
+        "INSERT INTO push_ertesites_api_kulcsok (felhasznalo_azonosito, kulcs, megjegyzes) VALUES ({}, '{}', '{}')", 
+        session.user_id,
+        crate::backend::session_azonosito_generator::random_új_session_azonosító(),
+        list_key("api_kulcs_megjegyzes", post.clone())
+    )) {
+        Ok(_) => {
+            return HttpResponse::Ok().body(exit_ok(format!("Az API kulcs elkészítése sikeres")));
+        },
+        Err(err) => {
+            println!("{}Nem sikerült az API kulcs mentése: {}", LOG_PREFIX, err);
+            return HttpResponse::InternalServerError().body(exit_error(format!("Nem sikerült az API kulcs elkészítése")));
+        }
+    }
+}
 pub async fn push_értesítés_adatok_törlése(post: Vec<(String, String)>, session: Session) -> HttpResponse {
     if session.loggedin != "yes" {
         return HttpResponse::BadRequest().body(exit_error(format!("Nem vagy belépve")));

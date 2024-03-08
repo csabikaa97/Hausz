@@ -73,7 +73,7 @@ CREATE TABLE `sessionok` (
 );
 
 CREATE TABLE `push_ertesites_adatok` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO INCREMENT,
   `felhasznalo_azonosito` int(11) NOT NULL,
   `adatok` VARCHAR(9999) NOT NULL,
   `megjegyzes` VARCHAR(255) NOT NULL,
